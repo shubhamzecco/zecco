@@ -1,3 +1,4 @@
+"use client"
 import ChatbotWidget from '@/components/chat/chatbot-widget'
 import HomePage from './home/page'
 

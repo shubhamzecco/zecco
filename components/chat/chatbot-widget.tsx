@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { X, Send, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -28,6 +28,19 @@ export default function ChatbotWidget() {
   const [showNotification, setShowNotification] = useState(true)
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
+
+
+  const [isAnimated, setIsAnimated] = useState(false);
+
+  useEffect(() => {
+    // Trigger animation after 2 seconds
+    const timer = setTimeout(() => {
+      setIsAnimated(true);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [isOpen]);
+
 
   const openChat = () => {
     setIsOpen(true)
@@ -124,11 +137,10 @@ export default function ChatbotWidget() {
             w-full md:w-[40vw]
             max-h-[60vh] md:min-h-[85vh] md:max-h-[95vh]
             flex flex-col transition-all duration-300
-            ${
-              isAnimating
+            ${isAnimating
                 ? 'translate-y-0 opacity-100 scale-100'
                 : 'translate-y-10 opacity-0 scale-95'
-            }`}
+              }`}
           >
             {/* Close */}
             <div className="absolute -right-3 -top-3 z-30">
@@ -142,44 +154,41 @@ export default function ChatbotWidget() {
 
             {/* Logo + Description */}
             <div
-              className={`
-                absolute z-20 w-[80%]
-                transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)]
-                ${
-                  logoAtTop
-                    ? 'top-4 left-4 translate-x-0 translate-y-0 scale-100 opacity-100'
-                    : logoCentered
-                      ? 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-110 opacity-100'
-                      : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 scale-110 opacity-0'
-                }
-              `}
+              className={`absolute transition-all duration-[800ms] ease-in-out ${isAnimated
+                ? 'top-6 left-6 flex-row items-center gap-3'
+                : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-6'
+                } flex`}
             >
+              {/* Logo */}
               <div
-                className={`flex w-full gap-3 ${logoAtTop ? 'items-start' : 'items-center flex-col'}`}
-                onTransitionEnd={() => {
-                  if (logoAtTop) setLogoTopFinal(true)
-                }}
+                className={`transition-all duration-[800ms] ease-in-out ${isAnimated ? 'w-8 h-8' : 'w-24 h-24'
+                  }`}
               >
                 <Image
                   src={App_url.image.chat_logo}
                   alt="logo"
-                  width={logoAtTop ? 40 : 70}
-                  height={logoAtTop ? 40 : 70}
+                  width={isAnimated ? 40 : 70}
+                  height={isAnimated ? 40 : 70}
                   className="transition-all duration-700"
                 />
 
-                <div
-                  className={`transition-all duration-700 text-left ${
-                    logoTopFinal ? 'w-full' : 'w-full'
-                  }
-                  ${logoAtTop ? '' : 'flex flex-col items-center text-center'}  
-                  `}
+              </div>
+
+              <div className={` ${isAnimated ? 'flex-col flex' : ''}`}>
+                <h1
+                  className={`font-bold text-[#000] transition-all duration-[800ms] ease-in-out ${isAnimated ? 'text-xl' : 'text-4xl'
+                    }`}
                 >
-                  <p className="font-semibold text-black">ZECCO.AI</p>
-                  <p className="text-sm text-slate_gray w-full">
-                    Meet Zecco — your AI search agent, working for you to find the best property listings that match your criteria.
-                  </p>
-                </div>
+                  ZECCO.AI
+                </h1>
+
+                {/* Slogan */}
+                <p
+                  className={`text-[#94A3B8] transition-all duration-[800ms] ease-in-out ${isAnimated ? 'text-xs' : 'text-lg'
+                    }`}
+                >
+                  Meet Zecco — your AI search agent, working for you to find the best property listings that match your criteria.
+                </p>
               </div>
             </div>
 
@@ -188,9 +197,8 @@ export default function ChatbotWidget() {
               {messages.map(msg => (
                 <div
                   key={msg.id}
-                  className={`flex gap-2 ${
-                    msg.sender === 'user' ? 'justify-end' : 'justify-start'
-                  }`}
+                  className={`flex gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'
+                    }`}
                 >
                   {msg.sender === 'bot' && (
                     <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
@@ -205,11 +213,10 @@ export default function ChatbotWidget() {
 
                   <div
                     className={`px-4 py-2 rounded-2xl max-w-xs text-sm
-                    ${
-                      msg.sender === 'user'
+                    ${msg.sender === 'user'
                         ? 'bg-blue-500 text-white rounded-tr-none'
                         : 'bg-cyan-100 text-gray-800 rounded-tl-none'
-                    }`}
+                      }`}
                   >
                     {msg.text}
                   </div>
