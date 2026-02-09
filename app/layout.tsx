@@ -1,9 +1,10 @@
 import React from "react"
 import type { Metadata } from "next"
-import { Inter, Manrope , Instrument_Sans, Poppins } from "next/font/google"
+import { Inter, Manrope, Instrument_Sans, Poppins } from "next/font/google"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import "../styles/globals.css"
+import { AppProviders } from "@/components/provider/provider";
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -45,7 +46,7 @@ const instrumentSans = Instrument_Sans({
   weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
   display: 'swap',
-   variable: '--font-instrument-sans',
+  variable: '--font-instrument-sans',
 });
 
 export const metadata: Metadata = {
@@ -62,7 +63,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${manrope.variable} ${instrumentSans.className} ${poppins?.className} scrollbar-hide`}>
       <body className="bg-white text-gray-900 antialiased font-sans scrollbar-hide">
-        {children}
+        <AppProviders>
+          {children}
+        </AppProviders>
       </body>
     </html>
   )

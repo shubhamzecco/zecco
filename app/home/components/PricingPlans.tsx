@@ -41,9 +41,9 @@ const plans = [
 export default function PricingPlans() {
   return (
     <section className="bg-[#F8FAFC] py-20">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="lg:mx-10 px-6">
         <div className="flex flex-col md:flex-row md:justify-between mb-14">
-          <h2 className="text-3xl font-manrope font-bold text-[#000000]">
+          <h2 className="text-3xl capitalize font-manrope font-bold text-[#000000]">
             Choose your Zecco plan
           </h2>
           <p className="text-slate_gray font-medium font-manrope text-md max-w-xl mt-4 md:mt-0">
@@ -64,7 +64,7 @@ export default function PricingPlans() {
                   <CreditCard className="text-[#EBEDF2]" size={50} />
                 </div> */}
               </div>
-              <h3 className="font-manrope uppercase font-extrabold text-2xl text-[#000000] mb-4">
+              <h3 className="font-manrope capitalize font-extrabold text-2xl text-[#000000] mb-4">
                 {plan.title}
               </h3>
               <ul className="space-y-3 mb-8 flex-1">

@@ -59,7 +59,7 @@ const regions = [
 export default function ExploreRegions() {
   return (
     <section className="bg-[#F8FAFC] py-20">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className=" lg:mx-10 px-6">
 
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:justify-between mb-10 pb-5 border-b border-white/6">

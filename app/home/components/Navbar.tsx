@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
     <nav className="absolute top-7 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white/20 border border-white/70 rounded-full">
+      <div className=" lg:mx-20 px-4 sm:px-6 lg:px-8 bg-white/20 border border-white/70 rounded-full">
         <div className="flex justify-between items-center h-16">
 
           {/* Logo */}
@@ -47,13 +47,13 @@ export default function Navbar() {
 
           {/* Right Side Buttons */}
           <div className="hidden md:flex items-center gap-3 -mr-3">
-            <button className="px-5 py-3 text-sm font-medium text-black rounded-full flex items-center gap-2">
+            <Link href={App_url.link.SIGN_IN} className="px-5 py-3 text-sm font-medium text-black rounded-full flex items-center gap-2">
               <User className="w-5 h-5" /> Login
-            </button>
+            </Link>
 
-            <button className="px-5 py-3 text-sm font-medium text-white bg-sky_blue_color rounded-full flex items-center gap-2 tracking-wider">
+            <Link href={App_url.link.SIGN_UP} className="px-5 py-3 text-sm font-medium text-white bg-sky_blue_color rounded-full flex items-center gap-2 tracking-wider">
               <UserPlus className="w-5 h-5" /> Registration
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}

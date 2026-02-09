@@ -5,14 +5,10 @@ import { App_url } from '@/constant/static'
 export default function SmarterSearch() {
   return (
     <section className="relative overflow-hidden bg-[#0B1220]">
-      {/* BACKGROUND GRADIENT */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0B1220] via-[#0E1B3C] to-[#1A140E]" />
 
-      <div className="relative max-w-7xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-14 items-center">
-
-        {/* LEFT CONTENT */}
+      <div className="relative lg:mx-10 px-6 py-24 grid lg:grid-cols-2 gap-14 items-center">
         <div className="text-white">
-          {/* BADGE */}
           <span className="inline-flex items-center gap-2 bg-white/10 text-white text-xs font-medium px-3 py-2 rounded-full mb-6">
             <svg
               className="w-4 h-4 text-blue-500"
@@ -24,14 +20,11 @@ export default function SmarterSearch() {
             NEW: MVP CLIENT PORTAL
           </span>
 
-
-          {/* TITLE */}
           <h1 className="text-4xl lg:text-4xl font-manrope font-semibold leading-loose mb-4">
             A Smarter Way To
           </h1>
           <h1 className="text-4xl lg:text-4xl font-manrope font-semibold leading-loose mb-6">Manage Your Search</h1>
 
-          {/* FEATURES */}
           <ul className="space-y-4 text-cool_gray mb-8">
             {[
               'Curate your own shortlist of dream homes.',

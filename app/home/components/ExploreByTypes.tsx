@@ -41,7 +41,7 @@ export default function ExploreByTypes() {
       </div>
 
       {/* CONTENT */}
-      <div className="relative max-w-7xl mx-auto px-6">
+      <div className="relative lg:mx-10 px-6">
 
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">

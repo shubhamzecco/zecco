@@ -46,12 +46,12 @@ export default function AreasOfInterest() {
   }
 
   return (
-    <section className="bg-white max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <section className="bg-white  px-4 sm:px-6 lg:px-8">
+      <div className="lg:mx-10">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-2xl sm:text-4xl font-bold font-manrope text-[#00000]">
-            Costa Del Sol Areas Of Interest
+            Costa del Sol Areas Of Interest
           </h2>
           <div className="flex gap-2 hidden sm:flex">
             <Button className='rounded-full font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white '>

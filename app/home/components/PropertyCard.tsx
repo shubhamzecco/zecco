@@ -44,8 +44,8 @@ export default function PropertyCard({
       </div>
 
       <div className="space-y-1">
-        <p className="text-md font-manrope font-bold  mt-2 text-slate_gray">{price}</p>
-      <h3 className="text-lg text-[#0A0915] font-manrope font-medium max-w-[85%]">{title}</h3>
+        <p className="text-md font-manrope font-bold  mt-2 text-[#727272]">{price}</p>
+      <h3 className="text-[0.90rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">{title}</h3>
         <div className="flex gap-5 items-center pt-2 text-gray-600 text-sm">
           <div className="flex items-center gap-1">
             <Expand size={18} className="text-gray-400" />

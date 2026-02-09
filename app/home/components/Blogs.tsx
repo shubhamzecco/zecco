@@ -23,7 +23,7 @@ const blogs = [
 export default function Blogs() {
   return (
     <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="lg:mx-10 px-6">
 
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:justify-between mb-12">

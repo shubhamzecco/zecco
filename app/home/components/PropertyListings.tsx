@@ -64,22 +64,42 @@ const propertyData = [
     baths: 2,
     area: 3900,
   },
+  {
+    id: '6',
+    title: 'Spacious 2-Bedroom Apartment in Marbella, Spain',
+    price: '€545,000',
+    location: 'Nerja, Spain',
+    image: App_url.image.costa_del_sol,
+    beds: 2,
+    baths: 2,
+    area: 3900,
+  },
+  {
+    id: '6',
+    title: 'Spacious 2-Bedroom Apartment in Marbella, Spain',
+    price: '€545,000',
+    location: 'Nerja, Spain',
+    image: App_url.image.your_search,
+    beds: 2,
+    baths: 2,
+    area: 3900,
+  },
 ]
 
 export default function PropertyListings() {
   return (
-    <section className="px-4 sm:px-6 lg:px-8 mt-10 bg-white max-w-7xl mx-auto mb-20">
+    <section className="px-4 sm:px-6 lg:px-8 mt-10 bg-white  lg:mx-10 mb-20">
       <div className="">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-2xl sm:text-4xl font-bold font-manrope text-[#00000]">Zecco's favorites</h2>
+          <h2 className="text-2xl sm:text-4xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
           <Button className='rounded-full font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white '>
             View All Properties
           </Button>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {propertyData?.map((property) => (
             <PropertyCard key={property.id} {...property} />
           ))}

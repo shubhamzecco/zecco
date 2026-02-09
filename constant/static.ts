@@ -28,9 +28,40 @@ export const App_url = {
 
     },
     link: {
-
+        INITIAL_URL : '/',
+        SIGN_IN : '/signin',
+        SIGN_UP : '/signup',
+        RESET_PASSWORD : '/reset-password',
+        FORGET_PASSWORD : '/forget-password',
+        OTP_VERIFICATION : '/otp-verification'
     },
     endpoint_url: {
-
+        USER_LOGIN : '/user-login',
+        USER_SIGN_IN : '/sign_in'
     }
 }
+
+
+export const initialState = {
+    items: [],
+    totalCount: 0,
+    optionList: [],
+};
+
+export const initialUserData = {
+    status: "",
+    user: {
+        id: "",
+        email: "",
+        active: false,
+        password: "",
+        is_admin: false,
+        role_permissions: "",
+        api_permissions: "",
+        name: "",
+        emp_id: "",
+        user_type: "",
+        role: "",
+    },
+    access_token: "",
+};

@@ -38,7 +38,7 @@ export default function Footer() {
       </div>
 
 
-      <div className="relative max-w-7xl mx-auto px-6 py-16">
+      <div className="relative lg:mx-10 px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
 
           {/* BRAND */}
