@@ -63,27 +63,36 @@ export default function ChatReplies({
           hour12: true,
         })
       : "";
-
-  const markdownComponents = (isUser: boolean) => ({
-    p: ({ children }: any) => (
-      <p className={`text-sm leading-6 ${isUser ? "mb-1" : "mb-2"}`}>
-        {children}
-      </p>
-    ),
-    strong: ({ children }: any) => (
-      <strong className="font-semibold">{children}</strong>
-    ),
-    a: ({ href, children }: any) => (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-sky_blue_color underline"
-      >
-        {children}
-      </a>
-    ),
-  });
+    const getMarkdownComponents = (isUser: boolean) => ({
+      strong: ({ children }: any) => (
+        <strong className="font-semibold text-[14px]">{children}</strong>
+      ),
+      p: ({ children }: any) => (
+        <p
+          className={`text-[14px] leading-6 whitespace-pre-line ${
+            isUser ? "mb-1" : "mb-3"
+          }`}
+        >
+          {children}
+        </p>
+      ),
+      ul: ({ children }: any) => (
+        <ul className="ml-4 mb-3 list-disc space-y-1">{children}</ul>
+      ),
+      li: ({ children }: any) => (
+        <li className="text-[14px] leading-6">{children}</li>
+      ),
+      a: ({ href, children }: any) => (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline hover:text-blue-700"
+        >
+          {children}
+        </a>
+      ),
+    });
 
   /* ---------------- render ---------------- */
 
@@ -134,7 +143,7 @@ export default function ChatReplies({
             className={`flex ${isUser ? "justify-end" : "justify-start"}`}
           >
             <div className={`chat-bubble ${isUser ? "sent" : "received"}`}>
-              <ReactMarkdown components={markdownComponents(isUser)}>
+              <ReactMarkdown components={getMarkdownComponents(isUser)}>
                 {formatChatMessage(msg?.text)}
               </ReactMarkdown>
               <div className="text-[11px] opacity-70 text-right">
