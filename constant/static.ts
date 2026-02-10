@@ -6,8 +6,9 @@ export const App_url = {
     building: "/assets/images/building.png",
     footer: "/assets/images/footer.svg",
     chat_logo: "/assets/images/chat.png",
+    sign_up_image: "/assets/images/signup-image.jpg",
+    email: "/assets/images/email.svg", // dev images
 
-    // dev images
     marbella: "/assets/images/dev/marbella.png",
     malaga: "/assets/images/dev/malaga.png",
     costa_del_sol: "/assets/images/dev/costa-del-sol.png",
@@ -35,6 +36,11 @@ export const App_url = {
   endpoint_url: {
     USER_LOGIN: "/user-login",
     USER_SIGN_IN: "/sign_in",
+    FORGET_PASSWORD: "/forget-password",
+    RESET_PASSWORD: "/reset-password",
+    FORGET_PASSWORD_VERIFY_OTP: "/forget-password",
+    VERIFY_OTP: "/verify-otp",
+    RESEND_OTP: "/resend-otp",
   },
   chat_bot_url: "http://localhost:5678/webhook/zecco",
   chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco",
