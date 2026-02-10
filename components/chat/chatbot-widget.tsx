@@ -1,11 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { X, Send, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import Image from 'next/image'
-import { App_url } from '@/constant/static'
+import { App_url } from "@/constant/static";
+import { X } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import ZecooAIChat from './zecco-chat-modal'
 
 interface Message {
@@ -102,7 +100,12 @@ export default function ChatbotWidget() {
         <div className="fixed bottom-28 right-8 z-40 animate-in fade-in slide-in-from-bottom-10 duration-300">
           <div className="bg-white rounded-lg shadow-xl p-4 w-72 border-l-4 border-blue-500">
             <div className="flex items-start gap-3">
-              <Image src={App_url.image.chat_logo} alt="chat" width={25} height={25} />
+              <Image
+                src={App_url.image.chat_logo}
+                alt="chat"
+                width={25}
+                height={25}
+              />
               <div className="flex-1">
                 <h3 className="font-bold text-gray-900">Zecco AI</h3>
                 <p className="text-sm text-gray-600">
@@ -117,130 +120,59 @@ export default function ChatbotWidget() {
         </div>
       )}
 
-      {/* Floating Button */}
-      <button
+      {/* <button
         onClick={openChat}
-        className="fixed bottom-8 right-8 w-14 h-14 rounded-full animate-pulse
-        bg-gradient-to-b from-[#1466EC] to-[#04ADF7]
+        className="fixed bottom-8 right-8 w-14 h-14 rounded-full
+        bg-[#00004B]
         flex items-center justify-center shadow-lg
-        hover:scale-110 transition z-40 text-white"
+          z-40 text-white"
       >
-        <Sparkles size={24} />
-      </button>
+        <Image
+          src={App_url.image.chat_logo}
+          alt="Chat"
+          width={25}
+          height={25}
+          className="text-white"
+        />
+      </button> */}
+      {/* <div className="relative w-20 h-20 mb-10">
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-30 blur-md" />
+        <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-r from-[#4F46E5]  to-[#34D399]">
+          <div className="w-full h-full rounded-full bg-[#00004B] flex items-center justify-center">
+            <Image
+              src={App_url.image.chat_logo}
+              alt="Chat"
+              width={65}
+              height={65}
+              className="text-white"
+            />
+          </div>
+        </div>
+      </div> */}
+      <div
+        onClick={openChat}
+        className="fixed bottom-8 right-8 z-50 cursor-pointer"
+      >
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-30 blur-md" />
 
-      {/* Chat Popup */}
+          <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-r from-[#4F46E5] to-[#34D399]">
+            <div className="w-full h-full rounded-full bg-[#00004B] flex items-center justify-center">
+              <Image
+                src={App_url.image.chat_logo}
+                alt="Chat"
+                width={25}
+                height={25}
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {isOpen && (
-        <ZecooAIChat isOpen = {isOpen} onClose={() => setIsOpen(false)}/>
-        // <div className="fixed inset-0 z-50 flex items-end justify-end p-4 md:p-8">
-        //   <div className="absolute inset-0 bg-black/50" onClick={closeChat} />
-
-        //   <div
-        //     className={`relative bg-white rounded-lg shadow-xl
-        //     w-full md:w-[40vw]
-        //     max-h-[60vh] md:min-h-[85vh] md:max-h-[95vh]
-        //     flex flex-col transition-all duration-300
-        //     ${isAnimating
-        //         ? 'translate-y-0 opacity-100 scale-100'
-        //         : 'translate-y-10 opacity-0 scale-95'
-        //       }`}
-        //   >
-        //     {/* Close */}
-        //     <div className="absolute -right-3 -top-3 z-30">
-        //       <button
-        //         onClick={closeChat}
-        //         className="w-6 h-6 flex items-center justify-center rounded-full bg-white shadow"
-        //       >
-        //         <X size={16} />
-        //       </button>
-        //     </div>
-
-        //     {/* Logo + Description */}
-        //     <div
-        //       className={`absolute transition-all duration-[800ms] ease-in-out ${isAnimated
-        //         ? 'top-6 left-6 flex-row items-center gap-3'
-        //         : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-6'
-        //         } flex`}
-        //     >
-        //       {/* Logo */}
-        //       <div
-        //         className={`transition-all duration-[800ms] ease-in-out ${isAnimated ? 'w-8 h-8' : 'w-24 h-24'
-        //           }`}
-        //       >
-        //         <Image
-        //           src={App_url.image.chat_logo}
-        //           alt="logo"
-        //           width={isAnimated ? 40 : 70}
-        //           height={isAnimated ? 40 : 70}
-        //           className="transition-all duration-700"
-        //         />
-
-        //       </div>
-
-        //       <div className={` ${isAnimated ? 'flex-col flex' : ''}`}>
-        //         <h1
-        //           className={`font-bold text-[#000] transition-all duration-[800ms] ease-in-out ${isAnimated ? 'text-xl' : 'text-4xl'
-        //             }`}
-        //         >
-        //           ZECCO.AI
-        //         </h1>
-
-        //         {/* Slogan */}
-        //         <p
-        //           className={`text-[#94A3B8] transition-all duration-[800ms] ease-in-out ${isAnimated ? 'text-xs' : 'text-lg'
-        //             }`}
-        //         >
-        //           Meet Zecco — your AI search agent, working for you to find the best property listings that match your criteria.
-        //         </p>
-        //       </div>
-        //     </div>
-
-        //     {/* Messages */}
-        //     <div className="flex-1 overflow-y-auto p-4 pt-40 space-y-4">
-        //       {messages.map(msg => (
-        //         <div
-        //           key={msg.id}
-        //           className={`flex gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'
-        //             }`}
-        //         >
-        //           {msg.sender === 'bot' && (
-        //             <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center">
-        //               <Image
-        //                 src={App_url.image.chat_logo}
-        //                 alt="bot"
-        //                 width={18}
-        //                 height={18}
-        //               />
-        //             </div>
-        //           )}
-
-        //           <div
-        //             className={`px-4 py-2 rounded-2xl max-w-xs text-sm
-        //             ${msg.sender === 'user'
-        //                 ? 'bg-blue-500 text-white rounded-tr-none'
-        //                 : 'bg-cyan-100 text-gray-800 rounded-tl-none'
-        //               }`}
-        //           >
-        //             {msg.text}
-        //           </div>
-        //         </div>
-        //       ))}
-        //     </div>
-
-        //     {/* Input */}
-        //     <div className="p-4 border-t flex gap-2">
-        //       <Input
-        //         placeholder="Type your message..."
-        //         value={inputValue}
-        //         onChange={e => setInputValue(e.target.value)}
-        //         onKeyDown={e => e.key === 'Enter' && handleSendMessage()}
-        //       />
-        //       <Button className="bg-btn_color" onClick={handleSendMessage}>
-        //         <Send className="w-4 h-4" />
-        //       </Button>
-        //     </div>
-        //   </div>
-        // </div>
+        <ZecooAIChat isOpen={isOpen} onClose={() => setIsOpen(false)} />
       )}
     </>
-  )
+  );
 }

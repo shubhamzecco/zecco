@@ -4,10 +4,7 @@ import { ISizeSpecsTypes } from "../redux/modules/allMasters/sizeSpecs";
 import { ISupplierTypes } from "../redux/modules/allMasters/supplier";
 import { ITaxTypes } from "../redux/modules/allMasters/tax";
 import { IInternalUserTypes } from "../redux/modules/admin/internal_user";
-import {
-  IContactPerson,
-  ICustomers,
-} from "../redux/modules/customers/types";
+import { IContactPerson, ICustomers } from "../redux/modules/customers/types";
 
 export type IToggleModalTypes =
   | "hide"
@@ -83,23 +80,26 @@ export interface IContactType {
   dialCode: string;
 }
 
-export interface IFormLoader{flag:boolean,name:string}
+export interface IFormLoader {
+  flag: boolean;
+  name: string;
+}
 export interface IUiInitialTypes {
-formloader:IFormLoader;
+  formloader: IFormLoader;
   clearForm: IClearFormTypes;
   warnForm: IClearFormTypes;
   formContent: any;
   PreviewPopup?: IShowModalPopup;
-  FullScreen?:IShowModalPopup
-  randomNo?:string;
+  FullScreen?: IShowModalPopup;
+  randomNo?: string;
   showUploadFile?: IShowModalPopup;
   ModalPopup: any;
   requestLoader?: string;
   pageLoader?: string;
-  modalLoader?:string;
+  modalLoader?: string;
   downloadProgress?: number;
-   isMobile: boolean,
-  isDesktop: boolean,
+  isMobile: boolean;
+  isDesktop: boolean;
 }
 
 export interface IClearFormTypes {
@@ -109,8 +109,8 @@ export interface IClearFormTypes {
   key?: string;
   status: IToggleModalTypes;
   callBackButtonSuccess?: Function;
-  po_rdd?:any;
-  is_shop?:any;
+  po_rdd?: any;
+  is_shop?: any;
 }
 
 export interface ISocketResponse {
@@ -121,7 +121,7 @@ export interface ISocketResponse {
   status?: any;
   type?: string;
   payload: object;
-  demo?:any
+  demo?: any;
 }
 
 export interface IWarnFormTypes {
@@ -129,7 +129,7 @@ export interface IWarnFormTypes {
   url?: any;
   status: IToggleWarnModalTypes;
   callBackButtonSuccess?: Function;
-  impersonate? : boolean;
+  impersonate?: boolean;
 }
 export interface IConfirmModalPopup {
   title?: any;
@@ -144,10 +144,10 @@ export interface IConfirmModalPopup {
 }
 
 export interface IShowModalPopup {
-  sampleFile?:boolean;
+  sampleFile?: boolean;
   url?: string;
-  allowedExtensions?:string[]
-  header?:any;
+  allowedExtensions?: string[];
+  header?: any;
   title?: any;
   name?: any;
   description?: any;
@@ -158,7 +158,7 @@ export interface IShowModalPopup {
   buttonSuccess?: string;
   buttonCancel?: string;
   mix_sub_list?: any;
-  loader?:boolean;
+  loader?: boolean;
 }
 
 export interface InitialStateType {
@@ -208,8 +208,8 @@ export interface ILoginTypes {
   password?: string;
   passwordConfirm?: string;
   otp?: string;
-  new_password ?: string;
-  confirm_password ?: string;
+  new_password?: string;
+  confirm_password?: string;
 }
 
 export type IToggleWarnModalTypes =
@@ -276,7 +276,7 @@ export interface IListType {
     | null
     | undefined;
   renderAction: (
-    action?: React.ReactNode
+    action?: React.ReactNode,
   ) =>
     | string
     | number
@@ -314,6 +314,20 @@ export type CombinedSizeAndSpecList = IListType &
   ISizeAndSpecTypes & { columnView: ISizeAndSpecTypes };
 export type CombinedBarList = IListType &
   ISizeSpecsTypes & { columnView: ISizeSpecsTypes };
-export type IAddPurchaseOrderList = IListType & IAddPurchaseOrderModuleTypes & { columnView: IAddPurchaseOrderModuleTypes };
-export type IAddSaleOrderList = IListType & IAddSaleOrderModuleTypes & { columnView: IAddSaleOrderModuleTypes };
-export type ICollectionList = IListType & FrontReportService & { columnView: FrontReportService };
+export type IAddPurchaseOrderList = IListType &
+  IAddPurchaseOrderModuleTypes & { columnView: IAddPurchaseOrderModuleTypes };
+export type IAddSaleOrderList = IListType &
+  IAddSaleOrderModuleTypes & { columnView: IAddSaleOrderModuleTypes };
+export type ICollectionList = IListType &
+  FrontReportService & { columnView: FrontReportService };
+export interface ChatMessage {
+  id: string;
+  text: string;
+  sender: "user" | "bot";
+  timestamp: Date;
+}
+
+export interface ChatState {
+  messages: ChatMessage[];
+  isLoading: boolean;
+}

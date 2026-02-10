@@ -37,10 +37,8 @@ export default function Footer() {
         </div>
       </div>
 
-
-      <div className="relative lg:mx-10 px-6 py-16">
+      <div className="relative lg:mx-10 px-6 pt-12 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-
           {/* BRAND */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -57,9 +55,8 @@ export default function Footer() {
             </div>
 
             <p className="text-md leading-relaxed mb-6 font-manrope font-medium text-slate_gray ">
-              The proper footer or proper time can
-              preserve your protection. We assist
-              you make sure everybody forward.
+              The proper footer or proper time can preserve your protection. We
+              assist you make sure everybody forward.
             </p>
 
             {/* SOCIAL ICONS */}
@@ -81,7 +78,7 @@ export default function Footer() {
               Quick link
             </h4>
             <ul className="space-y-3 text-sm">
-              {['Home', 'About us', 'Privacy Policy', 'Terms & Conditions'].map(
+              {["Home", "About us", "Privacy Policy", "Terms & Conditions"].map(
                 (item, i) => (
                   <li
                     key={i}
@@ -89,7 +86,7 @@ export default function Footer() {
                   >
                     <ChevronRight /> {item}
                   </li>
-                )
+                ),
               )}
             </ul>
           </div>
@@ -100,7 +97,7 @@ export default function Footer() {
               Help
             </h4>
             <ul className="space-y-3 text-sm">
-              {['FAQs', 'Supports'].map((item, i) => (
+              {["FAQs", "Supports"].map((item, i) => (
                 <li
                   key={i}
                   className="hover:text-white font-manrope font-medium text-white/50 flex items-center gap-1 transition cursor-pointer"
@@ -121,7 +118,8 @@ export default function Footer() {
               <li className="flex text-white/50 items-start gap-3 font-manrope font-medium">
                 <MapPin size={25} className="text-white/50 mt-0.5" />
                 <span>
-                  2600<span className="font-bold"> ZECCO.es</span>, Malaga, Spain
+                  2600<span className="font-bold"> ZECCO.es</span>, Malaga,
+                  Spain
                 </span>
               </li>
 
@@ -144,5 +142,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { CheckCircle2, Users, Lightbulb, LayoutPanelLeft, Layers } from 'lucide-react'
+import { App_url } from "@/constant/static";
 
 export default function EssentialAspects() {
   const features = [
@@ -28,16 +29,22 @@ export default function EssentialAspects() {
           <div>
             <h2 className="text-3xl font-manrope sm:text-4xl font-bold text-gray-900 mb-14">
               Essential Aspects
-              <br /> Driving  Our Success
+              <br /> Driving Our Success
             </h2>
 
             <div className="space-y-10">
               {features.map((feature, index) => (
                 <div key={index} className="flex gap-4">
-                  <div className="flex-shrink-0 bg-btn_color w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">{feature.icon}</div>
+                  <div className="flex-shrink-0 bg-btn_color w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
+                    {feature.icon}
+                  </div>
                   <div>
-                    <h3 className="text-xl font-manrope font-medium text-[#000000] mb-2">{feature.title}</h3>
-                    <p className="text-slate_gray font-manrope font-normal max-w-sm">{feature.description}</p>
+                    <h3 className="text-xl font-manrope font-medium text-[#000000] mb-2">
+                      {feature.title}
+                    </h3>
+                    <p className="text-slate_gray font-manrope font-normal max-w-sm">
+                      {feature.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -48,7 +55,8 @@ export default function EssentialAspects() {
           <div className="relative">
             {/* TEXT */}
             <p className="text-slate_gray font-manrope font-normal max-w-lg mb-10">
-              At Legally, we provide clear, transparent, and personalized legal services you can trust, delivered by experienced attorneys.
+              At Legally, we provide clear, transparent, and personalized legal
+              services you can trust, delivered by experienced attorneys.
             </p>
 
             {/* IMAGE */}
@@ -69,8 +77,19 @@ export default function EssentialAspects() {
                       Real-time Analysis
                     </span>
                   </div>
-                  <h1 className='text-xl font-manrope font-bold text-[#000000] mb-1'>AI-Verified</h1>
-                  <p className='text-slate_gray font-manrope font-normal'>Every listing vetted for ROI</p>
+                  <h1 className="flex items-center gap-2 text-xl font-manrope font-bold text-[#000000] mb-1">
+                    <Image
+                      src={App_url.image.chat_logo}
+                      alt="logo"
+                      width={20}
+                      height={20}
+                      unoptimized
+                    />
+                    <span>AI-Verified</span>
+                  </h1>
+                  <p className="text-slate_gray font-manrope font-normal">
+                    Every listing vetted for ROI
+                  </p>
                 </div>
               </div>
             </div>
@@ -78,5 +97,5 @@ export default function EssentialAspects() {
         </div>
       </div>
     </section>
-  )
+  );
 }
