@@ -251,6 +251,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as z from "zod";
+import AuthLayout from "../layout/page";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -299,166 +300,109 @@ const Signin = () => {
   };
 
   return (
-    <section className="h-screen overflow-hidden bg-white p-10 w-full">
-      <div className="flex h-full items-center gap-10">
-
-        {/* LEFT IMAGE */}
-        <div className="w-[53%] hidden lg:block relative h-full">
-          <Image
-            src={App_url.image.sign_up_image}
-            alt="Signin"
-            className="h-full w-full object-cover rounded-[40px]"
-            width={1200}
-            height={1600}
-            priority
-            unoptimized
-          />
-
-          <div className="absolute inset-0 rounded-[40px] bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-
-          <div className="absolute top-7 left-7 z-30 bg-white/20 border border-white/30 rounded-full px-3 py-2 flex items-center gap-2">
-            <div className="bg-white/40 p-1 w-7 h-7 rounded-lg flex items-center justify-center">
-              <House className="text-white" size={18} />
-            </div>
-            <span className="font-inter font-semibold text-white tracking-wider">
-              Real Estate
-            </span>
-          </div>
+    <>
+      <AuthLayout>
+        <div className="mb-6">
+          <h1 className="font-inter font-bold text-[#101828] text-2xl">
+            Welcome Back to Zecco!
+          </h1>
+          <p className="font-inter my-2 font-medium text-[#6B7280]">
+            Sign in to Your Account
+          </p>
         </div>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
-        {/* RIGHT FORM */}
-        <div className="w-full lg:w-[40%] flex items-center h-full">
-          <div className="w-full max-w-[460px] mx-auto px-10 py-6">
-
-            {/* LOGO */}
-            <Image
-              src={App_url.image.logo}
-              alt="logo"
-              width={170}
-              height={170}
-              className="mb-4"
-              unoptimized
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold text-[#101828]">
+                    Your Email
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter email"
+                      className="h-12 rounded-full border-[#D1D5DB]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
-            {/* HEADING */}
-            <div className="mb-6">
-              <h1 className="font-inter font-bold text-[#101828] text-2xl">
-                Welcome Back to Zecco!
-              </h1>
-              <p className="font-inter font-medium text-[#6B7280]">
-                Sign in to Your Account
-              </p>
-            </div>
-
-            {/* FORM */}
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#101828]">
-                        Your Email
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Enter email"
-                          className="h-12 rounded-full border-[#D1D5DB]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold text-[#101828]">
-                        Password
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Enter password"
-                          className="h-12 rounded-full border-[#D1D5DB]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* REMEMBER + FORGOT */}
-                <div className="my-2 mt-5 flex items-center justify-between">
-                  {/* Left: Remember Me */}
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="rememberMe"
-                      className="h-4 w-4 rounded border-gray-300 text-[#136AED] focus:ring-[#136AED]"
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-semibold text-[#101828]">
+                    Password
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Enter password"
+                      className="h-12 rounded-full border-[#D1D5DB]"
+                      {...field}
                     />
-                    <label
-                      htmlFor="rememberMe"
-                      className="font-inter text-sm font-medium text-[#344054] cursor-pointer"
-                    >
-                      Remember me
-                    </label>
-                  </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                  {/* Right: Forgot Password */}
-                  <Link
-                    href={App_url?.link?.FORGET_PASSWORD}
-                    className="font-inter text-sm font-medium text-[#9CA3AF] hover:underline"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-
-
-                {/* BUTTON */}
-                <Button
-                  type="submit"
-                  className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md"
+            {/* REMEMBER + FORGOT */}
+            <div className="my-2 mt-5 flex items-center justify-between">
+              {/* Left: Remember Me */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  className="h-4 w-4 rounded border-gray-300 text-[#136AED] focus:ring-[#136AED]"
+                />
+                <label
+                  htmlFor="rememberMe"
+                  className="font-inter text-sm font-medium text-[#344054] cursor-pointer"
                 >
-                  Login
-                </Button>
-              </form>
-            </Form>
+                  Remember me
+                </label>
+              </div>
 
-            {/* REGISTER */}
-            <div className="w-full my-3 font-inter font-medium text-center text-[#6B7280] text-md">
-              Don’t have an account?
+              {/* Right: Forgot Password */}
               <Link
-                href={App_url.link.SIGN_UP}
-                className="text-[#3B82F6] font-bold font-inter text-base"
+                href={App_url?.link?.FORGET_PASSWORD}
+                className="font-inter text-sm font-medium text-[#9CA3AF] hover:underline"
               >
-                Register
+                Forgot password?
               </Link>
             </div>
 
-            {/* BACK HOME */}
-            <div className="mt-3 flex justify-center">
-              <Link
-                href={App_url.link.INITIAL_URL}
-                className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-center text-heading_text_color text-md"
-              >
-                <ArrowLeft size={18} />
-                Back to Home
-              </Link>
-            </div>
 
-          </div>
+            {/* BUTTON */}
+            <Button
+              type="submit"
+              className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md"
+            >
+              Login
+            </Button>
+          </form>
+        </Form>
+
+        {/* REGISTER */}
+        <div className="w-full my-3 font-inter font-medium text-center text-[#6B7280] text-md">
+          Don’t have an account?
+          <Link
+            href={App_url.link.SIGN_UP}
+            className="text-[#3B82F6] font-bold font-inter text-base ml-2"
+          >
+            Register
+          </Link>
         </div>
-
-      </div>
-    </section>
+      </AuthLayout>
+    </>
   );
 };
 
