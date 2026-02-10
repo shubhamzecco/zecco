@@ -75,7 +75,7 @@ const ResetPassword = () => {
 
   return (
     <section className="min-h-screen bg-white p-10 w-full mx-auto">
-      <div className="flex min-h-screen gap-10">
+      <div className="flex h-[86vh] gap-10">
         <div className="w-[53%] hidden lg:block relative">
           <Image
             src={App_url.image.sign_up_image}
@@ -124,7 +124,7 @@ const ResetPassword = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-                           type="password"
+                          type="password"
                           placeholder="Enter new password"
                           className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                           {...field}
