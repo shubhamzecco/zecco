@@ -40,7 +40,11 @@ export const App_url = {
     endpoint_url: {
         USER_LOGIN : '/user-login',
         USER_SIGN_IN : '/sign_in',
-        FORGET_PASSWORD : '/forget-password'
+        FORGET_PASSWORD : '/forget-password',
+        RESET_PASSWORD : '/reset-password',
+        FORGET_PASSWORD_VERIFY_OTP : '/forget-password',
+        VERIFY_OTP : '/verify-otp',
+        RESEND_OTP : '/resend-otp'
     }
 }
 
