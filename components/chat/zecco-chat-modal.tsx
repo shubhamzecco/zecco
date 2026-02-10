@@ -12,6 +12,7 @@ import {
   setAIChatLoading,
 } from "@/redux/modules/main/action";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { customToast } from "../customToast";
 
 /* ---------------- TYPES ---------------- */
 
@@ -130,6 +131,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
           timestamp: new Date(),
         }),
       );
+      customToast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
