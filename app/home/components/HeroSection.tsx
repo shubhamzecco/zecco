@@ -47,7 +47,7 @@ export default function HeroSection() {
       </div>
 
       {/* Search Bar pinned to bottom */}
-      <div className="absolute bottom-28 left-0 right-0 px-4">
+      <div className="absolute bottom-24 left-0 right-0 px-4">
         <div className="max-w-4xl mx-auto">
           <PropertySearchBar />
         </div>
