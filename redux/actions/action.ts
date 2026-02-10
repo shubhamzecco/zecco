@@ -1,5 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AddIntenalUser, IClearFormTypes, IConfirmModalPopup, IFormLoader, IInternalUserTypesRes, ILocality,IShowModalPopup,ISocketResponse,IUserApiType,IWarnFormTypes } from "../../utils/types";
+import {
+  AddIntenalUser,
+  IClearFormTypes,
+  IConfirmModalPopup,
+  IFormLoader,
+  IInternalUserTypesRes,
+  ILocality,
+  IShowModalPopup,
+  ISocketResponse,
+  IUserApiType,
+  IWarnFormTypes,
+} from "../../utils/types";
 
 
 export const ActionTypes = {
@@ -34,9 +45,13 @@ export const ActionTypes = {
   SET_FULLSCREEN_POPUP: "SET_FULLSCREEN_POPUP",
   SET_SHOW_UPLOAD_FILES: "SET_SHOW_UPLOAD_FILES",
   SET_MODAL_LOADER: "SET_MODAL_LOADER",
-  RANDOM_NO:"RANDOM_NO",
+  RANDOM_NO: "RANDOM_NO",
   SET_DOWNLOAD_PROGRESS: "SET_DOWNLOAD_PROGRESS",
-  SET_DEVICE : 'SET_DEVICE'
+  SET_DEVICE: "SET_DEVICE",
+
+  CHAT_ADD_MESSAGE: "CHAT_ADD_MESSAGE",
+  CHAT_SET_LOADING: "CHAT_SET_LOADING",
+  CHAT_CLEAR: "CHAT_CLEAR",
 };
 
 export interface Action<T = any> {
@@ -183,4 +198,5 @@ export const setDevice = (isMobile: boolean, isDesktop: boolean) => ({
   type: ActionTypes.SET_DEVICE,
   payload: { isMobile, isDesktop },
 });
+
 

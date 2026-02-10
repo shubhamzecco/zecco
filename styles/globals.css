@@ -150,3 +150,59 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.6);
 }
+.chat-bubble {
+  position: relative;
+  padding: 12px 16px;
+  max-width: 80%;
+  font-size: 14px;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+/* ===== USER (RIGHT) ===== */
+.sent {
+  background: var(--sky-blue-color);
+  /* blue like screenshot */
+  color: white;
+  margin-left: auto;
+  border-bottom-right-radius: 0px;
+}
+
+.sent::after {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  right: -8px;
+  /* 👉 move tail outside */
+  width: 0;
+  height: 0;
+  border-left: 12px solid var(--sky-blue-color);
+  border-top: 10px solid transparent;
+  border-bottom: 0px solid transparent;
+}
+
+/* ===== BOT (LEFT) ===== */
+.received {
+  background: #e5e5ea;
+  color: black;
+  margin-right: auto;
+  border-bottom-left-radius: 0px;
+}
+
+.received::before {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: -8px;
+  /* 👉 move tail outside */
+  width: 0;
+  height: 0;
+  border-right: 12px solid #e5e5ea;
+  border-top: 10px solid transparent;
+  border-bottom: 0px solid transparent;
+}
+
+.no-tail::before,
+.no-tail::after {
+  display: none;
+}

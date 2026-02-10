@@ -10,7 +10,7 @@ const initialState: IMainResponse = {
       total_page: 0,
       page: 0,
       page_limit: 0,
-    }
+    },
   },
   category_list: {
     data: [],
@@ -18,7 +18,7 @@ const initialState: IMainResponse = {
       total_page: 0,
       page: 0,
       page_limit: 0,
-    }
+    },
   },
   need_list: {
     data: [],
@@ -26,7 +26,7 @@ const initialState: IMainResponse = {
       total_page: 0,
       page: 0,
       page_limit: 0,
-    }
+    },
   },
   organization_list: {
     data: [],
@@ -34,7 +34,7 @@ const initialState: IMainResponse = {
       total_page: 0,
       page: 0,
       page_limit: 0,
-    }
+    },
   },
   charity_list: {
     data: [],
@@ -42,7 +42,7 @@ const initialState: IMainResponse = {
       total_page: 0,
       page: 0,
       page_limit: 0,
-    }
+    },
   },
 
   charity_active_chat_list: {
@@ -51,12 +51,14 @@ const initialState: IMainResponse = {
       total_page: 0,
       page: 0,
       page_limit: 0,
-    }
+    },
   },
   chat_messages: null,
   location_details: undefined,
   category_details: undefined,
-  need_details: undefined
+  need_details: undefined,
+  ai_chat_messages: [],
+  ai_chat_loading: false,
 };
 
 const mainReducer = (
@@ -69,8 +71,8 @@ const mainReducer = (
         ...state,
         location_list: {
           data: action.payload?.data,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
@@ -79,8 +81,8 @@ const mainReducer = (
         ...state,
         category_list: {
           data: action.payload?.data,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
@@ -89,9 +91,9 @@ const mainReducer = (
         ...state,
         need_list: {
           data: action.payload?.data,
-          pagination: action?.payload?.pagination
-        }
-      }
+          pagination: action?.payload?.pagination,
+        },
+      };
     }
 
     case ActionTypes.SET_ORGANIZATION_LIST: {
@@ -99,39 +101,39 @@ const mainReducer = (
         ...state,
         organization_list: {
           data: action.payload?.data,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
     case ActionTypes.SET_LOCATION_DETAILS: {
       return {
         ...state,
-        location_details: action.payload
-      }
-    };
+        location_details: action.payload,
+      };
+    }
 
     case ActionTypes.SET_CATEGORY_DETAILS: {
       return {
         ...state,
-        category_details: action.payload
-      }
-    };
+        category_details: action.payload,
+      };
+    }
 
     case ActionTypes.SET_NEED_DETAILS: {
       return {
         ...state,
-        need_details: action.payload
-      }
-    };
+        need_details: action.payload,
+      };
+    }
 
     case ActionTypes.SET_CHARITY_LIST: {
       return {
         ...state,
         charity_list: {
           data: action.payload?.data,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
@@ -140,20 +142,42 @@ const mainReducer = (
         ...state,
         charity_active_chat_list: {
           data: action.payload,
-          pagination: action?.payload?.pagination
-        }
-      }
+          pagination: action?.payload?.pagination,
+        },
+      };
     }
 
     case ActionTypes.SET_CHAT_MESSAGE_LIST: {
       return {
         ...state,
-        chat_messages: action.payload
-      }
+        chat_messages: action.payload,
+      };
+    }
+
+    case ActionTypes.AI_CHAT_ADD_MESSAGE: {
+      return {
+        ...state,
+        ai_chat_messages: [...(state.ai_chat_messages ?? []), action.payload],
+      };
+    }
+
+    case ActionTypes.AI_CHAT_SET_LOADING: {
+      return {
+        ...state,
+        ai_chat_loading: action.payload,
+      };
+    }
+
+    case ActionTypes.AI_CHAT_CLEAR: {
+      return {
+        ...state,
+        ai_chat_messages: [],
+        ai_chat_loading: false,
+      };
     }
 
     case ActionTypes.SET_CLEAR_REDUX: {
-      return initialState
+      return initialState;
     }
 
     default:

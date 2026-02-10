@@ -181,42 +181,51 @@ export interface ChatMessagesResponse {
   messages: Message[];
 }
 
+export interface AIChatMessage {
+  id: string;
+  text: string;
+  sender: "user" | "bot";
+  timestamp: Date;
+}
+
 
 
 export interface IMainResponse {
   location_list: {
-    data: Location[],
-    pagination: IPagination
-  }
+    data: Location[];
+    pagination: IPagination;
+  };
 
   category_list: {
-    data: [],
-    pagination: IPagination
-  },
+    data: [];
+    pagination: IPagination;
+  };
 
   need_list: {
-    data: INeedResponse[],
-    pagination: IPagination
-  }
+    data: INeedResponse[];
+    pagination: IPagination;
+  };
 
   organization_list: {
-    data: OrganizationResponse[],
-    pagination: IPagination
-  },
+    data: OrganizationResponse[];
+    pagination: IPagination;
+  };
 
   charity_list: {
-    data: CharityProfile[],
-    pagination: IPagination
-  },
+    data: CharityProfile[];
+    pagination: IPagination;
+  };
 
   charity_active_chat_list: {
-    data: ChatListResponse[],
-    pagination: IPagination
-  },
+    data: ChatListResponse[];
+    pagination: IPagination;
+  };
 
-  chat_messages : ChatMessagesResponse | null
+  chat_messages: ChatMessagesResponse | null;
 
-  location_details?: Location
-  category_details?: any
-  need_details?: INeedResponse
+  location_details?: Location;
+  category_details?: any;
+  need_details?: INeedResponse;
+  ai_chat_messages: AIChatMessage[];
+  ai_chat_loading: boolean;
 }
