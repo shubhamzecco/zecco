@@ -65,7 +65,7 @@ const SignUpPage = () => {
 
   return (
     <section className="min-h-screen bg-white p-10 w-full mx-auto">
-      <div className="flex min-h-screen gap-10">
+      <div className="flex h-[86vh] gap-10">
         <div className="w-[53%] hidden lg:block relative">
           <Image
             src={App_url.image.sign_up_image}
@@ -97,7 +97,7 @@ const SignUpPage = () => {
               unoptimized
             />
           </div>
-          <div className="my-6 mt-10 flex flex-col gap-5">
+          <div className="my-3 mt-3 flex flex-col gap-5">
             <h1 className="capitalize font-inter font-bold text-[#101828] text-2xl">Create Your Zecco Account</h1>
             <p className="font-inter font-medium text-[#6B7280] capitalize">Register new account</p>
           </div>
@@ -189,7 +189,7 @@ const SignUpPage = () => {
                   )}
                 />
               </div>
-              <div className="flex items-center mt-4 mb-5 gap-5">
+              <div className="flex items-center mt-3  gap-5">
                 <Button
                   // type="submit"
                   onClick={() => setPackageModal(true)}
@@ -200,7 +200,7 @@ const SignUpPage = () => {
               </div>
             </form>
 
-            <div className="flex items-center px-8 mt-3 mb-5">
+            <div className="flex items-center px-8 mt-2">
               <Link
                 href={App_url?.link?.SIGN_IN}
                 className="w-full font-inter font-medium text-center text-[#6B7280] text-md"
@@ -210,7 +210,7 @@ const SignUpPage = () => {
               </Link>
             </div>
 
-            <div className="flex justify-center text-center items-center px-8 mt-4 mb-5 w-full mx-auto">
+            <div className="flex justify-center text-center items-center px-8 mt-2 mb-3 w-full mx-auto">
               <Link
                 href={App_url?.link?.INITIAL_URL}
                 className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-center text-heading_text_color text-md"

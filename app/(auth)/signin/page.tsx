@@ -78,14 +78,14 @@ const Signin = () => {
 
   return (
     <section className="min-h-screen bg-white p-10 w-full mx-auto">
-      <div className="flex min-h-screen gap-10">
+      <div className="flex h-[86vh] gap-10">
         <div className="w-[53%] hidden lg:block relative">
           <Image
             src={App_url.image.sign_up_image}
             alt="Signup"
             className="h-full w-full object-cover rounded-[40px]"
             width={1200}
-            height={1800}
+            height={1200}
             priority
             unoptimized
           />
@@ -110,7 +110,7 @@ const Signin = () => {
               unoptimized
             />
           </div>
-          <div className="my-6 mt-10 flex flex-col gap-5">
+          <div className="my-6 mt-5 flex flex-col gap-5">
             <h1 className="capitalize font-inter font-bold text-[#101828] text-2xl">Welcome Back to Zecco!</h1>
             <p className="font-inter font-medium text-[#6B7280] capitalize">Sign in to Your Account</p>
           </div>
@@ -161,7 +161,7 @@ const Signin = () => {
 
               </div>
 
-              <div className="my-3 mt-7 flex items-center justify-between">
+              <div className="my-2 mt-5 flex items-center justify-between">
                 {/* Left: Remember Me */}
                 <div className="flex items-center gap-2">
                   <input
@@ -187,7 +187,7 @@ const Signin = () => {
               </div>
 
 
-              <div className="flex items-center mt-4 mb-5 gap-5">
+              <div className="flex items-center mt-2 mb-2 gap-5">
                 <Button
                   type="submit"
                   className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md"
@@ -197,7 +197,7 @@ const Signin = () => {
               </div>
             </form>
 
-            <div className="flex items-center px-8 mt-1 mb-5">
+            <div className="flex items-center px-8 mt-1 mb-4">
               <Link
                 href={App_url?.link?.SIGN_UP}
                 className="w-full font-inter font-medium text-center text-[#6B7280] text-md"
@@ -207,7 +207,7 @@ const Signin = () => {
               </Link>
             </div>
 
-            <div className="flex justify-center text-center items-center px-8 mt-4 mb-5 w-full mx-auto">
+            <div className="flex justify-center text-center items-center px-8 mt-2 mb-5 w-full mx-auto">
               <Link
                 href={App_url?.link?.INITIAL_URL}
                 className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-center text-heading_text_color text-md"
