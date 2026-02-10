@@ -9,9 +9,11 @@ export default function AiExpertise() {
       <div className="bg-[#F8FAFC] w-full">
         <div className=" lg:mx-10 px-4 sm:px-6 lg:px-8">
           <div className="max-md:grid lg:flex max-md:grid-cols-1 gap-5 items-stretch py-14">
-            <div className="w-full lg:w-[40%] rounded-2xl p-10 bg-gradient-to-b 
+            <div
+              className="w-full lg:w-[40%] rounded-2xl p-10 bg-gradient-to-b 
                     from-[#1466EC] from-[60%] 
-                    to-[#04ADF7] to-[100%] text-white shadow-xl flex flex-col">
+                    to-[#04ADF7] to-[100%] text-white shadow-xl flex flex-col"
+            >
               <div className="flex items-center gap-2 mb-6">
                 <span className="w-3 h-3 rounded-full bg-[#00FFFF] animate-pulse" />
                 <span className="text-sm tracking-wide font-inter font-semibold text-[#00FFFF]">
@@ -27,10 +29,16 @@ export default function AiExpertise() {
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-30 blur-md" />
                 <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-r from-[#4F46E5]  to-[#34D399]">
                   <div className="w-full h-full rounded-full bg-[#00004B] flex items-center justify-center">
-                    <Sparkles size={45} className="text-white" />
+                    {/* <Sparkles size={45} className="text-white" /> */}
+                    <Image
+                      src={App_url.image.chat_logo}
+                      alt="Chat"
+                      width={65}
+                      height={65}
+                      className="text-white"
+                    />
                   </div>
                 </div>
-
 
                 <div className="absolute -top-2 -right-2 w-10 h-10 border border-white/20 bg-white/10 rounded-xl backdrop-blur-lg flex items-center justify-center">
                   <Zap size={25} className="text-yellow-400" />
@@ -38,9 +46,8 @@ export default function AiExpertise() {
               </div>
 
               <p className="text-xl font-manrope font-medium text-white leading-relaxed mb-auto">
-                Meet Zecco – your AI search agent,
-                working for you to find the best property listings
-                that match your criteria.
+                Meet Zecco – your AI search agent, working for you to find the
+                best property listings that match your criteria.
               </p>
 
               <button className="mt-10 w-full lg:max-w-[65%] bg-white text-[#00004B] py-4 rounded-xl flex items-center justify-center gap-2 font-manrope font-bold tracking-wider hover:bg-gray-100 transition">
@@ -51,7 +58,6 @@ export default function AiExpertise() {
 
             <section className="w-full lg:w-[60%] h-full bg-white rounded-2xl overflow-hidden shadow-sm">
               <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-
                 <div className="p-10 flex flex-col justify-center">
                   <div className="flex items-center gap-2 mb-6">
                     <span className="w-3 h-3 rounded-full bg-[#1155CC] animate-pulse" />
@@ -61,24 +67,27 @@ export default function AiExpertise() {
                   </div>
 
                   <h2 className="text-3xl font-extrabold text-[#000023] font-manrope leading-snug mb-10">
-                    Personal, Local  <br /> Expertise
+                    Personal, Local <br /> Expertise
                   </h2>
 
                   <p className="text-[#6B7280] font-manrope font-medium text-lg max-w-md mb-32">
                     When you're ready to make a <br />
                     move, our network of elite <br />
                     advisors handles the local <br />
-                    nuances, legal complexities,<br />
+                    nuances, legal complexities,
+                    <br />
                     and final negotiations.
                   </p>
 
                   <div className="flex gap-4 flex-wrap ">
                     <button className="px-6 py-3 font-manrope font-bold flex items-center justify-between gap-4 bg-[#F9FAFB] border-[#F3F4F6] text-heading_text_color rounded-xl text-sm  transition">
-                      <Headphones size={22} className='text-blue_color' />  Talk to Advisor   <ArrowRight size={22} />
+                      <Headphones size={22} className="text-blue_color" /> Talk
+                      to Advisor <ArrowRight size={22} />
                     </button>
 
                     <button className="px-6 py-3 font-manrope font-bold flex items-center justify-between gap-4 bg-[#F9FAFB] border-[#F3F4F6] text-heading_text_color rounded-xl text-sm  transition">
-                      <MapPin size={22} className='text-emerald_green' />  Area Specialist   <ArrowRight size={22} />
+                      <MapPin size={22} className="text-emerald_green" /> Area
+                      Specialist <ArrowRight size={22} />
                     </button>
                   </div>
                 </div>
@@ -108,22 +117,30 @@ export default function AiExpertise() {
                   <div className="absolute bottom-6 left-6 space-y-3 z-10">
                     <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow">
                       <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-blue_color ">
-                        <Users size={25} className='text-white' />
+                        <Users size={25} className="text-white" />
                       </div>
                       <div>
-                        <p className="text-xs text-text_gray_color font-manrope font-bold tracking-widest">ACTIVE ADVISORS</p>
-                        <p className="font-manrope font-extrabold tracking-wider text-heading_text_color">42 Online Now</p>
+                        <p className="text-xs text-text_gray_color font-manrope font-bold tracking-widest">
+                          ACTIVE ADVISORS
+                        </p>
+                        <p className="font-manrope font-extrabold tracking-wider text-heading_text_color">
+                          42 Online Now
+                        </p>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-3 bg-white px-4 py-3 rounded-xl shadow">
                       <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-emerald_green ">
-                        <ShieldCheck size={25} className='text-white' />
+                        <ShieldCheck size={25} className="text-white" />
                       </div>
                       <div>
-                        <p className="text-xs text-text_gray_color font-manrope font-bold tracking-widest">Trust Rating</p>
-                        <p className="font-manrope font-extrabold tracking-wider text-heading_text_color">9.9/10 Client
-                          <br /> Satisfaction</p>
+                        <p className="text-xs text-text_gray_color font-manrope font-bold tracking-widest">
+                          Trust Rating
+                        </p>
+                        <p className="font-manrope font-extrabold tracking-wider text-heading_text_color">
+                          9.9/10 Client
+                          <br /> Satisfaction
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -134,5 +151,5 @@ export default function AiExpertise() {
         </div>
       </div>
     </section>
-  )
+  );
 }

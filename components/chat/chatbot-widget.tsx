@@ -122,15 +122,55 @@ export default function ChatbotWidget() {
         </div>
       )}
 
-      <button
+      {/* <button
         onClick={openChat}
-        className="fixed bottom-8 right-8 w-14 h-14 rounded-full animate-pulse
-        bg-gradient-to-b from-[#1466EC] to-[#04ADF7]
+        className="fixed bottom-8 right-8 w-14 h-14 rounded-full
+        bg-[#00004B]
         flex items-center justify-center shadow-lg
-        hover:scale-110 transition z-40 text-white"
+          z-40 text-white"
       >
-        <Sparkles size={24} />
-      </button>
+        <Image
+          src={App_url.image.chat_logo}
+          alt="Chat"
+          width={25}
+          height={25}
+          className="text-white"
+        />
+      </button> */}
+      {/* <div className="relative w-20 h-20 mb-10">
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-30 blur-md" />
+        <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-r from-[#4F46E5]  to-[#34D399]">
+          <div className="w-full h-full rounded-full bg-[#00004B] flex items-center justify-center">
+            <Image
+              src={App_url.image.chat_logo}
+              alt="Chat"
+              width={65}
+              height={65}
+              className="text-white"
+            />
+          </div>
+        </div>
+      </div> */}
+      <div
+        onClick={openChat}
+        className="fixed bottom-8 right-8 z-50 cursor-pointer"
+      >
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-30 blur-md" />
+
+          <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-r from-[#4F46E5] to-[#34D399]">
+            <div className="w-full h-full rounded-full bg-[#00004B] flex items-center justify-center">
+              <Image
+                src={App_url.image.chat_logo}
+                alt="Chat"
+                width={25}
+                height={25}
+                priority
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
       {isOpen && (
         <ZecooAIChat isOpen={isOpen} onClose={() => setIsOpen(false)} />
