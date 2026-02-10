@@ -302,7 +302,7 @@ const Signin = () => {
   return (
     <>
       <AuthLayout>
-        <div className="mb-6">
+        <div className="mb-6 mt-7">
           <h1 className="font-inter font-bold text-[#101828] text-2xl">
             Welcome Back to Zecco!
           </h1>
