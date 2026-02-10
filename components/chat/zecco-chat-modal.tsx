@@ -13,6 +13,8 @@ import {
 } from "@/redux/modules/main/action";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { customToast } from "../customToast";
+import Image from "next/image";
+import { App_url } from "@/constant/static";
 
 /* ---------------- TYPES ---------------- */
 
@@ -149,7 +151,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className="fixed bottom-1 right-6 z-50 bg-ai-glow-blue"
         >
-          <div className="w-[450px] max-h-[95vh] min-h-[95vh] rounded-3xl bg-[#F3F8FF] shadow-2xl border border-blue-100 overflow-hidden flex flex-col">
+          <div className="w-[480px] max-h-[95vh] min-h-[95vh] rounded-3xl bg-[#F3F8FF] shadow-2xl border border-blue-100 overflow-hidden flex flex-col">
             {/* HEADER */}
             <div className="relative shrink-0 flex flex-col items-center px-6 pt-6 pb-4 bg-[#F3F8FF] z-10">
               <button
@@ -159,8 +161,24 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
                 <X size={16} />
               </button>
 
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg">
+              {/* <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg">
                 <Sparkles size={22} />
+              </div> */}
+
+              <div className="relative w-16 h-16">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-30 blur-md" />
+
+                <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-r from-[#4F46E5] to-[#34D399]">
+                  <div className="w-full h-full rounded-full bg-[#00004B] flex items-center justify-center">
+                    <Image
+                      src={App_url.image.chat_logo}
+                      alt="Chat"
+                      width={25}
+                      height={25}
+                      priority
+                    />
+                  </div>
+                </div>
               </div>
 
               <h2 className="mt-3 text-lg font-semibold text-gray-900">

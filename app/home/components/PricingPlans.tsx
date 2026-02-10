@@ -1,4 +1,15 @@
-import { ArrowRight, Box, Check, CircleCheck, CreditCard, LockKeyholeOpen, ShieldCheck } from "lucide-react"
+import {
+  ArrowRight,
+  Box,
+  Check,
+  CircleCheck,
+  CreditCard,
+  Crown,
+  LockKeyholeOpen,
+  Shield,
+  ShieldCheck,
+  Zap,
+} from "lucide-react";
 
 const plans = [
   {
@@ -8,7 +19,7 @@ const plans = [
   },
   {
     title: "Zecco Go",
-    icon: <ShieldCheck className=" text-primary_blue" size={25} />,
+    icon: <Zap className=" text-primary_blue" size={25} />,
     features: [
       "Paid package",
       "Availability of advanced AI agents",
@@ -17,7 +28,7 @@ const plans = [
   },
   {
     title: "Zecco Plus",
-    icon: <Box className=" text-primary_blue" size={25} />,
+    icon: <Shield className=" text-primary_blue" size={25} />,
     features: [
       "Paid package",
       "Same as Go",
@@ -27,7 +38,7 @@ const plans = [
   },
   {
     title: "Zecco vip",
-    icon: <CircleCheck className=" text-primary_blue" size={25} />,
+    icon: <Crown className=" text-primary_blue" size={25} />,
     features: [
       "Same as Start but also including",
       "The full registration",
@@ -36,7 +47,7 @@ const plans = [
       "Verified Seller Priority",
     ],
   },
-]
+];
 
 export default function PricingPlans() {
   return (
@@ -47,30 +58,37 @@ export default function PricingPlans() {
             Choose your Zecco plan
           </h2>
           <p className="text-slate_gray font-medium font-manrope text-md max-w-xl mt-4 md:mt-0">
-            Unlock the full power of our AI-driven distribution network and dominate the Spanish property market.
+            Unlock the full power of our AI-driven distribution network and
+            dominate the Spanish property market.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {plans.map((plan, index) => (
+          {plans?.map((plan, index) => (
             <div
               key={index}
               className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 flex flex-col"
             >
               <div className="flex items-center justify-between mb-6">
                 <div className="w-10 h-10 text-primary_blue rounded-lg bg-soft_sky_blue flex items-center justify-center">
-                  {plan.icon}
+                  {plan?.icon}
                 </div>
                 {/* <div className="pb-5">
                   <CreditCard className="text-[#EBEDF2]" size={50} />
                 </div> */}
               </div>
               <h3 className="font-manrope capitalize font-extrabold text-2xl text-[#000000] mb-4">
-                {plan.title}
+                {plan?.title}
               </h3>
               <ul className="space-y-3 mb-8 flex-1">
-                {plan.features.map((feature, i) => (
-                  <li key={i} className="flex items-start gap-2 text-[13px] font-manrope font-bold text-[#475569]">
-                    <Check className="text-primary_blue mt-0.5 bg-soft_sky_blue rounded-full p-1" size={22} />
+                {plan?.features?.map((feature, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-[13px] font-manrope font-bold text-[#475569]"
+                  >
+                    <Check
+                      className="text-primary_blue mt-0.5 bg-soft_sky_blue rounded-full p-1"
+                      size={22}
+                    />
                     {feature}
                   </li>
                 ))}
@@ -84,5 +102,5 @@ export default function PricingPlans() {
         </div>
       </div>
     </section>
-  )
+  );
 }
