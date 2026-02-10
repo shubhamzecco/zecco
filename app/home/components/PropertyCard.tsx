@@ -1,26 +1,23 @@
-import Image from 'next/image'
 import {
-  Heart,
-  Bed,
   Bath,
-  Maximize2,
   BedSingle,
   Expand,
-  Sparkle,
+  Heart,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
+import Image from "next/image";
 
 interface PropertyCardProps {
-  id: string
-  title: string
-  price: string
-  location: string
-  image: string
-  beds: number
-  baths: number
-  area: number
-  featured?: boolean
+  id: string;
+  title: string;
+  price: string;
+  location: string;
+  image: string;
+  beds: number;
+  baths: number;
+  area: number;
+  featured?: boolean;
 }
 
 export default function PropertyCard({
