@@ -37,6 +37,7 @@ export const App_url = {
     USER_SIGN_IN: "/sign_in",
   },
   chat_bot_url: "http://localhost:5678/webhook/zecco",
+  chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco",
 };
 
 export const initialState = {
