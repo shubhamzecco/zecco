@@ -5,6 +5,7 @@ import { Inter, Manrope, Instrument_Sans, Poppins } from "next/font/google"
 // @ts-ignore
 import "../styles/globals.css"
 import { AppProviders } from "@/components/provider/provider";
+import { circular_std } from "@/lib/fonts";
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -61,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${manrope.variable} ${instrumentSans.className} ${poppins?.className} scrollbar-hide`}>
+    <html lang="en" className={`${inter.variable} ${manrope.variable} ${instrumentSans.variable} ${poppins?.variable} ${circular_std?.variable} scrollbar-hide`}>
       <body className="bg-white text-gray-900 antialiased font-sans scrollbar-hide">
         <AppProviders>
           {children}

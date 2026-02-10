@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthReq } from "@/api/rest/fetchData";
+import { postData } from "@/api/rest/fetchData";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,57 +12,42 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { App_url } from "@/constant/static";
-import { setAuthData, setLogin } from "@/redux/modules/common/user_data/action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, House } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as z from "zod";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string({ required_error: "Password is required" })
-    .min(6, { message: "Password must be at least 6 characters" }),
 });
 
-
-const Signin = () => {
+const ForgetPassword = () => {
   const router = useRouter()
-  const dispatch = useDispatch()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: '',
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    AuthReq(App_url?.endpoint_url?.USER_SIGN_IN, values)
+    postData(App_url?.endpoint_url?.FORGET_PASSWORD, values)
       .then((response) => {
         try {
-          if (response?.status === 200) {
-            const payload = {
-              ...response,
-              user: {
-                ...response?.data?.user,
-              },
-              access_token: response?.data?.access_token
-            };
-            localStorage.setItem("access_token", response?.data?.access_token);
-            dispatch(setLogin(true));
-            dispatch(setAuthData(payload));
-            router?.push(App_url.link.INITIAL_URL);
+          if (response?.data?.status === 200) {
+            toast.success(response?.data?.message)
+            sessionStorage.setItem("otp_email", values.email);
+            sessionStorage?.setItem('forget_password', 'forget-password')
+            // router.push(App_url?.link?.verification);
           } else {
-            toast.error(response?.message || "Login failed.");
+            toast.error(response?.data?.message);
           }
         } catch (error) {
-          toast.error("Something went wrong.");
+          toast.error('Something went wrong');
         }
       })
       .catch((error) => {
@@ -72,7 +57,7 @@ const Signin = () => {
           error?.response?.data?.error ||
           error?.message ||
           "An unexpected error occurred.";
-        // toast({ description: errorMessage });
+        toast.error(errorMessage);
       });
   };
 
@@ -111,8 +96,8 @@ const Signin = () => {
             />
           </div>
           <div className="my-6 mt-10 flex flex-col gap-5">
-            <h1 className="capitalize font-inter font-bold text-[#101828] text-2xl">Welcome Back to Zecco!</h1>
-            <p className="font-inter font-medium text-[#6B7280] capitalize">Sign in to Your Account</p>
+            <h1 className="capitalize font-inter font-bold text-[#101828] text-2xl">Forget Password</h1>
+            <p className="font-inter font-medium text-[#6B7280] capitalize">Verify your email</p>
           </div>
           <Form {...form}>
             <form className="" onSubmit={form.handleSubmit(onSubmit)}>
@@ -127,7 +112,6 @@ const Signin = () => {
                       </FormLabel>
                       <FormControl>
                         <Input
-
                           placeholder="Enter email"
                           className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                           {...field}
@@ -138,61 +122,14 @@ const Signin = () => {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-semibold font-inter text-[#101828]">
-                        Password
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Enter password"
-                          className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
               </div>
-
-              <div className="my-3 mt-7 flex items-center justify-between">
-                {/* Left: Remember Me */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id="rememberMe"
-                    className="h-4 w-4 rounded border-gray-300 text-[#136AED] focus:ring-[#136AED]"
-                  />
-                  <label
-                    htmlFor="rememberMe"
-                    className="font-inter text-sm font-medium text-[#344054] cursor-pointer"
-                  >
-                    Remember me
-                  </label>
-                </div>
-
-                {/* Right: Forgot Password */}
-                <Link
-                  href={App_url?.link?.FORGET_PASSWORD}
-                  className="font-inter text-sm font-medium text-[#9CA3AF] hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-
 
               <div className="flex items-center mt-4 mb-5 gap-5">
                 <Button
                   type="submit"
                   className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md"
                 >
-                  Login
+                  Send OTP
                 </Button>
               </div>
             </form>
@@ -223,4 +160,4 @@ const Signin = () => {
   );
 };
 
-export default Signin;
+export default ForgetPassword;

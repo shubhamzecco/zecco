@@ -6,6 +6,8 @@ export const App_url = {
         building: '/assets/images/building.png',
         footer: '/assets/images/footer.svg',
         chat_logo : '/assets/images/chat.png',
+        sign_up_image : '/assets/images/signup-image.jpg',
+        email : '/assets/images/email.svg',
 
 
         // dev images
@@ -37,7 +39,8 @@ export const App_url = {
     },
     endpoint_url: {
         USER_LOGIN : '/user-login',
-        USER_SIGN_IN : '/sign_in'
+        USER_SIGN_IN : '/sign_in',
+        FORGET_PASSWORD : '/forget-password'
     }
 }
 
