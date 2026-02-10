@@ -1,11 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { X, Send, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import Image from 'next/image'
-import { App_url } from '@/constant/static'
+import { App_url } from "@/constant/static";
+import { X } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import ZecooAIChat from './zecco-chat-modal'
 
 interface Message {
