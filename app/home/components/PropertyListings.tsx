@@ -65,7 +65,7 @@ const propertyData = [
     area: 3900,
   },
   {
-    id: '6',
+    id: '7',
     title: 'Spacious 2-Bedroom Apartment in Marbella, Spain',
     price: '€545,000',
     location: 'Nerja, Spain',
@@ -75,7 +75,7 @@ const propertyData = [
     area: 3900,
   },
   {
-    id: '6',
+    id: '8',
     title: 'Spacious 2-Bedroom Apartment in Marbella, Spain',
     price: '€545,000',
     location: 'Nerja, Spain',

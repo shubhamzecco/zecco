@@ -40,25 +40,25 @@ export const App_url = {
 };
 
 export const initialState = {
-    items: [],
-    totalCount: 0,
-    optionList: [],
+  items: [],
+  totalCount: 0,
+  optionList: [],
 };
 
 export const initialUserData = {
-    status: "",
-    user: {
-        id: "",
-        email: "",
-        active: false,
-        password: "",
-        is_admin: false,
-        role_permissions: "",
-        api_permissions: "",
-        name: "",
-        emp_id: "",
-        user_type: "",
-        role: "",
-    },
-    access_token: "",
+  status: "",
+  user: {
+    id: "",
+    email: "",
+    active: false,
+    password: "",
+    is_admin: false,
+    role_permissions: "",
+    api_permissions: "",
+    name: "",
+    emp_id: "",
+    user_type: "",
+    role: "",
+  },
+  access_token: "",
 };
