@@ -85,7 +85,6 @@ const propertyData = [
     area: 3900,
   },
 ]
-
 export default function PropertyListings() {
   return (
     <section className="px-4 sm:px-6 lg:px-8 mt-10 bg-white  lg:mx-10 mb-20">
