@@ -147,8 +147,14 @@ export default function ChatReplies({
 
       {/* LOADING */}
       {isLoading && (
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-gray-500">Zecco is thinking…</span>
+        <div className="flex items-center gap-3 mt-3">
+          <div className="relative w-4 h-4">
+            <span className="absolute inset-0 rounded-full bg-purple-500 opacity-60 animate-ping" />
+            <span className="relative block w-4 h-4 rounded-full bg-gradient-to-br from-purple-500 to-cyan-400" />
+          </div>
+          <span className="text-[13px] text-muted-foreground">
+            Zecoo is thinking...
+          </span>
         </div>
       )}
 
