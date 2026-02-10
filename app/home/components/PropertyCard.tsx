@@ -41,12 +41,12 @@ export default function PropertyCard({
         />
 
         <div className="absolute top-4 left-4 flex gap-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-2 rounded-md bg-[#1466EC] text-white text-[11px] font-manrope font-medium leading-none backdrop-blur-md">
+          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#1466EC] text-white text-[11px] font-manrope font-medium leading-none backdrop-blur-md">
             <Sparkles size={12} className="text-white" />
             <span>AI Verified</span>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-2 py-2 rounded-md bg-[#5BA55A] text-white text-[11px] font-manrope font-medium leading-none backdrop-blur-md">
+          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#5BA55A] text-white text-[11px] font-manrope font-medium leading-none backdrop-blur-md">
             <ShieldCheck size={12} className="text-white" />
             <span>Verified Seller</span>
           </div>
