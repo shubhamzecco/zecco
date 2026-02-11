@@ -4,6 +4,7 @@ import { Inter, Manrope, Instrument_Sans, Poppins } from "next/font/google"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import "../styles/globals.css"
+import 'leaflet/dist/leaflet.css'
 import { AppProviders } from "@/components/provider/provider";
 import { circular_std } from "@/lib/fonts";
 

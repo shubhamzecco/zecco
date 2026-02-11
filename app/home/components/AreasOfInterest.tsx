@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import AreaCard from './AreaCard'
+import AreaCard from '../../../components/cards/AreaCard'
 import { Button } from '@/components/ui/button'
 import { App_url } from '@/constant/static'
 

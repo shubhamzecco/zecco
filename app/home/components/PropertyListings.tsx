@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import PropertyCard from './PropertyCard'
+import PropertyCard from '../../../components/cards/PropertyCard'
 import { App_url } from '@/constant/static'
 
 const propertyData = [

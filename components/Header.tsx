@@ -1,0 +1,83 @@
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { Menu, User, UserPlus, X } from 'lucide-react'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { App_url } from '@/constant/static'
+
+export default function Header() {
+  const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
+
+  const isActive = (href: string) => {
+    if (href === '#') return false
+    return pathname === href || pathname.startsWith(`${href}/`)
+  }
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white w-full shadow-sm">
+      <div className="lg:mx-7 px-4 sm:px-6 lg:px-8 border border-white/70 rounded-full backdrop-blur-md">
+        <div className="flex justify-between items-center h-16">
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src={App_url.image.logo}
+              alt="logo"
+              width={160}
+              height={100}
+            />
+          </Link>
+
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-8">
+            {[
+              { label: 'Find Property', href: '#' },
+              { label: 'Costa del Sol', href: App_url.link.COSTA_DEL_SOL },
+              { label: "Zecco's Favorites", href: App_url.link.ZECCO_FAVORITES },
+              { label: 'About Zecco.es', href: '#' },
+              { label: 'Packages', href: App_url.link.PACKAGE },
+            ].map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="relative text-[#0B5394] font-inter text-sm font-medium"
+              >
+                {item.label}
+
+                {isActive(item.href) && (
+                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#0B5394] rounded-full" />
+                )}
+              </Link>
+            ))}
+          </div>
+
+          {/* Right Buttons */}
+          <div className="hidden md:flex items-center gap-3 -mr-3">
+            <Link
+              href={App_url.link.SIGN_IN}
+              className="px-5 py-3 text-sm font-medium flex items-center gap-2"
+            >
+              <User className="w-5 h-5" /> Login
+            </Link>
+
+            <Link
+              href={App_url.link.SIGN_UP}
+              className="px-5 py-3 text-sm font-medium text-white bg-sky_blue_color rounded-full flex items-center gap-2"
+            >
+              <UserPlus className="w-5 h-5" /> Registration
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 rounded-lg"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
+    </nav>
+  )
+}

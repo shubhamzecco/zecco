@@ -7,7 +7,18 @@ export const App_url = {
     footer: "/assets/images/footer.svg",
     chat_logo: "/assets/images/chat.png",
     sign_up_image: "/assets/images/signup-image.jpg",
-    email: "/assets/images/email.svg", // dev images
+    email: "/assets/images/email.svg", 
+    
+    // dev images
+    cds_marbella : '/assets/images/dev/cds-marbella-1.png',
+    cds_malaga : '/assets/images/dev/cds-malanga.png',
+    cds_fuengirola : '/assets/images/dev/cds-fuengirola.png',
+    cds_Benalmádena : '/assets/images/dev/cds-Benalmádena.png',
+    cds_Mijas : '/assets/images/dev/cds-Mijas.png',
+    cds_Estepona : '/assets/images/dev/cds-Estepona.png',
+    cds_Benahavís : '/assets/images/dev/cds-Benahavís.png',
+    cds_Coín : '/assets/images/dev/cds-Coín.png',
+    cds_Casares : '/assets/images/dev/cds-Casares.png',
 
     marbella: "/assets/images/dev/marbella.png",
     malaga: "/assets/images/dev/malaga.png",
@@ -32,6 +43,9 @@ export const App_url = {
     RESET_PASSWORD: "/reset-password",
     FORGET_PASSWORD: "/forget-password",
     OTP_VERIFICATION: "/otp-verification",
+    PACKAGE : '/packages',
+    ZECCO_FAVORITES : "/zecco-favorites",
+    COSTA_DEL_SOL : '/costa-del-sol'
   },
   endpoint_url: {
     USER_LOGIN: "/user-login",

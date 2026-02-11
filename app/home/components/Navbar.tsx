@@ -5,9 +5,17 @@ import Link from 'next/link'
 import { Menu, User, UserPlus, X } from 'lucide-react'
 import Image from 'next/image'
 import { App_url } from '@/constant/static'
+import { usePathname } from 'next/navigation'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const pathname = usePathname()
+
+  const isActive = (href: string) => {
+    if (href === '#') return false
+    return pathname === href || pathname.startsWith(`${href}/`)
+  }
+
 
   return (
     <nav className="absolute top-7 left-0 w-full z-50">
@@ -28,21 +36,25 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            <Link href="#" className="text-[#0B5394] font-inter text-sm font-medium hover:text-gray-900 transition-colors">
-              Find Property
-            </Link>
-            <Link href="#" className="text-[#0B5394] font-inter text-sm font-medium hover:text-gray-900 transition-colors">
-              Costa Del Sol
-            </Link>
-            <Link href="#" className="text-[#0B5394] font-inter text-sm font-medium hover:text-gray-900 transition-colors">
-              Zecco's Favorites
-            </Link>
-            <Link href="#" className="text-[#0B5394] font-inter text-sm font-medium hover:text-gray-900 transition-colors">
-              About Zecco.es
-            </Link>
-            <Link href="#" className="text-[#0B5394] font-inter text-sm font-medium hover:text-gray-900 transition-colors">
-              Packages
-            </Link>
+            {[
+              { label: 'Find Property', href: '#' },
+              { label: 'Costa del Sol', href: App_url.link.COSTA_DEL_SOL },
+              { label: "Zecco's Favorites", href: App_url.link.ZECCO_FAVORITES },
+              { label: 'About Zecco.es', href: '#' },
+              { label: 'Packages', href: App_url.link.PACKAGE },
+            ].map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="relative text-[#0B5394] font-inter text-sm font-medium"
+              >
+                {item.label}
+
+                {isActive(item.href) && (
+                  <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#0B5394] rounded-full" />
+                )}
+              </Link>
+            ))}
           </div>
 
           {/* Right Side Buttons */}
