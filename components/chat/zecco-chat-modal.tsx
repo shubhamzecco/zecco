@@ -1,20 +1,17 @@
 "use client";
 
-import { X, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import ChatReplies from "./ChatReplies";
-import ChatInput from "./ChatInput";
-import { sendChatMessage } from "@/lib/chatApi";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addAIChatMessage,
-  setAIChatLoading,
-} from "@/redux/modules/main/action";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { customToast } from "../customToast";
-import Image from "next/image";
 import { App_url } from "@/constant/static";
+import { sendChatMessage } from "@/lib/chatApi";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { addAIChatMessage } from "@/redux/modules/main/action";
+import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { customToast } from "../customToast";
+import ChatInput from "./ChatInput";
+import ChatReplies from "./ChatReplies";
 
 /* ---------------- TYPES ---------------- */
 
@@ -30,7 +27,6 @@ type Props = {
   onClose?: () => void;
 };
 
-/* ---------------- COMPONENT ---------------- */
 
 export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -38,10 +34,6 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
   const dispatch = useDispatch();
   const { mainReducer } = usePosterReducers();
   const ai_chat_messages = mainReducer?.ai_chat_messages ?? [];
-  const ai_chat_loading = mainReducer?.ai_chat_loading ?? false;
-
-  console.log("ai_chat_messages::", ai_chat_messages);
-  /* ---------------- SESSION ---------------- */
 
   const getSessionId = () => {
     const key = "zecco_session_id";

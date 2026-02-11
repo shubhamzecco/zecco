@@ -17,7 +17,7 @@ export default function PropertySearchBar() {
       <div className="flex items-center gap-2 rounded-full border border-border-gray bg-white px-2 py-1.5 shadow-sm">
         {/* Segmented buttons */}
         <div className="flex items-center rounded-full bg-[#D6E0EC] p-1 gap-2">
-          <button className="rounded-full font-manrope font-semibold text-sm bg-light_sky_blue_color px-5 py-3  text-white">
+          <button className="rounded-full font-manrope font-semibold text-sm bg-sky_blue_color px-5 py-3  text-white">
             Buy
           </button>
           <button className="rounded-full font-manrope px-5 py-3 text-sm font-semibold text-[#0F172A] ">
