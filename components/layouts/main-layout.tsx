@@ -1,16 +1,17 @@
 "use client"
+import { App_url } from '@/constant/static'
+import { ChevronDown, Search, Share2, TriangleAlert } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
 import React from 'react'
 import Footer from '../Footer'
 import Header from '../Header'
-import { ChevronDown, Search } from 'lucide-react'
-import { App_url } from '@/constant/static'
-import { usePathname } from 'next/navigation'
-import { Label } from '@radix-ui/react-label'
+import Breadcrumb from '../breadcrumbs'
 
 interface MainLayoutProps {
     children: React.ReactNode
     isBreadcrumb?: boolean
     isFilter?: boolean
+    isPropertyDetails?: boolean;
 }
 
 const HEADER_HEIGHT = 67       // h-16 (64px) + top spacing
@@ -21,23 +22,38 @@ const MainLayout = ({
     children,
     isBreadcrumb = false,
     isFilter = false,
+    isPropertyDetails = false,
 }: MainLayoutProps) => {
     const pathname = usePathname()
+    const router = useRouter()
     const topOffset =
         HEADER_HEIGHT +
         (isBreadcrumb ? BREADCRUMB_HEIGHT : 0) +
         (isFilter ? FILTER_HEIGHT : 0)
-
     return (
         <main className="w-full bg-white">
-            {/* FIXED HEADER */}
             <Header />
             <div style={{ height: HEADER_HEIGHT }} />
             <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
                 {isBreadcrumb && (
-                    <div className="h-12 flex items-center text-sm font-medium text-gray-600">
-                        Home &gt;&gt;
+                    <div className="flex justify-between items-center mb-3 gap-4">
+                        <Breadcrumb />
+                        
+                        {isPropertyDetails && (
+                            <div className="flex gap-3 h-12">
+                                <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md  text-heading_text_color text-sm font-manrope font-bold leading-none backdrop-blur-md">
+                                    <TriangleAlert size={20} className="" />
+                                    <span className='text-md'>Discard</span>
+                                </div>
+
+                                <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md  text-heading_text_color text-sm font-manrope font-bold leading-none backdrop-blur-md">
+                                    <Share2 size={20} className="" />
+                                    <span className='text-md'>Share</span>
+                                </div>
+                            </div>
+                        )}
                     </div>
+
                 )}
                 {isFilter && (
                     <div className="flex justify-between items-start mb-5 gap-4">
@@ -58,7 +74,7 @@ const MainLayout = ({
                                 <button
                                     key={i}
                                     className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md
-                        ${tab === "Buy"
+                                        ${tab === "Buy"
                                             ? "bg-white text-black"
                                             : "text-[#6B7280] hover:bg-slate-100"
                                         }`}

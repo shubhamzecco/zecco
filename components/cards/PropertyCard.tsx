@@ -1,4 +1,7 @@
 "use client"
+import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setBreadcrumbs } from "@/redux/modules/main/action";
 import {
   Bath,
   BedSingle,
@@ -8,6 +11,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 interface PropertyCardProps {
   id: string;
@@ -22,6 +27,7 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({
+  id,
   title,
   price,
   location,
@@ -31,8 +37,22 @@ export default function PropertyCard({
   area,
   featured = false,
 }: PropertyCardProps) {
+  const router = useRouter();
+  const dispatch = useDispatch()
+  const { mainReducer } = usePosterReducers()
+
+  const handleNavigate = () => {
+    dispatch(
+      setBreadcrumbs([
+        ...mainReducer?.breadcrumbs,
+        { label: title, href: `${App_url.link.PROPERTY_DETAILS}/${id}` },
+      ])
+    )
+    router.push(`${App_url.link.PROPERTY_DETAILS}/${id}`)
+  }
+
   return (
-    <div className="group bg-white overflow-hidden shadow-card transition-all">
+    <div onClick={handleNavigate} className="group bg-white overflow-hidden shadow-card transition-all cursor-pointer">
       <div className="relative h-64 rounded-lg bg-gray-200 overflow-hidden">
         <Image
           src={image || "/placeholder.svg"}

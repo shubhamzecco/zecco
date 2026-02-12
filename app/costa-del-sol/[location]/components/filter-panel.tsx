@@ -83,7 +83,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
 
 
     return (
-        <div className="w-full max-w-lg bg-[#F8FAFC] rounded-lg p-6 space-y-6 overflow-y-auto max-h-screen">
+        <div className="w-full bg-[#F8FAFC] rounded-lg p-6 space-y-6 h-full overflow-y-auto">
             <div className="w-full h-96">
                 <PropertyMap />
             </div>

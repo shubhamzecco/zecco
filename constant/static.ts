@@ -7,9 +7,10 @@ export const App_url = {
     footer: "/assets/images/footer.svg",
     chat_logo: "/assets/images/chat.png",
     sign_up_image: "/assets/images/signup-image.jpg",
-    email: "/assets/images/email.svg", 
+    email: "/assets/images/email.svg",
     
     // dev images
+    profile :'/assets/images/dev/profile.png', 
     cds_marbella : '/assets/images/dev/cds-marbella-1.png',
     cds_malaga : '/assets/images/dev/cds-malanga.png',
     cds_fuengirola : '/assets/images/dev/cds-fuengirola.png',
@@ -45,7 +46,8 @@ export const App_url = {
     OTP_VERIFICATION: "/otp-verification",
     PACKAGE : '/packages',
     ZECCO_FAVORITES : "/zecco-favorites",
-    COSTA_DEL_SOL : '/costa-del-sol'
+    COSTA_DEL_SOL : '/costa-del-sol',
+    PROPERTY_DETAILS : '/property'
   },
   endpoint_url: {
     USER_LOGIN: "/user-login",

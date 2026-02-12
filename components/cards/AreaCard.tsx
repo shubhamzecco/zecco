@@ -1,8 +1,12 @@
 'use client'
 import { App_url } from '@/constant/static'
+import { usePosterReducers } from '@/redux/getdata/usePostReducer'
+import { setBreadcrumbs } from '@/redux/modules/main/action'
+import mainReducer from '@/redux/modules/main/reducer'
 import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useDispatch } from 'react-redux'
 
 interface AreaCardProps {
   id: string
@@ -20,10 +24,16 @@ export default function AreaCard({
   onNavigate
 }: AreaCardProps) {
   const router = useRouter()
+  const dispatch = useDispatch()
+  const { mainReducer } = usePosterReducers() // Access the mainReducer state
   const handleClick = () => {
     if (onNavigate) {
       onNavigate()
     } else {
+      dispatch(setBreadcrumbs([
+        ...mainReducer.breadcrumbs,
+        { label: title, href: `${App_url.link.COSTA_DEL_SOL}/${id}` },
+      ]))
       router.push(`${App_url.link.COSTA_DEL_SOL}/${id}`)
     }
   }

@@ -5,15 +5,29 @@ import Link from 'next/link'
 import { Menu, User, UserPlus, X } from 'lucide-react'
 import Image from 'next/image'
 import { App_url } from '@/constant/static'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { NAV_ITEMS } from '@/utils/common'
+import { useDispatch } from 'react-redux'
+import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const dispatch = useDispatch()
+  const router = useRouter()
 
   const isActive = (href: string) => {
     if (href === '#') return false
     return pathname === href || pathname.startsWith(`${href}/`)
+  }
+
+  const handleNavClick = (item: any) => {
+    dispatch(clearBreadcrumbs())
+    console.log("item ::: " , item)
+    if (item.breadcrumbs) {
+      dispatch(setBreadcrumbs(item.breadcrumbs))
+    }
+    router.push(item.href)
   }
 
 
@@ -36,16 +50,10 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            {[
-              { label: 'Find Property', href: '#' },
-              { label: 'Costa del Sol', href: App_url.link.COSTA_DEL_SOL },
-              { label: "Zecco's Favorites", href: App_url.link.ZECCO_FAVORITES },
-              { label: 'About Zecco.es', href: '#' },
-              { label: 'Packages', href: App_url.link.PACKAGE },
-            ].map((item) => (
-              <Link
+            {NAV_ITEMS?.map((item) => (
+              <button
                 key={item.label}
-                href={item.href}
+                onClick={() => handleNavClick(item)}
                 className="relative text-[#0B5394] font-inter text-sm font-medium"
               >
                 {item.label}
@@ -53,7 +61,7 @@ export default function Navbar() {
                 {isActive(item.href) && (
                   <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#0B5394] rounded-full" />
                 )}
-              </Link>
+              </button>
             ))}
           </div>
 

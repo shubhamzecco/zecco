@@ -134,7 +134,7 @@ export interface ChatMessage {
   message: string;
   created_at: string;
   is_read: boolean;
-  message_content : string;
+  message_content: string;
 }
 
 export interface Chat {
@@ -170,8 +170,8 @@ export interface Message {
   chat: Chat;
   message_content: string;
   read_by: boolean;
-  created_at: string; 
-  sender_id : string
+  created_at: string;
+  sender_id: string
 }
 
 
@@ -189,40 +189,19 @@ export interface AIChatMessage {
 }
 
 
+// interfaces/breadcrumb.ts
+
+export interface BreadcrumbItem {
+  id?: string;
+  label: string
+  href?: string | null   // null / undefined = current page
+}
+
+
 
 export interface IMainResponse {
-  location_list: {
-    data: Location[];
-    pagination: IPagination;
-  };
-
-  category_list: {
-    data: [];
-    pagination: IPagination;
-  };
-
-  need_list: {
-    data: INeedResponse[];
-    pagination: IPagination;
-  };
-
-  organization_list: {
-    data: OrganizationResponse[];
-    pagination: IPagination;
-  };
-
-  charity_list: {
-    data: CharityProfile[];
-    pagination: IPagination;
-  };
-
-  charity_active_chat_list: {
-    data: ChatListResponse[];
-    pagination: IPagination;
-  };
-
   chat_messages: ChatMessagesResponse | null;
-
+  breadcrumbs: BreadcrumbItem[]
   location_details?: Location;
   category_details?: any;
   need_details?: INeedResponse;

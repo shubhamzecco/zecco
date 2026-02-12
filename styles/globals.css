@@ -266,7 +266,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0B5394; /* slate-400 */
+  background: #e4e4e4; /* slate-400 */
   border-radius: 10px;
 }
 
