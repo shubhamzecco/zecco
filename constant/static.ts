@@ -8,6 +8,7 @@ export const App_url = {
     chat_logo: "/assets/images/chat.png",
     sign_up_image: "/assets/images/signup-image.jpg",
     email: "/assets/images/email.svg",
+    edit : "/assets/images/edit.svg",
     
     // dev images
     profile :'/assets/images/dev/profile.png', 
@@ -47,7 +48,12 @@ export const App_url = {
     PACKAGE : '/packages',
     ZECCO_FAVORITES : "/zecco-favorites",
     COSTA_DEL_SOL : '/costa-del-sol',
-    PROPERTY_DETAILS : '/property'
+    PROPERTY_DETAILS : '/property',
+
+    DASHBOARD : '/dashboard',
+    FAVORITES : '/favorites',
+    SAVED_SEARCHES : '/saved-searches',
+    ACCOUNT_PACKAGE : '/account',
   },
   endpoint_url: {
     USER_LOGIN: "/user-login",

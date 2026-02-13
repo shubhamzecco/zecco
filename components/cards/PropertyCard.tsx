@@ -1,4 +1,126 @@
-"use client"
+// "use client"
+// import { App_url } from "@/constant/static";
+// import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+// import { setBreadcrumbs } from "@/redux/modules/main/action";
+// import {
+//   Bath,
+//   BedSingle,
+//   Expand,
+//   Heart,
+//   ShieldCheck,
+//   Sparkles,
+// } from "lucide-react";
+// import Image from "next/image";
+// import { useRouter } from "next/navigation";
+// import { useDispatch } from "react-redux";
+
+// interface PropertyCardProps {
+//   id: string;
+//   title: string;
+//   price: string;
+//   location: string;
+//   image: string;
+//   beds: number;
+//   baths: number;
+//   area: number;
+//   featured?: boolean;
+// }
+
+// export default function PropertyCard({
+//   id,
+//   title,
+//   price,
+//   location,
+//   image,
+//   beds,
+//   baths,
+//   area,
+//   featured = false,
+// }: PropertyCardProps) {
+//   const router = useRouter();
+//   const dispatch = useDispatch()
+//   const { mainReducer } = usePosterReducers()
+
+//   const handleNavigate = () => {
+//     dispatch(
+//       setBreadcrumbs([
+//         ...mainReducer?.breadcrumbs,
+//         { label: title, href: `${App_url.link.PROPERTY_DETAILS}/${id}` },
+//       ])
+//     )
+//     router.push(`${App_url.link.PROPERTY_DETAILS}/${id}`)
+//   }
+
+//   return (
+//     <div onClick={handleNavigate} className="group bg-white overflow-hidden shadow-card transition-all cursor-pointer">
+//       <div className="relative h-64 rounded-lg bg-gray-200 overflow-hidden">
+//         <Image
+//           src={image || "/placeholder.svg"}
+//           alt={title}
+//           fill
+//           className="object-cover  group-hover:scale-110 transition-transform duration-500"
+//         />
+
+//         <div className="absolute top-4 left-4 flex gap-2">
+//           <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#1466EC] text-white text-[11px] font-manrope font-medium leading-none backdrop-blur-md">
+//             <Sparkles size={12} className="text-white" />
+//             <span>AI Verified</span>
+//           </div>
+
+//           <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#5BA55A] text-white text-[11px] font-manrope font-medium leading-none backdrop-blur-md">
+//             <ShieldCheck size={12} className="text-white" />
+//             <span>Verified Seller</span>
+//           </div>
+//         </div>
+
+//         <button className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center shadow-md hover:bg-red-50 transition-colors">
+//           <Heart
+//             size={20}
+//             className="text-white hover:text-red-500 transition-colors"
+//           />
+//         </button>
+//         <div className="absolute bottom-4 left-4 font-manrope font-normal backdrop-blur-md bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915]">
+//           For Sale
+//         </div>
+//       </div>
+
+//       <div className="space-y-1">
+//         <p className="text-md font-manrope font-bold  mt-2 text-[#727272]">
+//           {price}
+//         </p>
+//         <h3 className="text-[0.90rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
+//           {title}
+//         </h3>
+//         <div className="flex gap-5 items-center pt-2 text-gray-600 text-sm">
+//           <div className="flex items-center gap-1">
+//             <Expand size={18} className="text-gray-400" />
+//             <span className="font-manrope font-normal text-[#0A0915]">
+//               {area} sq. ft.
+//             </span>
+//           </div>
+//           <div className="flex items-center gap-1">
+//             <BedSingle size={18} className="text-gray-400" />
+//             <span className="font-manrope font-normal text-[#0A0915]">
+//               {beds} Bed
+//             </span>
+//           </div>
+//           <div className="flex items-center gap-1">
+//             <Bath size={18} className="text-gray-400" />
+//             <span className="font-manrope font-normal text-[#0A0915]">
+//               {baths} Bath
+//             </span>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+"use client";
+
+import { useState } from "react";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setBreadcrumbs } from "@/redux/modules/main/action";
@@ -9,6 +131,8 @@ import {
   Heart,
   ShieldCheck,
   Sparkles,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -19,11 +143,13 @@ interface PropertyCardProps {
   title: string;
   price: string;
   location: string;
-  image: string;
+  images: string[];
   beds: number;
   baths: number;
   area: number;
   featured?: boolean;
+  aiInsights?: boolean;
+  isLiked?: boolean;
 }
 
 export default function PropertyCard({
@@ -31,15 +157,19 @@ export default function PropertyCard({
   title,
   price,
   location,
-  image,
+  images,
   beds,
   baths,
   area,
   featured = false,
+  aiInsights = false,
+  isLiked = false,
 }: PropertyCardProps) {
   const router = useRouter();
-  const dispatch = useDispatch()
-  const { mainReducer } = usePosterReducers()
+  const dispatch = useDispatch();
+  const { mainReducer } = usePosterReducers();
+
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNavigate = () => {
     dispatch(
@@ -47,68 +177,146 @@ export default function PropertyCard({
         ...mainReducer?.breadcrumbs,
         { label: title, href: `${App_url.link.PROPERTY_DETAILS}/${id}` },
       ])
-    )
-    router.push(`${App_url.link.PROPERTY_DETAILS}/${id}`)
-  }
+    );
+    router.push(`${App_url.link.PROPERTY_DETAILS}/${id}`);
+  };
+
+  const nextSlide = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) =>
+      prev === images.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const prevSlide = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) =>
+      prev === 0 ? images.length - 1 : prev - 1
+    );
+  };
 
   return (
-    <div onClick={handleNavigate} className="group bg-white overflow-hidden shadow-card transition-all cursor-pointer">
+    <div
+      onClick={handleNavigate}
+      className="group bg-white overflow-hidden shadow-card transition-all cursor-pointer"
+    >
       <div className="relative h-64 rounded-lg bg-gray-200 overflow-hidden">
-        <Image
-          src={image || "/placeholder.svg"}
-          alt={title}
-          fill
-          className="object-cover  group-hover:scale-110 transition-transform duration-500"
-        />
+        <div
+          className="flex h-full transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
+          {images.map((img, index) => (
+            <div key={index} className="relative min-w-full h-full overflow-hidden">
+              <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
+                <Image
+                  src={img || "/placeholder.svg"}
+                  alt={`${title}-${index}`}
+                  fill
+                  className="object-cover"
+                />
+              </div>
 
+            </div>
+          ))}
+        </div>
+        {images.length > 1 && (
+          <button
+            onClick={prevSlide}
+            className="
+              absolute left-3 top-1/2 -translate-y-1/2 z-10
+              bg-black/40 text-white p-2 rounded-full
+              hover:bg-black/60
+              opacity-0 pointer-events-none
+              transition-all duration-300
+              group-hover:opacity-100 group-hover:pointer-events-auto
+            "
+          >
+            <ChevronLeft size={18} />
+          </button>
+        )}
+
+        {/* RIGHT BUTTON */}
+        {images.length > 1 && (
+          <button
+            onClick={nextSlide}
+            className="
+              absolute right-3 top-1/2 -translate-y-1/2 z-10
+              bg-black/40 text-white p-2 rounded-full
+              hover:bg-black/60
+              opacity-0 pointer-events-none
+              transition-all duration-300
+              group-hover:opacity-100 group-hover:pointer-events-auto
+            "
+          >
+            <ChevronRight size={18} />
+          </button>
+        )}
+
+        {/* TOP BADGES */}
         <div className="absolute top-4 left-4 flex gap-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#1466EC] text-white text-[11px] font-manrope font-medium leading-none backdrop-blur-md">
-            <Sparkles size={12} className="text-white" />
-            <span>AI Verified</span>
+          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#1466EC] text-white text-[11px] font-manrope">
+            <Sparkles size={12} />
+            AI Verified
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#5BA55A] text-white text-[11px] font-manrope font-medium leading-none backdrop-blur-md">
-            <ShieldCheck size={12} className="text-white" />
-            <span>Verified Seller</span>
+          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#5BA55A] text-white text-[11px] font-manrope">
+            <ShieldCheck size={12} />
+            Verified Seller
           </div>
         </div>
 
-        <button className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center shadow-md hover:bg-red-50 transition-colors">
-          <Heart
-            size={20}
-            className="text-white hover:text-red-500 transition-colors"
-          />
+        {/* HEART */}
+        <button
+          onClick={(e) => e.stopPropagation()}
+          className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
+        >
+         {isLiked ? <Heart size={20} className="text-red-500 fill-red-500" /> : <Heart size={20} className="text-white hover:text-red-500" />}
         </button>
-        <div className="absolute bottom-4 left-4 font-manrope font-normal backdrop-blur-md bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915]">
+        <div className="absolute font-manrope font-normal bottom-4 left-4 bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915]">
           For Sale
         </div>
+        {images.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            {images.map((_, i) => (
+              <span
+                key={i}
+                className={`h-2 rounded-full transition-all ${i === currentIndex
+                  ? "w-4 bg-white"
+                  : "w-2 bg-white/50"
+                  }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
+      <div className="space-y-1 py-3">
+        <div className="flex items-center gap-2 justify-between">
+          <p className="text-md font-manrope font-bold text-[#727272]">
+            {price}
+          </p>
+          {aiInsights && (
+            <p className="underline text-[#2563EB] font-manrope font-bold text-sm">AI Insights</p>
+          )}
+        </div>
 
-      <div className="space-y-1">
-        <p className="text-md font-manrope font-bold  mt-2 text-[#727272]">
-          {price}
-        </p>
-        <h3 className="text-[0.90rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
+        <h3 className="text-[0.9rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
           {title}
         </h3>
-        <div className="flex gap-5 items-center pt-2 text-gray-600 text-sm">
-          <div className="flex items-center gap-1">
+
+        <div className="flex gap-5 items-center pt-4 text-sm">
+          <div className="flex font-manrope font-normal items-center gap-1">
             <Expand size={18} className="text-gray-400" />
-            <span className="font-manrope font-normal text-[#0A0915]">
-              {area} sq. ft.
-            </span>
+            <span>{area} sq. ft.</span>
           </div>
-          <div className="flex items-center gap-1">
+
+          <div className="flex font-manrope font-normal items-center gap-1">
             <BedSingle size={18} className="text-gray-400" />
-            <span className="font-manrope font-normal text-[#0A0915]">
-              {beds} Bed
-            </span>
+            <span>{beds} Bed</span>
           </div>
-          <div className="flex items-center gap-1">
+
+          <div className="flex font-manrope font-normal items-center gap-1">
             <Bath size={18} className="text-gray-400" />
-            <span className="font-manrope font-normal text-[#0A0915]">
-              {baths} Bath
-            </span>
+            <span>{baths} Bath</span>
           </div>
         </div>
       </div>

@@ -23,7 +23,6 @@ export default function Navbar() {
 
   const handleNavClick = (item: any) => {
     dispatch(clearBreadcrumbs())
-    console.log("item ::: " , item)
     if (item.breadcrumbs) {
       dispatch(setBreadcrumbs(item.breadcrumbs))
     }

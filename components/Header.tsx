@@ -34,7 +34,7 @@ export default function Header() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white w-full shadow-sm">
       <div className="lg:mx-7 px-4 sm:px-6 lg:px-8 border border-white/70 rounded-full backdrop-blur-md">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-[5.5rem]">
           <Link href="/" className="flex items-center gap-2">
             <Image
               src={App_url.image.logo}

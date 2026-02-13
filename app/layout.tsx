@@ -1,6 +1,6 @@
 import React from "react"
 import type { Metadata } from "next"
-import { Inter, Manrope, Instrument_Sans, Poppins } from "next/font/google"
+import { Inter, Manrope, Instrument_Sans, Poppins, Public_Sans } from "next/font/google"
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import "../styles/globals.css"
@@ -51,6 +51,13 @@ const instrumentSans = Instrument_Sans({
   variable: '--font-instrument-sans',
 });
 
+export const publicSans = Public_Sans({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-public-sans",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Zecco.es",
   description:
@@ -63,7 +70,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${manrope.variable} ${instrumentSans.variable} ${poppins?.variable} ${circular_std?.variable} scrollbar-hide`}>
+    <html lang="en" className={`${inter.variable} ${manrope.variable} ${instrumentSans.variable} ${poppins?.variable} ${circular_std?.variable} ${publicSans.variable} scrollbar-hide`}>
       <body className="bg-white text-gray-900 antialiased font-sans scrollbar-hide">
         <AppProviders>
           {children}

@@ -22,7 +22,7 @@ const Page = () => {
 
 
     return (
-        <MainLayout isBreadcrumb isFilter>
+        <MainLayout isBreadcrumb isFilter isPropertyType isProperty propertyCount={propertyData?.length}>
             <div className="lg:mx-7 lg:pb-10 px-4 sm:px-6 lg:px-8">
                 <div className="flex items-start gap-4 h-full overflow-y-auto">
                     <div className="" style={{ height: gridHeight || "auto" }}>

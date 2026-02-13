@@ -1,8 +1,10 @@
 import PackageCard from "@/components/cards/package-card";
 import {
+  Box,
   Crown,
   LockKeyholeOpen,
   Shield,
+  ShieldCheck,
   Zap
 } from "lucide-react";
 
@@ -14,7 +16,7 @@ const plans = [
   },
   {
     title: "Zecco Go",
-    icon: <Zap className=" text-primary_blue" size={25} />,
+    icon: <ShieldCheck className=" text-primary_blue" size={25} />,
     features: [
       "Paid package",
       "Availability of advanced AI agents",
@@ -23,7 +25,7 @@ const plans = [
   },
   {
     title: "Zecco Plus",
-    icon: <Shield className=" text-primary_blue" size={25} />,
+    icon: <Box className=" text-primary_blue" size={25} />,
     features: [
       "Paid package",
       "Same as Go",

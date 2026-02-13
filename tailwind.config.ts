@@ -108,6 +108,7 @@ const config: Config = {
         instrument_sans: ["var(--font-instrument-sans)", "sans-serif"],
         circular_std: ["var(--font-circular-std)", "sans-serif"],
         poppins: ["var(--font-poppins)", "sans-serif"],
+        sans: ["var(--font-public-sans)", "sans-serif"],
       },
     },
   },
