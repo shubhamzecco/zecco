@@ -104,7 +104,11 @@ import { useDispatch } from 'react-redux'
 import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
 import { NAV_ITEMS } from '@/utils/common'
 
-export default function Header() {
+type HeaderProps = {
+  onProfileClick?: () => void;
+};
+
+export default function Header({ onProfileClick }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
   const dispatch = useDispatch()
@@ -172,13 +176,29 @@ export default function Header() {
               </Link>
             </div>
 
-            {/* Mobile Toggle */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="md:hidden p-2 rounded-lg"
+              >
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+              {(pathname === App_url.link.DASHBOARD || pathname === App_url.link.FAVORITES || pathname === App_url.link.ACCOUNT_PACKAGE
+                || pathname === App_url.link.SAVED_SEARCHES || pathname === App_url.link.MESSAGE || pathname === App_url.link.AI_INSIGHTS) && (
+                  <button
+                    onClick={onProfileClick}
+                    className="md:hidden w-10 h-10 rounded-full overflow-hidden border"
+                  >
+                    <Image
+                      src={App_url.image.profile}
+                      alt="Profile"
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                  </button>
+                )}
+            </div>
           </div>
         </div>
       </nav>

@@ -61,6 +61,7 @@ export const App_url = {
     CONTACT_US : '/contact-us',
     ABOUT_ZECCO : '/about-zecco',
     PROFILE : '/profile',
+    MESSAGE : '/messages'
   },
   endpoint_url: {
     USER_LOGIN: "/user-login",

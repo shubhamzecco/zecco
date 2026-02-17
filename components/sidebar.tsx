@@ -125,38 +125,24 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const menuItems = [
-  { name: "Dashboard", href: "/dashboard", icon: LayoutGrid },
-  { name: "Favorites", href: "/favorites", icon: Heart },
-  { name: "Account / Package", href: "/account", icon: Archive },
-  { name: "Saved Searches", href: "/saved-searches", icon: Search },
-  { name: "Messages", href: "/messages", icon: MessagesSquare },
-  { name: "AI Insights", href: "/AI-insights", icon: Sparkles },
+  { name: "Dashboard", href: App_url.link.DASHBOARD, icon: LayoutGrid },
+  { name: "Favorites", href: App_url.link.FAVORITES, icon: Heart },
+  { name: "Account / Package", href: App_url.link.ACCOUNT_PACKAGE, icon: Archive },
+  { name: "Saved Searches", href: App_url.link.SAVED_SEARCHES, icon: Search },
+  { name: "Messages", href: App_url.link.MESSAGE, icon: MessagesSquare },
+  { name: "AI Insights", href: App_url.link.AI_INSIGHTS, icon: Sparkles },
 ];
+type SidebarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      {/* ================= MOBILE PROFILE BUTTON ================= */}
-      <div className="md:hidden fixed bottom-6 right-6 z-50">
-        <button
-          onClick={() => setIsOpen(true)}
-          className="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center"
-        >
-          <Image
-            src={App_url.image.profile}
-            alt="Profile"
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
-        </button>
-      </div>
-      
-      <aside className="hidden md:flex w-full h-[calc(100vh-50px)] bg-white pl-14 px-10 py-6 flex-col overflow-y-scroll hide-scrollbar">
-        {/* Profile */}
+  <aside className="hidden md:flex w-full h-[calc(100vh-50px)] bg-white pl-14 px-10 py-6 flex-col overflow-y-scroll hide-scrollbar">
         <div className="flex items-center gap-3 border-b border-[#E2E9E0] pb-5 mt-8 mb-5">
           <Image
             src={App_url.image.profile}
@@ -205,23 +191,13 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* ================= MOBILE DROPDOWN PANEL ================= */}
       <div
-        className={`md:hidden fixed inset-0 z-40 transition ${
+        className={`md:hidden fixed inset-0 z-40 mb-28  transition ${
           isOpen ? "visible" : "invisible"
         }`}
       >
-        {/* Overlay */}
         <div
-          className={`absolute inset-0 bg-black/40 transition-opacity ${
-            isOpen ? "opacity-100" : "opacity-0"
-          }`}
-          onClick={() => setIsOpen(false)}
-        />
-
-        {/* Panel */}
-        <div
-          className={`absolute right-0 bottom-0 top-0 w-[85%] max-w-sm bg-white shadow-xl transition-transform duration-300
+          className={`absolute right-0 bottom-0 top-[5rem] w-[85%] mb-28 min-h-[100vh] overflow-y-scroll max-w-sm bg-white shadow-xl transition-transform duration-300
             ${isOpen ? "translate-x-0" : "translate-x-full"}`}
         >
           <div className="flex items-center justify-between p-4 border-b">
@@ -242,10 +218,6 @@ export default function Sidebar() {
                 </p>
               </div>
             </div>
-
-            <button onClick={() => setIsOpen(false)}>
-              <X size={20} />
-            </button>
           </div>
 
           {/* Menu */}
@@ -259,7 +231,7 @@ export default function Sidebar() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={onClose}
                     className={`flex font-manrope text-[0.9rem] font-semibold items-center gap-3 px-4 py-2.5 rounded-full transition
                       ${
                         isActive
@@ -275,7 +247,7 @@ export default function Sidebar() {
             </nav>
 
             {/* Agent Card */}
-            <div className="mt-auto pt-8">
+            <div className="lg:mt-auto pt-8">
               <AgentCard />
             </div>
           </div>
