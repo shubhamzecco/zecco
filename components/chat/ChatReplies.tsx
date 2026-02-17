@@ -6,9 +6,9 @@ import ReactMarkdown from "react-markdown";
 import { ChatMessage } from "./zecco-chat-modal";
 
 const QUICK_ACTIONS = [
-  "I have a property in mind and I want to book a tour",
-  "I want to get pre-approved",
-  "Explore homes",
+  "Find properties for buy in Spain.",
+  "Explore apartments and villas in Barcelona.",
+  "Search budget-friendly homes across Spain",
 ];
 
 type Props = {
