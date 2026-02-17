@@ -91,8 +91,8 @@ export default function PropertyListings() {
       <div className="">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-2xl sm:text-4xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
-          <Button className='rounded-full font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white '>
+          <h2 className="text-2xl sm:text-3xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
+          <Button className='rounded-full font-manrope bg-btn_color font-medium  px-3 lg:px-7   lg:py-2 text-xs lg:text-sm shadow-sm  text-white '>
             View All Properties
           </Button>
         </div>

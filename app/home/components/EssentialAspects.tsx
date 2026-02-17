@@ -69,7 +69,7 @@ export default function EssentialAspects() {
               />
 
               {/* AI VERIFIED BADGE */}
-              <div className="absolute bottom-16 -left-28 bg-white rounded-2xl p-6 shadow-xl flex items-center gap-3">
+              <div className="absolute bottom-0 lg:bottom-16 lg:-left-28 bg-white rounded-2xl p-6 shadow-xl flex items-center gap-3">
                 <div className="">
                   <div className="flex items-center gap-3 mb-1">
                     <span className="w-3 h-3 rounded-full bg-success_green" />

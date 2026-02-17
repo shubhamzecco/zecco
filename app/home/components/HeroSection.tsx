@@ -10,7 +10,7 @@ export default function HeroSection() {
         src={App_url.image.home}
         alt="Luxury villa in Spain"
         fill
-        className="object-fill mx-auto"
+        className="lg:object-fill max-md:object-cover mx-auto"
         priority
       />
 

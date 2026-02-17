@@ -31,7 +31,7 @@ export default function ExploreByTypes() {
     <section className="relative overflow-hidden bg-gradient-to-r from-[#0F172A] via-[#111C3A] to-[#16213E] py-20">
 
       {/* BACKGROUND BUILDING IMAGE */}
-      <div className="absolute inset-0 -top-52 -left-72 w-full">
+      <div className="absolute inset-0 lg:-top-52 lg:-left-72 w-full">
         <Image
           src={App_url.image.building}
           alt="Buildings"

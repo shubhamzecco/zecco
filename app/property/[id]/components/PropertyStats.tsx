@@ -40,7 +40,7 @@ export default function PropertyStats() {
             <Bath className="w-5 h-5 text-[#475569]" />
           </div>
           <div>
-            <p className="text-sm font-manrope font-bold text-[#111827]">
+            <p className="text-sm whitespace-nowrap font-manrope font-bold text-[#111827]">
               5 Bathrooms
             </p>
             <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">

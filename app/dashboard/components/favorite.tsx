@@ -88,7 +88,7 @@ const Favorite = () => {
     ]
     return (
         <section className="mt-10 mb-6">
-            <h2 className="font-bold text-xl mb-4 font-inter text-[#111827]">Favorite</h2>
+            <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">Favorite</h2>
             <div className="bg-white/70 p-7  rounded-lg">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
                     {propertyData?.splice(0, 3)?.map((property) => (

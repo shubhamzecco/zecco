@@ -48,57 +48,61 @@ const MainLayout = ({
 
                 )}
                 {isFilter && (
-                    <div className="flex justify-between items-start mb-8 mt-8 gap-4">
-                        <div className="relative flex-1 flex  items-center gap-3 w-1/2  rounded-[7px]">
-                            <Search
-                                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"
-                                size={18}
-                            />
-                            <input
-                                type="text"
-                                placeholder="Search by area"
-                                className="w-full max-w-[22rem] bg-[#fcfcfc] placeholder:font-manrope font-normal placeholder:text-[#999999] h-9 pl-10 pr-4 rounded-[7px] border border-gray-300 
+                    <div className="flex max-md:flex-col max-md:w-full justify-between items-start mb-8 mt-8 gap-4">
+                        <div className=" flex-1  lg:flex  items-center gap-3 max-md:w-full lg:w-1/2  rounded-[7px]">
+                            <div className="flex relative items-center gap-3 max-md:mb-2">
+                                <Search
+                                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"
+                                    size={18}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Search by area"
+                                    className="w-full lg:max-w-[22rem] bg-[#fcfcfc] placeholder:font-manrope font-normal placeholder:text-[#999999] h-9 pl-10 pr-4 rounded-[7px] border border-gray-300 
                            focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            />
+                                />
+                            </div>
                             {propertyCount !== 0 && (
                                 <div className="">
                                     <p className='font-manrope font-semibold text-black'>{propertyCount} results in drawn area</p>
                                 </div>
                             )}
                         </div>
-                        {isPropertyType && (
-                            <div className="inline-flex gap-1 rounded-lg bg-[#E5E7EB] p-1 shrink-0">
-                                {["Buy", "Rent", "New"].map((tab, i) => (
-                                    <button
-                                        key={i}
-                                        className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md
+                        <div className="flex max-md:items-center justify-between max-md:w-full gap-5">
+                            {isPropertyType && (
+                                <div className="inline-flex gap-1 rounded-lg bg-[#E5E7EB] p-1 shrink-0">
+                                    {["Buy", "Rent", "New"].map((tab, i) => (
+                                        <button
+                                            key={i}
+                                            className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md
                                         ${tab === "Buy"
-                                                ? "bg-white text-black"
-                                                : "text-[#6B7280] hover:bg-slate-100"
-                                            }`}
-                                    >
-                                        {tab}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-
-                        {isProperty && (
-                            <div className="space-y-3">
-                                <div className="relative">
-                                    <select
-                                        // onChange={(e) => handleInputChange('propertyType', e.target.value)}
-                                        className="w-full font-manrope font-bold text-[#000000] px-3 py-1.5 border border-gray-300 rounded-sm appearance-none bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                                    >
-                                        <option>Relevance</option>
-                                        <option>House</option>
-                                        <option>Villa</option>
-                                        <option>Commercial</option>
-                                    </select>
-                                    <ChevronDown className="absolute right-1 top-2.5 w-4 h-4 text-[#000000] pointer-events-none" />
+                                                    ? "bg-white text-black"
+                                                    : "text-[#6B7280] hover:bg-slate-100"
+                                                }`}
+                                        >
+                                            {tab}
+                                        </button>
+                                    ))}
                                 </div>
-                            </div>
-                        )}
+                            )}
+
+                            {isProperty && (
+                                <div className="space-y-3">
+                                    <div className="relative">
+                                        <select
+                                            // onChange={(e) => handleInputChange('propertyType', e.target.value)}
+                                            className="w-full font-manrope font-bold text-[#000000] px-3 py-1.5 border border-gray-300 rounded-sm appearance-none bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                                        >
+                                            <option>Relevance</option>
+                                            <option>House</option>
+                                            <option>Villa</option>
+                                            <option>Commercial</option>
+                                        </select>
+                                        <ChevronDown className="absolute right-1 top-2.5 w-4 h-4 text-[#000000] pointer-events-none" />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
             </div>

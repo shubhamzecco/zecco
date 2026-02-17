@@ -36,7 +36,7 @@ export const generateBreadcrumbs = (
 export const NAV_ITEMS = [
     {
         label: "Find Property",
-        href: "#",
+        href: "/",
         breadcrumbs: [{ label: "Home", href: "/" }],
     },
     {
@@ -57,8 +57,11 @@ export const NAV_ITEMS = [
     },
     {
         label: "About Zecco.es",
-        href: "#",
-        breadcrumbs: [{ label: "Home", href: "/" }],
+        href: App_url.link.ABOUT_ZECCO,
+        breadcrumbs: [
+            { label: "Home", href: "/" },
+            { label: "About Zecco.es", href: App_url.link.ABOUT_ZECCO },
+        ],
     },
     {
         label: "Packages",

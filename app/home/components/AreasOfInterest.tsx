@@ -50,7 +50,7 @@ export default function AreasOfInterest() {
       <div className="lg:mx-10">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
-          <h2 className="text-2xl sm:text-4xl font-bold font-manrope text-[#00000]">
+          <h2 className="text-2xl sm:text-3xl font-bold font-manrope text-[#00000]">
             Costa del Sol Areas Of Interest
           </h2>
           <div className="flex gap-2 hidden sm:flex">
@@ -82,18 +82,9 @@ export default function AreasOfInterest() {
 
         {/* Mobile Scroll Buttons */}
         <div className="flex gap-2 sm:hidden mt-4 justify-center">
-          <button
-            onClick={() => scroll('left')}
-            className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-blue-600 transition-colors"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={() => scroll('right')}
-            className="w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-blue-600 transition-colors"
-          >
-            <ChevronRight size={20} />
-          </button>
+           <Button className='rounded-full font-manrope bg-btn_color font-medium px-7   lg:py-2 text-xs lg:text-sm shadow-sm  text-white '>
+            View All Cities
+          </Button>
         </div>
       </div>
 

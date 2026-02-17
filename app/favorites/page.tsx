@@ -68,14 +68,14 @@ const FavoritesPage = () => {
     ]
     return (
         <SidebarLayout>
-            <div className="px-12  py-12 h-full
+            <div className="lg:px-12 px-5  py-8 h-full
                             bg-gradient-to-r
                         from-[#60A5FA]/10
                         via-[#fafafa] via-[70%]
                         to-[#fafafa] to-[100%]">
                 <section className="mt-5 mb-6">
                     <div className="flex justify-between items-center mb-1">
-                        <h2 className="font-bold text-xl mb-4 font-inter text-[#111827]">Favorites</h2>
+                        <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">Favorites</h2>
                         <div className=" bg-[#EEF2FF] rounded-full px-3 py-1 ">
                             <p className='font-manrope font-semibold text-[#2828FF] uppercase text-sm'>{propertyData?.length} Properties</p>
                         </div>

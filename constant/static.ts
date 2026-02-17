@@ -9,7 +9,10 @@ export const App_url = {
     sign_up_image: "/assets/images/signup-image.jpg",
     email: "/assets/images/email.svg",
     edit : "/assets/images/edit.svg",
-    
+    contact_us: "/assets/images/contact-us.jpg",
+    about_us_1 : '/assets/images/about-us-1.jpg',
+    about_us_2 : '/assets/images/about-us-2.jpg',
+
     // dev images
     profile :'/assets/images/dev/profile.png', 
     cds_marbella : '/assets/images/dev/cds-marbella-1.png',
@@ -54,6 +57,10 @@ export const App_url = {
     FAVORITES : '/favorites',
     SAVED_SEARCHES : '/saved-searches',
     ACCOUNT_PACKAGE : '/account',
+    AI_INSIGHTS : '/AI-insights',
+    CONTACT_US : '/contact-us',
+    ABOUT_ZECCO : '/about-zecco',
+    PROFILE : '/profile',
   },
   endpoint_url: {
     USER_LOGIN: "/user-login",

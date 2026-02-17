@@ -6,21 +6,21 @@ import React from 'react'
 const AiInsights = () => {
     return (
         <section className="mt-10 mb-6">
-            <h2 className="font-bold text-xl mb-4 font-inter text-[#111827]">AI Insights: Best Value Marbella</h2>
+            <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">AI Insights: Best Value Marbella</h2>
             <div className="flex flex-col gap-6">
 
                 <div className="bg-white/70 rounded-2xl relative">
                     <div className=" bg-[#EEF2FF] border border-[#E0E7FF] rounded-full px-3 py-1 absolute top-3 right-4 flex items-center gap-1">
                         <p className='font-manrope font-semibold text-[#2828FF] text-xs'>+8.2% p.a.</p>
                     </div>
-                    <div className="flex items-start gap-3">
+                    <div className="lg:flex items-start gap-3">
                         <div className="">
                             <Image
                                 src={App_url.image.image_6}
                                 alt="AI Insights"
                                 width={220}
                                 height={270}
-                                className="rounded-l-2xl object-cover"
+                                className="lg:rounded-l-2xl max-md:rounded-t-2xl object-cover max-md:w-full"
                             />
                         </div>
                         <div className="">
@@ -59,19 +59,18 @@ const AiInsights = () => {
                 </div>
 
 
-
                 <div className="bg-white/70 rounded-2xl relative">
                     <div className=" bg-[#EEF2FF] border border-[#E0E7FF] rounded-full px-3 py-1 absolute top-3 right-4 flex items-center gap-1">
                         <p className='font-manrope font-semibold text-[#2828FF] text-xs'>+8.2% p.a.</p>
                     </div>
-                    <div className="flex items-start gap-3">
+                    <div className="lg:flex items-start gap-3">
                         <div className="">
                             <Image
-                                src={App_url.image.image_5}
+                                src={App_url.image.image_3}
                                 alt="AI Insights"
                                 width={220}
                                 height={270}
-                                className="rounded-l-2xl object-cover"
+                                className="lg:rounded-l-2xl max-md:rounded-t-2xl object-cover max-md:w-full"
                             />
                         </div>
                         <div className="">

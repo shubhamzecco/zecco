@@ -10,11 +10,11 @@ const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
                 <Header />
             </div>
             <div className="pt-[72px] flex min-h-screen">
-                <aside className="w-[360px]">
+                <aside className="lg:w-[320px]">
                     <Sidebar />
                 </aside>
 
-                <section className="flex-1">
+                <section className="lg:flex-1">
                     {children}
                 </section>
             </div>

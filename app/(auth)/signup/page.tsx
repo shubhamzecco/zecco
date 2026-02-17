@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, House } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import * as z from "zod";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import * as z from "zod";
 
+import { postData } from "@/api/rest/fetchData";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,10 +19,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { postData } from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
-import PackagesModal from "../components/package-modal";
 import { useState } from "react";
+import PackagesModal from "../components/package-modal";
 import AuthLayout from "../layout/page";
 
 const formSchema = z.object({

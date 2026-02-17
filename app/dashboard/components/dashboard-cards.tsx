@@ -22,7 +22,7 @@ const DashboardCard = () => {
 
     return (
         <section className="mb-6">
-            <h2 className="font-bold text-xl mb-4 font-inter text-[#111827]">Dashboard</h2>
+            <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">Dashboard</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {cardData?.map((card, index) => (
                     <div key={index} className="bg-white rounded-xl shadow-md p-6">

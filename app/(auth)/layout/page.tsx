@@ -12,7 +12,7 @@ interface AuthImageLayoutProps {
 
 export default function AuthLayout({ children, bottomContent }: AuthImageLayoutProps) {
   return (
-    <section className="h-screen overflow-hidden bg-white p-10 w-full">
+    <section className="h-screen overflow-hidden bg-white lg:p-10 w-full">
       <div className="flex h-full items-center gap-10">
 
         {/* LEFT IMAGE */}
