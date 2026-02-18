@@ -36,7 +36,7 @@ export default function Operate() {
             <div className="space-y-10">
               {features.map((feature, index) => (
                 <div key={index} className="flex gap-4">
-                  <div className="flex-shrink-0 bg-btn_color w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
+                  <div className="flex-shrink-0 bg-[#4A86E8] w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
                     {feature.icon}
                   </div>
                   <div>
