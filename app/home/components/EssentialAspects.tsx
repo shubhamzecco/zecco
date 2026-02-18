@@ -5,17 +5,17 @@ import { App_url } from "@/constant/static";
 export default function EssentialAspects() {
   const features = [
     {
-      icon: <CheckCircle2 size={32} />,
+      icon: App_url.image.local,
       title: 'Local Expertise',
       description: 'Deep understanding of Spanish property laws, regions, and market trends.',
     },
     {
-      icon: <LayoutPanelLeft size={32} />,
+      icon: App_url.image.ai_search,
       title: 'Personalized AI Search',
       description: 'Smart recommendations tailored to your lifestyle, budget, and goals.',
     },
     {
-      icon: <Layers size={32} />,
+      icon: App_url.image.modular,
       title: 'Modular Solutions',
       description: 'Buy, rent, invest, or relocate—everything in one seamless platform.',
     },
@@ -35,8 +35,13 @@ export default function EssentialAspects() {
             <div className="space-y-10">
               {features.map((feature, index) => (
                 <div key={index} className="flex gap-4">
-                  <div className="flex-shrink-0 bg-btn_color w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
-                    {feature.icon}
+                  <div className="flex-shrink-0 bg-[#4A86E8] w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
+                    <Image
+                    src={feature?.icon}
+                    alt={feature?.title}
+                    width={30}
+                    height={30}
+                    />
                   </div>
                   <div>
                     <h3 className="text-xl font-manrope font-medium text-[#000000] mb-2">
@@ -62,10 +67,10 @@ export default function EssentialAspects() {
             {/* IMAGE */}
             <div className="relative w-full h-[510px]">
               <Image
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&h=600&fit=crop"
+                src={App_url.image.image_1}
                 alt="Modern villa interior"
                 fill
-                className="object-fill rounded-2xl shadow-xl"
+                className="object-cover rounded-2xl shadow-xl"
               />
 
               {/* AI VERIFIED BADGE */}

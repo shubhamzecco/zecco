@@ -22,7 +22,7 @@ const blogs = [
 
 export default function Blogs() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-14 bg-white">
       <div className="lg:mx-10 px-6">
 
         {/* HEADER */}

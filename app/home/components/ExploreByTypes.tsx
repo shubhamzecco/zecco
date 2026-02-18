@@ -28,7 +28,7 @@ const typeCards = [
 
 export default function ExploreByTypes() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#0F172A] via-[#111C3A] to-[#16213E] py-20">
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#0F172A] via-[#111C3A] to-[#16213E] py-10">
 
       {/* BACKGROUND BUILDING IMAGE */}
       <div className="absolute inset-0 lg:-top-52 lg:-left-72 w-full">
@@ -49,7 +49,7 @@ export default function ExploreByTypes() {
             Explore By Types
           </h2>
 
-          <p className="text-white/50 font-manrope text-lg max-w-md mt-4 md:mt-0">
+          <p className="text-white/50 font-manrope text-lg max-w-[35rem] mt-4 md:mt-0">
             Discover properties tailored to your lifestyle, business needs, and investment goals across Spain.
           </p>
         </div>
@@ -60,18 +60,18 @@ export default function ExploreByTypes() {
           {/* CARD */}
           {[
             {
-              title: "Residential",
-              desc: "Apartments, villas, and townhouses for everyday living.",
-              action: "Browse Residential",
+              title: "Existing Build",
+              desc: "Apartments, villas, and <br/> townhouses for everyday living.",
+              action: "Browse Existing Build",
             },
             {
-              title: "Commercial",
+              title: "Newly Build Projects",
               desc: "Offices, retail spaces, and business-ready properties.",
-              action: "Browse Commercial",
+              action: "Browse Newly Build projects",
             },
             {
               title: "Investment",
-              desc: "High-yield properties with strong rental appreciation.",
+              desc: "High-yield properties with strong rental and appreciation potential.",
               action: "Browse Investment",
             },
           ].map((item, index) => (
@@ -83,11 +83,16 @@ export default function ExploreByTypes() {
                 {item.title}
               </h3>
 
-              <p className="text-md font-manrope font-medium text-slate_gray max-w-[15rem] mb-8">
-                {item.desc}
+              <p className="text-md font-manrope font-medium text-slate_gray max-w-[19rem] mb-8">
+                {item?.desc?.split("<br/>").map((line, i) => (
+                  <span key={i}>
+                    {line}
+                    <br />
+                  </span>
+                ))}
               </p>
 
-              <button className="flex items-center gap-2 text-sm font-manrope tracking-wider font-bold text-white hover:text-[#38BDF8] transition">
+              <button className="flex uppercase items-center gap-2 text-[0.7rem] font-manrope tracking-wider font-semibold text-white hover:text-[#38BDF8] transition">
                 {item.action}
                 <ArrowUpRight size={16} />
               </button>

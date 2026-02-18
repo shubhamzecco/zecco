@@ -49,22 +49,14 @@ export default function ZeccoFavorites() {
   return (
     <section className=" bg-white mb-20">
       <div className="">
-        {/* Header */}
         <div className="flex justify-between items-center mb-5">
           <h2 className="text-xl sm:text-xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
         </div>
-
-        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {propertyData?.map((property) => (
             <PropertyCard key={property.id} {...property} />
           ))}
         </div>
-
-        {/* Mobile View All Button */}
-        {/* <Button className='rounded-full font-manrope bg-dark_navy font-medium  px-7  py-2 text-sm shadow-xl  text-white '>
-          View All Properties
-        </Button> */}
       </div>
     </section>
   )

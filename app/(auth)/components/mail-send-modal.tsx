@@ -13,7 +13,7 @@ export default function CheckInboxModal({
     onReturn?: () => void
 }) {
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm max-md:p-4">
 
             <div className="relative w-[420px] rounded-3xl overflow-hidden shadow-2xl">
                 <div className="bg-gradient-to-b from-[#CFE0FF] via-[#EAF1FF] to-white px-10 pt-10 pb-16 text-center">

@@ -58,7 +58,7 @@ const regions = [
 
 export default function ExploreRegions() {
   return (
-    <section className="bg-[#F8FAFC] py-20">
+    <section className="bg-[#F8FAFC] py-14">
       <div className=" lg:mx-10 px-6">
 
         {/* HEADER */}
@@ -117,7 +117,7 @@ export default function ExploreRegions() {
                 ))}
               </ul>
 
-              <button className="mt-6 bg-[#DBE1E7] text-[#111827] py-3 font-manrope font-bold rounded-full text-sm transition">
+              <button className="mt-6 bg-[#4A86E8] text-white py-2 font-manrope font-bold rounded-full text-sm transition">
                 View all listings
               </button>
             </div>

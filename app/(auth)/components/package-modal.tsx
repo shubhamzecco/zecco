@@ -26,7 +26,7 @@ export default function PackagesModal({
   const router = useRouter()
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm max-md:p-3">
       <div className="w-[470px] rounded-2xl bg-white shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-6 py-4 border-b bg-[#F9F9F9]">

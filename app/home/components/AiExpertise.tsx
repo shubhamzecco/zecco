@@ -269,10 +269,10 @@ export default function AiExpertise() {
                 {/* IMAGE */}
                 <div className="relative min-h-[280px] md:min-h-full bg-gradient-to-br from-orange-200 to-orange-50">
                   <Image
-                    src={App_url.image.image_6}
+                    src={App_url.image.ai_expert}
                     alt="Advisor"
                     fill
-                    className="object-cover"
+                    className="object-cover object-[30%_center]"
                   />
 
                   <div

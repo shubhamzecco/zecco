@@ -109,15 +109,13 @@ export default function Navbar() {
       {/* Top Bar */}
       <div className="lg:mx-10 px-4 sm:px-6 lg:px-8">
         <div className="bg-white/20 border border-white/70 rounded-full">
-          <div className="flex justify-between items-center h-16 px-4">
-
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
+          <div className="grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center w-full h-12 px-4">
+            <Link href="/" className="flex items-center gap-2 w-[25%]">
               <Image
-                src={App_url.image.logo}
+                src={App_url.image.chat_logo}
                 alt="logo"
-                width={160}
-                height={100}
+                width={30}
+                height={30}
               />
             </Link>
 
@@ -127,23 +125,23 @@ export default function Navbar() {
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item)}
-                  className="relative text-[#0B5394] font-inter text-sm font-medium"
+                  className={`relative ${isActive(item.href) ? 'text-[#1466EC]' : 'text-[#0B5394]' } font-inter text-xs font-medium`}
                 >
                   {item.label}
                   {isActive(item.href) && (
-                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#0B5394] rounded-full" />
+                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#1466EC] rounded-full" />
                   )}
                 </button>
               ))}
             </div>
 
             {/* Desktop Buttons */}
-            <div className="hidden md:flex items-center gap-3">
-              <Link href={App_url.link.SIGN_IN} className="px-5 py-3 text-sm flex items-center gap-2">
+            <div className="hidden md:flex justify-end items-center gap-2">
+              <Link href={App_url.link.SIGN_IN} className="px-5 py-2 text-sm flex items-center gap-2">
                 <User className="w-5 h-5" /> Login
               </Link>
 
-              <Link href={App_url.link.SIGN_UP} className="px-5 py-3 text-sm text-white bg-sky_blue_color rounded-full flex items-center gap-2">
+              <Link href={App_url.link.SIGN_UP} className="px-5 py-2 text-sm text-white bg-[#136AED] rounded-full flex items-center gap-2">
                 <UserPlus className="w-5 h-5" /> Registration
               </Link>
             </div>
@@ -151,7 +149,7 @@ export default function Navbar() {
             {/* Mobile Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-700"
+              className="md:hidden max-md:flex justify-end items-center p-2 rounded-lg text-gray-700"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>

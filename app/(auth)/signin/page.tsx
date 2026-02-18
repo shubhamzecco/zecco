@@ -72,10 +72,10 @@ const Signin = () => {
     <>
       <AuthLayout>
         <div className="mb-6 mt-7">
-          <h1 className="font-inter font-bold text-[#101828] text-2xl">
+          <h1 className="font-inter max-md:text-center font-bold text-[#101828] text-2xl">
             Welcome Back to Zecco!
           </h1>
-          <p className="font-inter my-2 font-medium text-[#6B7280]">
+          <p className="font-inter max-md:text-center my-2 font-medium text-[#6B7280]">
             Sign in to Your Account
           </p>
         </div>
@@ -87,13 +87,13 @@ const Signin = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold text-[#101828]">
+                  <FormLabel required className="font-semibold text-[#101828]">
                     Your Email
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter email"
-                      className="h-12 rounded-full border-[#D1D5DB]"
+                      className="h-12 rounded-full bg-white border-[#D1D5DB]"
                       {...field}
                     />
                   </FormControl>
@@ -107,14 +107,14 @@ const Signin = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold text-[#101828]">
+                  <FormLabel required className="font-semibold  text-[#101828]">
                     Password
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="password"
                       placeholder="Enter password"
-                      className="h-12 rounded-full border-[#D1D5DB]"
+                      className="h-12 bg-white rounded-full border-[#D1D5DB]"
                       {...field}
                     />
                   </FormControl>

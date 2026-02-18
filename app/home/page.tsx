@@ -1,3 +1,4 @@
+"use client"
 import Footer from '../../components/Footer'
 import Navbar from './components/Navbar'
 import AiExpertise from './components/AiExpertise'
@@ -10,9 +11,15 @@ import HeroSection from './components/HeroSection'
 import PricingPlans from '../../components/section/PricingPlans'
 import PropertyListings from './components/PropertyListings'
 import SmarterSearch from './components/SmarterSearch'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { setBreadcrumbs } from '@/redux/modules/main/action'
 
 const HomePage = () => {
-    
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(setBreadcrumbs([{ label: "Home", href: "/" }]))
+    }, [])
     return (
         <>
             <main className={`w-full bg-white`}>
@@ -23,7 +30,7 @@ const HomePage = () => {
                 <AreasOfInterest />
                 <EssentialAspects />
                 <ExploreByTypes />
-                <PricingPlans heading='Choose your Zecco plan' description='Unlock the full power of our AI-driven distribution network and dominate the Spanish property market.'/>
+                <PricingPlans heading='Choose your Zecco plan' description='Unlock the full power of our AI-driven distribution network and dominate the Spanish property market.' />
                 <Blogs />
                 <SmarterSearch />
                 <ExploreRegions />

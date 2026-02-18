@@ -131,58 +131,57 @@ export default function Header({ onProfileClick }: HeaderProps) {
       {/* NAVBAR */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white w-full shadow-sm">
         <div className="lg:mx-7 px-4 sm:px-6 lg:px-8 border border-white/70 rounded-full backdrop-blur-md">
-          <div className="flex justify-between items-center h-[5.5rem]">
-
-            {/* Logo */}
+          <div className="grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center w-full h-[3.9rem] mt-3">
             <Link href="/" className="flex items-center gap-2">
               <Image
-                src={App_url.image.logo}
+                src={App_url.image.chat_logo}
                 alt="logo"
-                width={160}
-                height={100}
+                width={30}
+                height={30}
               />
             </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-8 w-full">
               {NAV_ITEMS.map((item) => (
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item)}
-                  className="relative text-[#0B5394] font-inter text-sm font-medium"
+                  className={`relative ${isActive(item.href) ? 'text-[#1466EC]' : 'text-[#0B5394]'}  font-inter text-xs font-medium`}
                 >
                   {item.label}
                   {isActive(item.href) && (
-                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#0B5394] rounded-full" />
+                    <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#1466EC] rounded-full" />
                   )}
                 </button>
               ))}
             </div>
 
             {/* Desktop Buttons */}
-            <div className="hidden md:flex items-center gap-3 -mr-3">
-              <Link
+            <div className="hidden md:flex justify-end items-center gap-3 -mr-3">
+              {/* <Link
                 href={App_url.link.SIGN_IN}
                 className="px-5 py-3 text-sm font-medium flex items-center gap-2"
               >
                 <User className="w-5 h-5" /> Login
-              </Link>
+              </Link> */}
 
               <Link
                 href={App_url.link.SIGN_UP}
-                className="px-5 py-3 text-sm font-medium text-white bg-sky_blue_color rounded-full flex items-center gap-2"
+                className="px-5 py-2 text-sm font-medium text-white bg-sky_blue_color rounded-full flex items-center gap-2"
               >
                 <UserPlus className="w-5 h-5" /> Registration
               </Link>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center max-md:justify-end  gap-3">
               <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden p-2 rounded-lg"
+                   className="md:hidden max-md:flex justify-end items-center p-2 rounded-lg text-gray-700"
               >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
+
               {(pathname === App_url.link.DASHBOARD || pathname === App_url.link.FAVORITES || pathname === App_url.link.ACCOUNT_PACKAGE
                 || pathname === App_url.link.SAVED_SEARCHES || pathname === App_url.link.MESSAGE || pathname === App_url.link.AI_INSIGHTS) && (
                   <button

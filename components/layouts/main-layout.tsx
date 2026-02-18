@@ -64,7 +64,7 @@ const MainLayout = ({
                             </div>
                             {propertyCount !== 0 && (
                                 <div className="">
-                                    <p className='font-manrope font-semibold text-black'>{propertyCount} results in drawn area</p>
+                                    <p className='font-manrope hidden lg:block font-semibold text-black'>{propertyCount} results in drawn area</p>
                                 </div>
                             )}
                         </div>

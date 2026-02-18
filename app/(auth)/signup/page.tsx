@@ -68,8 +68,8 @@ const SignUpPage = () => {
       <AuthLayout>
         <div className="">
           <div className="mt-4 my-3 flex flex-col gap-2">
-            <h1 className="capitalize font-inter font-bold text-[#101828] text-2xl">Create Your Zecco Account</h1>
-            <p className="font-inter font-medium text-[#6B7280] capitalize">Register new account</p>
+            <h1 className="capitalize font-inter font-bold text-[#101828] text-xl max-md:text-center lg:text-2xl">Create Your Zecco Account</h1>
+            <p className="font-inter font-medium text-[#6B7280] capitalize max-md:text-center">Register new account</p>
           </div>
           <Form {...form}>
             <form className="" onSubmit={form.handleSubmit(onSubmit)}>
@@ -80,7 +80,7 @@ const SignUpPage = () => {
                     name="first_name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold font-inter text-[#101828]">
+                        <FormLabel required  className="font-semibold font-inter text-[#101828]">
                           First Name
                         </FormLabel>
                         <FormControl>
@@ -100,7 +100,7 @@ const SignUpPage = () => {
                     name="last_name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-semibold font-inter text-[#101828]">
+                        <FormLabel required className="font-semibold font-inter text-[#101828]">
                           Last Name
                         </FormLabel>
                         <FormControl>
@@ -122,7 +122,7 @@ const SignUpPage = () => {
                   name="mobile_no"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold font-inter text-[#101828]">
+                      <FormLabel required className="font-semibold font-inter text-[#101828]">
                         Mobile Number
                       </FormLabel>
                       <FormControl>
@@ -143,7 +143,7 @@ const SignUpPage = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold font-inter text-[#101828]">
+                      <FormLabel required className="font-semibold font-inter text-[#101828]">
                         Email
                       </FormLabel>
                       <FormControl>
@@ -173,7 +173,7 @@ const SignUpPage = () => {
             <div className="flex items-center px-8 mt-2">
               <Link
                 href={App_url?.link?.SIGN_IN}
-                className="w-full font-inter font-medium text-center text-[#6B7280] text-md"
+                className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
               >
                 Already have an account?
                 <span className="text-[#3B82F6] font-bold font-inter text-base">  Log In</span>

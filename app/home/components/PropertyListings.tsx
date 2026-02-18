@@ -87,7 +87,7 @@ const propertyData = [
 ]
 export default function PropertyListings() {
   return (
-    <section className="px-4 sm:px-6 lg:px-8 mt-10 bg-white  lg:mx-10 mb-20">
+    <section className="px-4 sm:px-6 lg:px-8 mt-10 bg-white  lg:mx-10 mb-10">
       <div className="">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">

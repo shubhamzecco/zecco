@@ -8,43 +8,52 @@ interface IPackageProps {
         title: string;
         icon: React.ReactNode,
         features: string[],
+        price?: string,
+        price_description?: string,
+        description?: string;
+        btn_title?: string
     }
 }
 
-const PackageCard = ({ index, plan}: IPackageProps) => {
+const PackageCard = ({ index, plan }: IPackageProps) => {
     return (
         <div
             key={index}
             className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 flex flex-col"
         >
-            <div className="flex items-center justify-between mb-6">
-                <div className="w-10 h-10 text-primary_blue rounded-lg bg-soft_sky_blue flex items-center justify-center">
+            <div className="flex items-center gap-3 mb-5">
+                <div className="w-7 h-7 text-primary_blue rounded-lg bg-soft_sky_blue flex items-center justify-center">
                     {plan?.icon}
                 </div>
-                {/* <div className="pb-5">
-                  <CreditCard className="text-[#EBEDF2]" size={50} />
-                </div> */}
+                <h3 className="font-manrope capitalize font-extrabold text-lg text-[#000000]">
+                    {plan?.title}
+                </h3>
             </div>
-            <h3 className="font-manrope capitalize font-extrabold text-2xl text-[#000000] mb-4">
-                {plan?.title}
-            </h3>
+            <div className="flex items-end gap-2 mb-5">
+                <h3 className="font-manrope capitalize font-bold text-2xl text-[#000000]">
+                    {plan?.price?.toLocaleLowerCase() === 'vip' ? plan?.price : `€ ${plan?.price}`}
+                </h3>
+                <p className='font-manrope capitalize font-semibold text-sm  text-[#64748B]'>{plan?.price_description}</p>
+            </div>
+            <p className='font-manrope capitalize font-medium text-xs  text-[#475569] mb-5'>{plan?.description}</p>
             <ul className="space-y-3 mb-8 flex-1">
                 {plan?.features?.map((feature, i) => (
                     <li
                         key={i}
-                        className="flex items-start gap-2 text-[13px] font-manrope font-bold text-[#475569]"
+                        className="flex items-center gap-2.5 text-[13px] font-manrope font-semibold text-[#475569]"
                     >
-                        <Check
-                            className="text-primary_blue mt-0.5 bg-soft_sky_blue rounded-full p-1"
-                            size={22}
-                        />
+                        <div className="w-5">
+                            <Check
+                                className="text-white mt-0.5 bg-[#4A86E8] rounded-full p-1"
+                                size={22}
+                            />
+                        </div>
                         {feature}
                     </li>
                 ))}
             </ul>
-            <button className="w-full bg-[#0F172A] text-sm text-white py-3 rounded-xl flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition">
-                Choose Package
-                <ArrowRight size={20} />
+            <button className="w-full  text-sm text-[#000000] py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition">
+                {plan?.btn_title}
             </button>
         </div>
     )

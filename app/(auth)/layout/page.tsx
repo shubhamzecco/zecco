@@ -12,7 +12,7 @@ interface AuthImageLayoutProps {
 
 export default function AuthLayout({ children, bottomContent }: AuthImageLayoutProps) {
   return (
-    <section className="h-screen overflow-hidden bg-white lg:p-10 w-full">
+    <section className="lg:h-screen h-screen overflow-hidden bg-white lg:p-10 w-full">
       <div className="flex h-full items-center gap-10">
 
         {/* LEFT IMAGE */}
@@ -26,9 +26,7 @@ export default function AuthLayout({ children, bottomContent }: AuthImageLayoutP
             priority
             unoptimized
           />
-
           <div className="absolute inset-0 rounded-[40px] bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-
           <div className="absolute top-7 left-7 z-30 bg-white/20 border border-white/30 rounded-full px-3 py-2 flex items-center gap-2">
             <div className="bg-white/40 p-1 w-7 h-7 rounded-lg flex items-center justify-center">
               <House className="text-white" size={18} />
@@ -39,22 +37,32 @@ export default function AuthLayout({ children, bottomContent }: AuthImageLayoutP
           </div>
         </div>
 
-        <div className="w-full lg:w-[40%] flex items-center">
-          <div className="w-full max-w-[560px] mx-auto px-10  h-full ">
-            <Image
-              src={App_url.image.logo}
-              alt="logo"
-              width={170}
-              height={170}
-              className="mb-2"
-              unoptimized
-            />
+        <div className="relative w-full lg:w-[40%] flex items-center max-md:py-5 max-md:mx-4 max-md:shadow-lg max-md:rounded-xl overflow-hidden">
+          <div
+            className="absolute inset-0 bg-center bg-cover opacity-20 md:hidden"
+            style={{
+              backgroundImage: "url('/assets/images/signup-image.jpg')",
+            }}
+          />
+          <div className="absolute inset-0 bg-black/10 md:hidden" />
+          <div className="relative z-10 w-full max-w-[560px] mx-auto px-10 h-full md:bg-transparent  max-md:rounded-xl">
+            <div className="max-md:flex justify-center items-center">
+              <Image
+                src={App_url.image.logo}
+                alt="logo"
+                width={170}
+                height={170}
+                className="mb-2"
+                unoptimized
+              />
+            </div>
 
             {children}
 
             {bottomContent && (
               <div className="mt-6">{bottomContent}</div>
             )}
+
             <div className="mt-4 flex justify-center">
               <Link
                 href={App_url.link.INITIAL_URL}
@@ -64,10 +72,8 @@ export default function AuthLayout({ children, bottomContent }: AuthImageLayoutP
                 Back to Home
               </Link>
             </div>
-
           </div>
         </div>
-
       </div>
     </section>
   )

@@ -22,13 +22,13 @@ const SavedSearches = () => {
                                     <p className='font-manrope font-semibold text-[#2563EB] text-[11px]'>Apartment</p>
                                 </div>
                                 <div className="lg:flex items-center lg:items-start gap-3">
-                                    <div className="">
+                                    <div className="lg:h-[130px]">
                                         <Image
                                             src={search?.image}
                                             alt="AI Insights"
                                             width={150}
                                             height={80}
-                                            className="lg:rounded-l-2xl max-md:rounded-t-2xl max-md:w-full object-cover"
+                                            className="lg:rounded-l-2xl max-md:rounded-t-2xl lg:h-full max-md:w-full object-cover"
                                         />
                                     </div>
                                     <div className="lg:mt-5 max-md:my-2">

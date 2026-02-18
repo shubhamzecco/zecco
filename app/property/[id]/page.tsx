@@ -9,6 +9,7 @@ import { AgentCard } from './components/AgentCard'
 import PropertyStats from './components/PropertyStats'
 import BasicFeatures from './components/BasicFeatures'
 import ZeccoFavorites from './components/ZeccoFavorites'
+import NearByPlaces from './components/near-by-palces'
 
 const Page = () => {
     return (
@@ -32,6 +33,7 @@ const Page = () => {
                     </div>
                 </div>
                 <div className="lg:col-span-1">
+                    <NearByPlaces/>
                     <ZeccoFavorites />
                 </div>
             </div>

@@ -151,7 +151,7 @@ const UserList = ({ onSelect }: { onSelect?: (user: any) => void }) => {
         <Image
           src={App_url.image.image_6}
           alt="User"
-          className="rounded-full object-cover"
+          className="rounded-full h-full w-full object-cover"
           width={60}
           height={60}
         />
@@ -182,7 +182,7 @@ const UserList = ({ onSelect }: { onSelect?: (user: any) => void }) => {
               alt={user.name}
               width={48}
               height={48}
-              className="rounded-full object-cover"
+              className="rounded-full h-full w-full object-cover"
             />
             <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
           </div>

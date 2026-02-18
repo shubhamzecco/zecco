@@ -14,13 +14,13 @@ const AiInsights = () => {
                         <p className='font-manrope font-semibold text-[#2828FF] text-xs'>+8.2% p.a.</p>
                     </div>
                     <div className="lg:flex items-start gap-3">
-                        <div className="">
+                        <div className="lg:h-[212px] lg:w-[280px]">
                             <Image
                                 src={App_url.image.image_6}
                                 alt="AI Insights"
                                 width={220}
                                 height={270}
-                                className="lg:rounded-l-2xl max-md:rounded-t-2xl object-cover max-md:w-full"
+                                className="lg:rounded-l-2xl max-md:rounded-t-2xl object-cover h-full w-full max-md:w-full"
                             />
                         </div>
                         <div className="">
@@ -64,13 +64,15 @@ const AiInsights = () => {
                         <p className='font-manrope font-semibold text-[#2828FF] text-xs'>+8.2% p.a.</p>
                     </div>
                     <div className="lg:flex items-start gap-3">
-                        <div className="">
+                        <div className="lg:h-[212px]">
                             <Image
                                 src={App_url.image.image_3}
                                 alt="AI Insights"
                                 width={220}
-                                height={270}
-                                className="lg:rounded-l-2xl max-md:rounded-t-2xl object-cover max-md:w-full"
+                                height={170}
+                                unoptimized
+                                priority
+                                className="lg:rounded-l-2xl max-md:rounded-t-2xl object-cover h-full w-full max-md:w-full"
                             />
                         </div>
                         <div className="">

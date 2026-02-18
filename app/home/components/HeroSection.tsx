@@ -10,40 +10,23 @@ export default function HeroSection() {
         src={App_url.image.home}
         alt="Luxury villa in Spain"
         fill
-        className="lg:object-fill max-md:object-cover mx-auto"
+        className="lg:object-fill max-md:object-none mx-auto"
         priority
       />
+      <div className="absolute top-[23%] lg:top-[28%] left-0 right-0 flex flex-col items-center text-center px-4 -translate-y-1/2">
+        <Image
+          src={App_url.image.logo}
+          alt="logo"
+          width={280}
+          height={190}
+          className="lg:object-cover max-md:object-cover mx-auto"
+          priority
+        />
+        <p className="text-md sm:text-lg font-manrope text-[#0B5394] mx-auto">
+          The new standard in property search. Smarter with AI.
+          Trusted by local experts.
+        </p>
 
-      {/* Center Content */}
-      {/* <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
-        <div className="mb-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-manrope font-bold text-heading_text_color mb-4 text-balance">
-            Find Your Dream Home In{" "}
-            <span className="bg-gradient-to-b from-[#1466EC] to-[#04ADF7] bg-clip-text text-transparent">
-              Spain
-            </span>
-          </h1>
-
-          <p className="text-md sm:text-lg font-manrope text-[#0B5394] mx-auto">
-            The new standard in property search. Smarter with AI.
-            Trusted by local experts.
-          </p>
-        </div>
-      </div> */}
-      <div className="absolute top-[35%] left-0 right-0 flex flex-col items-center text-center px-4 -translate-y-1/2">
-        <div className="mb-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-manrope font-bold text-heading_text_color mb-4 text-balance">
-            Find Your Dream Home In{" "}
-            <span className="bg-gradient-to-b from-[#1466EC] to-[#04ADF7] bg-clip-text text-transparent">
-              Spain
-            </span>
-          </h1>
-
-          <p className="text-md sm:text-lg font-manrope text-[#0B5394] mx-auto">
-            The new standard in property search. Smarter with AI. Trusted by
-            local experts.
-          </p>
-        </div>
       </div>
 
       {/* Search Bar pinned to bottom */}
