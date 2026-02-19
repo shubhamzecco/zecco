@@ -18,7 +18,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
           ref={ref}
           className={cn(
             `peer flex h-11 w-full rounded-[20px] border border-input bg-transparent 
-             px-3 py-1 text-base text-white
+             px-3 py-1 text-base text-black
              placeholder:text-transparent
              focus:outline-none 
              md:text-sm`,

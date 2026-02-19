@@ -42,37 +42,38 @@ const Signin = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    AuthReq(App_url.endpoint_url.USER_SIGN_IN, values)
-      .then((response) => {
-        if (response?.status === 200) {
-          const payload = {
-            ...response,
-            user: response.data.user,
-            access_token: response.data.access_token,
-          };
+    router.push(App_url.link.DASHBOARD)
+    // AuthReq(App_url.endpoint_url.USER_SIGN_IN, values)
+    //   .then((response) => {
+    //     if (response?.status === 200) {
+    //       const payload = {
+    //         ...response,
+    //         user: response.data.user,
+    //         access_token: response.data.access_token,
+    //       };
 
-          localStorage.setItem("access_token", response.data.access_token);
-          dispatch(setLogin(true));
-          dispatch(setAuthData(payload));
-          router.push(App_url.link.INITIAL_URL);
-        } else {
-          toast.error(response?.message || "Login failed.");
-        }
-      })
-      .catch((error) => {
-        toast.error(
-          error?.response?.data?.error ||
-          error?.message ||
-          "An unexpected error occurred."
-        );
-      });
+    //       localStorage.setItem("access_token", response.data.access_token);
+    //       dispatch(setLogin(true));
+    //       dispatch(setAuthData(payload));
+    //       router.push(App_url.link.INITIAL_URL);
+    //     } else {
+    //       toast.error(response?.message || "Login failed.");
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     toast.error(
+    //       error?.response?.data?.error ||
+    //       error?.message ||
+    //       "An unexpected error occurred."
+    //     );
+    //   });
   };
 
   return (
     <>
       <AuthLayout
-      heading="Welcome Back to Zecco!"
-      description=" Sign in to Your Account">
+        heading="Welcome Back to Zecco!"
+        description=" Sign in to Your Account">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
