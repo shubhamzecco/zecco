@@ -22,7 +22,7 @@ export default function EssentialAspects() {
   ]
 
   return (
-    <section className=" mt-16 bg-[#F8FAFC]">
+    <section className=" mt-10 bg-[#F8FAFC]">
       <div className=" lg:mx-10 py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-5 ">
           {/* Left Side - Features */}
