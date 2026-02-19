@@ -1,7 +1,8 @@
+"use client"
 import PropertyCard from '@/components/cards/PropertyCard'
 import { App_url } from '@/constant/static'
-
-const Favorite = () => {
+import { Property } from '@/utils/types';
+import { useState } from 'react';
 
  const propertyData = [
         {
@@ -14,6 +15,7 @@ const Favorite = () => {
             baths: 2,
             area: 3900,
             featured: true,
+            isLiked : true
         },
         {
             id: '2',
@@ -24,6 +26,7 @@ const Favorite = () => {
             beds: 2,
             baths: 2,
             area: 3900,
+            isLiked : true
         },
         {
             id: '3',
@@ -34,6 +37,7 @@ const Favorite = () => {
             beds: 2,
             baths: 2,
             area: 3900,
+            isLiked : true
         },
         {
             id: '4',
@@ -86,13 +90,28 @@ const Favorite = () => {
             area: 3900,
         },
     ]
+
+const Favorite = () => {
+
+    const [properties, setProperties] = useState<Property[]>(propertyData);
+    
+        const toggleLike = (id: string) => {
+            setProperties((prev) =>
+                prev.map((item) =>
+                    item.id === id
+                        ? { ...item, isLiked: !item.isLiked }
+                        : item
+                )
+            );
+        };
+
     return (
         <section className="mt-10 mb-6">
             <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">Favorite</h2>
             <div className="bg-white/70 p-7  rounded-lg">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
-                    {propertyData?.splice(0, 3)?.map((property) => (
-                        <PropertyCard key={property.id} {...property} isLiked={true} />
+                    {properties?.filter((item : Property) => item?.isLiked)?.splice(0, 3)?.map((property) => (
+                        <PropertyCard key={property.id} {...property} onLikeToggle={() => toggleLike(property?.id)} />
                     ))}
                 </div>
             </div>

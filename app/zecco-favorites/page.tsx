@@ -1,7 +1,9 @@
+"use client"
 import PropertyCard from '@/components/cards/PropertyCard'
 import MainLayout from '@/components/layouts/main-layout'
 import { App_url } from '@/constant/static'
-import React from 'react'
+import { Property } from '@/utils/types'
+import React, { useState } from 'react'
 
 export const propertyData = [
     {
@@ -14,6 +16,7 @@ export const propertyData = [
         baths: 2,
         area: 3900,
         featured: true,
+        property_type : 'buy'
     },
     {
         id: '2',
@@ -24,6 +27,7 @@ export const propertyData = [
         beds: 2,
         baths: 2,
         area: 3900,
+         property_type : 'buy'
     },
     {
         id: '3',
@@ -34,6 +38,7 @@ export const propertyData = [
         beds: 2,
         baths: 2,
         area: 3900,
+         property_type : 'buy'
     },
     {
         id: '4',
@@ -44,6 +49,7 @@ export const propertyData = [
         beds: 2,
         baths: 2,
         area: 3900,
+         property_type : 'buy'
     },
     {
         id: '5',
@@ -54,6 +60,7 @@ export const propertyData = [
         beds: 2,
         baths: 2,
         area: 3900,
+         property_type : 'buy'
     },
     {
         id: '6',
@@ -64,6 +71,7 @@ export const propertyData = [
         beds: 2,
         baths: 2,
         area: 3900,
+         property_type : 'buy'
     },
     {
         id: '7',
@@ -74,6 +82,7 @@ export const propertyData = [
         beds: 2,
         baths: 2,
         area: 3900,
+         property_type : 'new'
     },
     {
         id: '8',
@@ -84,16 +93,29 @@ export const propertyData = [
         beds: 2,
         baths: 2,
         area: 3900,
+         property_type : 'rent'
     },
 ]
 
 const ZeccoFavorites = () => {
+
+    const [properties, setProperties] = useState<Property[]>(propertyData);
+
+    const toggleLike = (id: string) => {
+        setProperties((prev) =>
+            prev.map((item) =>
+                item.id === id
+                    ? { ...item, isLiked: !item.isLiked }
+                    : item
+            )
+        );
+    };
     return (
         <MainLayout isBreadcrumb isFilter>
             <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    {propertyData?.map((property) => (
-                        <PropertyCard key={property.id} {...property} />
+                    {properties?.map((property) => (
+                        <PropertyCard key={property.id} {...property} onLikeToggle={() => toggleLike(property.id)} />
                     ))}
                 </div>
             </div>

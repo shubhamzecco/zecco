@@ -5,6 +5,10 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import AreaCard from '../../../components/cards/AreaCard'
 import { Button } from '@/components/ui/button'
 import { App_url } from '@/constant/static'
+import Link from 'next/link'
+import { useDispatch } from 'react-redux'
+import { useRouter } from 'next/navigation'
+import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
 
 const areasData = [
   {
@@ -28,23 +32,17 @@ const areasData = [
 ]
 
 export default function AreasOfInterest() {
-  const [scrollPosition, setScrollPosition] = useState(0)
+  const dispatch = useDispatch()
+  const router = useRouter()
 
-  const scroll = (direction: 'left' | 'right') => {
-    const container = document.getElementById('areas-scroll')
-    if (container) {
-      const scrollAmount = 400
-      const newPosition = direction === 'left' ? scrollPosition - scrollAmount : scrollPosition + scrollAmount
-
-      container.scrollTo({
-        left: newPosition,
-        behavior: 'smooth',
-      })
-
-      setScrollPosition(newPosition)
-    }
+  const handleNavigate = () => {
+    dispatch(clearBreadcrumbs())
+    dispatch(setBreadcrumbs([
+      { label: "Home", href: "/" },
+      { label: "Costa del Sol areas and Cities", href: App_url.link.COSTA_DEL_SOL },
+    ]))
+    router.push(`${App_url.link.COSTA_DEL_SOL}`)
   }
-
   return (
     <section className="bg-white  px-4 sm:px-6 lg:px-8">
       <div className="lg:mx-10">
@@ -53,10 +51,10 @@ export default function AreasOfInterest() {
           <h2 className="text-2xl sm:text-3xl font-bold font-manrope text-[#00000]">
             Costa del Sol Areas Of Interest
           </h2>
-          <div className="flex gap-2 hidden sm:flex">
-            <Button className='rounded-full font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white '>
+          <div className=" gap-2 hidden sm:flex">
+            <button onClick={handleNavigate} className='rounded-full font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white '>
               View All Cities
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -82,9 +80,9 @@ export default function AreasOfInterest() {
 
         {/* Mobile Scroll Buttons */}
         <div className="flex gap-2 sm:hidden mt-4 justify-center">
-           <Button className='rounded-full font-manrope bg-btn_color font-medium px-7   lg:py-2 text-xs lg:text-sm shadow-sm  text-white '>
-            View All Cities
-          </Button>
+          <button onClick={handleNavigate} className='rounded-full font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white '>
+              View All Cities
+            </button>
         </div>
       </div>
 

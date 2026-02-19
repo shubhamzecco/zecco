@@ -65,70 +65,25 @@ const SignUpPage = () => {
   return (
 
     <>
-      <AuthLayout>
-        <div className="">
-          <div className="mt-4 my-3 flex flex-col gap-2">
-            <h1 className="capitalize font-inter font-bold text-[#101828] text-xl max-md:text-center lg:text-2xl">Create Your Zecco Account</h1>
-            <p className="font-inter font-medium text-[#6B7280] capitalize max-md:text-center">Register new account</p>
-          </div>
-          <Form {...form}>
-            <form className="" onSubmit={form.handleSubmit(onSubmit)}>
-              <div className="grid grid-cols-1 gap-2">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
-                  <FormField
-                    control={form.control}
-                    name="first_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel required  className="font-semibold font-inter text-[#101828]">
-                          First Name
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-
-                            placeholder="Enter first name"
-                            className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="last_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel required className="font-semibold font-inter text-[#101828]">
-                          Last Name
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-
-                            placeholder="Enter last name"
-                            className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
+      <AuthLayout
+        heading="Create Your Zecco Account"
+        description="Register new account">
+        <Form {...form}>
+          <form className="" onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
-                  name="mobile_no"
+                  name="first_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel required className="font-semibold font-inter text-[#101828]">
-                        Mobile Number
+                        First Name
                       </FormLabel>
                       <FormControl>
                         <Input
 
-                          placeholder="Enter mobile number"
+                          placeholder="Enter first name"
                           className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                           {...field}
                         />
@@ -137,19 +92,18 @@ const SignUpPage = () => {
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={form.control}
-                  name="email"
+                  name="last_name"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel required className="font-semibold font-inter text-[#101828]">
-                        Email
+                        Last Name
                       </FormLabel>
                       <FormControl>
                         <Input
 
-                          placeholder="Enter email"
+                          placeholder="Enter last name"
                           className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                           {...field}
                         />
@@ -159,28 +113,70 @@ const SignUpPage = () => {
                   )}
                 />
               </div>
-              <div className="flex items-center mt-3  gap-5">
-                <Button
-                  // type="submit"
-                  onClick={() => setPackageModal(true)}
-                  className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md"
-                >
-                  Sign Up
-                </Button>
-              </div>
-            </form>
 
-            <div className="flex items-center px-8 mt-2">
-              <Link
-                href={App_url?.link?.SIGN_IN}
-                className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
-              >
-                Already have an account?
-                <span className="text-[#3B82F6] font-bold font-inter text-base">  Log In</span>
-              </Link>
+              <FormField
+                control={form.control}
+                name="mobile_no"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required className="font-semibold font-inter text-[#101828]">
+                      Mobile Number
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+
+                        placeholder="Enter mobile number"
+                        className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required className="font-semibold font-inter text-[#101828]">
+                      Email
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+
+                        placeholder="Enter email"
+                        className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-          </Form>
-        </div>
+            <div className="flex items-center mt-3  gap-5">
+              <Button
+                // type="submit"
+                onClick={() => setPackageModal(true)}
+                className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md"
+              >
+                Sign Up
+              </Button>
+            </div>
+          </form>
+
+          <div className="flex items-center px-8 mt-2">
+            <Link
+              href={App_url?.link?.SIGN_IN}
+              className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
+            >
+              Already have an account?
+              <span className="text-[#3B82F6] font-bold font-inter text-base">  Log In</span>
+            </Link>
+          </div>
+        </Form>
       </AuthLayout>
       {packageModal && (
         <PackagesModal onClose={() => setPackageModal(false)} />

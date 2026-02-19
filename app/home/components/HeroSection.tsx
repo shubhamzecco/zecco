@@ -22,10 +22,10 @@ export default function HeroSection() {
           className="lg:object-cover max-md:object-cover mx-auto"
           priority
         />
-        <p className="text-md sm:text-lg font-manrope text-[#0B5394] mx-auto">
+        {/* <p className="text-md sm:text-lg font-manrope text-[#0B5394] mx-auto">
           The new standard in property search. Smarter with AI.
           Trusted by local experts.
-        </p>
+        </p> */}
 
       </div>
 

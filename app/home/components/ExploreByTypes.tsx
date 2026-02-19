@@ -1,32 +1,28 @@
 import { App_url } from '@/constant/static'
-import { Home, Building2, TrendingUp, ArrowUpRight } from 'lucide-react'
+import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
+import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
-
-const typeCards = [
-  {
-    id: 'residential',
-    icon: <Home size={48} className="text-white mb-4" />,
-    title: 'Residential',
-    description: 'Luxury homes, apartments, and villas for your dream lifestyle',
-    propertiesCount: 2450,
-  },
-  {
-    id: 'commercial',
-    icon: <Building2 size={48} className="text-white mb-4" />,
-    title: 'Commercial',
-    description: 'Prime business spaces, offices, and retail opportunities',
-    propertiesCount: 380,
-  },
-  {
-    id: 'investment',
-    icon: <TrendingUp size={48} className="text-white mb-4" />,
-    title: 'Investment',
-    description: 'High-ROI properties and portfolio opportunities',
-    propertiesCount: 645,
-  },
-]
+import { useRouter } from 'next/navigation'
+import { useDispatch } from 'react-redux'
 
 export default function ExploreByTypes() {
+
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  const handleNavigate = (region: string) => {
+    const slug = region
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    dispatch(clearBreadcrumbs())
+    dispatch(setBreadcrumbs([
+      { label: "Home", href: "/" },
+      { label: "Costa del Sol areas and Cities", href: App_url.link.COSTA_DEL_SOL },
+      { label: region, href: `${App_url.link.COSTA_DEL_SOL}/${slug}` },
+    ]))
+    router.push(`${App_url.link.COSTA_DEL_SOL}/${slug}`)
+  }
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-r from-[#0F172A] via-[#111C3A] to-[#16213E] py-10">
 
@@ -63,16 +59,19 @@ export default function ExploreByTypes() {
               title: "Existing Build",
               desc: "Apartments, villas, and <br/> townhouses for everyday living.",
               action: "Browse Existing Build",
+              navigation_title: 'Under Construction'
             },
             {
               title: "Newly Build Projects",
               desc: "Offices, retail spaces, and business-ready properties.",
               action: "Browse Newly Build projects",
+              navigation_title: 'New Property'
             },
             {
               title: "Investment",
               desc: "High-yield properties with strong rental and appreciation potential.",
               action: "Browse Investment",
+              navigation_title: 'Commercial Property'
             },
           ].map((item, index) => (
             <div
@@ -92,7 +91,7 @@ export default function ExploreByTypes() {
                 ))}
               </p>
 
-              <button className="flex uppercase items-center gap-2 text-[0.7rem] font-manrope tracking-wider font-semibold text-white hover:text-[#38BDF8] transition">
+              <button onClick={() => handleNavigate(item?.navigation_title)} className="flex uppercase items-center gap-2 text-[0.7rem] font-manrope tracking-wider font-semibold text-white hover:text-[#38BDF8] transition">
                 {item.action}
                 <ArrowUpRight size={16} />
               </button>

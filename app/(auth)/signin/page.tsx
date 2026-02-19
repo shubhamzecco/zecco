@@ -70,18 +70,11 @@ const Signin = () => {
 
   return (
     <>
-      <AuthLayout>
-        <div className="mb-6 mt-7">
-          <h1 className="font-inter max-md:text-center font-bold text-[#101828] text-2xl">
-            Welcome Back to Zecco!
-          </h1>
-          <p className="font-inter max-md:text-center my-2 font-medium text-[#6B7280]">
-            Sign in to Your Account
-          </p>
-        </div>
+      <AuthLayout
+      heading="Welcome Back to Zecco!"
+      description=" Sign in to Your Account">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="email"

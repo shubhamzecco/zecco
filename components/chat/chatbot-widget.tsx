@@ -5,6 +5,9 @@ import { X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import ZecooAIChat from './zecco-chat-modal'
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setChatBadgeOpen } from "@/redux/modules/main/action";
+import { useDispatch } from "react-redux";
 
 interface Message {
   id: number
@@ -28,8 +31,13 @@ export default function ChatbotWidget() {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
 
+  const { mainReducer } = usePosterReducers()
+  const dispatch = useDispatch()
+
 
   const [isAnimated, setIsAnimated] = useState(false);
+
+  console.log("mainReducer ::: " , mainReducer)
 
   useEffect(() => {
     // Trigger animation after 2 seconds
@@ -170,8 +178,12 @@ export default function ChatbotWidget() {
         </div>
       </div>
 
-      {isOpen && (
-        <ZecooAIChat isOpen={isOpen} onClose={() => setIsOpen(false)} />
+      {(isOpen || mainReducer?.ai_chat_badge_open) && (
+        <ZecooAIChat isOpen={isOpen || mainReducer?.ai_chat_badge_open}
+          onClose={() => {
+            setIsOpen(false)
+            dispatch(setChatBadgeOpen(false))
+          }} />
       )}
     </>
   );

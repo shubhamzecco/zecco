@@ -6,20 +6,20 @@ export const App_url = {
     building: "/assets/images/building.png",
     footer: "/assets/images/footer.svg",
     chat_logo: "/assets/images/chat.png",
-    sign_up_image: "/assets/images/signup-image.jpg",
+    sign_up_image: "/assets/images/signup-image.png",
     email: "/assets/images/email.svg",
     edit: "/assets/images/edit.svg",
     contact_us: "/assets/images/contact-us.jpg",
     about_us_1: '/assets/images/about-us-1.jpg',
     about_us_2: '/assets/images/about-us-2.jpg',
     local: '/assets/images/local.svg',
-    ai_search : '/assets/images/ai-search.svg',
-    modular : '/assets/images/modular.svg',
+    ai_search: '/assets/images/ai-search.svg',
+    modular: '/assets/images/modular.svg',
     ai_expert: '/assets/images/dev-1/ai-expert.png',
-    building_icon : '/assets/images/building.svg',
-    away_icon : '/assets/images/away.svg',
-    cap : '/assets/images/cap.svg',
-    user_cap : '/assets/images/user-cap.svg',
+    building_icon: '/assets/images/building.svg',
+    away_icon: '/assets/images/away.svg',
+    cap: '/assets/images/cap.svg',
+    user_cap: '/assets/images/user-cap.svg',
 
 
     // dev images
@@ -43,6 +43,11 @@ export const App_url = {
     image_4: "/assets/images/dev-1/image-4.jpg",
     image_5: "/assets/images/dev-1/image-5.jpg",
     image_6: "/assets/images/dev-1/image-6.jpg",
+
+
+    plan: "/assets/images/dev/plan.jpg",
+    plan_3d: "/assets/images/dev-1/3d-plan.png",
+    video: '/assets/images/dev/detail-video.mp4',
 
     blog_image_1: "/assets/images/dev/blog-image-1.png",
     blog_image_2: "/assets/images/dev/blog-image-2.png",

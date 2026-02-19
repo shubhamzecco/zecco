@@ -7,6 +7,7 @@ import Footer from '../Footer'
 import Header from '../Header'
 import Breadcrumb from '../breadcrumbs'
 
+type PropertyType = "buy" | "rent" | "new";
 interface MainLayoutProps {
     children: React.ReactNode
     isBreadcrumb?: boolean
@@ -15,6 +16,8 @@ interface MainLayoutProps {
     isPropertyType?: boolean;
     isProperty?: boolean;
     propertyCount?: number;
+    propertyType?: PropertyType;
+    onPropertyTypeChange?: (type: PropertyType) => void;
 }
 
 const HEADER_HEIGHT = 100       // h-16 (64px) + top spacing
@@ -28,7 +31,9 @@ const MainLayout = ({
     isPropertyDetails = false,
     isPropertyType = false,
     isProperty = false,
-    propertyCount = 0
+    propertyCount = 0,
+    onPropertyTypeChange,
+    propertyType
 }: MainLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
@@ -36,6 +41,14 @@ const MainLayout = ({
         HEADER_HEIGHT +
         (isBreadcrumb ? BREADCRUMB_HEIGHT : 0) +
         (isFilter ? FILTER_HEIGHT : 0)
+
+
+    const TABS: { label: string; value: PropertyType }[] = [
+        { label: "Buy", value: "buy" },
+        { label: "Rent", value: "rent" },
+        { label: "New", value: "new" },
+    ];
+
     return (
         <main className="w-full bg-white">
             <Header />
@@ -49,8 +62,8 @@ const MainLayout = ({
                 )}
                 {isFilter && (
                     <div className="flex max-md:flex-col max-md:w-full justify-between items-start mb-8 mt-8 gap-4">
-                        <div className=" flex-1  lg:flex  items-center gap-3 max-md:w-full lg:w-1/2  rounded-[7px]">
-                            <div className="flex relative items-center gap-3 max-md:mb-2">
+                        <div className=" flex-1  lg:flex  items-center gap-3 max-md:w-full lg:w-[70%]  rounded-[7px]">
+                            <div className="flex lg:w-[327px] relative items-center gap-3 max-md:mb-2">
                                 <Search
                                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"
                                     size={18}
@@ -58,8 +71,8 @@ const MainLayout = ({
                                 <input
                                     type="text"
                                     placeholder="Search by area"
-                                    className="w-full lg:max-w-[22rem] bg-[#fcfcfc] placeholder:font-manrope font-normal placeholder:text-[#999999] h-9 pl-10 pr-4 rounded-[7px] border border-gray-300 
-                           focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full lg:max-w-[27rem] bg-[#fcfcfc] placeholder:font-manrope font-normal placeholder:text-[#999999] h-9 pl-10 pr-4 rounded-[7px] border border-gray-300 
+                                                focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
                             {propertyCount !== 0 && (
@@ -71,16 +84,17 @@ const MainLayout = ({
                         <div className="flex max-md:items-center justify-between max-md:w-full gap-5">
                             {isPropertyType && (
                                 <div className="inline-flex gap-1 rounded-lg bg-[#E5E7EB] p-1 shrink-0">
-                                    {["Buy", "Rent", "New"].map((tab, i) => (
+                                    {TABS?.map((tab, i) => (
                                         <button
+                                            onClick={() => onPropertyTypeChange && onPropertyTypeChange(tab?.value)}
                                             key={i}
                                             className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md
-                                        ${tab === "Buy"
+                                        ${tab?.value === propertyType
                                                     ? "bg-white text-black"
                                                     : "text-[#6B7280] hover:bg-slate-100"
                                                 }`}
                                         >
-                                            {tab}
+                                            {tab?.value}
                                         </button>
                                     ))}
                                 </div>

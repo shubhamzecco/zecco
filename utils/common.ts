@@ -204,3 +204,5 @@ export const savedSearchesData = [
         image: App_url.image.image_1,
     },
 ]
+
+

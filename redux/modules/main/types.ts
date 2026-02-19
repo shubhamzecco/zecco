@@ -207,4 +207,5 @@ export interface IMainResponse {
   need_details?: INeedResponse;
   ai_chat_messages: AIChatMessage[];
   ai_chat_loading: boolean;
+  ai_chat_badge_open : boolean
 }

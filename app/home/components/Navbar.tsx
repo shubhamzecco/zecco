@@ -109,13 +109,13 @@ export default function Navbar() {
       {/* Top Bar */}
       <div className="lg:mx-10 px-4 sm:px-6 lg:px-8">
         <div className="bg-white/20 border border-white/70 rounded-full">
-          <div className="grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center w-full h-12 px-4">
+          <div className="grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center w-full h-[3.2rem] px-4">
             <Link href="/" className="flex items-center gap-2 w-[25%]">
               <Image
                 src={App_url.image.chat_logo}
                 alt="logo"
-                width={30}
-                height={30}
+                width={35}
+                height={35}
               />
             </Link>
 
@@ -125,7 +125,7 @@ export default function Navbar() {
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item)}
-                  className={`relative ${isActive(item.href) ? 'text-[#1466EC]' : 'text-[#0B5394]' } font-inter text-xs font-medium`}
+                  className={`relative ${isActive(item.href) ? 'text-[#1466EC]' : 'text-[#0B5394]' } font-inter text-sm font-medium`}
                 >
                   {item.label}
                   {isActive(item.href) && (

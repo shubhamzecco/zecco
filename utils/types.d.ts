@@ -331,3 +331,17 @@ export interface ChatState {
   messages: ChatMessage[];
   isLoading: boolean;
 }
+
+
+export interface Property {
+  id: string;
+  title: string;
+  price: string;
+  location: string;
+  images: string[];
+  beds: number;
+  baths: number;
+  area: number;
+  isLiked?: boolean;
+  property_type? : string
+}

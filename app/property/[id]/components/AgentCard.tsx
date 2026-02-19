@@ -3,6 +3,7 @@
 import { App_url } from '@/constant/static'
 import { Phone, Mail } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
 
 export function AgentCard() {
@@ -47,9 +48,9 @@ export function AgentCard() {
       <button className="w-full mb-5 border flex items-center gap-2 justify-center border-[#DDDFE3] text-heading_text_color font-semibold py-2 rounded-full bg-white  transition ">
         <Phone className="w-4 h-4" /> CALL ADVISOR
       </button>
-      <p className="text-center font-manrope font-medium underline text-xs text-muted-foreground hover:text-primary cursor-pointer transition">
+      <Link href={App_url.link.CONTACT_US} className="text-center flex justify-center items-center  font-manrope font-medium underline text-xs text-muted-foreground hover:text-primary cursor-pointer transition">
         CONTACT SUPPORT
-      </p>
+      </Link>
     </div>
   )
 }

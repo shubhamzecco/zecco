@@ -75,14 +75,13 @@ const ResetPassword = () => {
   };
 
   return (
-    <AuthLayout>
-      <div className="my-6 mt-10 flex flex-col gap-5">
-        <h1 className="capitalize font-inter font-bold text-[#101828] text-2xl max-md:text-center">Welcome Back to Zecco!</h1>
-        <p className="font-inter font-medium text-[#6B7280] capitalize max-md:text-center">Sign in to Your Account</p>
-      </div>
+    <AuthLayout 
+    heading="Welcome Back to Zecco!"
+    description="Sign in to Your Account">
+      
       <Form {...form}>
         <form className="" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-5">
             <FormField
               control={form.control}
               name="password"

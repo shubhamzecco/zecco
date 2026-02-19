@@ -34,7 +34,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     return (
         <>
             <aside className="hidden md:flex w-full max-md:h-[calc(100vh-50px)] bg-white pl-14 px-10 py-6 flex-col overflow-y-scroll hide-scrollbar">
-                <div className="flex items-center gap-3 border-b border-[#E2E9E0] pb-5 mt-8 mb-5">
+                <div className="flex items-center gap-3 border-b border-[#E2E9E0] pb-5 mt-1 mb-5">
                     <Image
                         src={App_url.image.profile}
                         alt="User"

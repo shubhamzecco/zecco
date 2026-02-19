@@ -8,9 +8,11 @@ import { App_url } from '@/constant/static'
 interface AuthImageLayoutProps {
   children: React.ReactNode
   bottomContent?: React.ReactNode
+  heading?: string
+  description?:string
 }
 
-export default function AuthLayout({ children, bottomContent }: AuthImageLayoutProps) {
+export default function AuthLayout({ children, bottomContent , heading , description}: AuthImageLayoutProps) {
   return (
     <section className="lg:h-screen h-screen overflow-hidden bg-white lg:p-10 w-full">
       <div className="flex h-full items-center gap-10">
@@ -37,7 +39,7 @@ export default function AuthLayout({ children, bottomContent }: AuthImageLayoutP
           </div>
         </div>
 
-        <div className="relative w-full lg:w-[40%] flex items-center max-md:py-5 max-md:mx-4 max-md:shadow-lg max-md:rounded-xl overflow-hidden">
+        {/* <div className="relative w-full lg:w-[40%] flex items-center max-md:py-5 max-md:mx-4 max-md:shadow-lg max-md:rounded-xl overflow-hidden">
           <div
             className="absolute inset-0 bg-center bg-cover opacity-20 md:hidden"
             style={{
@@ -64,6 +66,52 @@ export default function AuthLayout({ children, bottomContent }: AuthImageLayoutP
             )}
 
             <div className="mt-4 flex justify-center">
+              <Link
+                href={App_url.link.INITIAL_URL}
+                className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-heading_text_color text-md"
+              >
+                <ArrowLeft size={18} />
+                Back to Home
+              </Link>
+            </div>
+          </div>
+        </div> */}
+
+        <div className="relative w-full lg:w-[40%] h-full flex flex-col  max-md:py-10  max-md:rounded-xl">
+
+          <div
+            className="absolute inset-0 bg-center bg-cover opacity-20 md:hidden max-md:rounded-xl"
+            style={{ backgroundImage: "url('/assets/images/signup-image.png')" }}
+          />
+          <div className="absolute inset-0 bg-black/10 md:hidden max-md:rounded-xl" />
+
+          <div className="relative z-10 w-full h-full px-10 flex flex-col max-md:justify-center">
+
+            {/* Logo */}
+            <div className="flex justify-center">
+              <Image
+                src={App_url.image.logo}
+                alt="logo"
+                width={170}
+                height={170}
+                unoptimized
+              />
+            </div>
+            <div className="mt-4 my-3 flex flex-col gap-2 text-center mb-4">
+              <h1 className="capitalize font-inter font-bold text-[#101828] text-xl max-md:text-center lg:text-2xl">{heading}</h1>
+              <p className="font-inter font-medium text-[#6B7280] capitalize max-md:text-center">{description}</p>
+            </div>
+
+            {/* CHILDREN */}
+            <div className="lg:flex-1 overflow-y-auto">
+              {children}
+            </div>
+
+            {bottomContent && (
+              <div className="mt-6">{bottomContent}</div>
+            )}
+
+             <div className="mt-4 flex justify-center">
               <Link
                 href={App_url.link.INITIAL_URL}
                 className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-heading_text_color text-md"

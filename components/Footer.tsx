@@ -96,14 +96,21 @@ export default function Footer() {
               </svg>
             </div>
             <ul className="space-y-3 text-sm">
-              {["Home", "About us", "Privacy Policy", "Terms & Conditions"].map(
+              {/* "Home", "About us", "Privacy Policy", "Terms & Conditions" */}
+              {[
+                {title : 'Home' , link : '/'},
+                {title : 'About Us' , link : App_url.link.ABOUT_ZECCO},
+                {title : 'Privacy Policy' , link : '#'},
+                {title : 'Terms & Conditions' , link : '#'}
+              ].map(
                 (item, i) => (
-                  <li
+                  <Link
                     key={i}
+                    href={item?.link}
                     className="hover:text-white font-manrope font-medium text-white/50 flex items-center gap-1 transition cursor-pointer"
                   >
-                    <ChevronRight /> {item}
-                  </li>
+                    <ChevronRight /> {item?.title}
+                  </Link>
                 ),
               )}
             </ul>

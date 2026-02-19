@@ -12,11 +12,16 @@ export const ActionTypes = {
    SET_BREADCRUMBS : "SET_BREADCRUMBS",
   CLEAR_BREADCRUMBS : "CLEAR_BREADCRUMBS",
 
+  AI_CHAT_BADGE_OPEN : 'AI_CHAT_BADGE_OPEN',
   AI_CHAT_ADD_MESSAGE: "AI_CHAT_ADD_MESSAGE",
   AI_CHAT_SET_LOADING: "AI_CHAT_SET_LOADING",
   AI_CHAT_CLEAR: "AI_CHAT_CLEAR",
 };
 
+export const setChatBadgeOpen = (payload: boolean) => ({
+  type: ActionTypes.AI_CHAT_BADGE_OPEN,
+  payload
+});
 
 export const setBreadcrumbs = (payload: BreadcrumbItem[]) => ({
   type: ActionTypes.SET_BREADCRUMBS,

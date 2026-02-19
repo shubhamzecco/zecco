@@ -1,6 +1,8 @@
-
+"use client"
 import PropertyCard from '@/components/cards/PropertyCard'
 import { App_url } from '@/constant/static'
+import { Property } from '@/utils/types';
+import { useState } from 'react';
 
 const propertyData = [
   {
@@ -19,7 +21,7 @@ const propertyData = [
     title: 'Luxury 2-Bedroom Apartment in Marbella, Spain',
     price: '€545,000',
     location: 'Costa del Sol, Spain',
-    images: [App_url.image.image_6 , App_url.image.image_5 , App_url.image.image_4],
+    images: [App_url.image.image_6, App_url.image.image_5, App_url.image.image_4],
     beds: 2,
     baths: 2,
     area: 3900,
@@ -27,7 +29,7 @@ const propertyData = [
   {
     id: '3',
     title: 'Stylish 2-Bedroom Apartment in Marbella, Spain',
-   price: '€545,000',
+    price: '€545,000',
     location: 'Estepona, Spain',
     images: [App_url.image.image_5],
     beds: 2,
@@ -46,6 +48,17 @@ const propertyData = [
   }
 ]
 export default function ZeccoFavorites() {
+  const [properties, setProperties] = useState<Property[]>(propertyData);
+
+  const toggleLike = (id: string) => {
+    setProperties((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, isLiked: !item.isLiked }
+          : item
+      )
+    );
+  };
   return (
     <section className=" bg-white mb-20">
       <div className="">
@@ -53,8 +66,8 @@ export default function ZeccoFavorites() {
           <h2 className="text-xl sm:text-xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {propertyData?.map((property) => (
-            <PropertyCard key={property.id} {...property} />
+          {properties?.map((property) => (
+            <PropertyCard key={property.id} {...property} onLikeToggle={() => toggleLike(property.id)} />
           ))}
         </div>
       </div>

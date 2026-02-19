@@ -10,7 +10,8 @@ const initialState: IMainResponse = {
   need_details: undefined,
   ai_chat_messages: [],
   ai_chat_loading: false,
-  breadcrumbs: []
+  breadcrumbs: [],
+  ai_chat_badge_open: false
 };
 
 const mainReducer = (
@@ -41,13 +42,17 @@ const mainReducer = (
       };
     }
 
-    case ActionTypes.SET_BREADCRUMBS: { return { ...state, breadcrumbs: action.payload, }}
-     case ActionTypes.CLEAR_BREADCRUMBS:
+    case ActionTypes.SET_BREADCRUMBS: { return { ...state, breadcrumbs: action.payload, } }
+    case ActionTypes.CLEAR_BREADCRUMBS:
       return {
         ...state,
         breadcrumbs: [],
       }
 
+    case ActionTypes.AI_CHAT_BADGE_OPEN: { 
+      console.log("action.payload ::: " , action.payload)
+      return { ...state, ai_chat_badge_open: action.payload, } 
+    }
 
     case ActionTypes.SET_CLEAR_REDUX: {
       return initialState;

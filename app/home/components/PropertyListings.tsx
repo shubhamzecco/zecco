@@ -1,8 +1,27 @@
-import { Button } from '@/components/ui/button'
-import PropertyCard from '../../../components/cards/PropertyCard'
+"use client"
 import { App_url } from '@/constant/static'
+import Link from 'next/link'
+import { useState } from 'react'
+import PropertyCard from '../../../components/cards/PropertyCard'
+import { useDispatch } from 'react-redux'
+import { useRouter } from 'next/navigation'
+import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
 
-const propertyData = [
+
+interface Property {
+  id: string;
+  title: string;
+  price: string;
+  location: string;
+  images: string[];
+  beds: number;
+  baths: number;
+  area: number;
+  isLiked?: boolean;
+}
+
+
+const propertyData: Property[] = [
   {
     id: '1',
     title: 'Modern 2-Bedroom Apartment in Marbella, Spain',
@@ -12,7 +31,6 @@ const propertyData = [
     beds: 2,
     baths: 2,
     area: 3900,
-    featured: true,
   },
   {
     id: '2',
@@ -27,7 +45,7 @@ const propertyData = [
   {
     id: '3',
     title: 'Stylish 2-Bedroom Apartment in Marbella, Spain',
-   price: '€545,000',
+    price: '€545,000',
     location: 'Estepona, Spain',
     images: [App_url.image.image_5],
     beds: 2,
@@ -85,29 +103,49 @@ const propertyData = [
     area: 3900,
   },
 ]
+
 export default function PropertyListings() {
+
+  const [properties, setProperties] = useState<Property[]>(propertyData);
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  const toggleLike = (id: string) => {
+    setProperties((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, isLiked: !item.isLiked }
+          : item
+      )
+    );
+  };
+
+    const handleNavigate = () => {
+      dispatch(clearBreadcrumbs())
+      dispatch(setBreadcrumbs([
+        { label: "Home", href: "/" },
+           { label: "Zecco's Favorites", href: App_url.link.ZECCO_FAVORITES },
+      ]))
+      router.push(`${App_url.link.ZECCO_FAVORITES}`)
+    }
+
   return (
     <section className="px-4 sm:px-6 lg:px-8 mt-10 bg-white  lg:mx-10 mb-10">
       <div className="">
         {/* Header */}
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
-          <Button className='rounded-full font-manrope bg-btn_color font-medium  px-3 lg:px-7   lg:py-2 text-xs lg:text-sm shadow-sm  text-white '>
+          <button onClick={handleNavigate} className='rounded-full font-manrope bg-btn_color font-medium  px-3 lg:px-7   py-2 text-xs lg:text-sm shadow-sm  text-white '>
             View All Properties
-          </Button>
+          </button>
         </div>
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {propertyData?.map((property) => (
-            <PropertyCard key={property.id} {...property} />
+          {properties?.map((property) => (
+            <PropertyCard key={property.id} {...property} onLikeToggle={() => toggleLike(property.id)} />
           ))}
         </div>
-
-        {/* Mobile View All Button */}
-        {/* <Button className='rounded-full font-manrope bg-dark_navy font-medium  px-7  py-2 text-sm shadow-xl  text-white '>
-          View All Properties
-        </Button> */}
       </div>
     </section>
   )
