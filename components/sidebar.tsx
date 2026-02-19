@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const menuItems = [
     { name: "Dashboard", href: App_url.link.DASHBOARD, icon: LayoutGrid },
@@ -30,7 +30,6 @@ type SidebarProps = {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     const pathname = usePathname();
-
     return (
         <>
             <aside className="hidden md:flex w-full max-md:h-[calc(100vh-50px)] bg-white pl-14 px-10 py-6 flex-col overflow-y-scroll hide-scrollbar">
@@ -153,6 +152,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
 /* ================= AGENT CARD (UNCHANGED) ================= */
 function AgentCard() {
+     const router = useRouter();
     return (
         <>
             <p className="font-inter max-md:text-md text-[0.95rem] font-semibold text-[#111827] mb-3">
@@ -178,7 +178,7 @@ function AgentCard() {
                 <p className="text-[14px] font-inter font-semibold text-[#101828] my-1">
                     Website: <span className="underline cursor-pointer">zecco.es</span>
                 </p>
-                <button className="w-fit px-16 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[15px] py-2.5 rounded-full font-medium">
+                <button onClick={() => router.push(App_url.link.CONTACT_US)} className="w-fit px-16 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[15px] py-2.5 rounded-full font-medium">
                     Contact
                 </button>
             </div>
