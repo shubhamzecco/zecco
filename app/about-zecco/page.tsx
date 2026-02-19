@@ -1,11 +1,27 @@
+"use client"
 import MainLayout from '@/components/layouts/main-layout'
 import { App_url } from '@/constant/static'
+import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
 import Image from 'next/image'
-import React from 'react'
+import { useRouter } from 'next/navigation'
+import { useDispatch } from 'react-redux'
 import Operate from './components/operate'
 import WhyChooseZecco from './components/why-choose-zecco'
 
 const AboutZecco = () => {
+
+    const dispatch = useDispatch()
+    const router = useRouter()
+
+    const handleNavigate = () => {
+        dispatch(clearBreadcrumbs())
+        dispatch(setBreadcrumbs([
+            { label: "Home", href: "/" },
+            { label: "Explore properties", href: App_url.link.COSTA_DEL_SOL },
+        ]))
+        router.push(`${App_url.link.COSTA_DEL_SOL}/explore-properties`)
+    }
+
     return (
         <MainLayout>
             <section className="py-16 -mt-7 bg-white">
@@ -23,7 +39,7 @@ const AboutZecco = () => {
                             <p className="text-slate_gray font-normal font-manrope text-md max-w-xl mt-4 md:mt-0">
                                 We bridge the gap between AI-driven intelligence and local expertise to simplify your property journey in the Costa del Sol.
                             </p>
-                            <button className="w-fit px-10 mt-10 tracking-wider shadow-md my-4 bg-black text-white text-[15px] py-2.5 rounded-full font-inter font-semibold flex items-center gap-2">
+                            <button onClick={handleNavigate} className="w-fit px-10 mt-10 tracking-wider shadow-md my-4 bg-black text-white text-[15px] py-2.5 rounded-full font-inter font-semibold flex items-center gap-2">
                                 Explore properties
                             </button>
                         </div>
@@ -62,7 +78,7 @@ const AboutZecco = () => {
                     </div>
                 </div>
             </section>
-            <WhyChooseZecco/>
+            <WhyChooseZecco />
             <Operate />
         </MainLayout>
     )

@@ -52,8 +52,6 @@ export default function ExploreByTypes() {
 
         {/* CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-          {/* CARD */}
           {[
             {
               title: "Existing Build",
@@ -65,13 +63,13 @@ export default function ExploreByTypes() {
               title: "Newly Build Projects",
               desc: "Offices, retail spaces, and business-ready properties.",
               action: "Browse Newly Build projects",
-              navigation_title: 'New Property'
+              navigation_title: 'New Properties'
             },
             {
               title: "Investment",
               desc: "High-yield properties with strong rental and appreciation potential.",
               action: "Browse Investment",
-              navigation_title: 'Commercial Property'
+              navigation_title: 'Commercial Properties'
             },
           ].map((item, index) => (
             <div
