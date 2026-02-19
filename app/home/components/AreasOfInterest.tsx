@@ -47,7 +47,7 @@ export default function AreasOfInterest() {
     <section className="bg-white  px-4 sm:px-6 lg:px-8">
       <div className="lg:mx-10">
         {/* Header */}
-        <div className="flex justify-between items-center mb-12">
+        <div className="flex justify-between items-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold font-manrope text-[#00000]">
             Costa del Sol Areas Of Interest
           </h2>
