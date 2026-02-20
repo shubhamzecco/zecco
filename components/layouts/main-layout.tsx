@@ -6,6 +6,7 @@ import React from 'react'
 import Footer from '../Footer'
 import Header from '../Header'
 import Breadcrumb from '../breadcrumbs'
+import ChatbotWidget from '../chat/chatbot-widget'
 
 type PropertyType = "buy" | "rent" | "new";
 interface MainLayoutProps {
@@ -18,6 +19,7 @@ interface MainLayoutProps {
     propertyCount?: number;
     propertyType?: PropertyType;
     onPropertyTypeChange?: (type: PropertyType) => void;
+    chatBotWidget?:boolean;
 }
 
 const HEADER_HEIGHT = 100       // h-16 (64px) + top spacing
@@ -33,7 +35,8 @@ const MainLayout = ({
     isProperty = false,
     propertyCount = 0,
     onPropertyTypeChange,
-    propertyType
+    propertyType,
+    chatBotWidget = true
 }: MainLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
@@ -126,7 +129,9 @@ const MainLayout = ({
             >
                 {children}
             </div>
-
+            {chatBotWidget && (
+                <ChatbotWidget />
+            )}
             <Footer />
         </main>
     )

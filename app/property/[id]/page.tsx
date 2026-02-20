@@ -13,7 +13,7 @@ import NearByPlaces from './components/near-by-palces'
 
 const Page = () => {
     return (
-        <MainLayout isBreadcrumb isPropertyDetails>
+        <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={false}>
             <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
                 <div className="lg:col-span-1">
                     <PropertyGallery />

@@ -6,6 +6,7 @@ export const App_url = {
     building: "/assets/images/building.png",
     footer: "/assets/images/footer.svg",
     chat_logo: "/assets/images/chat.png",
+    chat_logo_white : '/assets/images/chat-logo-white.png',
     sign_up_image: "/assets/images/signup-image.png",
     email: "/assets/images/email.svg",
     edit: "/assets/images/edit.svg",
