@@ -38,7 +38,7 @@ export default function AuthLayout({ children, bottomContent, heading, descripti
             </span>
           </div>
         </div>
-        <div className="relative w-full lg:w-[40%] lg:h-full flex flex-col   max-md:py-10  max-md:rounded-xl">
+        <div className="relative w-full lg:w-[40%] h-fit flex flex-col   max-md:py-10  max-md:rounded-xl">
 
           <div
             className="absolute inset-0 bg-center bg-cover opacity-20 md:hidden max-md:rounded-xl"
