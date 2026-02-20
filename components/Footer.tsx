@@ -199,7 +199,7 @@ export default function Footer() {
 
         {/* DIVIDER */}
         <div className="mt-5 pt-6 font-poppins font-normal text-center text-md text-white">
-          © 2024 All rights reserved
+          © 2026 All rights reserved
         </div>
       </div>
     </footer>
