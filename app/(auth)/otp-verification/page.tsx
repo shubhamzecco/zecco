@@ -177,7 +177,7 @@ const OtpVerification = () => {
     heading="Welcome Back to Zecco!"
     description="Sign in to Your Account">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="otp"

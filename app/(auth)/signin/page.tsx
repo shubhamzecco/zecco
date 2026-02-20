@@ -75,7 +75,7 @@ const Signin = () => {
         heading="Welcome Back to Zecco!"
         description=" Sign in to Your Account">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3">
             <FormField
               control={form.control}
               name="email"

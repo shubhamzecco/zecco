@@ -40,9 +40,9 @@ const ContactUs = () => {
 
     return (
         <MainLayout>
-            <section className="py-16 -mt-7">
+            <section className="py-10 -mt-7">
                 <div className="lg:mx-10 px-6">
-                    <div className="flex flex-col md:flex-row md:justify-between mb-14">
+                    <div className="flex flex-col md:flex-row md:justify-between mb-10">
                         <h2 className="text-3xl capitalize font-manrope font-bold text-[#000000]">
                             Connect with Us
                         </h2>
@@ -181,7 +181,7 @@ const ContactUs = () => {
                                         />
                                     </div>
                                     <div className="flex items-center mt-3  gap-5">
-                                        <button className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[15px] py-2.5 rounded-full font-inter font-medium flex items-center gap-2">
+                                        <button className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#136AED] text-white text-[15px] py-2.5 rounded-full font-inter font-medium flex items-center gap-2">
                                             Submit
                                         </button>
                                     </div>

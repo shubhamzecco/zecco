@@ -23,8 +23,8 @@ const AboutZecco = () => {
     }
 
     return (
-        <MainLayout>
-            <section className="py-16 -mt-7 bg-white">
+        <MainLayout chatBotWidget={false}>
+            <section className="py-10 -mt-7 bg-white">
                 <div className="lg:mx-10 px-6">
                     <div className="flex flex-col md:flex-row md:justify-between mb-7">
                         <div className="">
@@ -39,7 +39,7 @@ const AboutZecco = () => {
                             <p className="text-slate_gray font-normal font-manrope text-md max-w-xl mt-4 md:mt-0">
                                 We bridge the gap between AI-driven intelligence and local expertise to simplify your property journey in the Costa del Sol.
                             </p>
-                            <button onClick={handleNavigate} className="w-fit px-10 mt-10 tracking-wider shadow-md my-4 bg-black text-white text-[15px] py-2.5 rounded-full font-inter font-semibold flex items-center gap-2">
+                            <button onClick={handleNavigate} className="w-fit px-10 mt-10 tracking-wider shadow-md my-4 bg-[#136AED] text-white text-[15px] py-2.5 rounded-full font-inter font-semibold flex items-center gap-2">
                                 Explore properties
                             </button>
                         </div>

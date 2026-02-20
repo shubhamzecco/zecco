@@ -69,7 +69,7 @@ const SignUpPage = () => {
         heading="Create Your Zecco Account"
         description="Register new account">
         <Form {...form}>
-          <form className="" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="grid grid-cols-1 gap-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <FormField

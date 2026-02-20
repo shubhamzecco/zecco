@@ -80,7 +80,7 @@ const ResetPassword = () => {
     description="Sign in to Your Account">
       
       <Form {...form}>
-        <form className="" onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-5">
             <FormField
               control={form.control}

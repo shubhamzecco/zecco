@@ -9,10 +9,10 @@ interface AuthImageLayoutProps {
   children: React.ReactNode
   bottomContent?: React.ReactNode
   heading?: string
-  description?:string
+  description?: string
 }
 
-export default function AuthLayout({ children, bottomContent , heading , description}: AuthImageLayoutProps) {
+export default function AuthLayout({ children, bottomContent, heading, description }: AuthImageLayoutProps) {
   return (
     <section className="lg:h-screen h-screen overflow-hidden bg-white lg:p-10 w-full">
       <div className="flex h-full items-center gap-10">
@@ -38,46 +38,7 @@ export default function AuthLayout({ children, bottomContent , heading , descrip
             </span>
           </div>
         </div>
-
-        {/* <div className="relative w-full lg:w-[40%] flex items-center max-md:py-5 max-md:mx-4 max-md:shadow-lg max-md:rounded-xl overflow-hidden">
-          <div
-            className="absolute inset-0 bg-center bg-cover opacity-20 md:hidden"
-            style={{
-              backgroundImage: "url('/assets/images/signup-image.jpg')",
-            }}
-          />
-          <div className="absolute inset-0 bg-black/10 md:hidden" />
-          <div className="relative z-10 w-full max-w-[560px] mx-auto px-10 h-full md:bg-transparent  max-md:rounded-xl">
-            <div className="max-md:flex justify-center items-center">
-              <Image
-                src={App_url.image.logo}
-                alt="logo"
-                width={170}
-                height={170}
-                className="mb-2"
-                unoptimized
-              />
-            </div>
-
-            {children}
-
-            {bottomContent && (
-              <div className="mt-6">{bottomContent}</div>
-            )}
-
-            <div className="mt-4 flex justify-center">
-              <Link
-                href={App_url.link.INITIAL_URL}
-                className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-heading_text_color text-md"
-              >
-                <ArrowLeft size={18} />
-                Back to Home
-              </Link>
-            </div>
-          </div>
-        </div> */}
-
-        <div className="relative w-full lg:w-[40%] h-full flex flex-col  max-md:py-10  max-md:rounded-xl">
+        <div className="relative w-full lg:w-[40%] lg:h-full flex flex-col   max-md:py-10  max-md:rounded-xl">
 
           <div
             className="absolute inset-0 bg-center bg-cover opacity-20 md:hidden max-md:rounded-xl"
@@ -86,8 +47,6 @@ export default function AuthLayout({ children, bottomContent , heading , descrip
           <div className="absolute inset-0 bg-black/10 md:hidden max-md:rounded-xl" />
 
           <div className="relative z-10 w-full h-full px-10 flex flex-col max-md:justify-center">
-
-            {/* Logo */}
             <div className="flex justify-center">
               <Image
                 src={App_url.image.logo}
@@ -103,7 +62,11 @@ export default function AuthLayout({ children, bottomContent , heading , descrip
             </div>
 
             {/* CHILDREN */}
-            <div className="lg:flex-1 overflow-y-auto">
+            {/* <div className="lg:flex-1 overflow-y-auto">
+              {children}
+            </div> */}
+
+            <div className="flex-1 lg:flex lg:flex-col lg:justify-center overflow-y-auto lg:overflow-visible">
               {children}
             </div>
 
@@ -111,7 +74,7 @@ export default function AuthLayout({ children, bottomContent , heading , descrip
               <div className="mt-6">{bottomContent}</div>
             )}
 
-             <div className="mt-4 flex justify-center">
+            <div className="mt-4 flex justify-center">
               <Link
                 href={App_url.link.INITIAL_URL}
                 className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-heading_text_color text-md"
