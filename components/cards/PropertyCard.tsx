@@ -47,7 +47,7 @@ export default function PropertyCard({
     dispatch(
       setBreadcrumbs([
         ...mainReducer?.breadcrumbs,
-        { label: `Stylish ${property?.bedrooms}-Bedroom ${property?.propertyCategory}`, href: `${App_url.link.PROPERTY_DETAILS}/${property?._id}` },
+        { label: '', href: `${App_url.link.PROPERTY_DETAILS}/${property?._id}` },
       ])
     );
     router.push(`${App_url.link.PROPERTY_DETAILS}/${property?._id}`);

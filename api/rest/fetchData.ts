@@ -6,7 +6,6 @@ import { ILoginTypes } from "@/utils/types";
 import axios, { type AxiosRequestConfig, type Method } from "axios";
 
 export const URL = process.env.NEXT_PUBLIC_ENDPOINT_API_URL;
-export const AI_URL = process.env.NEXT_PUBLIC_AI_API_URL;
 
 export interface ApiResponse<T> {
   status: number;
@@ -18,13 +17,11 @@ const CommonApiRequest = async <T, B = unknown>(
   method: Method,
   endpoint: string,
   data?: B,
-  config: AxiosRequestConfig = {},
-  ai_insghts?: boolean
+  config: AxiosRequestConfig = {}
 ): Promise<ApiResponse<T>> => {
   try {
     const response = await axios({
       method,
-      // url: `${ai_insghts ? AI_URL : URL}${endpoint}`,
       url: `${URL}${endpoint}`,
       data: method.toLowerCase() === "get" ? undefined : data,
       params: method.toLowerCase() === "get" ? data : undefined,

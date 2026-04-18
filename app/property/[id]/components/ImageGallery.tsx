@@ -1,9 +1,10 @@
 "use client";
 
-import { App_url } from "@/constant/static";
+import { useState, useRef } from "react";
 import { Box, GalleryThumbnails, Heart, LayoutPanelLeft, Play, X } from "lucide-react";
+import { App_url } from "@/constant/static";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { Property } from "@/redux/modules/main/types";
 
 const ALL_IMAGES = [
   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
@@ -39,12 +40,6 @@ export default function PropertyGallery({property} : PropertyStats) {
   const mouseEndX = useRef<number | null>(null);
 
   const SWIPE_THRESHOLD = 50;
-
-  useEffect(() => {
-   if(property){
-    setImages(property)
-   }
-  },[property])
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -256,7 +251,7 @@ export default function PropertyGallery({property} : PropertyStats) {
                   transition: isDragging ? "none" : "",
                 }}
                 draggable={false}
-                src={images[active]}
+                src={images?.[active]}
                 className="max-w-[90%] max-h-[70%] object-contain rounded-xl"
               />
             )}
@@ -305,7 +300,7 @@ export default function PropertyGallery({property} : PropertyStats) {
           {/* ===== THUMBNAILS ===== */}
           {popupType === "gallery" && (
             <div className="absolute bottom-6 flex gap-3 px-6 overflow-x-auto">
-              {images.map((img, i) => (
+              {images?.map((img, i) => (
                 <img
                   key={i}
                   src={img}
