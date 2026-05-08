@@ -14,8 +14,10 @@ const initialState: IMainResponse = {
   blogs_list_with_limit: null,
   property_list_with_limit: null,
   property_list_without_limit: null,
-  property_details : null,
-  ai_insight : null
+  property_details: null,
+  ai_insight: null,
+  favorite_property_list: null,
+  zecco_favorite: null
 };
 
 const mainReducer = (
@@ -24,17 +26,38 @@ const mainReducer = (
 ): IMainResponse => {
   switch (action.type) {
 
-    case ActionTypes.SET_AI_INSIGHT: {
+    case ActionTypes.SET_ZEECO_FAVORITE_LIST: {
       return {
         ...state,
-        ai_insight : action?.payload
+        zecco_favorite: {
+          data: action?.payload?.data,
+          favorite_property: action.payload.favorite_property,
+          pagination: action?.payload?.pagination
+        }
       };
     }
 
-      case ActionTypes.SET_PROPERTY_DETAILS: {
+    case ActionTypes.SET_FAVORITE_PROPERTY_LIST: {
       return {
         ...state,
-        property_details:  action?.payload
+        favorite_property_list: {
+          data: action?.payload?.data,
+          pagination: action?.payload?.pagination
+        }
+      };
+    }
+
+    case ActionTypes.SET_AI_INSIGHT: {
+      return {
+        ...state,
+        ai_insight: action?.payload
+      };
+    }
+
+    case ActionTypes.SET_PROPERTY_DETAILS: {
+      return {
+        ...state,
+        property_details: action?.payload
       };
     }
 
@@ -44,6 +67,7 @@ const mainReducer = (
         ...state,
         property_list_with_limit: {
           data: action?.payload?.data,
+          favorite_property: action.payload.favorite_property,
           pagination: action?.payload?.pagination
         }
       };

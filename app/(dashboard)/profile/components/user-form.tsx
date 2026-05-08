@@ -129,7 +129,6 @@ const UserForm = () => {
                 "multipart/form-data"
             );
             if (response?.data?.success) {
-                console.log("response?.data ::: ", response?.data)
                 const payload = {
                     type: "userService",
                     action: 'update',

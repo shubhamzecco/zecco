@@ -1,7 +1,7 @@
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAuthData } from "@/redux/modules/common/user_data/action";
 import { IUserRes } from "@/redux/modules/common/user_data/types";
-import { setBlogListWithLimit, setLocationListWithLimit, setPackageListWithLimit, setPropertyDetails, setPropertyListWithLimit } from "@/redux/modules/main/action";
+import { setBlogListWithLimit, setFavoriteList, setLocationListWithLimit, setPackageListWithLimit, setPropertyDetails, setPropertyListWithLimit, setZeccoFavoriteList } from "@/redux/modules/main/action";
 import { toast } from "react-toastify";
 export const ws_response = (
   { evt }: { evt: { event: string; data: any } },
@@ -34,6 +34,14 @@ export const ws_response = (
               user: ws_onmessage.data,
             };
             dispatch(setAuthData(payload));
+          }
+        }
+
+        if (ws_onmessage?.request?.action === "favoritePropertyList") {
+          if (ws_onmessage?.status === true) {
+            dispatch(setFavoriteList(ws_onmessage?.data))
+          } else {
+            dispatch(setFavoriteList(ws_onmessage?.data))
           }
         }
 
@@ -76,12 +84,17 @@ export const ws_response = (
       case 'propertyService': {
         if (ws_onmessage?.request?.action === 'list') {
           if (ws_onmessage?.status === true) {
-            dispatch(setPropertyListWithLimit(ws_onmessage?.data))
+            if (ws_onmessage?.request?.payload?.favorite) {
+              dispatch(setZeccoFavoriteList(ws_onmessage?.data))
+            } else {
+              dispatch(setPropertyListWithLimit(ws_onmessage?.data))
+            }
           } else {
+             dispatch(setZeccoFavoriteList(ws_onmessage?.data))
             dispatch(setPropertyListWithLimit(ws_onmessage?.data))
           }
         }
-         if (ws_onmessage?.request?.action === 'get') {
+        if (ws_onmessage?.request?.action === 'get') {
           if (ws_onmessage?.status === true) {
             dispatch(setPropertyDetails(ws_onmessage?.data))
           } else {
@@ -89,7 +102,7 @@ export const ws_response = (
           }
         }
       }
-        break;  
+        break;
 
       default:
         return;

@@ -4,6 +4,7 @@ import {
   AIChatMessage,
   BreadcrumbItem,
   IBlogsResponse,
+  IFavoriteProperty,
   IPackageResponse,
   IPropertyResponse
 } from "./types";
@@ -21,14 +22,31 @@ export const ActionTypes = {
 
   SET_PROPERTY_LIST_WITH_LIMIT: 'SET_PROPERTY_LIST_WITH_LIMIT',
   SET_PROPERTY_LIST_WITHOUT_LIMIT: 'SET_PROPERTY_LIST_WITHOUT_LIMIT',
-  SET_PROPERTY_DETAILS : 'SET_PROPERTY_DETAILS',
-  SET_AI_INSIGHT : 'SET_AI_INSIGHT',
+  SET_PROPERTY_DETAILS: 'SET_PROPERTY_DETAILS',
+  SET_AI_INSIGHT: 'SET_AI_INSIGHT',
 
   AI_CHAT_BADGE_OPEN: 'AI_CHAT_BADGE_OPEN',
   AI_CHAT_ADD_MESSAGE: "AI_CHAT_ADD_MESSAGE",
   AI_CHAT_SET_LOADING: "AI_CHAT_SET_LOADING",
   AI_CHAT_CLEAR: "AI_CHAT_CLEAR",
+
+  SET_FAVORITE_PROPERTY_LIST: 'SET_FAVORITE_PROPERTY_LIST',
+  SET_ZEECO_FAVORITE_LIST: 'SET_ZEECO_FAVORITE_LIST'
 };
+
+export const setZeccoFavoriteList = (payload: IPropertyResponse) => {
+  return {
+    type: ActionTypes.SET_ZEECO_FAVORITE_LIST,
+    payload
+  }
+}
+
+export const setFavoriteList = (payload: IFavoriteProperty) => {
+  return {
+    type: ActionTypes.SET_FAVORITE_PROPERTY_LIST,
+    payload
+  }
+}
 
 export const setAiInsight = (payload: IPropertyResponse) => {
   return {

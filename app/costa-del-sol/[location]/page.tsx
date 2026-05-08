@@ -1,6 +1,4 @@
 "use client";
-
-import { propertyData } from "@/app/zecco-favorites/page";
 import PropertyCard from "@/components/cards/PropertyCard";
 import MainLayout from "@/components/layouts/main-layout";
 import FilterPanel from "./components/filter-panel";
@@ -21,18 +19,10 @@ const Page = () => {
     const [propertyType, setPropertyType] = useState<PropertyType>("buy");
     const params = useParams()
     const { mainReducer } = usePosterReducers()
-    const { sendMessage, isConnected } = useWebSocket();
+    const { sendMessage, isConnected , lastEvent} = useWebSocket();
 
     const handleFilterChange = (filters: any) => {
-        console.log("Filters applied:", filters);
     };
-
-    useEffect(() => {
-        if (gridRef.current) {
-            setGridHeight(gridRef.current.offsetHeight);
-        }
-    }, [propertyData]);
-
 
     const toggleLike = (id: string) => {
         setProperties((prev) =>
@@ -56,6 +46,21 @@ const Page = () => {
             }
         })
     }, [isConnected])
+
+    useEffect(() => {
+        if (lastEvent?.data?.status && lastEvent?.data?.request?.type === 'userService' && (lastEvent?.data?.request?.action === 'addFavorite' || lastEvent?.data?.request?.action === 'removeFavorite')) {
+            sendMessage('action', {
+                type: "propertyService",
+                action: "list",
+                payload: {
+                    limit: 10,
+                    page: 1,
+                    search: '',
+                    location_id: params?.location
+                }
+            })
+        }
+    }, [lastEvent])
 
     return (
         <MainLayout

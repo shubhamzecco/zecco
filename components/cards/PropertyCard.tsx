@@ -1,5 +1,6 @@
 "use client";
 
+import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setBreadcrumbs } from "@/redux/modules/main/action";
@@ -16,8 +17,9 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import LoginPopup from "../login-popup";
 
 interface PropertyCardProps {
   featured?: boolean;
@@ -28,20 +30,18 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({
-  featured = false,
   aiInsights = false,
-  isLiked = false,
   property,
-  onLikeToggle
 }: PropertyCardProps) {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { mainReducer } = usePosterReducers();
-
+  const { mainReducer, user_data } = usePosterReducers();
+  const { sendMessage, lastEvent } = useWebSocket()
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [isSwiping, setIsSwiping] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const handleNavigate = () => {
     dispatch(
@@ -106,6 +106,32 @@ export default function PropertyCard({
     );
   };
 
+  const handleFavoriteAdd = () => {
+    if (!user_data?.access_token) {
+      // router.push(App_url.link.SIGN_IN)
+      setShowPopup(true);
+      return;
+    } else {
+      if (mainReducer?.property_list_with_limit?.favorite_property?.includes(property?._id) || mainReducer?.zecco_favorite?.favorite_property?.includes(property?._id)) {
+        sendMessage('action', {
+          type: "userService",
+          action: "removeFavorite",
+          payload: {
+            property_id: property?._id
+          },
+        })
+      } else {
+        sendMessage('action', {
+          type: "userService",
+          action: "addFavorite",
+          payload: {
+            property_id: property?._id
+          },
+        })
+      }
+    }
+  }
+
   return (
     <div
       onClick={handleCardClick}
@@ -166,11 +192,13 @@ export default function PropertyCard({
         <button
           onClick={(e) => {
             e.stopPropagation(); // prevent navigation
-            onLikeToggle?.();
+            // onLikeToggle?.();
+            handleFavoriteAdd?.()
+
           }}
           className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
         >
-          {isLiked ? (
+          {(mainReducer?.property_list_with_limit?.favorite_property?.includes(property?._id) || mainReducer?.zecco_favorite?.favorite_property?.includes(property?._id)) ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
             <Heart size={20} className="text-white hover:text-red-500" />
@@ -230,6 +258,20 @@ export default function PropertyCard({
           </div>
         </div>
       </div>
+
+      <LoginPopup
+        isOpen={showPopup}
+        onClose={(e) => {
+          e.stopPropagation();
+          setShowPopup(false)
+        }}
+        onLogin={(e) => {
+          e.stopPropagation();
+          setShowPopup(false);
+          router.push(App_url.link.SIGN_IN);
+        }}
+      />
+
     </div>
   );
 }

@@ -426,9 +426,14 @@ export interface IBlogsResponse {
 
 export interface IPropertyResponse {
   data: Property[];
+  favorite_property: string[]
   pagination: IPagination;
 }
 
+export interface IFavoriteProperty {
+  data: Property[];
+  pagination: IPagination;
+}
 
 
 
@@ -445,4 +450,6 @@ export interface IMainResponse {
   property_list_without_limit: IPropertyResponse | null
   property_details: Property | null
   ai_insight: PropertyAnalysis | null
+  favorite_property_list: IFavoriteProperty | null
+  zecco_favorite : IPropertyResponse | null
 }

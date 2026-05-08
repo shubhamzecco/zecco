@@ -43,9 +43,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const dispatch = useDispatch();
   const router = useRouter();
   const { user_data } = usePosterReducers();
-
-  console.log("user_data ::: ", user_data)
-
   const accessToken = user_data?.access_token;
   const guestAccessToken = process.env.NEXT_PUBLIC_GUEST_ACCESS_TOKEN;
 
@@ -63,7 +60,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
   const sendMessage = useCallback((event: string, data?: any) => {
     if (singletonSocket && singletonSocket.connected) {
-      console.log('📤 Sending message:', event, data);
+      // console.log('📤 Sending message:', event, data);
       singletonSocket.emit(event, data);
     } else {
       console.log('⚠️ Socket not connected. Cannot send:', event, data);
@@ -85,7 +82,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       return;
     }
 
-    console.log('🌐 Connecting to WebSocket server:', url);
+    // console.log('🌐 Connecting to WebSocket server:', url);
 
     singletonSocket = io(url, {
       auth: buildAuthPayload(),

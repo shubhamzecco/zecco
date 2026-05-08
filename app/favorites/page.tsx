@@ -1,9 +1,10 @@
 "use client"
+import { useWebSocket } from '@/api/socket/WebSocketContext';
 import PropertyCard from '@/components/cards/PropertyCard';
 import SidebarLayout from '@/components/layouts/sidebar-layout';
 import { App_url } from '@/constant/static';
-import { Property } from '@/utils/types';
-import { useState } from 'react';
+import { usePosterReducers } from '@/redux/getdata/usePostReducer';
+import { useEffect, useState } from 'react';
 
 const propertyData = [
     {
@@ -77,17 +78,28 @@ const propertyData = [
 
 const FavoritesPage = () => {
 
-    const [properties, setProperties] = useState<Property[]>(propertyData);
+    const { isConnected, sendMessage, lastEvent } = useWebSocket()
+    const { mainReducer } = usePosterReducers()
 
-    const toggleLike = (id: string) => {
-        setProperties((prev) =>
-            prev.map((item) =>
-                item.id === id
-                    ? { ...item, isLiked: !item.isLiked }
-                    : item
-            )
-        );
-    };
+    useEffect(() => {
+        if (isConnected) {
+            sendMessage('action', {
+                type: "userService",
+                action: "favoritePropertyList",
+                payload: {}
+            })
+        }
+    }, [isConnected])
+
+    useEffect(() => {
+        if (lastEvent?.data?.status && lastEvent?.data?.request?.type === 'userService' && (lastEvent?.data?.request?.action === 'removeFavorite')) {
+            sendMessage('action', {
+                type: "userService",
+                action: "favoritePropertyList",
+                payload: {}
+            })
+        }
+    }, [lastEvent])
     return (
         <SidebarLayout>
             <div className="lg:px-12 px-5  py-8 h-full
@@ -99,13 +111,13 @@ const FavoritesPage = () => {
                     <div className="flex justify-between items-center mb-1">
                         <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">Favorites</h2>
                         <div className=" bg-[#EEF2FF] rounded-full px-3 py-1 ">
-                            <p className='font-manrope font-semibold text-[#2828FF] uppercase text-sm'>{properties?.filter((item) => item?.isLiked)?.length} Properties</p>
+                            <p className='font-manrope font-semibold text-[#2828FF] uppercase text-sm'>{mainReducer?.favorite_property_list?.data?.length} Properties</p>
                         </div>
                     </div>
                     <div className="bg-white/70 p-7  rounded-lg">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
-                            {properties?.filter((item) => item?.isLiked)?.map((property) => (
-                                <PropertyCard key={property.id} {...property} aiInsights={true} isLiked={true} onLikeToggle={() => toggleLike(property?.id)} />
+                            {mainReducer?.favorite_property_list?.data?.map((property) => (
+                                <PropertyCard property={property} key={property.id} {...property} />
                             ))}
                         </div>
                     </div>
