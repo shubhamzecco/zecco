@@ -23,6 +23,7 @@ const AiInsights = ({ onGetStarted , property}: AiInsightsProps) => {
                                 height={100}
                                 className="lg:rounded-l-2xl max-md:rounded-t-2xl max-md:w-full object-cover max-md:h-52 lg:h-32"
                             />
+                
                         </div>
                         <div className="flex flex-col gap-1 max-md:mb-5">
                             <h2 className='font-bold text-lg font-manrope px-4 pt-4 text-[#64748B]'>€{property?.salePrice}</h2>

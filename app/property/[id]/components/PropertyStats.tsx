@@ -16,7 +16,7 @@ export default function PropertyStats({property} : PropertyStats) {
           </div>
           <div>
             <p className="text-sm font-manrope font-bold text-[#111827]">
-              {property?.mtsBuild} m²
+              {property?.mtsBuild} /m²
             </p>
             <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
               Built

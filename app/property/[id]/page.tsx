@@ -1,6 +1,6 @@
 "use client";
 import MainLayout from "@/components/layouts/main-layout";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropertyGallery from "./components/ImageGallery";
 import { PropertyInfo } from "./components/PropertyInfo";
 import { AIMarketIntelligence } from "./components/AIMarketIntelligence";
@@ -23,12 +23,18 @@ import CommonApiRequest from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
 import { useDispatch } from "react-redux";
 import { setAiInsight } from "@/redux/modules/main/action";
+import { Button } from "@/components/ui/button";
+import AIProcessingCard from "@/app/AI-insights/components/analyzing-property-details";
+import { set } from "react-hook-form";
 
 const Page = () => {
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const params = useParams();
   const dispatch = useDispatch();
+  const [step, setStep] = useState("intro");
+  const [isCompleted, setIsCompleted] = useState(false);
+
   useEffect(() => {
     if (!isConnected || !params?.id) return;
 
@@ -41,22 +47,42 @@ const Page = () => {
     });
   }, [isConnected, params?.id]);
 
-//   useEffect(() => {
-//     if (!params?.id) return;
-//     CommonApiRequest(
-//       "GET",
-//       `${App_url.endpoint_url?.AI_INSIGHT}/${params.id}`,
-//       {},
-//       {},
-//       true,
-//     )?.then((response: any) => {
-//       if (response?.status === 200) {
-//         dispatch(setAiInsight(response?.data));
-//       } else {
-//         dispatch(setAiInsight(response?.data));
-//       }
-//     });
-//   }, [params?.id]);
+  // useEffect(() => {
+  //   if (!params?.id) return;
+  //   CommonApiRequest(
+  //     "GET",
+  //     `${App_url.endpoint_url?.AI_INSIGHT}/${params.id}`,
+  //     {},
+  //     {},
+  //     // true,
+  //   )?.then((response: any) => {
+  //     if (response?.status === 200) {
+  //       dispatch(setAiInsight(response?.data));
+  //     } else {
+  //       dispatch(setAiInsight(response?.data));
+  //     }
+  //   });
+  // }, [params?.id]);
+
+  const handleAIInsight = () => {
+    setStep("processing");
+    setIsCompleted(false);
+    CommonApiRequest(
+      "GET",
+      `${App_url.endpoint_url?.AI_INSIGHT}/${params.id}`,
+      {},
+      {},
+      // true,
+    )?.then((response: any) => {
+      if (response?.status === 200) {
+        dispatch(setAiInsight(response?.data));
+        setStep("complete");
+        setIsCompleted(true);
+      } else {
+        dispatch(setAiInsight(response?.data));
+      }
+    });
+  };
 
   return (
     <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={false}>
@@ -74,9 +100,27 @@ const Page = () => {
             <PropertyStats
               property={mainReducer?.property_details as Property}
             />
-            <AIMarketIntelligence
-              ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
-            />
+            <div className="flex items-center gap-5 mb-2">
+              <Button
+                type="submit"
+                onClick={() => handleAIInsight()}
+                className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-11 my-4 text-white rounded-full shadow-md"
+              >
+                AI Market Intelligence
+              </Button>
+            </div>
+            {step === "processing" && (
+              <AIProcessingCard
+                isCompleted={isCompleted}
+                onComplete={() => setStep("complete")}
+                heading="AI Market Intelligence"
+              />
+            )}
+            {step === "complete" && (
+              <AIMarketIntelligence
+                ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
+              />
+            )}
             <PropertyDescription />
             <BasicFeatures />
             <MapSection />
@@ -87,11 +131,11 @@ const Page = () => {
           </div>
         </div>
         <div className="lg:col-span-1">
-          <NearByPlaces
+          {/* <NearByPlaces
             near_places={
               mainReducer?.ai_insight?.infrastructure as Infrastructure
             }
-          />
+          /> */}
           <ZeccoFavorites />
         </div>
       </div>

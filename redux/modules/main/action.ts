@@ -6,7 +6,8 @@ import {
   IBlogsResponse,
   IFavoriteProperty,
   IPackageResponse,
-  IPropertyResponse
+  IPropertyResponse,
+  Property
 } from "./types";
 
 
@@ -55,7 +56,7 @@ export const setAiInsight = (payload: IPropertyResponse) => {
   }
 }
 
-export const setPropertyDetails = (payload: IPropertyResponse) => {
+export const setPropertyDetails = (payload: Property | unknown) => {
   return {
     type: ActionTypes.SET_PROPERTY_DETAILS,
     payload

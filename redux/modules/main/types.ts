@@ -278,8 +278,8 @@ export interface Property {
   province: string;
   country: string;
   city: {
-    _id: string;
-    name: string;
+    _id : string;
+    name : string;
   };
   area: string;
   subarea: string;
@@ -307,18 +307,13 @@ export interface Property {
 
   latitude: number;
   longitude: number;
+
   dateListed: string;
+
   images: string[];
-  ai_report: AIReport,
+
   energy_rating: string;
 }
-
-interface AIReport {
-  ai_summary: AISummary;
-  strategic_advantages: string[];
-  market_risks: string[];
-}
-
 
 export interface PropertyAnalysis {
   comparables_used: number;
@@ -362,6 +357,10 @@ export interface PropertyAnalysis {
   investment_percent: number;
   growth_percent: number;
   rental_yield_percent: number;
+  city_avg_price_sqm: number;
+  city_properties_used: number;
+  investment_grade: string;
+  investment_opportunity: string;
 
   ai_report: AIReport;
 }
@@ -395,6 +394,8 @@ interface LocationItem {
 
 interface AIReport {
   ai_summary: AISummary;
+  strategic_advantages: string[];
+  market_risks: string[];
 }
 
 interface AISummary {
@@ -427,15 +428,13 @@ export interface IBlogsResponse {
 export interface IPropertyResponse {
   data: Property[];
   favorite_property: string[]
-  pagination: IPagination;
+  pagination: IPagination | null;
 }
 
 export interface IFavoriteProperty {
   data: Property[];
   pagination: IPagination;
 }
-
-
 
 export interface IMainResponse {
   chat_messages: ChatMessagesResponse | null;

@@ -21,6 +21,11 @@ export const App_url = {
     away_icon: '/assets/images/away.svg',
     cap: '/assets/images/cap.svg',
     user_cap: '/assets/images/user-cap.svg',
+    school_icon: '/assets/images/school.svg',
+    airport_icon: '/assets/images/airport.svg',
+    bus_icon: '/assets/images/bus.svg',
+    train_icon: '/assets/images/train.svg',
+    metro_icon: '/assets/images/metro.svg',
 
 
     // dev images
@@ -88,7 +93,7 @@ export const App_url = {
     RESEND_OTP: "/resend-otp",
     LOGOUT : '/api/auth/logout',
     UPLOAD_FILE : '/api/upload',
-    AI_INSIGHT : '/analysis'
+    AI_INSIGHT : '/api/ai-insight'
   },
   chat_bot_url: "http://localhost:5678/webhook/zecco",
   chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco",
@@ -117,3 +122,4 @@ export const initialUserData = {
   },
   access_token: "",
 };
+

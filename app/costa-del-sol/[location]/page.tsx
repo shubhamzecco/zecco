@@ -8,6 +8,8 @@ import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { useParams } from "next/navigation";
 import { Property } from "@/redux/modules/main/types";
+import { setAiInsight, setPropertyDetails } from "@/redux/modules/main/action";
+import { useDispatch } from "react-redux";
 
 type PropertyType = "buy" | "rent" | "new";
 
@@ -20,6 +22,7 @@ const Page = () => {
     const params = useParams()
     const { mainReducer } = usePosterReducers()
     const { sendMessage, isConnected , lastEvent} = useWebSocket();
+    const dispatch = useDispatch()
 
     const handleFilterChange = (filters: any) => {
     };

@@ -4,11 +4,13 @@ import { Check, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {
+  isCompleted: boolean;
   onComplete: () => void;
+  heading?: string;
 };
 
-export default function AIProcessingCard({ onComplete }: Props) {
-  const TOTAL_TIME = 30;
+export default function AIProcessingCard({ isCompleted, onComplete, heading }: Props) {
+  const TOTAL_TIME = 50;
   const INTERVAL = 500;
 
   const [progress, setProgress] = useState(0);
@@ -34,6 +36,16 @@ export default function AIProcessingCard({ onComplete }: Props) {
   ];
 
   useEffect(() => {
+    if (isCompleted) {
+      setProgress(100);
+      setActiveStep(steps.length - 1);
+
+      setTimeout(() => {
+        onComplete();
+      }, 800);
+
+      return;
+    }
     const increment = 100 / TOTAL_TIME;
 
     const timer = setInterval(() => {
@@ -41,27 +53,21 @@ export default function AIProcessingCard({ onComplete }: Props) {
         const next = prev + increment;
         const stepIndex = Math.min(
           steps.length - 1,
-          Math.floor((next / 100) * steps.length)
+          Math.floor((next / 100) * steps.length),
         );
         setActiveStep(stepIndex);
 
-        if (next >= 100) {
-          clearInterval(timer);
-          setTimeout(onComplete, 600);
-          return 100;
-        }
-
-        return next;
+        return next > 95 ? 95 : next;
       });
     }, INTERVAL);
 
     return () => clearInterval(timer);
-  }, [onComplete]);
+  }, [isCompleted]);
 
   return (
-    <section>
+    <section className="mb-6">
       <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
-        Analyzing Property Details
+        {heading ? heading : "Analyzing Property Details"}
       </h2>
 
       <div className="w-full mx-auto bg-white/90 rounded-2xl p-4 lg:p-14 border border-gray-100">
@@ -93,7 +99,6 @@ export default function AIProcessingCard({ onComplete }: Props) {
 
               return (
                 <div key={index} className="flex gap-3 items-start">
-              
                   <div className="mt-0.5 bg-indigo-50 rounded-full p-1">
                     {isDone && (
                       <span className="w-5 h-5 rounded-full text-green-500 border-2 border-green-500 p-[1px] flex items-center justify-center text-xs">
@@ -106,24 +111,35 @@ export default function AIProcessingCard({ onComplete }: Props) {
                         <div className="absolute inset-0 rounded-full border-2 border-blue-600 opacity-30" />
                         <div className="absolute inset-0 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
                       </div>
-
                     )}
 
                     {!isDone && !isActive && (
                       <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                        <Clock className="text-gray-300" size={20}/>
+                        <Clock className="text-gray-300" size={20} />
                       </div>
                     )}
                   </div>
                   <div>
                     <p
-                      className={`text-lg font-manrope font-bold ${isActive ? "text-blue-600" : isDone ? 'text-gray-600' :  "text-gray-200"
-                        }`}
+                      className={`text-lg font-manrope font-bold ${
+                        isActive
+                          ? "text-blue-600"
+                          : isDone
+                            ? "text-gray-600"
+                            : "text-gray-200"
+                      }`}
                     >
                       {step.title}
                     </p>
-                    <p className={`text-sm font-manrope font-semibold  leading-relaxed mt-0.5 ${isActive ? "text-gray-500" :  isDone ? 'text-gray-400' : "text-gray-200"
-                        }`}>
+                    <p
+                      className={`text-sm font-manrope font-semibold  leading-relaxed mt-0.5 ${
+                        isActive
+                          ? "text-gray-500"
+                          : isDone
+                            ? "text-gray-400"
+                            : "text-gray-200"
+                      }`}
+                    >
                       {step.desc}
                     </p>
                   </div>
