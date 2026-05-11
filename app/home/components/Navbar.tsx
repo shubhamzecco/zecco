@@ -20,7 +20,6 @@ export default function Navbar() {
   const dispatch = useDispatch()
   const router = useRouter()
   const { user_data } = usePosterReducers()
-  console.log("user_data",user_data)
 
   const isActive = (href: string) => {
     if (href === '#') return false

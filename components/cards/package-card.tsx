@@ -1,6 +1,7 @@
 "use client";
 import CommonApiRequest from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { IPlan, PackagePermissions } from "@/redux/modules/main/types";
 import { Check, CircleStar, CircleUserRound, Crown, Gem } from "lucide-react";
 
@@ -16,37 +17,35 @@ interface IPackageProps {
   plan: IPlan;
 }
 
-const createPayment = async (value: any) => {
-  const payload = {
-    package_id: 1,
-    user_id: 1,
-    amount: 1,
-    currency: "EUR",
-    description: "Order #12345",
-    webhook_url: "https://looksmart-announce-bathroom-reload.trycloudflare.com",
-  };
-  CommonApiRequest(
-    "POST",
-    `${App_url.endpoint_url?.CREATE_PAYMENT}`,
-    payload,
-    {},
-    // true,
-  )?.then(async (response: any) => {
-    if (response?.status === 200) {
-      const data = await response.json();
-      console.log("data", data);
-      if (data.success) {
-        window.location.href = data.data.checkoutUrl;
-      }
-    } else {
-      console.log("error", response?.data?.message);
-    }
-  });
-};
-
 const PackageCard = ({ index, plan }: IPackageProps) => {
+  const { user_data } = usePosterReducers();
   const features = plan?.packagePermissions || [];
 
+  const createPayment = async (value: any) => {
+    const payload = {
+      package_id: value,
+      user_id: user_data?.user?._id,
+      webhook_url:
+        "https://joe-ist-scheduling-accept.trycloudflare.com",
+    };
+    CommonApiRequest(
+      "POST",
+      `${App_url.endpoint_url?.CREATE_PAYMENT}`,
+      payload,
+      {},
+      // true,
+    )?.then(async (response: any) => {
+      console.log("response", response);
+
+      if (response?.status === 200) {
+        if (response.success) {
+          window.location.href = response.data.checkoutUrl;
+        }
+      } else {
+        console.log("error", response?.data?.message);
+      }
+    });
+  };
   return (
     <div
       key={index}
