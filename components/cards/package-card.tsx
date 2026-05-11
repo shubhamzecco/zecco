@@ -24,39 +24,39 @@ interface IPackageProps {
     plan: IPlan;
 }
 
-const createPayment = async (value: any) => {
-    const payload = {
-        package_id: 1,
-        user_id: 1,
-        amount: 1,
-        currency: "EUR",
-        description: "Order #12345",
-        webhook_url: "https://looksmart-announce-bathroom-reload.trycloudflare.com",
-    };
-    CommonApiRequest(
-        "POST",
-        `${App_url.endpoint_url?.CREATE_PAYMENT}`,
-        payload,
-        {},
-        // true,
-    )?.then(async (response: any) => {
-        if (response?.status === 200) {
-            const data = await response.json();
-            console.log("data", data);
-            if (data.success) {
-                window.location.href = data.data.checkoutUrl;
-            }
-        } else {
-            console.log("error", response?.data?.message);
-        }
-    });
-};
 
 const PackageCard = ({ index, plan }: IPackageProps) => {
     const features = plan?.packagePermissions || [];
     const { user_data } = usePosterReducers()
     const isLoggedIn = !!user_data?.access_token
     const dispatch = useDispatch()
+
+    const createPayment = async (value: any) => {
+        const payload = {
+            package_id: value,
+            user_id: user_data?.user?._id,
+            webhook_url:
+                "https://shaved-recognized-racks-environments.trycloudflare.com",
+        };
+        CommonApiRequest(
+            "POST",
+            `${App_url.endpoint_url?.CREATE_PAYMENT}`,
+            payload,
+            {},
+            // true,
+        )?.then(async (response: any) => {
+            console.log("response-create-payment", response);
+
+            if (response?.status === 200) {
+                if (response.success) {
+                    window.location.href = response.data.checkoutUrl;
+                }
+            } else {
+                console.log("error", response?.data?.message);
+            }
+        });
+    };
+
     return (
         <div
             key={index}
@@ -93,7 +93,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
                     </li>
                 ))}
             </ul>
-            <button onClick={() => isLoggedIn ? dispatch(setLoginPopup(false)) : dispatch(setLoginPopup(true))} className="w-full  text-sm text-[#000000] py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition">
+            <button onClick={() => isLoggedIn ? createPayment(plan?._id) : dispatch(setLoginPopup(true))} className="w-full  text-sm text-[#000000] py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition">
                 {plan?.button_title}
             </button>
         </div>
