@@ -197,6 +197,12 @@ export interface BreadcrumbItem {
   href?: string | null   // null / undefined = current page
 }
 
+export interface PackagePermissions {
+  status: boolean;
+  name: string;
+  _id: string;
+}
+
 export interface IPlan {
   _id: string;
   name: string;
@@ -208,6 +214,7 @@ export interface IPlan {
   status: boolean;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
+  packagePermissions: PackagePermissions[];
 }
 
 export interface ILocation {

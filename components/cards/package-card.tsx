@@ -1,4 +1,6 @@
 "use client"
+import CommonApiRequest from '@/api/rest/fetchData';
+import { App_url } from '@/constant/static';
 import { usePosterReducers } from '@/redux/getdata/usePostReducer';
 import { setLoginPopup } from '@/redux/modules/main/action';
 import { IPlan } from '@/redux/modules/main/types';
@@ -15,23 +17,46 @@ const icons = [
     <CircleStar className=" text-[#4A86E8]" size={20} />,
     <Gem className=" text-[#4A86E8]" size={20} />,
     <Crown className=" text-[#4A86E8]" size={20} />,
-]
+];
 
 interface IPackageProps {
-    index: number
-    plan: IPlan
+    index: number;
+    plan: IPlan;
 }
 
+const createPayment = async (value: any) => {
+    const payload = {
+        package_id: 1,
+        user_id: 1,
+        amount: 1,
+        currency: "EUR",
+        description: "Order #12345",
+        webhook_url: "https://looksmart-announce-bathroom-reload.trycloudflare.com",
+    };
+    CommonApiRequest(
+        "POST",
+        `${App_url.endpoint_url?.CREATE_PAYMENT}`,
+        payload,
+        {},
+        // true,
+    )?.then(async (response: any) => {
+        if (response?.status === 200) {
+            const data = await response.json();
+            console.log("data", data);
+            if (data.success) {
+                window.location.href = data.data.checkoutUrl;
+            }
+        } else {
+            console.log("error", response?.data?.message);
+        }
+    });
+};
+
 const PackageCard = ({ index, plan }: IPackageProps) => {
-    const features = plan?.plan_description
-        ?.replace(/<\/?ol>/g, "")
-        ?.split("</li>")
-        ?.map(item => item.replace("<li>", "").trim())
-        ?.filter(Boolean);
+    const features = plan?.packagePermissions || [];
     const { user_data } = usePosterReducers()
     const isLoggedIn = !!user_data?.access_token
     const dispatch = useDispatch()
-    console.log("isLoggedIn ::: " ,isLoggedIn)
     return (
         <div
             key={index}
@@ -64,7 +89,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
                                 size={22}
                             />
                         </div>
-                        {feature}
+                        {feature?.name}
                     </li>
                 ))}
             </ul>
@@ -75,4 +100,4 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
     )
 }
 
-export default PackageCard
+export default PackageCard;
