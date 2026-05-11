@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { PaymentStatus } from './components/payment-status';
+import { PaymentStatus } from '../payment-success/[id]/components/payment-status';
 
 export default function Home() {
   const [selectedStatus, setSelectedStatus] = useState<'paid' | 'failed' | 'expired' | 'open'>('open');

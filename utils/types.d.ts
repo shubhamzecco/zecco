@@ -332,3 +332,40 @@ export interface ChatState {
   messages: ChatMessage[];
   isLoading: boolean;
 }
+
+
+export interface IPaymentStatusResponse {
+  success: boolean
+  message: string
+  data: IPaymentData
+  timestamp: string
+  path: string
+  status: number
+}
+
+export interface IPaymentData {
+  _id: string
+  package: string
+  user: string
+  amount: number
+  currency: string
+  description: string
+  metadata: IPaymentMetadata
+  transaction_id: string
+  method: string
+  status: 'paid' | 'failed' | 'expired' | 'open'
+  expiresAt: string
+  createdAt: string
+  updatedAt: string
+  failedAt: string | null
+  paidAt: string | null
+  message: string
+}
+
+export interface IPaymentMetadata {
+  order_id: string
+  user_id: string
+  package_id: string
+  package_name: string
+  package_price: string
+}
