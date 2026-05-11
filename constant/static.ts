@@ -93,7 +93,8 @@ export const App_url = {
     RESEND_OTP: "/resend-otp",
     LOGOUT : '/api/auth/logout',
     UPLOAD_FILE : '/api/upload',
-    AI_INSIGHT : '/api/ai-insight'
+    AI_INSIGHT : '/api/ai-insight',
+    CREATE_PAYMENT: '/api/payment/create-payment',
   },
   chat_bot_url: "http://localhost:5678/webhook/zecco",
   chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco",
