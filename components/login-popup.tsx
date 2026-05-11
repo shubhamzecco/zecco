@@ -46,6 +46,7 @@ const LoginPopup = () => {
             onClick={(e) => {
               e.stopPropagation();
               handleProtectedRoute(isLoggedIn, router)
+              dispatch(setLoginPopup(false))
             }}
             className="w-1/2 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
           >
