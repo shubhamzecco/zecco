@@ -3,8 +3,9 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs } from "@/redux/modules/main/action";
+import { setBreadcrumbs, setLoginPopup } from "@/redux/modules/main/action";
 import { Property } from "@/redux/modules/main/types";
+import { handleProtectedRoute } from "@/utils/common";
 import {
   Bath,
   BedSingle,
@@ -17,7 +18,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
 
@@ -42,6 +43,7 @@ export default function PropertyCard({
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [isSwiping, setIsSwiping] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
+  const isLoggedIn = !!user_data?.access_token
 
   const handleNavigate = () => {
     dispatch(
@@ -109,7 +111,7 @@ export default function PropertyCard({
   const handleFavoriteAdd = () => {
     if (!user_data?.access_token) {
       // router.push(App_url.link.SIGN_IN)
-      setShowPopup(true);
+      dispatch(setLoginPopup(true))
       return;
     } else {
       if (mainReducer?.property_list_with_limit?.favorite_property?.includes(property?._id) || mainReducer?.zecco_favorite?.favorite_property?.includes(property?._id)) {
@@ -259,18 +261,7 @@ export default function PropertyCard({
         </div>
       </div>
 
-      <LoginPopup
-        isOpen={showPopup}
-        onClose={(e) => {
-          e.stopPropagation();
-          setShowPopup(false)
-        }}
-        onLogin={(e) => {
-          e.stopPropagation();
-          setShowPopup(false);
-          router.push(App_url.link.SIGN_IN);
-        }}
-      />
+      <LoginPopup/>
 
     </div>
   );

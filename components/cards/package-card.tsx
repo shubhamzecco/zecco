@@ -1,4 +1,6 @@
 "use client"
+import { usePosterReducers } from '@/redux/getdata/usePostReducer';
+import { setLoginPopup } from '@/redux/modules/main/action';
 import { IPlan } from '@/redux/modules/main/types';
 import {
     Check, CircleStar,
@@ -6,6 +8,7 @@ import {
     Crown,
     Gem
 } from 'lucide-react';
+import { useDispatch } from 'react-redux';
 
 const icons = [
     <CircleUserRound className=" text-[#4A86E8]" size={20} />,
@@ -25,6 +28,10 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         ?.split("</li>")
         ?.map(item => item.replace("<li>", "").trim())
         ?.filter(Boolean);
+    const { user_data } = usePosterReducers()
+    const isLoggedIn = !!user_data?.access_token
+    const dispatch = useDispatch()
+    console.log("isLoggedIn ::: " ,isLoggedIn)
     return (
         <div
             key={index}
@@ -61,7 +68,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
                     </li>
                 ))}
             </ul>
-            <button className="w-full  text-sm text-[#000000] py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition">
+            <button onClick={() => isLoggedIn ? dispatch(setLoginPopup(false)) : dispatch(setLoginPopup(true))} className="w-full  text-sm text-[#000000] py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition">
                 {plan?.button_title}
             </button>
         </div>

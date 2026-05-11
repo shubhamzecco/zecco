@@ -1,35 +1,32 @@
 "use client";
-import MainLayout from "@/components/layouts/main-layout";
-import React, { useEffect, useState } from "react";
-import PropertyGallery from "./components/ImageGallery";
-import { PropertyInfo } from "./components/PropertyInfo";
-import { AIMarketIntelligence } from "./components/AIMarketIntelligence";
-import { PropertyDescription } from "./components/PropertyDescription";
-import { MapSection } from "./components/MapSection";
-import { AgentCard } from "./components/AgentCard";
-import PropertyStats from "./components/PropertyStats";
-import BasicFeatures from "./components/BasicFeatures";
-import ZeccoFavorites from "./components/ZeccoFavorites";
-import NearByPlaces from "./components/near-by-palces";
-import { useWebSocket } from "@/api/socket/WebSocketContext";
-import { useParams } from "next/navigation";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import {
-  Infrastructure,
-  Property,
-  PropertyAnalysis,
-} from "@/redux/modules/main/types";
 import CommonApiRequest from "@/api/rest/fetchData";
-import { App_url } from "@/constant/static";
-import { useDispatch } from "react-redux";
-import { setAiInsight } from "@/redux/modules/main/action";
-import { Button } from "@/components/ui/button";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
 import AIProcessingCard from "@/app/AI-insights/components/analyzing-property-details";
-import { set } from "react-hook-form";
+import MainLayout from "@/components/layouts/main-layout";
+import { Button } from "@/components/ui/button";
+import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setAiInsight } from "@/redux/modules/main/action";
+import {
+  Property,
+  PropertyAnalysis
+} from "@/redux/modules/main/types";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { AIMarketIntelligence } from "./components/AIMarketIntelligence";
+import { AgentCard } from "./components/AgentCard";
+import BasicFeatures from "./components/BasicFeatures";
+import PropertyGallery from "./components/ImageGallery";
+import { MapSection } from "./components/MapSection";
+import { PropertyDescription } from "./components/PropertyDescription";
+import { PropertyInfo } from "./components/PropertyInfo";
+import PropertyStats from "./components/PropertyStats";
+import ZeccoFavorites from "./components/ZeccoFavorites";
 
 const Page = () => {
   const { sendMessage, isConnected } = useWebSocket();
-  const { mainReducer } = usePosterReducers();
+  const { mainReducer , user_data } = usePosterReducers();
   const params = useParams();
   const dispatch = useDispatch();
   const [step, setStep] = useState("intro");
@@ -46,23 +43,6 @@ const Page = () => {
       },
     });
   }, [isConnected, params?.id]);
-
-  // useEffect(() => {
-  //   if (!params?.id) return;
-  //   CommonApiRequest(
-  //     "GET",
-  //     `${App_url.endpoint_url?.AI_INSIGHT}/${params.id}`,
-  //     {},
-  //     {},
-  //     // true,
-  //   )?.then((response: any) => {
-  //     if (response?.status === 200) {
-  //       dispatch(setAiInsight(response?.data));
-  //     } else {
-  //       dispatch(setAiInsight(response?.data));
-  //     }
-  //   });
-  // }, [params?.id]);
 
   const handleAIInsight = () => {
     setStep("processing");
@@ -127,7 +107,7 @@ const Page = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <AgentCard />
+            <AgentCard user_data={user_data} />
           </div>
         </div>
         <div className="lg:col-span-1">

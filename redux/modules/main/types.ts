@@ -450,5 +450,6 @@ export interface IMainResponse {
   property_details: Property | null
   ai_insight: PropertyAnalysis | null
   favorite_property_list: IFavoriteProperty | null
-  zecco_favorite : IPropertyResponse | null
+  zecco_favorite : IPropertyResponse | null,
+  login_popup: boolean
 }

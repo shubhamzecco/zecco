@@ -56,7 +56,7 @@ const Page = () => {
                 type: "propertyService",
                 action: "list",
                 payload: {
-                    limit: 10,
+                    limit: 0,
                     page: 1,
                     search: '',
                     location_id: params?.location

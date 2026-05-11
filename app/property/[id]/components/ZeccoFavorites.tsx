@@ -1,73 +1,81 @@
 "use client"
+import { useWebSocket } from '@/api/socket/WebSocketContext'
 import PropertyCard from '@/components/cards/PropertyCard'
 import { App_url } from '@/constant/static'
-import { Property } from '@/utils/types';
-import { useState } from 'react';
+import { usePosterReducers } from '@/redux/getdata/usePostReducer'
+import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
+import { useRouter } from 'next/navigation'
+import { useEffect, useMemo } from 'react'
+import { useDispatch } from 'react-redux'
 
-const propertyData = [
-  {
-    id: '1',
-    title: 'Modern 2-Bedroom Apartment in Marbella, Spain',
-    price: '€545,000',
-    location: 'Marbella, Málaga, Spain',
-    images: [App_url.image.image_1],
-    beds: 2,
-    baths: 2,
-    area: 3900,
-    featured: true,
-  },
-  {
-    id: '2',
-    title: 'Luxury 2-Bedroom Apartment in Marbella, Spain',
-    price: '€545,000',
-    location: 'Costa del Sol, Spain',
-    images: [App_url.image.image_6, App_url.image.image_5, App_url.image.image_4],
-    beds: 2,
-    baths: 2,
-    area: 3900,
-  },
-  {
-    id: '3',
-    title: 'Stylish 2-Bedroom Apartment in Marbella, Spain',
-    price: '€545,000',
-    location: 'Estepona, Spain',
-    images: [App_url.image.image_5],
-    beds: 2,
-    baths: 2,
-    area: 3900,
-  },
-  {
-    id: '4',
-    title: 'Contemporary 2-Bedroom Apartment in Marbella, Spain',
-    price: '€545,000',
-    location: 'Benalmádena, Spain',
-    images: [App_url.image.image_4],
-    beds: 2,
-    baths: 2,
-    area: 3900,
-  }
-]
 export default function ZeccoFavorites() {
-  const [properties, setProperties] = useState<Property[]>(propertyData);
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const { mainReducer } = usePosterReducers()
+  const { sendMessage, isConnected, lastEvent } = useWebSocket()
 
-  const toggleLike = (id: string) => {
-    setProperties((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, isLiked: !item.isLiked }
-          : item
-      )
-    );
-  };
+
+
+  const handleNavigate = () => {
+    dispatch(clearBreadcrumbs())
+    dispatch(setBreadcrumbs([
+      { label: "Home", href: "/" },
+      { label: "Zecco's Favorites", href: App_url.link.ZECCO_FAVORITES },
+    ]))
+    router.push(`${App_url.link.ZECCO_FAVORITES}`)
+  }
+
+  useEffect(() => {
+    sendMessage('action', {
+      type: "propertyService",
+      action: "list",
+      payload: {
+        limit: 10,
+        page: 1,
+        search: '',
+        location_id: null,
+        favorite: true
+      }
+    })
+  }, [isConnected])
+
+  useEffect(() => {
+    if (lastEvent?.data?.status && lastEvent?.data?.request?.type === 'userService' && (lastEvent?.data?.request?.action === 'addFavorite' || lastEvent?.data?.request?.action === 'removeFavorite')) {
+      sendMessage('action', {
+        type: "propertyService",
+        action: "list",
+        payload: {
+          limit: 0,
+          page: 1,
+          search: '',
+          location_id: null,
+          favorite: true
+        }
+      })
+    }
+  }, [lastEvent])
+
+  const randomFavorites = useMemo(() => {
+    return [...(mainReducer?.zecco_favorite?.data || [])]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 4)
+  }, [mainReducer?.zecco_favorite?.data])
+
   return (
-    <section className=" bg-white mb-20">
+    <section className="px-4 sm:px-6 lg:px-8 mt-10 bg-white  lg:mx-10 mb-10">
       <div className="">
-        <div className="flex justify-between items-center mb-5">
-          <h2 className="text-xl sm:text-xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
+        {/* Header */}
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-2xl sm:text-3xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
+          <button onClick={handleNavigate} className='rounded-full font-manrope bg-btn_color font-medium  px-3 lg:px-7   py-2 text-xs lg:text-sm shadow-sm  text-white '>
+            View All Properties
+          </button>
         </div>
+
+        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {properties?.map((property) => (
-            <PropertyCard key={property.id} {...property} onLikeToggle={() => toggleLike(property.id)} />
+          {randomFavorites?.map((property) => (
+            <PropertyCard key={property.id} {...property} property={property} />
           ))}
         </div>
       </div>

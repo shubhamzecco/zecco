@@ -32,8 +32,16 @@ export const ActionTypes = {
   AI_CHAT_CLEAR: "AI_CHAT_CLEAR",
 
   SET_FAVORITE_PROPERTY_LIST: 'SET_FAVORITE_PROPERTY_LIST',
-  SET_ZEECO_FAVORITE_LIST: 'SET_ZEECO_FAVORITE_LIST'
+  SET_ZEECO_FAVORITE_LIST: 'SET_ZEECO_FAVORITE_LIST',
+  SET_LOGIN_POPUP : 'SET_LOGIN_POPUP',
 };
+
+export const setLoginPopup = (payload: boolean) => {
+  return {
+    type: ActionTypes.SET_LOGIN_POPUP,
+    payload
+  }
+}
 
 export const setZeccoFavoriteList = (payload: IPropertyResponse) => {
   return {

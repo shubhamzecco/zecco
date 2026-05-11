@@ -17,7 +17,8 @@ const initialState: IMainResponse = {
   property_details: null,
   ai_insight: null,
   favorite_property_list: null,
-  zecco_favorite: null
+  zecco_favorite: null,
+  login_popup: false
 };
 
 const mainReducer = (
@@ -25,6 +26,13 @@ const mainReducer = (
   action: any
 ): IMainResponse => {
   switch (action.type) {
+
+    case ActionTypes.SET_LOGIN_POPUP: {
+      return {
+        ...state,
+        login_popup: action.payload
+      }
+    }
 
     case ActionTypes.SET_ZEECO_FAVORITE_LIST: {
       return {

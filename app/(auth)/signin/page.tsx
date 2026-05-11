@@ -42,7 +42,7 @@ const Signin = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    AuthReq(App_url.endpoint_url.USER_SIGN_IN, {...values , user_type: 'client'})
+    AuthReq(App_url.endpoint_url.USER_SIGN_IN, { ...values, user_type: 'client' })
       .then((response) => {
         if (response?.success) {
           const payload = {
@@ -53,7 +53,13 @@ const Signin = () => {
           localStorage.setItem("access_token", response.data.accessToken);
           dispatch(setLogin(true));
           dispatch(setAuthData(payload));
-          router.push(App_url.link.INITIAL_URL);
+          const redirectUrl = localStorage.getItem('redirect_after_login');
+          if (redirectUrl) {
+            router.push(redirectUrl);
+            localStorage.removeItem('redirect_after_login');
+          } else {
+            router.push(App_url.link.INITIAL_URL);
+          }
         } else {
           toast.error(response?.message || "Login failed.");
         }
