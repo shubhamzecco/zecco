@@ -1,50 +1,276 @@
+import { IFeature } from "@/redux/modules/main/types";
 import {
-  Square,
-  Bed,
+  Waves,
+  Mountain,
+  MapPin,
+  Bus,
+  Snowflake,
+  Flame,
+  Sofa,
+  ChefHat,
+  Warehouse,
+  Gem,
   Bath,
-  Droplets,
-  Home,
+  Tv,
+  Building2,
+  Sun,
+  Bed,
   Package,
+  Dumbbell,
+  ShieldAlert,
+  SunMedium,
+  ShieldCheck,
+  SquareStack,
+  Video,
+  Sparkles,
+  Utensils,
+  CookingPot,
+  Phone,
+  Toilet,
+  TentTree,
+  Home,
+  SofaIcon,
+  BookOpen,
+  Droplets,
+  Trees,
+  View,
+  Eye,
+  WavesLadder,
+  Thermometer,
+  Sprout,
+  Blinds,
+  Cpu,
+  Volume2,
+  Wine,
+  Wifi,
+  ConciergeBell,
+  Zap,
+  DoorOpen,
+  Fence,
+  Flower2,
+  Volleyball,
+  Clapperboard,
+  UserCheck,
+  Heater,
+  GlassWater,
+  Accessibility,
+  BadgeCheck,
+  Wrench,
+  LampDesk,
+  Grid2X2,
+  CookingPotIcon,
+  PanelsTopLeft,
+  CircleOff,
+  School,
+  Camera,
+  PawPrint,
+  Radiation,
+  Shield,
+  Coffee,
+  Tent,
+  Fish,
+  Cable,
+  ParkingCircle,
+  Bike,
+  TreesIcon,
+  Plane,
+  Hammer,
+  Car,
+  Building,
+  Briefcase,
+  Users,
+  RotateCcw,
+  Hand,
+  FlameKindling,
+  Siren,
+  ScanEye,
   Scan,
+  Shirt,
+  Flag,
+  Gamepad2,
+  Ship,
+  ShoppingBag,
+  Wind,
+  LucideIcon
 } from "lucide-react";
 
-export default function BasicFeatures() {
+export const iconMap: Record<string, LucideIcon> = {
+  FrontLineGolf: Waves,
+  FrontLineBeach: Waves,
+  MountaInSide: Mountain,
+  AmenitiesNear: MapPin,
+  TransportNear: Bus,
+  Airconditioning: Snowflake,
+  CentralHeating: Flame,
+  PartlyFurnished: Sofa,
+  FullyFurnished: Sofa,
+  FullyFittedKitchen: ChefHat,
+  UtilityRoom: Warehouse,
+  MarbleFloors: Gem,
+  Jacuzzi: Bath,
+  Sauna: WavesLadder,
+  SatelliteTV: Tv,
+  Basement: Building2,
+  SolarPanels: Sun,
+  GuestRoom: Bed,
+  StorageRoom: Package,
+  Gym: Dumbbell,
+  Alarm: ShieldAlert,
+  Solarium: SunMedium,
+  SecurityEntrance: ShieldCheck,
+  DoubleGlazing: SquareStack,
+  VideoEntrance: Video,
+  BrandNew: Sparkles,
+  DiningRoom: Utensils,
+  Barbecue: CookingPot,
+  SecurityService24h: ShieldCheck,
+  Telephone: Phone,
+  GuestToilet: Toilet,
+  PrivateTerrace: TentTree,
+  KitchenEquipped: ChefHat,
+  LivingRoom: Home,
+  StudyRoom: BookOpen,
+  WaterTank: Droplets,
+  ParquetFloors: Trees,
+  SeparateApartment: Building2,
+  SeaView: Waves,
+  CountryView: Trees,
+  MountainView: Mountain,
+  Golfview: Eye,
+  InDoorPool: WavesLadder,
+  HeatedPool: Thermometer,
+  UnderFloorHeating: Flame,
+  AutomaticIrrigationSystem: Sprout,
+  SecurityShutters: Blinds,
+  HomeAutomationSystem: Cpu,
+  DolbyStereoSurroundSystem: Volume2,
+  Bars: Wine,
+  LaundryRoom: Shirt,
+  InternetWifi: Wifi,
+  CoveredTerrace: Tent,
+  "24hService": ConciergeBell,
+  ElectricBlinds: Zap,
+  FittedWardrobes: DoorOpen,
+  GatedCommunity: Fence,
+  GardenView: Flower2,
+  PoolView: WavesLadder,
+  PanoramicView: View,
+  TennisPaddleCourt: Volleyball,
+  Beachside: Waves,
+  CinemaRoom: Clapperboard,
+  StreetView: Eye,
+  Doorman: UserCheck,
+  UnderfloorHheatingBathrooms: Heater,
+  UnderfloorHeatingPartial: Heater,
+  WineCellar: Wine,
+  SteamRoom: WavesLadder,
+  Unfurnished: CircleOff,
+  CloseToChildrenPlayground: TentTree,
+  CloseToSeaBeach: Waves,
+  CloseToGolf: Flag,
+  UncoveredTerrace: Tent,
+  GameRoom: Gamepad2,
+  GlassDoors: PanelsTopLeft,
+  SeparateDiningRoom: Utensils,
+  WoodenFloors: Trees,
+  OpenPlanKitchen: CookingPotIcon,
+  Balcony: Building,
+  OptionalFurniture: SofaIcon,
+  SPA: Bath,
+  TurkishBath: Bath,
+  WheelchairAccessible: Accessibility,
+  ExcellentCondition: BadgeCheck,
+  GoodCondition: BadgeCheck,
+  RecentlyRenovatedRefurbished: Wrench,
+  RenovationNeeded: Hammer,
+  LakeView: GlassWater,
+  UrbanView: Building,
+  CeilingCoolingSystem: Snowflake,
+  CeilingHeatingSystem: Flame,
+  UnderfloorCoolingSystem: Snowflake,
+  SaltwaterSwimmingPool: Waves,
+  CloseToShops: ShoppingBag,
+  CloseToTown: Building2,
+  CloseToPort: Ship,
+  CloseToSchools: School,
+  SurveillanceCameras: Camera,
+  GuestApartment: Building2,
+  InsideGolfResort: Flag,
+  MarinaView: Ship,
+  OfficeRoom: Briefcase,
+  PetsAllowed: PawPrint,
+  IndividualUnitsAC: Snowflake,
+  GasHeating: Flame,
+  GresFloors: Grid2X2,
+  ArmoredDoor: Shield,
+  kitchenette: Coffee,
+  GroundFloorPatio: Tent,
+  PartialSeaViews: Waves,
+  Well: Droplets,
+  PorcelainFloors: Grid2X2,
+  Aerothermics: Wind,
+  InternetFibre: Wifi,
+  WalkinCloset: DoorOpen,
+  GasoilHeating: Flame,
+  SepticTank: Droplets,
+  OutdoorKitchen: CookingPot,
+  RoofTerrace: TentTree,
+  SwimJet: Fish,
+  MatureJardens: TreesIcon,
+  Heliport: Plane,
+  StoneFloors: Gem,
+  DirectSeaAccess: Waves,
+  MainsElectricitySupply: Cable,
+  MainsWaterSupply: Droplets,
+  Stables: Home,
+  ReverseOsmosisWaterSystem: Droplets,
+  StaffAccommodation: Users,
+  EVChargingStation: Car,
+  PrivateMooring: Ship,
+  CloseToRestaurants: Utensils,
+  CityViews: Building,
+  CoWorkingSpace: Briefcase,
+  RotatingParking: RotateCcw,
+  MassageRoom: Hand,
+  Individualheating: Flame,
+  PorcelainStoneware: Gem,
+  CocktailBar: Wine,
+  ConciergeService: ConciergeBell,
+  GarageIncludedInPrice: ParkingCircle,
+  photovoltaicа: Sun,
+  GeothermalHeatPumpSystem: Flame,
+  FanCoilSystem: Wind,
+  CondensationBasedFreshWaterGenerator: Droplets,
+  MicroCementFlooring: Hammer,
+  FirePit: FlameKindling,
+  PanicRoom: ShieldAlert,
+  TripleGlazing: SquareStack,
+  MotionDetectors: Siren,
+  InteriorFacingInnerCourtyard: Home,
+  sidemountain: Mountain,
+  wheelchairAccesibleHome: Accessibility,
+};
+
+const formatText = (text: string) => {
+  return text.replace(/([A-Z])/g, " $1").trim();
+};
+
+export default function BasicFeatures(features: { features: IFeature[] }) {
   return (
     <div className="mb-8">
       <h3 className="text-xl font-bold font-manrope text-heading_text_color mb-4">Basic Features</h3>
       <div className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-5 shadow-sm">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-10">
-          <div className="space-y-4">
-            <Feature
-              icon={<Scan className="w-5 h-5 text-[#94A3B8]" />}
-              text="99 m² built, 74 m² floor area"
-            />
-            <Feature
-              icon={<Bed className="w-5 h-5 " />}
-              text="3 Bedrooms"
-            />
-            <Feature
-              icon={<Bath className="w-5 h-5 " />}
-              text="2 Bathrooms"
-            />
-          </div>
-
-          {/* Right column */}
-          <div className="space-y-4">
-            <Feature
-              icon={<Droplets className="w-5 h-5 " />}
-              text="Swimming Pool"
-            />
-            <Feature
-              icon={<Home className="w-5 h-5 " />}
-              text="New housing development"
-            />
-            <Feature
-              icon={<Package className="w-5 h-5 " />}
-              text="Storage room"
-            />
-          </div>
-
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-2 gap-x-2">
+          {features?.features?.map((feature, index) => {
+            const Icon =
+              iconMap[feature.name as keyof typeof iconMap] || Scan;
+            return (
+              <Feature
+                icon={<Icon className="w-5 h-5 text-[#94A3B8]" />}
+                text={formatText(feature.name)}
+              />
+            )
+          })}
         </div>
       </div>
     </div>

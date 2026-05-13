@@ -1,8 +1,8 @@
-import { Property } from "@/redux/modules/main/types";
+import { IProperty, Property } from "@/redux/modules/main/types";
 import { Square, BedDouble, Bath, ArrowUp, Scan, ArrowUpFromLine } from "lucide-react";
 
 interface PropertyStats {
-  property: Property;
+  property: IProperty;
 }
 
 export default function PropertyStats({property} : PropertyStats) {

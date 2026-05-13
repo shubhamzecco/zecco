@@ -19,11 +19,11 @@ const PaymentSuccess = () => {
       {},
       // true,
     )?.then(async (response: any) => {
-      console.log("response-payment-status", response);
 
       if (response?.status === 200) {
         if (response.success) {
           // window.location.href = response.data.checkoutUrl;
+          console.log("Payment Status:", response);
           setPaymentData(response);
         }
       } else {
@@ -40,6 +40,7 @@ const PaymentSuccess = () => {
         amount={paymentData?.data?.amount || 0}
         currency={paymentData?.data?.currency || 'USD'}
         transactionId={paymentData?.data?.transaction_id || 'TXN-2024-98765432'}
+        package_id={paymentData?.data?.package || 'Premium Package'}
       />
     </>
   )

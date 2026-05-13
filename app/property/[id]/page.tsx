@@ -6,8 +6,13 @@ import MainLayout from "@/components/layouts/main-layout";
 import { Button } from "@/components/ui/button";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setAiInsight } from "@/redux/modules/main/action";
+import { setAiInsight, setLoginPopup } from "@/redux/modules/main/action";
 import {
+  IFeature,
+  IImage,
+  IProperty,
+  IPropertyDescription,
+  IPropertyResponse,
   Property,
   PropertyAnalysis
 } from "@/redux/modules/main/types";
@@ -25,16 +30,16 @@ import PropertyStats from "./components/PropertyStats";
 import ZeccoFavorites from "./components/ZeccoFavorites";
 
 const Page = () => {
-  const { sendMessage, isConnected } = useWebSocket();
-  const { mainReducer , user_data } = usePosterReducers();
+  const { sendMessage, isConnected, lastEvent } = useWebSocket();
+  const { mainReducer, user_data } = usePosterReducers();
   const params = useParams();
   const dispatch = useDispatch();
   const [step, setStep] = useState("intro");
   const [isCompleted, setIsCompleted] = useState(false);
+  const isLoggedIn = !!user_data?.access_token
 
   useEffect(() => {
     if (!isConnected || !params?.id) return;
-
     sendMessage("action", {
       type: "propertyService",
       action: "get",
@@ -43,6 +48,18 @@ const Page = () => {
       },
     });
   }, [isConnected, params?.id]);
+
+  useEffect(() => {
+    if (lastEvent?.data?.status && lastEvent?.data?.request?.type === 'userService' && (lastEvent?.data?.request?.action === 'addFavorite' || lastEvent?.data?.request?.action === 'removeFavorite')) {
+      sendMessage("action", {
+        type: "propertyService",
+        action: "get",
+        payload: {
+          id: params.id,
+        },
+      });
+    }
+  }, [lastEvent])
 
   const handleAIInsight = () => {
     setStep("processing");
@@ -59,6 +76,7 @@ const Page = () => {
         setStep("complete");
         setIsCompleted(true);
       } else {
+        setStep("intro");
         dispatch(setAiInsight(response?.data));
       }
     });
@@ -69,21 +87,21 @@ const Page = () => {
       <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
         <div className="lg:col-span-1">
           <PropertyGallery
-            property={mainReducer?.property_details?.images as string[]}
+            property={mainReducer?.property_details?.propertyImages as IImage[]}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <PropertyInfo
-              property={mainReducer?.property_details as Property}
+              property={mainReducer?.property_details as  IProperty}
             />
             <PropertyStats
-              property={mainReducer?.property_details as Property}
+              property={mainReducer?.property_details as  IProperty}
             />
             <div className="flex items-center gap-5 mb-2">
               <Button
                 type="submit"
-                onClick={() => handleAIInsight()}
+                onClick={() => isLoggedIn ? handleAIInsight() : dispatch(setLoginPopup(true))}
                 className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-11 my-4 text-white rounded-full shadow-md"
               >
                 AI Market Intelligence
@@ -101,8 +119,8 @@ const Page = () => {
                 ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
               />
             )}
-            <PropertyDescription />
-            <BasicFeatures />
+            <PropertyDescription propertyDescriptions={mainReducer?.property_details?.propertyDescriptions as IPropertyDescription[]} />
+            <BasicFeatures features={mainReducer?.property_details?.features as IFeature[]} />
             <MapSection />
           </div>
 

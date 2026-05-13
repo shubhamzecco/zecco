@@ -17,7 +17,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import CheckInboxModal from './mail-send-modal'
-import { postData } from '@/api/rest/fetchData'
+import CommonApiRequest, { postData } from '@/api/rest/fetchData'
 import { toast } from 'react-toastify'
 
 export interface IFormValue {
@@ -32,17 +32,17 @@ export interface IFormValue {
 export default function PackagesModal({
   formValue,
   onClose,
+  userId
 }: {
   formValue: IFormValue,
-  onClose?: () => void
+  onClose?: () => void,
+  userId?: string
 }) {
   const [emailVerificationPopup, setEmailVerificationPopup] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState('')
-
   const router = useRouter()
-
   const { sendMessage, isConnected } = useWebSocket()
-  const { mainReducer } = usePosterReducers()
+  const { mainReducer, user_data } = usePosterReducers()
 
   useEffect(() => {
     sendMessage('action', {
@@ -56,29 +56,37 @@ export default function PackagesModal({
     })
   }, [isConnected])
 
+
+  const createPayment = async (value: any) => {
+    localStorage.setItem('isRegister', 'true')
+    const payload = {
+      package_id: value,
+      user_id: userId || user_data?.user?._id,
+      webhook_url:`https://suggestions-acquisitions-singing-navy.trycloudflare.com `,
+    };
+    CommonApiRequest(
+      "POST",
+      `${App_url.endpoint_url?.CREATE_PAYMENT}`,
+      payload,
+      {},
+      // true,
+    )?.then(async (response: any) => {
+      if (response?.status === 200) {
+        if (response.success) {
+          window.location.href = response.data.checkoutUrl;
+        }
+      } else {
+        console.log("error", response?.data?.message);
+      }
+    });
+  };
+
   const icons = [
     <CircleUserRound className=" text-[#4A86E8]" size={20} />,
     <CircleStar className=" text-[#4A86E8]" size={20} />,
     <Gem className=" text-[#4A86E8]" size={20} />,
     <Crown className=" text-[#4A86E8]" size={20} />,
   ]
-
-  const handleCouponApply = () => {
-    postData(App_url.endpoint_url.USER_LOGIN, { ...formValue, user_type: 'client', package_id: selectedPackage })
-      ?.then((response: any) => {
-        if (response?.data?.success) {
-          setEmailVerificationPopup(true)
-          toast.success(response.data.message);
-        } else {
-          toast.error(response?.data?.message);
-        }
-      })
-      ?.catch((error) => {
-        toast.error("Something went wrong");
-        console.error(error);
-      });
-  }
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm max-md:p-3">
       <div className="w-[470px] rounded-2xl bg-white shadow-2xl overflow-hidden">
@@ -129,38 +137,8 @@ export default function PackagesModal({
                 />
               )
             })}
-          {/* <SelectablePackage
-            selected={selectedPackage === 'FREE'}
-            onClick={() => setSelectedPackage('FREE')}
-            icon={<LockKeyholeOpen size={22} />}
-            title="ZECCO FREE"
-            desc="Free profile to search, safe etc"
-          />
-          <SelectablePackage
-            selected={selectedPackage === 'GO'}
-            onClick={() => setSelectedPackage('GO')}
-            icon={<ShieldCheck size={22} />}
-            title="ZECCO GO"
-            desc="Paid package and availability of advanced AI agents and personal property advisor"
-          />
-
-          <SelectablePackage
-            selected={selectedPackage === 'PLUS'}
-            onClick={() => setSelectedPackage('PLUS')}
-            icon={<Box size={22} />}
-            title="ZECCO PLUS"
-            desc="Paid package - Same as GO but including Spain visit and viewings with local specialist"
-          />
-          <SelectablePackage
-            selected={selectedPackage === 'VIP'}
-            onClick={() => setSelectedPackage('VIP')}
-            icon={<Crown size={22} />}
-            title="ZECCO VIP"
-            desc="Tailor made service for property searches from € 2 mln onwards"
-          /> */}
         </div>
 
-        {/* Footer */}
         <div className="flex gap-3 border-t px-4 py-4">
           <button
             onClick={onClose}
@@ -169,7 +147,7 @@ export default function PackagesModal({
             Cancel
           </button>
           <button
-            onClick={handleCouponApply}
+            onClick={() => createPayment(selectedPackage)}
             className="flex-1 font-circular_std rounded-lg bg-[#0C87F1] px-4 py-2.5 text-sm font-medium text-white"
           >
             Apply Coupon

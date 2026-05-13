@@ -4,7 +4,7 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setBreadcrumbs, setLoginPopup } from "@/redux/modules/main/action";
-import { Property } from "@/redux/modules/main/types";
+import { IProperty, Property } from "@/redux/modules/main/types";
 import { handleProtectedRoute } from "@/utils/common";
 import {
   Bath,
@@ -26,7 +26,7 @@ interface PropertyCardProps {
   featured?: boolean;
   aiInsights?: boolean;
   isLiked?: boolean;
-  property: Property
+  property: IProperty
   onLikeToggle?: () => void;
 }
 
@@ -42,17 +42,15 @@ export default function PropertyCard({
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [isSwiping, setIsSwiping] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
-  const isLoggedIn = !!user_data?.access_token
 
   const handleNavigate = () => {
     dispatch(
       setBreadcrumbs([
         ...mainReducer?.breadcrumbs,
-        { label: '', href: `${App_url.link.PROPERTY_DETAILS}/${property?._id}` },
+        { label: '', href: `${App_url.link.PROPERTY_DETAILS}/${property?.id}` },
       ])
     );
-    router.push(`${App_url.link.PROPERTY_DETAILS}/${property?._id}`);
+    router.push(`${App_url.link.PROPERTY_DETAILS}/${property?.id}`);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -67,18 +65,16 @@ export default function PropertyCard({
 
   const handleTouchEnd = () => {
     if (touchStartX === null || touchEndX === null) return;
-
     const distance = touchStartX - touchEndX;
-
     if (Math.abs(distance) > 50) {
       if (distance > 0) {
         setCurrentIndex((prev) =>
-          prev === property?.images.length - 1 ? 0 : prev + 1
+          prev === property?.propertyImages.length - 1 ? 0 : prev + 1
         );
       }
       else {
         setCurrentIndex((prev) =>
-          prev === 0 ? property?.images.length - 1 : prev - 1
+          prev === 0 ? property?.propertyImages.length - 1 : prev - 1
         );
       }
     }
@@ -97,14 +93,14 @@ export default function PropertyCard({
   const nextSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === property?.images.length - 1 ? 0 : prev + 1
+      prev === property?.propertyImages.length - 1 ? 0 : prev + 1
     );
   };
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === 0 ? property?.images.length - 1 : prev - 1
+      prev === 0 ? property?.propertyImages.length - 1 : prev - 1
     );
   };
 
@@ -114,12 +110,12 @@ export default function PropertyCard({
       dispatch(setLoginPopup(true))
       return;
     } else {
-      if (mainReducer?.property_list_with_limit?.favorite_property?.includes(property?._id) || mainReducer?.zecco_favorite?.favorite_property?.includes(property?._id)) {
+      if (mainReducer?.property_list_with_limit?.favorite_property?.includes(String(property?.id)) || mainReducer?.zecco_favorite?.favorite_property?.includes(String(property?.id))) {
         sendMessage('action', {
           type: "userService",
           action: "removeFavorite",
           payload: {
-            property_id: property?._id
+            property_id: property?.id
           },
         })
       } else {
@@ -127,7 +123,7 @@ export default function PropertyCard({
           type: "userService",
           action: "addFavorite",
           payload: {
-            property_id: property?._id
+            property_id: property?.id
           },
         })
       }
@@ -147,11 +143,11 @@ export default function PropertyCard({
           className="flex h-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
-          {property?.images.map((img, index) => (
+          {property?.propertyImages?.slice(0, 3).map((img, index) => (
             <div key={index} className="relative min-w-full h-full overflow-hidden">
               <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
                 <Image
-                  src={img || "/placeholder.svg"}
+                  src={img?.url || "/placeholder.svg"}
                   alt={`${'property'}-${index}`}
                   fill
                   className="object-cover"
@@ -161,7 +157,7 @@ export default function PropertyCard({
           ))}
         </div>
 
-        {property?.images.length > 1 && (
+        {property?.propertyImages?.length > 1 && (
           <button
             onClick={prevSlide}
             className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 opacity-0 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:pointer-events-auto"
@@ -170,7 +166,7 @@ export default function PropertyCard({
           </button>
         )}
 
-        {property?.images.length > 1 && (
+        {property?.propertyImages?.length > 1 && (
           <button
             onClick={nextSlide}
             className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 opacity-0 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:pointer-events-auto"
@@ -200,20 +196,20 @@ export default function PropertyCard({
           }}
           className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
         >
-          {(mainReducer?.property_list_with_limit?.favorite_property?.includes(property?._id) || mainReducer?.zecco_favorite?.favorite_property?.includes(property?._id)) ? (
+          {(mainReducer?.property_list_with_limit?.favorite_property?.includes(String(property?.id)) || mainReducer?.zecco_favorite?.favorite_property?.includes(String(property?.id))) ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
             <Heart size={20} className="text-white hover:text-red-500" />
           )}
         </button>
 
-        <div className="absolute bottom-4 left-4 bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915] font-manrope">
+        <div className="absolute bottom-4 left-3 bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915] font-manrope">
           {property?.isSale ? 'For Sale' : property?.isRent ? 'For Rent' : ''}
         </div>
-        {property?.images.length > 1 && (
+        {property?.propertyImages?.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
             <div className="flex gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm">
-              {property?.images.map((_, i) => (
+              {property?.propertyImages?.slice(0, 3).map((_, i) => (
                 <span
                   key={i}
                   className={`h-2 rounded-full transition-all ${i === currentIndex
@@ -230,7 +226,7 @@ export default function PropertyCard({
       <div className="space-y-1 py-3">
         <div className="flex items-center justify-between">
           <p className="text-md font-manrope font-bold text-[#727272]">
-            €{property?.salePrice}
+            €{property?.salePrice || property?.rentalPrice}
           </p>
           {aiInsights && (
             <p className="underline text-[#2563EB] font-manrope font-bold text-sm">
@@ -240,7 +236,7 @@ export default function PropertyCard({
         </div>
 
         <h3 className="text-[0.9rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
-          Stylish {property?.bedrooms}-Bedroom {property?.propertyCategory} in {property?.city?.name} , {property?.country}
+          Stylish {property?.bedrooms}-Bedroom {property?.propertyCategory?.name} in {property?.locationCity?.name} , {property?.locationCountry?.name}
         </h3>
 
         <div className="flex gap-5 items-center pt-4 text-sm">
@@ -261,7 +257,7 @@ export default function PropertyCard({
         </div>
       </div>
 
-      <LoginPopup/>
+      <LoginPopup />
 
     </div>
   );

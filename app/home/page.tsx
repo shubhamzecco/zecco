@@ -1,6 +1,9 @@
 "use client"
+import { setBreadcrumbs } from '@/redux/modules/main/action'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 import Footer from '../../components/Footer'
-import Navbar from './components/Navbar'
+import PricingPlans from '../../components/section/PricingPlans'
 import AiExpertise from './components/AiExpertise'
 import AreasOfInterest from './components/AreasOfInterest'
 import Blogs from './components/Blogs'
@@ -8,12 +11,9 @@ import EssentialAspects from './components/EssentialAspects'
 import ExploreByTypes from './components/ExploreByTypes'
 import ExploreRegions from './components/ExploreRegions'
 import HeroSection from './components/HeroSection'
-import PricingPlans from '../../components/section/PricingPlans'
+import Navbar from './components/Navbar'
 import PropertyListings from './components/PropertyListings'
 import SmarterSearch from './components/SmarterSearch'
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { setBreadcrumbs } from '@/redux/modules/main/action'
 
 const HomePage = () => {
     const dispatch = useDispatch()

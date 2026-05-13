@@ -1,11 +1,13 @@
 'use client'
+import { useWebSocket } from '@/api/socket/WebSocketContext'
 import { App_url } from '@/constant/static'
-import { handleProtectedRoute } from '@/utils/common'
-import { Lock, Mail, Phone } from 'lucide-react'
+import { setLoginPopup } from '@/redux/modules/main/action'
+import { Mail, Phone } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 interface AgentCardProps {
   user_data?: {
@@ -15,39 +17,36 @@ interface AgentCardProps {
 
 export function AgentCard({ user_data }: AgentCardProps) {
   const [contactMessage, setContactMessage] = useState('')
+  const dispatch = useDispatch()
+  const { sendMessage, isConnected , lastEvent } = useWebSocket()
+  const { id } = useParams()
 
   const isLoggedIn = !!user_data?.access_token
   const router = useRouter()
 
+
+  const handleCreateChat = () => {
+    sendMessage('action', {
+      type: "chatService",
+      action: "create",
+      payload: {
+        participants: '699ee20168b60e1beef07b22',
+        property_id: id,
+        message: contactMessage
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (lastEvent?.data?.status && lastEvent?.data?.request?.type === 'chatService' && (lastEvent?.data?.request?.action === 'create')) {
+      console.log('Chat Created with ID:', lastEvent);
+      router.push(`${App_url.link.MESSAGE}`)
+    }
+  }, [lastEvent])
+
   return (
     <div className="sticky top-24 bg-[#F7F8FC] border border-[#F3F4F6] rounded-lg p-6 mb-6 shadow-sm relative overflow-hidden">
-      {!isLoggedIn && (
-        <div className="absolute inset-0 z-20 backdrop-blur-sm bg-white/40 flex items-center justify-center rounded-lg">
-          <div className="text-center">
-            <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <Lock className="w-6 h-6 text-primary" />
-            </div>
-
-            <h3 className="text-lg font-bold text-heading_text_color font-manrope mb-2">
-              Login Required
-            </h3>
-
-            <p className="text-sm text-[#64748B] font-medium mb-5 max-w-[220px]">
-              Please login to view agent details and contact advisor.
-            </p>
-
-            <div
-              onClick={() => handleProtectedRoute(isLoggedIn, router)}
-              className="inline-flex cursor-pointer items-center justify-center px-6 py-2 w-full bg-heading_text_color text-white rounded-full font-semibold transition hover:opacity-90"
-            >
-              LOGIN
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Content */}
-      <div className={!isLoggedIn ? 'pointer-events-none select-none' : ''}>
+      <div>
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold">
             <Image
@@ -71,11 +70,11 @@ export function AgentCard({ user_data }: AgentCardProps) {
         </div>
 
         <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
-          <Phone className="w-4 h-4" /> +44 7123 456789
+          <Phone className="w-4 h-4" /> {isLoggedIn ? "+44 7123 456789" : "+44*******789"}
         </p>
 
         <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
-          <Mail className="w-4 h-4" /> johnsingh@gamil.com
+          <Mail className="w-4 h-4" /> {isLoggedIn ? "johnsingh@gmail.com" : "*******@gmail.com"}
         </p>
 
         <div className="mb-4">
@@ -92,11 +91,11 @@ export function AgentCard({ user_data }: AgentCardProps) {
           />
         </div>
 
-        <button className="w-full bg-heading_text_color text-white font-semibold py-3 rounded-full transition mb-4">
+        <button onClick={() => isLoggedIn ? handleCreateChat() : dispatch(setLoginPopup(true))} className="w-full cursor-pointer bg-heading_text_color text-white font-semibold py-3 rounded-full transition mb-4">
           SUBMIT
         </button>
 
-        <button className="w-full mb-5 border flex items-center gap-2 justify-center border-[#DDDFE3] text-heading_text_color font-semibold py-2 rounded-full bg-white transition">
+        <button onClick={() => isLoggedIn ? '' : dispatch(setLoginPopup(true))} className="w-full cursor-pointer mb-5 border flex items-center gap-2 justify-center border-[#DDDFE3] text-heading_text_color font-semibold py-2 rounded-full bg-white transition">
           <Phone className="w-4 h-4" /> CALL ADVISOR
         </button>
 

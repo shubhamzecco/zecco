@@ -2,11 +2,13 @@
 import { App_url } from '@/constant/static'
 import { ChevronDown, Search, Share2, TriangleAlert } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Footer from '../Footer'
 import Header from '../Header'
 import Breadcrumb from '../breadcrumbs'
 import ChatbotWidget from '../chat/chatbot-widget'
+import { useWebSocket } from '@/api/socket/WebSocketContext'
+import { usePosterReducers } from '@/redux/getdata/usePostReducer'
 
 type PropertyType = "buy" | "rent" | "new";
 interface MainLayoutProps {
@@ -19,7 +21,9 @@ interface MainLayoutProps {
     propertyCount?: number;
     propertyType?: PropertyType;
     onPropertyTypeChange?: (type: PropertyType) => void;
-    chatBotWidget?:boolean;
+    chatBotWidget?: boolean;
+    callBackPropertyType?: (value: string) => void; // callback
+    propertyTypes?: string; // property types value
 }
 
 const HEADER_HEIGHT = 100       // h-16 (64px) + top spacing
@@ -36,10 +40,25 @@ const MainLayout = ({
     propertyCount = 0,
     onPropertyTypeChange,
     propertyType,
+    propertyTypes,
+    callBackPropertyType,
     chatBotWidget = true
 }: MainLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
+
+    const { sendMessage, isConnected } = useWebSocket()
+    const { mainReducer } = usePosterReducers()
+
+    useEffect(() => {
+        if (!isPropertyType) return;
+        sendMessage('action', {
+            type: "propertyService",
+            action: "propertyTypes",
+            payload: {}
+        })
+    }, [isConnected]);
+
     const topOffset =
         HEADER_HEIGHT +
         (isBreadcrumb ? BREADCRUMB_HEIGHT : 0) +
@@ -51,6 +70,8 @@ const MainLayout = ({
         { label: "Rent", value: "rent" },
         { label: "New", value: "new" },
     ];
+
+
 
     return (
         <main className="w-full bg-white">
@@ -106,15 +127,15 @@ const MainLayout = ({
                                 <div className="space-y-3">
                                     <div className="relative">
                                         <select
-                                            // onChange={(e) => handleInputChange('propertyType', e.target.value)}
-                                            className="w-full font-manrope font-bold text-[#000000] px-3 py-1.5 border border-gray-300 rounded-sm appearance-none bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                                            value={propertyTypes}
+                                            onChange={(e) => callBackPropertyType?.(e.target.value)}
+                                            className="w-full px-3 py-2.5 border border-gray-300 rounded-lg appearance-none bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                                         >
-                                            <option>Relevance</option>
-                                            <option>House</option>
-                                            <option>Villa</option>
-                                            <option>Commercial</option>
+                                            {mainReducer?.property_type_list?.map((type) => (
+                                                <option key={type.id} value={type?.name}>{type.name}</option>
+                                            ))}
                                         </select>
-                                        <ChevronDown className="absolute right-1 top-2.5 w-4 h-4 text-[#000000] pointer-events-none" />
+                                        <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
                                     </div>
                                 </div>
                             )}

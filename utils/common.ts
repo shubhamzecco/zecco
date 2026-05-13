@@ -32,6 +32,9 @@ export const generateBreadcrumbs = (
 }
 
 
+export const savedSearchesData  = []
+
+
 export const NAV_ITEMS = [
     {
         label: "Find Property",
@@ -88,4 +91,25 @@ export const handleProtectedRoute = (
     }
 
     return true
+}
+
+export const formatDateMonth = (
+  date: string | Date,
+  locale: string = "en-US"
+): string => {
+  if (!date) return "";
+
+  return new Intl.DateTimeFormat(locale, {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(date));
+};
+
+export const formatTime = (dateString: string) => {
+  return new Date(dateString).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  })
 }

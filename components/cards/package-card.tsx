@@ -8,7 +8,9 @@ import {
     Check, CircleStar,
     CircleUserRound,
     Crown,
-    Gem
+    Gem,
+    Shield,
+    ShieldCheck
 } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 
@@ -35,8 +37,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         const payload = {
             package_id: value,
             user_id: user_data?.user?._id,
-            webhook_url:
-                "https://shaved-recognized-racks-environments.trycloudflare.com",
+            webhook_url: `https://suggestions-acquisitions-singing-navy.trycloudflare.com `,
         };
         CommonApiRequest(
             "POST",
@@ -45,14 +46,12 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
             {},
             // true,
         )?.then(async (response: any) => {
-            console.log("response-create-payment", response);
 
             if (response?.status === 200) {
                 if (response.success) {
                     window.location.href = response.data.checkoutUrl;
                 }
             } else {
-                console.log("error", response?.data?.message);
             }
         });
     };
@@ -60,15 +59,22 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
     return (
         <div
             key={index}
-            className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 flex flex-col"
+            className={`${user_data?.user?.package?._id === plan?._id ? 'bg-white border-blue-500' : 'bg-white border-slate-100'}  rounded-2xl shadow-lg border  p-6 flex flex-col`}
         >
-            <div className="flex items-center gap-3 mb-5">
-                <div className="w-7 h-7 text-primary_blue rounded-lg bg-soft_sky_blue flex items-center justify-center">
-                    {icons[index]}
+            <div className="flex justify-between items-center gap-3 mb-5">
+                <div className="flex items-center gap-3 mb-5">
+                    <div className="w-7 h-7 text-primary_blue rounded-lg bg-soft_sky_blue flex items-center justify-center">
+                        {icons[index]}
+                    </div>
+                    <h3 className="font-manrope capitalize font-extrabold text-lg text-[#000000]">
+                        {plan?.name}
+                    </h3>
                 </div>
-                <h3 className="font-manrope capitalize font-extrabold text-lg text-[#000000]">
-                    {plan?.name}
-                </h3>
+                {/* {user_data?.user?.package?._id === plan?._id && (
+                    <div className="-mt-5 bg-green-100 text-green-600 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded-full">
+                        <h1>Active</h1>
+                    </div>
+                )} */}
             </div>
             <div className="flex items-end gap-2 mb-5">
                 <h3 className="font-manrope capitalize font-bold text-2xl text-[#000000]">
@@ -93,8 +99,8 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
                     </li>
                 ))}
             </ul>
-            <button onClick={() => isLoggedIn ? createPayment(plan?._id) : dispatch(setLoginPopup(true))} className="w-full  text-sm text-[#000000] py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition">
-                {plan?.button_title}
+            <button onClick={() => isLoggedIn ? createPayment(plan?._id) : dispatch(setLoginPopup(true))} className={`${user_data?.user?.package?._id === plan?._id ? 'bg-green-500 text-white cursor-not-allowed pointer-events-none border-none' : 'text-[#000000]'} w-full  text-sm  py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition`}>
+                {user_data?.user?.package?._id === plan?._id ? 'Active' : plan?.button_title}
             </button>
         </div>
     )

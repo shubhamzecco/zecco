@@ -112,6 +112,21 @@ export interface ChatListResponse {
   unread_count: number;
 }
 
+export interface IParticipant {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  profile_image?: string;
+}
+
+export interface IChat {
+  _id: string;
+  participants: IParticipant[];
+  property: string;
+  message: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface ChatParticipant {
   id: string;
@@ -240,7 +255,6 @@ export interface IBlogs {
 export interface Property {
   _id: string;
   id: number;
-
   construction_year: string;
   construction_yearmonth: string;
   renovation_year: string;
@@ -285,8 +299,8 @@ export interface Property {
   province: string;
   country: string;
   city: {
-    _id : string;
-    name : string;
+    _id: string;
+    name: string;
   };
   area: string;
   subarea: string;
@@ -334,7 +348,6 @@ export interface PropertyAnalysis {
   rental_yield: number;
   rental_yield_label: string;
   valuation_status: string;
-
   country: string;
   province: string;
   city: string;
@@ -417,6 +430,266 @@ interface AISummary {
   pricing_vs_market: string;
 }
 
+export interface IMessageSender {
+  _id: string;
+  first_name: string;
+  last_name: string;
+}
+
+export interface IChatMessage {
+  _id: string;
+  chat: string;
+  sender: IMessageSender;
+  message: string;
+  is_read: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IPackagePermission {
+  _id: string;
+  name: string;
+  status: boolean;
+}
+
+export interface IPackage {
+  _id: string;
+  name: string;
+  tag_line: string;
+  price: string;
+  description: string;
+  plan_description: string;
+  button_title: string;
+  status: boolean;
+  createdAt: string;
+  updatedAt: string;
+  packagePermissions: IPackagePermission[];
+}
+
+export interface IPaymentMetadata {
+  order_id: string;
+  user_id: string;
+  package_id: string;
+  package_name: string;
+  package_price: string;
+}
+
+export interface IUserPackagePayment {
+  _id: string;
+  package: IPackage;
+  user: string;
+  amount: number;
+  currency: string;
+  description: string;
+  metadata: IPaymentMetadata;
+  transaction_id: string;
+  method: string;
+  status: "paid" | "pending" | "failed" | string;
+  expiresAt: string;
+  createdAt: string;
+  updatedAt: string;
+  failedAt: string | null;
+  message: string;
+  paidAt: string | null;
+}
+
+export interface IProperty {
+  id: number;
+  agency: number;
+  constructYear: number | null;
+  constructYearMonth: number | null;
+  renovationYear: number | null;
+  renovationYearMonth: number | null;
+  bathrooms: number | null;
+  bedrooms: number | null;
+  floors: number | null;
+  level: number | null;
+  onsuiteBathrooms: number | null;
+  toilet: number | null;
+
+  dateCreated: string;
+  dateModified: string;
+  dateReview: string;
+  dateListed: string;
+
+  d218RefCatastro: string | null;
+
+  energyKwLevel: string | null;
+  energyCo2Level: string | null;
+  energyCo2: number | null;
+  energyKw: number | null;
+
+  garage: ILookup | null;
+  parkingSpaces: number | null;
+  garden: ILookup | null;
+  orientation: string | null;
+  pool: ILookup | null;
+
+  latitude: number | null;
+  longitude: number | null;
+  gpsPegman: string | null;
+
+  isDirect: boolean;
+  isExclusive: boolean;
+  isFeat1: boolean;
+  isFeat2: boolean;
+  isFeat3: boolean;
+  isFeat4: boolean;
+  isFeat5: boolean;
+  isFeat6: boolean;
+
+  isFeatured: boolean;
+  isForPortals: boolean;
+  isHot: boolean;
+  isLuxury: boolean;
+  isNewProperty: boolean;
+
+  isRent: boolean;
+  isRented: boolean;
+  isRentLongterm: boolean;
+  isRentShortterm: boolean;
+  isSale: boolean;
+
+  statusShared: string;
+
+  isSold: boolean;
+  isSpecial: boolean;
+  isUnderOffer: boolean | null;
+
+  mainImage: IImage | null;
+
+  mtsBuild: number | null;
+  mtsInterior: number | null;
+  mtsPlot: number | null;
+  mtsTerrace: number | null;
+
+  reference: string;
+
+  rentalPrice: number | null;
+  rentalPriceShow: boolean;
+
+  rentalPriceLong: number | null;
+  rentalPriceLongShow: boolean;
+
+  rentalPricePeriod: string | null;
+
+  salePrice: number | null;
+  salePriceShow: boolean;
+  salePriceReduced: number | null;
+
+  touristicCode: string | null;
+
+  webShare: boolean;
+
+  development: string | null;
+
+  propertyType: IPropertyType;
+  propertyCategory: IPropertyCategory;
+
+  currency: ICurrency;
+
+  locationCountry: ILocationCountry;
+  locationProvince: ILocationProvince;
+  locationCity: ILocationCity;
+  locationArea: ILocationArea | null;
+  locationSubarea: ILocationSubarea | null;
+
+  tags: string[];
+
+  features: IFeature[];
+
+  propertyDescriptions: IPropertyDescription[];
+
+  propertyImages: IImage[];
+
+  pax: number | null;
+
+  community: number | null;
+  ibi: number | null;
+  garbage: number | null;
+
+  point: string | null;
+
+  listingQuality: number;
+
+  similarGroup: string;
+
+  catastroStatus: string;
+
+  clonedFromNetworkId: string | null;
+}
+
+export interface ILookup {
+  id: number;
+  name: string;
+}
+
+export interface IImage {
+  id: number;
+  filename: string;
+  url: string;
+  width: number | null;
+  height: number | null;
+  size: number | null;
+}
+
+export interface IPropertyType {
+  id: number;
+  name: string;
+  category: IPropertyCategory;
+}
+
+export interface IPropertyCategory {
+  id: number;
+  name: string;
+}
+
+export interface ICurrency {
+  isoCode: string;
+  name: string;
+  symbol: string;
+}
+
+export interface ILocationCountry {
+  id: number;
+  codeIso: string;
+  name: string;
+}
+
+export interface ILocationProvince {
+  id: number;
+  name: string;
+  codeIso: string;
+}
+
+export interface ILocationCity {
+  id: number;
+  name: string;
+}
+
+export interface ILocationArea {
+  id: number;
+  name: string;
+}
+
+export interface ILocationSubarea {
+  id: number;
+  name: string;
+}
+
+export interface IFeature {
+  id: number;
+  name: string;
+}
+
+export interface IPropertyDescription {
+  language: string;
+  description: string;
+  shortDescription: string;
+  extraDescription: string | null;
+  priceDescription: string | null;
+}
+
 export interface IPackageResponse {
   data: IPlan[],
   pagination: IPagination
@@ -433,13 +706,13 @@ export interface IBlogsResponse {
 }
 
 export interface IPropertyResponse {
-  data: Property[];
+  data: IProperty[];
   favorite_property: string[]
   pagination: IPagination | null;
 }
 
 export interface IFavoriteProperty {
-  data: Property[];
+  data: IProperty[];
   pagination: IPagination;
 }
 
@@ -454,9 +727,13 @@ export interface IMainResponse {
   blogs_list_with_limit: IBlogsResponse | null
   property_list_with_limit: IPropertyResponse | null
   property_list_without_limit: IPropertyResponse | null
-  property_details: Property | null
+  property_details:  IProperty | null
   ai_insight: PropertyAnalysis | null
   favorite_property_list: IFavoriteProperty | null
-  zecco_favorite : IPropertyResponse | null,
-  login_popup: boolean
+  zecco_favorite: IPropertyResponse | null,
+  login_popup: boolean;
+  chat_user_list: IChat[] | null;
+  chat_messages_by_user: IChatMessage[] | null;
+  user_package_list:  IUserPackagePayment[] | null;
+  property_type_list: IPropertyType[] | null;
 }

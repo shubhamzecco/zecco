@@ -4,6 +4,7 @@ import {
   AIChatMessage,
   BreadcrumbItem,
   IBlogsResponse,
+  IChatMessage,
   IFavoriteProperty,
   IPackageResponse,
   IPropertyResponse,
@@ -33,8 +34,41 @@ export const ActionTypes = {
 
   SET_FAVORITE_PROPERTY_LIST: 'SET_FAVORITE_PROPERTY_LIST',
   SET_ZEECO_FAVORITE_LIST: 'SET_ZEECO_FAVORITE_LIST',
-  SET_LOGIN_POPUP : 'SET_LOGIN_POPUP',
+  SET_LOGIN_POPUP: 'SET_LOGIN_POPUP',
+
+  SET_USER_CHAT_LIST: 'SET_USER_CHAT_LIST',
+  SET_USER_CHAT_MESSAGES: 'SET_USER_CHAT_MESSAGES',
+  SET_USER_PACKAGE_LIST: 'SET_USER_PACKAGE_LIST',
+  SET_PROPERTY_TYPE_LIST : 'SET_PROPERTY_TYPE_LIST',
 };
+
+export const setPropertyTypeList = (payload: any) => {
+  return {
+    type: ActionTypes.SET_PROPERTY_TYPE_LIST,
+    payload
+  }
+}
+
+export const setUserPackageList = (payload: IPackageResponse) => {
+  return {
+    type: ActionTypes.SET_USER_PACKAGE_LIST,
+    payload
+  }
+}
+
+export const setUserChatMessages = (payload: IChatMessage) => {
+  return {
+    type: ActionTypes.SET_USER_CHAT_MESSAGES,
+    payload
+  }
+}
+
+export const setUserChatList = (payload: any) => {
+  return {
+    type: ActionTypes.SET_USER_CHAT_LIST,
+    payload
+  }
+}
 
 export const setLoginPopup = (payload: boolean) => {
   return {

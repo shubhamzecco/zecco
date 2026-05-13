@@ -84,6 +84,7 @@ export const App_url = {
     MESSAGE: '/messages'
   },
   endpoint_url: {
+    GET_AUTH_USER : '/api/user',
     USER_LOGIN: "/api/auth/signup",
     USER_SIGN_IN: "/api/auth/login",
     FORGET_PASSWORD: "/api/auth/forgot-password",

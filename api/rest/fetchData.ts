@@ -17,7 +17,8 @@ const CommonApiRequest = async <T, B = unknown>(
   method: Method,
   endpoint: string,
   data?: B,
-  config: AxiosRequestConfig = {}
+  config: AxiosRequestConfig = {},
+  access_token?: string,
 ): Promise<ApiResponse<T>> => {
   try {
     const response = await axios({
@@ -26,21 +27,30 @@ const CommonApiRequest = async <T, B = unknown>(
       data: method.toLowerCase() === "get" ? undefined : data,
       params: method.toLowerCase() === "get" ? data : undefined,
       withCredentials: true,
+      headers: {
+        Authorization: access_token ? `Bearer ${access_token}` : "",
+        ...config.headers,
+      },
       ...config,
     });
+
     return {
       ...response.data,
       status: response.status,
     };
   } catch (error) {
     const err = error as {
-      response?: { status?: number; data?: unknown, message: string };
+      response?: {
+        status?: number;
+        data?: unknown;
+        message?: string;
+      };
     };
 
     return {
       status: err.response?.status ?? 500,
       data: (err.response?.data ?? {}) as T,
-      message: err.response?.message || ''
+      message: err.response?.message || "",
     };
   }
 };

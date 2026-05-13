@@ -8,17 +8,38 @@ interface RolePermission {
   value: RolePermissionValue[];
   status: boolean;
 }
+export interface IPackagePermission {
+  _id: string;
+  name: string;
+  status: boolean;
+}
+
+export interface IPackage {
+  _id: string;
+  name: string;
+  tag_line: string;
+  price: string;
+  description: string;
+  plan_description: string;
+  button_title: string;
+  status: boolean;
+  createdAt: string;
+  updatedAt: string;
+  packagePermissions: IPackagePermission[];
+  purchasedAt:string
+}
+
 export interface IUserTypes {
-  contact_no : string;
+  contact_no: string;
   last_name: string;
   first_name: string;
   lastName: string;
   firstName: string;
   userType: string;
   roleName: string;
-  impersonate : boolean;
+  impersonate: boolean;
   organization: any;
-  proficiency?:string
+  proficiency?: string
   id: string;
   _id: string;
   email: string;
@@ -35,10 +56,11 @@ export interface IUserTypes {
   is_reset?: boolean;
   feedback_email: string;
   feedback_option: boolean;
-  profile_image : string;
+  profile_image: string;
   phone?: string;
   dob?: string;
-  designation:"project_manager"|"team_lead"|"quality_assurance"|"detailer"|"director";
+  designation: "project_manager" | "team_lead" | "quality_assurance" | "detailer" | "director";
+  package?: IPackage
 }
 export interface IChangePasswordTypes {
   old_password: string;
@@ -52,10 +74,10 @@ export interface IUserApiType {
 }
 
 export interface IUserRes {
-   user_data ?: IUserApiType;
-   is_Login: boolean;
-   access_token: string;
-   status ?: any;
-   user?: IUserTypes;
-   designation?:'director'|'project_manager'|'team_lead'|'quality_assurance'|'detailer'|''
+  user_data?: IUserApiType;
+  is_Login: boolean;
+  access_token: string;
+  status?: any;
+  user?: IUserTypes;
+  designation?: 'director' | 'project_manager' | 'team_lead' | 'quality_assurance' | 'detailer' | ''
 }

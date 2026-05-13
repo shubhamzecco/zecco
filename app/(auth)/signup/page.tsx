@@ -39,6 +39,7 @@ const SignUpPage = () => {
   const [packageModal, setPackageModal] = useState(false)
   const [emailVerificationPopup, setEmailVerificationPopup] = useState(false)
   const [formValue, setFormValue] = useState<z.infer<typeof formSchema>>()
+  const [userId, setUserId] = useState('')
 
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,9 +55,23 @@ const SignUpPage = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-     setPackageModal(true)
-     setFormValue(values)
+    postData(App_url.endpoint_url.USER_LOGIN, { ...values, user_type: 'client'})
+      ?.then((response: any) => {
+        if (response?.status === 200) {
+          setPackageModal(true)
+          setFormValue(values)
+          setUserId(response?.data?.data?.user?._id)
+          toast.success(response.data.message);
+        } else {
+          toast.error(response?.data?.message);
+        }
+      })
+      ?.catch((error) => {
+        toast.error("Something went wrong");
+        console.error(error);
+      });
   };
+
 
   return (
 
@@ -217,9 +232,10 @@ const SignUpPage = () => {
         </Form>
       </AuthLayout>
       {packageModal && (
-        <PackagesModal 
-        formValue={ formValue ?? {} as IFormValue}
-        onClose={() => setPackageModal(false)} />
+        <PackagesModal
+          userId={userId}
+          formValue={formValue ?? {} as IFormValue}
+          onClose={() => setPackageModal(false)} />
       )}
 
       {emailVerificationPopup && (

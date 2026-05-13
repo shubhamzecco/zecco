@@ -18,7 +18,11 @@ const initialState: IMainResponse = {
   ai_insight: null,
   favorite_property_list: null,
   zecco_favorite: null,
-  login_popup: false
+  login_popup: false,
+  chat_user_list: null,
+  chat_messages_by_user: null,
+  user_package_list: null,
+  property_type_list: null,
 };
 
 const mainReducer = (
@@ -26,6 +30,34 @@ const mainReducer = (
   action: any
 ): IMainResponse => {
   switch (action.type) {
+
+    case ActionTypes.SET_PROPERTY_TYPE_LIST: {
+      return {
+        ...state,
+        property_type_list: action.payload
+      }
+    }
+
+    case ActionTypes.SET_USER_PACKAGE_LIST: {
+      return {
+        ...state,
+        user_package_list: action.payload
+      }
+    }
+
+    case ActionTypes.SET_USER_CHAT_MESSAGES: {
+      return {
+        ...state,
+        chat_messages_by_user: action.payload
+      }
+    }
+
+    case ActionTypes.SET_USER_CHAT_LIST: {
+      return {
+        ...state,
+        chat_user_list: action.payload?.data || null
+      }
+    }
 
     case ActionTypes.SET_LOGIN_POPUP: {
       return {

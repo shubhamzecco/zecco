@@ -14,9 +14,8 @@ const Breadcrumb = () => {
   const breadcrumbs = mainReducer?.breadcrumbs || []
 
   const handleClick = (index: number, href?: string | null) => {
-    const updatedBreadcrumbs = breadcrumbs.slice(0, index + 1)
+    const updatedBreadcrumbs = breadcrumbs?.slice(0, index + 1)
     dispatch(setBreadcrumbs(updatedBreadcrumbs))
-
     if (href) router.push(href)
   }
 

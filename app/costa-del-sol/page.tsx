@@ -26,9 +26,7 @@ const CostadelSol = () => {
         })
     }, [isConnected])
     return (
-        <MainLayout isBreadcrumb isFilter isPropertyType isProperty
-            propertyType={propertyType}
-            onPropertyTypeChange={setPropertyType}
+        <MainLayout isBreadcrumb isFilter
         >
             <div className="lg:mx-7 lg:pb-10 px-4 sm:px-6 lg:px-8">
                 <div className="grid lg:grid-cols-3 grid-cols-1 gap-8">

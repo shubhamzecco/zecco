@@ -8,7 +8,6 @@ import { useRouter } from 'next/navigation'
 
 export default function EmailVerifiedPage() {
   const router = useRouter()
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#CFE0FF] via-[#EAF1FF] to-white px-4">
 

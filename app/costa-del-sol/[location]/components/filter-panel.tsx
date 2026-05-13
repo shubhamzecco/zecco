@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PropertyMap } from './map';
+import { useWebSocket } from '@/api/socket/WebSocketContext';
+import { usePosterReducers } from '@/redux/getdata/usePostReducer';
 
 interface FilterPanelProps {
     onFilterChange?: (filters: any) => void;
@@ -56,8 +58,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
         multimedia: {},
         publicationDate: {},
     });
-
-
+    const { mainReducer } = usePosterReducers()
     const handleInputChange = (field: string, value: string) => {
         const updated = { ...filters, [field]: value };
         setFilters(updated);
@@ -81,7 +82,6 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
         onFilterChange?.(updated);
     };
 
-
     return (
         <div className="w-full bg-[#F8FAFC] rounded-lg h-full overflow-y-auto">
             <div className="w-full h-96 p-1">
@@ -98,10 +98,9 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                             onChange={(e) => handleInputChange('propertyType', e.target.value)}
                             className="w-full px-3 py-2.5 border border-gray-300 rounded-lg appearance-none bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
                         >
-                            <option>Flat / Apartment</option>
-                            <option>House</option>
-                            <option>Villa</option>
-                            <option>Commercial</option>
+                            {mainReducer?.property_type_list?.map((type) => (
+                                <option key={type.id} value={type?.name}>{type.name}</option>
+                            ))}
                         </select>
                         <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
                     </div>
