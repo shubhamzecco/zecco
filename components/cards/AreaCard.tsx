@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 
 interface AreaCardProps {
-  _id: string
+  id: string
   name: string
   image: string
   description: string
@@ -18,7 +18,7 @@ interface AreaCardProps {
 }
 
 export default function AreaCard({
-  _id,
+  id,
   name,
   image,
   description,
@@ -33,9 +33,9 @@ export default function AreaCard({
     } else {
       dispatch(setBreadcrumbs([
         ...mainReducer.breadcrumbs,
-        { label: name, href: `${App_url.link.COSTA_DEL_SOL}/${_id}` },
+        { label: name, href: `${App_url.link.COSTA_DEL_SOL}/${id}` },
       ]))
-      router.push(`${App_url.link.COSTA_DEL_SOL}/${_id}`)
+      router.push(`${App_url.link.COSTA_DEL_SOL}/${id}`)
     }
   }
 
@@ -46,12 +46,14 @@ export default function AreaCard({
       onClick={handleClick}
     >
       {/* Image */}
-      <Image
-        src={URL + image || "/placeholder.svg"}
-        alt={name}
-        fill
-        className="object-cover group-hover:scale-110 transition-transform duration-500"
-      />
+      {image && (
+        <Image
+          src={URL + image || "/placeholder.svg"}
+          alt={name}
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+      )}
 
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />

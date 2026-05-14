@@ -234,6 +234,7 @@ export interface IPlan {
 
 export interface ILocation {
   _id: string;
+  id: string;
   name: string;
   description: string;
   image: string;

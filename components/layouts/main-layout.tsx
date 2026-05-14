@@ -24,6 +24,7 @@ interface MainLayoutProps {
     chatBotWidget?: boolean;
     callBackPropertyType?: (value: string) => void; // callback
     propertyTypes?: string; // property types value
+    handleSearch?: (value: string) => void;
 }
 
 const HEADER_HEIGHT = 100       // h-16 (64px) + top spacing
@@ -42,7 +43,8 @@ const MainLayout = ({
     propertyType,
     propertyTypes,
     callBackPropertyType,
-    chatBotWidget = true
+    chatBotWidget = true,
+    handleSearch
 }: MainLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
@@ -65,7 +67,7 @@ const MainLayout = ({
         (isFilter ? FILTER_HEIGHT : 0)
 
 
-    const   TABS: { label: string; value: PropertyType }[] = [
+    const TABS: { label: string; value: PropertyType }[] = [
         { label: "Buy", value: "buy" },
         { label: "Rent", value: "rent" },
         { label: "New", value: "new" },
@@ -95,7 +97,12 @@ const MainLayout = ({
                                     type="text"
                                     placeholder="Search by area"
                                     className="w-full lg:max-w-[27rem] bg-[#fcfcfc] placeholder:font-manrope font-normal placeholder:text-[#999999] h-9 pl-10 pr-4 rounded-[7px] border border-gray-300 
-                                                focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                     focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            handleSearch?.((e.target as HTMLInputElement).value)
+                                        }
+                                    }}
                                 />
                             </div>
                             {propertyCount !== 0 && (

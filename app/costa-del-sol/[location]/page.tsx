@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import FilterPanel from "./components/filter-panel";
 import { useDispatch } from "react-redux";
 import { setPropertyDetails } from "@/redux/modules/main/action";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 type PropertyType = "buy" | "rent" | "new";
 
@@ -23,38 +23,38 @@ const Page = () => {
         useState<PropertyType>("buy");
     const [propertyTypes, setPropertyTypes] = useState("");
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
     const { mainReducer } = usePosterReducers();
     const { sendMessage, isConnected, lastEvent } = useWebSocket();
     const dispatch = useDispatch();
     const [filterData, setFilterData] = useState({})
-    const { id } = useParams()
+    const id = useParams()
 
     const propertyList =
         mainReducer?.property_list_with_limit?.data || [];
 
     const handleFilterChange = (filters: any) => {
+        console.log("filters :::: " , filters)
         const selectedKeys = Object.keys(filters?.types || {}).filter(
             (key) => Number(filters?.types?.[key]) && key !== "all"
         );
+        console.log("selectedKeys ::: " , selectedKeys)
         const selectedFeatures = Object.keys(filters?.moreFilters || {}).filter(
             (key) => Number(filters?.moreFilters?.[key]) && key !== "all"
         );
         const featureIds = selectedFeatures.map(Number).join(',')
         const payload = {
-            categories: !selectedKeys ? filters?.propertyTypes ?? propertyTypes : null,
+            categories: selectedKeys?.length > 0 ? null : Number(filters?.propertyType),
             types: Number(selectedKeys) === 0 ? null : selectedKeys?.length > 1 ? selectedKeys?.map((key) => Number(key)) : Number(selectedKeys),
             feature: featureIds,
-            bedroomsFrom: filters?.bedroomsFrom,
-            bedroomsTo: filters?.bedroomsTo,
-            priceFrom: filters?.priceMin,
-            priceTo: filters?.priceMax,
-            buildFrom: filters?.sizeMin,
-            buildTo: filters?.sizeMax,
+            bedroomsFrom: filters?.bedroomsFrom ? Number(filters?.bedroomsFrom) : null,
+            bedroomsTo: filters?.bedroomsTo ? Number(filters?.bedroomsTo) : null,
+            priceFrom: filters?.priceMin ? Number(filters?.priceMin) : null,
+            priceTo: filters?.priceMax ?  Number(filters?.priceMax) : null,
+            buildFrom: filters?.sizeMin ?  Number(filters?.sizeMin) : null,
+            buildTo: filters?.sizeMax ?  Number(filters?.sizeMax) : null,
             limit: LIMIT,
             page: page,
-            cities: id,
+            cities: Number(id?.location),
             country: 6,
             ...(propertyType === 'buy' && { forSale: true, sold: false }),
             ...(propertyType === 'rent' && { forRent: true, rented: false, forSale: false }),
@@ -68,8 +68,6 @@ const Page = () => {
         });
     };
 
-
-
     useEffect(() => {
         if (!isConnected) return;
         sendMessage("action", {
@@ -79,9 +77,8 @@ const Page = () => {
                 limit: LIMIT,
                 page: page,
                 search: "",
-                city: id,
-                country: "Spain",
-                property_type: propertyTypes || undefined,
+                cities: Number(id?.location),
+                country: 6,
                 ...(propertyType === 'buy' && { forSale: true, sold: false }),
                 ...(propertyType === 'rent' && { forRent: true, rented: false, forSale: false }),
                 ...(propertyType === 'new' && { isNewDev: true, forSale: true }),
@@ -89,11 +86,7 @@ const Page = () => {
         });
         setPage(1);
 
-    }, [
-        isConnected,
-        propertyType,
-        propertyTypes
-    ]);
+    }, [id]);
 
     useEffect(() => {
         if (
@@ -114,8 +107,8 @@ const Page = () => {
                     limit: LIMIT,
                     page: page,
                     search: "",
-                    city: id,
-                    country: "Spain",
+                    cities: Number(id?.location),
+                    country: 6,
                     property_type: propertyTypes || undefined,
                     ...(propertyType === 'buy' && { forSale: true, sold: false }),
                     ...(propertyType === 'rent' && { forRent: true, rented: false, forSale: false }),
@@ -196,6 +189,7 @@ const Page = () => {
                     >
                         <FilterPanel
                             onFilterChange={
+                                
                                 handleFilterChange
                             }
                         />
