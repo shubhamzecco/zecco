@@ -26,7 +26,7 @@ export default function AreaCard({
 }: AreaCardProps) {
   const router = useRouter()
   const dispatch = useDispatch()
-  const { mainReducer } = usePosterReducers() // Access the mainReducer state
+  const { mainReducer } = usePosterReducers() 
   const handleClick = () => {
     if (onNavigate) {
       onNavigate()

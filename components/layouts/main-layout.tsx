@@ -48,10 +48,8 @@ const MainLayout = ({
 }: MainLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
-
     const { sendMessage, isConnected } = useWebSocket()
     const { mainReducer } = usePosterReducers()
-
     useEffect(() => {
         if (!isPropertyType) return;
         sendMessage('action', {

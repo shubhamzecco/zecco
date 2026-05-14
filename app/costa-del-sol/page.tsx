@@ -2,17 +2,17 @@
 import { useWebSocket } from '@/api/socket/WebSocketContext'
 import AreaCard from '@/components/cards/AreaCard'
 import MainLayout from '@/components/layouts/main-layout'
-import { App_url } from '@/constant/static'
 import { usePosterReducers } from '@/redux/getdata/usePostReducer'
-import React, { useEffect } from 'react'
+import { setBreadcrumbs } from '@/redux/modules/main/action'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
 
 
 
 const CostadelSol = () => {
-    type PropertyType = "buy" | "rent" | "new";
-    const [propertyType, setPropertyType] = React.useState<PropertyType>("buy");
     const { sendMessage, isConnected } = useWebSocket()
     const { mainReducer } = usePosterReducers()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         sendMessage('action', {
@@ -37,6 +37,14 @@ const CostadelSol = () => {
             }
         })
     }
+
+    console.log("mainReducer?.breadcrumbs?.length ::: " , mainReducer?.breadcrumbs?.length)
+      useEffect(() => {
+            if (mainReducer?.breadcrumbs?.length === 3) {
+                const breadcrumbsWithoutLast = mainReducer.breadcrumbs?.slice(0, -1) || []
+                dispatch(setBreadcrumbs(breadcrumbsWithoutLast))
+            }
+        }, [])
 
     return (
         <MainLayout isBreadcrumb isFilter handleSearch={(e) => handleSearch(e)}

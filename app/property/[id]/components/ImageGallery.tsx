@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Box, GalleryThumbnails, Heart, LayoutPanelLeft, Play, X } from "lucide-react";
 import { App_url } from "@/constant/static";
 import Image from "next/image";
@@ -11,26 +11,19 @@ import { setLoginPopup } from "@/redux/modules/main/action";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { useParams } from "next/navigation";
 
-const ALL_IMAGES = [
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c",
-  "https://images.unsplash.com/photo-1600566753151-384129cf4e3e",
-  App_url.image.image_4,
-  "https://images.unsplash.com/photo-1600585152220-90363fe7e115",
-  "https://images.unsplash.com/photo-1600607687644-c7171b42498f",
-];
-
-
 type PopupType = "gallery" | "video" | "plan" | "3d";
 
-
 interface PropertyStats {
-  property:  IImage[];
+  property: IImage[];
 }
 
 
 export default function PropertyGallery({ property }: PropertyStats) {
-  const [images, setImages] = useState(property);
+  const shuffleArray = (array: IImage[] = []) => {
+    return [...array].sort(() => Math.random() - 0.5);
+  };
+
+  const [images, setImages] = useState<IImage[]>([]);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [popupType, setPopupType] = useState<PopupType>("gallery");
@@ -45,11 +38,16 @@ export default function PropertyGallery({ property }: PropertyStats) {
 
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
-
   const mouseStartX = useRef<number | null>(null);
-  const mouseEndX = useRef<number | null>(null);
 
   const SWIPE_THRESHOLD = 50;
+
+
+  useEffect(() => {
+    if (Array.isArray(property)) {
+      setImages(shuffleArray(property));
+    }
+  }, [property]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -192,12 +190,12 @@ export default function PropertyGallery({ property }: PropertyStats) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 h-[70%]">
+        <div className="flex flex-col gap-3 lg:h-[460px]">
           <img src={images?.[1]?.url} onClick={() => swapImage(1)} className="flex-1 h-1/2 object-cover cursor-pointer" />
           <img src={images?.[2]?.url} onClick={() => swapImage(2)} className="flex-1 h-1/2 object-cover cursor-pointer" />
         </div>
 
-        <div className="flex flex-col h-[70%] gap-5">
+        <div className="flex flex-col lg:h-[460px] gap-5">
           <img src={images?.[3]?.url} onClick={() => swapImage(3)} className="flex-1  object-cover cursor-pointer" />
 
           <div

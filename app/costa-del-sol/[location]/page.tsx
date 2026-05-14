@@ -8,7 +8,7 @@ import { SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import FilterPanel from "./components/filter-panel";
 import { useDispatch } from "react-redux";
-import { setPropertyDetails } from "@/redux/modules/main/action";
+import { setBreadcrumbs, setPropertyDetails } from "@/redux/modules/main/action";
 import { useParams, useSearchParams } from "next/navigation";
 
 type PropertyType = "buy" | "rent" | "new";
@@ -33,11 +33,9 @@ const Page = () => {
         mainReducer?.property_list_with_limit?.data || [];
 
     const handleFilterChange = (filters: any) => {
-        console.log("filters :::: " , filters)
         const selectedKeys = Object.keys(filters?.types || {}).filter(
             (key) => Number(filters?.types?.[key]) && key !== "all"
         );
-        console.log("selectedKeys ::: " , selectedKeys)
         const selectedFeatures = Object.keys(filters?.moreFilters || {}).filter(
             (key) => Number(filters?.moreFilters?.[key]) && key !== "all"
         );
@@ -49,9 +47,9 @@ const Page = () => {
             bedroomsFrom: filters?.bedroomsFrom ? Number(filters?.bedroomsFrom) : null,
             bedroomsTo: filters?.bedroomsTo ? Number(filters?.bedroomsTo) : null,
             priceFrom: filters?.priceMin ? Number(filters?.priceMin) : null,
-            priceTo: filters?.priceMax ?  Number(filters?.priceMax) : null,
-            buildFrom: filters?.sizeMin ?  Number(filters?.sizeMin) : null,
-            buildTo: filters?.sizeMax ?  Number(filters?.sizeMax) : null,
+            priceTo: filters?.priceMax ? Number(filters?.priceMax) : null,
+            buildFrom: filters?.sizeMin ? Number(filters?.sizeMin) : null,
+            buildTo: filters?.sizeMax ? Number(filters?.sizeMax) : null,
             limit: LIMIT,
             page: page,
             cities: Number(id?.location),
@@ -79,6 +77,7 @@ const Page = () => {
                 search: "",
                 cities: Number(id?.location),
                 country: 6,
+                categories: propertyTypes ? Number(propertyTypes) : null,
                 ...(propertyType === 'buy' && { forSale: true, sold: false }),
                 ...(propertyType === 'rent' && { forRent: true, rented: false, forSale: false }),
                 ...(propertyType === 'new' && { isNewDev: true, forSale: true }),
@@ -86,7 +85,7 @@ const Page = () => {
         });
         setPage(1);
 
-    }, [id]);
+    }, [id, propertyTypes, propertyType]);
 
     useEffect(() => {
         if (
@@ -122,6 +121,13 @@ const Page = () => {
         dispatch(setPropertyDetails(null))
     }, [])
 
+    useEffect(() => {
+        if (mainReducer?.breadcrumbs?.length === 4) {
+            const breadcrumbsWithoutLast = mainReducer.breadcrumbs?.slice(0, -1) || []
+            dispatch(setBreadcrumbs(breadcrumbsWithoutLast))
+        }
+    }, [])
+
     return (
         <MainLayout
             isBreadcrumb
@@ -150,9 +156,6 @@ const Page = () => {
             }}
         >
             <div className="lg:mx-7 lg:pb-10 px-4 sm:px-6 lg:px-8">
-
-                {/* MOBILE FILTER BUTTON */}
-
                 <div className="flex justify-between items-center mb-4 lg:hidden">
                     <div>
                         <p className="font-manrope block lg:hidden font-semibold text-black">
@@ -173,9 +176,6 @@ const Page = () => {
                 </div>
 
                 <div className="flex items-start gap-4">
-
-                    {/* DESKTOP FILTER */}
-
                     <div
                         className="hidden lg:block sticky top-28 min-w-[300px]"
                         style={{
@@ -189,14 +189,11 @@ const Page = () => {
                     >
                         <FilterPanel
                             onFilterChange={
-                                
+
                                 handleFilterChange
                             }
                         />
                     </div>
-
-                    {/* PROPERTY GRID */}
-
                     <div
                         ref={gridRef}
                         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full"
@@ -213,9 +210,6 @@ const Page = () => {
                     </div>
                 </div>
             </div>
-
-            {/* MOBILE OVERLAY */}
-
             <div
                 className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${isFilterOpen
                     ? "opacity-100 visible"

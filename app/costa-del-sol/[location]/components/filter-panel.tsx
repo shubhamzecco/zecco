@@ -239,6 +239,10 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
         const updated = { ...filters, [field]: value };
         setFilters(updated);
 
+        if(field === 'propertyType'){
+             onFilterChange?.(filters);
+        }
+
     };
 
     const handleEnterPress = (e: React.KeyboardEvent) => {
@@ -263,8 +267,6 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
         setFilters(updated);
         onFilterChange?.(updated);
     };
-
-    console.log("mainReducer?.property_subtype_list ::: ", mainReducer?.property_subtype_list)
 
     return (
         <div className="w-full bg-[#F8FAFC] rounded-lg h-full overflow-y-auto">

@@ -5,6 +5,7 @@ import { ChevronsRight } from "lucide-react"
 import { useDispatch } from "react-redux"
 import { useRouter } from "next/navigation"
 import { setBreadcrumbs } from "@/redux/modules/main/action"
+import { useEffect } from "react"
 
 const Breadcrumb = () => {
   const { mainReducer } = usePosterReducers()
@@ -18,6 +19,7 @@ const Breadcrumb = () => {
     dispatch(setBreadcrumbs(updatedBreadcrumbs))
     if (href) router.push(href)
   }
+
 
   return (
     <nav
