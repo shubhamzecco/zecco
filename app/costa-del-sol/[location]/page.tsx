@@ -43,7 +43,7 @@ const Page = () => {
         const payload = {
             categories: selectedKeys?.length > 0 ? null : Number(filters?.propertyType),
             types: Number(selectedKeys) === 0 ? null : selectedKeys?.length > 1 ? selectedKeys?.map((key) => Number(key)) : Number(selectedKeys),
-            feature: featureIds,
+            features: featureIds,
             bedroomsFrom: filters?.bedroomsFrom ? Number(filters?.bedroomsFrom) : null,
             bedroomsTo: filters?.bedroomsTo ? Number(filters?.bedroomsTo) : null,
             priceFrom: filters?.priceMin ? Number(filters?.priceMin) : null,
@@ -85,7 +85,7 @@ const Page = () => {
         });
         setPage(1);
 
-    }, [id, propertyTypes, propertyType]);
+    }, [id,propertyType]);
 
     useEffect(() => {
         if (
