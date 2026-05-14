@@ -28,48 +28,67 @@ const Page = () => {
     const { mainReducer } = usePosterReducers();
     const { sendMessage, isConnected, lastEvent } = useWebSocket();
     const dispatch = useDispatch();
+    const [filterData, setFilterData] = useState({})
     const { id } = useParams()
 
     const propertyList =
         mainReducer?.property_list_with_limit?.data || [];
 
     const handleFilterChange = (filters: any) => {
-        console.log(filters);
+        const selectedKeys = Object.keys(filters?.types || {}).filter(
+            (key) => Number(filters?.types?.[key]) && key !== "all"
+        );
+        const selectedFeatures = Object.keys(filters?.moreFilters || {}).filter(
+            (key) => Number(filters?.moreFilters?.[key]) && key !== "all"
+        );
+        const featureIds = selectedFeatures.map(Number).join(',')
+        const payload = {
+            categories: !selectedKeys ? filters?.propertyTypes ?? propertyTypes : null,
+            types: Number(selectedKeys) === 0 ? null : selectedKeys?.length > 1 ? selectedKeys?.map((key) => Number(key)) : Number(selectedKeys),
+            feature: featureIds,
+            bedroomsFrom: filters?.bedroomsFrom,
+            bedroomsTo: filters?.bedroomsTo,
+            priceFrom: filters?.priceMin,
+            priceTo: filters?.priceMax,
+            buildFrom: filters?.sizeMin,
+            buildTo: filters?.sizeMax,
+            limit: LIMIT,
+            page: page,
+            cities: id,
+            country: 6,
+            ...(propertyType === 'buy' && { forSale: true, sold: false }),
+            ...(propertyType === 'rent' && { forRent: true, rented: false, forSale: false }),
+            ...(propertyType === 'new' && { isNewDev: true, forSale: true }),
+        }
+        setFilterData(payload)
+        sendMessage("action", {
+            type: "propertyService",
+            action: "list",
+            payload: payload
+        });
     };
 
-    const fetchProperties = (
-        pageNumber: number,
-        reset = false
-    ) => {
+
+
+    useEffect(() => {
         if (!isConnected) return;
-
-        setLoading(true);
-
         sendMessage("action", {
             type: "propertyService",
             action: "list",
             payload: {
                 limit: LIMIT,
-                page: pageNumber,
+                page: page,
                 search: "",
                 city: id,
                 country: "Spain",
                 property_type: propertyTypes || undefined,
-                listing_type: propertyType,
+                ...(propertyType === 'buy' && { forSale: true, sold: false }),
+                ...(propertyType === 'rent' && { forRent: true, rented: false, forSale: false }),
+                ...(propertyType === 'new' && { isNewDev: true, forSale: true }),
             },
         });
-
-        if (reset) {
-            setHasMore(true);
-        }
-    };
-
-    useEffect(() => {
-        if (!isConnected) return;
-
         setPage(1);
 
-        fetchProperties(1, true);
     }, [
         isConnected,
         propertyType,
@@ -88,77 +107,23 @@ const Page = () => {
                 "removeFavorite"
             )
         ) {
-            fetchProperties(1, true);
+            sendMessage("action", {
+                type: "propertyService",
+                action: "list",
+                payload: {
+                    limit: LIMIT,
+                    page: page,
+                    search: "",
+                    city: id,
+                    country: "Spain",
+                    property_type: propertyTypes || undefined,
+                    ...(propertyType === 'buy' && { forSale: true, sold: false }),
+                    ...(propertyType === 'rent' && { forRent: true, rented: false, forSale: false }),
+                    ...(propertyType === 'new' && { isNewDev: true, forSale: true }),
+                },
+            });
         }
     }, [lastEvent]);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (loading || !hasMore) return;
-
-            const scrollTop = window.scrollY;
-            const windowHeight = window.innerHeight;
-            const fullHeight =
-                document.documentElement.scrollHeight;
-
-            if (
-                scrollTop + windowHeight >=
-                fullHeight - 300
-            ) {
-                const nextPage = page + 1;
-
-                setPage(nextPage);
-
-                fetchProperties(nextPage);
-            }
-        };
-
-        window.addEventListener(
-            "scroll",
-            handleScroll
-        );
-
-        return () =>
-            window.removeEventListener(
-                "scroll",
-                handleScroll
-            );
-    }, [page, loading, hasMore]);
-
-
-    useEffect(() => {
-        if (!loading) return;
-
-        if (propertyList.length < LIMIT) {
-            setHasMore(false);
-        }
-
-        setLoading(false);
-    }, [propertyList]);
-
-
-    useEffect(() => {
-        const updateHeight = () => {
-            if (gridRef.current) {
-                setGridHeight(
-                    gridRef.current.offsetHeight
-                );
-            }
-        };
-
-        updateHeight();
-
-        window.addEventListener(
-            "resize",
-            updateHeight
-        );
-
-        return () =>
-            window.removeEventListener(
-                "resize",
-                updateHeight
-            );
-    }, [propertyList]);
 
     useEffect(() => {
         dispatch(setPropertyDetails(null))
@@ -177,7 +142,19 @@ const Page = () => {
             }}
             propertyCount={propertyList?.length}
             propertyType={propertyType}
-            onPropertyTypeChange={setPropertyType}
+            onPropertyTypeChange={(data: PropertyType) => {
+                sendMessage("action", {
+                    type: "propertyService",
+                    action: "list",
+                    payload: {
+                        ...filterData,
+                        ...(data === 'buy' && { forSale: true, sold: false }),
+                        ...(data === 'rent' && { forRent: true, rented: false, forSale: false }),
+                        ...(data === 'new' && { isNewDev: true, forSale: true }),
+                    }
+                });
+                setPropertyType(data)
+            }}
         >
             <div className="lg:mx-7 lg:pb-10 px-4 sm:px-6 lg:px-8">
 
@@ -239,30 +216,6 @@ const Page = () => {
                                 />
                             )
                         )}
-
-                        {/* LOADING */}
-
-                        {loading && (
-                            <div className="col-span-full flex justify-center py-6">
-                                <p className="text-sm text-gray-500">
-                                    Loading more
-                                    properties...
-                                </p>
-                            </div>
-                        )}
-
-                        {/* NO MORE DATA */}
-
-                        {!hasMore &&
-                            propertyList?.length >
-                            0 && (
-                                <div className="col-span-full flex justify-center py-6">
-                                    <p className="text-sm text-gray-400">
-                                        No more
-                                        properties
-                                    </p>
-                                </div>
-                            )}
                     </div>
                 </div>
             </div>

@@ -23,6 +23,7 @@ const initialState: IMainResponse = {
   chat_messages_by_user: null,
   user_package_list: null,
   property_type_list: null,
+  property_subtype_list: null,
 };
 
 const mainReducer = (
@@ -30,6 +31,13 @@ const mainReducer = (
   action: any
 ): IMainResponse => {
   switch (action.type) {
+
+    case ActionTypes.SET_PROPERTY_SUBTYPE_LIST: {
+      return {
+        ...state,
+        property_subtype_list: action.payload
+      }
+    }
 
     case ActionTypes.SET_PROPERTY_TYPE_LIST: {
       return {

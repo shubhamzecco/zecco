@@ -155,7 +155,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
           className="rounded-2xl overflow-hidden cursor-pointer relative"
           onClick={() => swapImage(0)}
         >
-          <img src={images?.[0]?.url} className="lg:w-[650px] lg:h-[500px] object-cover" />
+          <img src={images?.[0]?.url} className="lg:w-[650px] lg:h-[460px] object-cover rounded-xl" />
 
           <button
             onClick={(e) => {
@@ -192,13 +192,13 @@ export default function PropertyGallery({ property }: PropertyStats) {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <img src={images?.[1]?.url} onClick={() => swapImage(1)} className="flex-1 object-cover cursor-pointer" />
-          <img src={images?.[2]?.url} onClick={() => swapImage(2)} className="flex-1 object-cover cursor-pointer" />
+        <div className="flex flex-col gap-3 h-[70%]">
+          <img src={images?.[1]?.url} onClick={() => swapImage(1)} className="flex-1 h-1/2 object-cover cursor-pointer" />
+          <img src={images?.[2]?.url} onClick={() => swapImage(2)} className="flex-1 h-1/2 object-cover cursor-pointer" />
         </div>
 
-        <div className="flex flex-col gap-5">
-          <img src={images?.[3]?.url} onClick={() => swapImage(3)} className="flex-1 object-cover cursor-pointer" />
+        <div className="flex flex-col h-[70%] gap-5">
+          <img src={images?.[3]?.url} onClick={() => swapImage(3)} className="flex-1  object-cover cursor-pointer" />
 
           <div
             onClick={() => {

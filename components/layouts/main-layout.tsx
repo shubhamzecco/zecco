@@ -65,7 +65,7 @@ const MainLayout = ({
         (isFilter ? FILTER_HEIGHT : 0)
 
 
-    const TABS: { label: string; value: PropertyType }[] = [
+    const   TABS: { label: string; value: PropertyType }[] = [
         { label: "Buy", value: "buy" },
         { label: "Rent", value: "rent" },
         { label: "New", value: "new" },

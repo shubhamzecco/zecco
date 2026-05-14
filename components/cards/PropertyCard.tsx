@@ -226,7 +226,7 @@ export default function PropertyCard({
       <div className="space-y-1 py-3">
         <div className="flex items-center justify-between">
           <p className="text-md font-manrope font-bold text-[#727272]">
-            €{property?.salePrice || property?.rentalPrice}
+            €{property?.salePrice ?? property?.rentalPrice}
           </p>
           {aiInsights && (
             <p className="underline text-[#2563EB] font-manrope font-bold text-sm">

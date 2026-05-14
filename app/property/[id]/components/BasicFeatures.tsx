@@ -93,6 +93,7 @@ import {
   Wind,
   LucideIcon
 } from "lucide-react";
+import { useState } from "react";
 
 export const iconMap: Record<string, LucideIcon> = {
   FrontLineGolf: Waves,
@@ -256,22 +257,46 @@ const formatText = (text: string) => {
 };
 
 export default function BasicFeatures(features: { features: IFeature[] }) {
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
+
+  const featureList = features?.features || [];
+
+  const visibleFeatures = showAllFeatures
+    ? featureList
+    : featureList.slice(0, 12);
+
+
   return (
     <div className="mb-8">
-      <h3 className="text-xl font-bold font-manrope text-heading_text_color mb-4">Basic Features</h3>
+      <h3 className="text-xl font-bold font-manrope text-heading_text_color mb-4">
+        Basic Features
+      </h3>
+
       <div className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-5 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-2 gap-x-2">
-          {features?.features?.map((feature, index) => {
+          {visibleFeatures?.map((feature, index) => {
             const Icon =
               iconMap[feature.name as keyof typeof iconMap] || Scan;
             return (
-              <Feature
-                icon={<Icon className="w-5 h-5 text-[#94A3B8]" />}
-                text={formatText(feature.name)}
-              />
-            )
+              <>
+                <Feature
+                  key={index}
+                  icon={<Icon className="w-5 h-5 text-[#94A3B8]" />}
+                  text={formatText(feature.name)}
+                />
+              </>
+            );
           })}
         </div>
+          {featureList.length > 10 && (
+            <button
+              onClick={() => setShowAllFeatures(!showAllFeatures)}
+              className="mt-4 w-full text-center text-blue-600 font-medium font-manrope hover:underline"
+            >
+              {showAllFeatures ? "Show Less" : "More"}
+            </button>
+          )}
+
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAuthData } from "@/redux/modules/common/user_data/action";
 import { IUserRes } from "@/redux/modules/common/user_data/types";
-import { setBlogListWithLimit, setFavoriteList, setLocationListWithLimit, setPackageListWithLimit, setPropertyDetails, setPropertyListWithLimit, setPropertyTypeList, setUserChatList, setUserChatMessages, setUserPackageList, setZeccoFavoriteList } from "@/redux/modules/main/action";
+import { setBlogListWithLimit, setFavoriteList, setLocationListWithLimit, setPackageListWithLimit, setPropertyDetails, setPropertyListWithLimit, setPropertySubtypeList, setPropertyTypeList, setUserChatList, setUserChatMessages, setUserPackageList, setZeccoFavoriteList } from "@/redux/modules/main/action";
 import { toast } from "react-toastify";
 export const ws_response = (
   { evt }: { evt: { event: string; data: any } },
@@ -102,8 +102,15 @@ export const ws_response = (
         }
         if (ws_onmessage?.request?.action === 'propertyTypes') {
           if (ws_onmessage?.status === true) {
-            dispatch(setPropertyTypeList(ws_onmessage?.data))
+            console.log("ws_onmessage ::::::::::" , ws_onmessage)
+            if (ws_onmessage?.request?.payload?.is_subtype) {
+              dispatch(setPropertySubtypeList(ws_onmessage?.data))
+            } else {
+              console.log("testing :::::::::::::::::::::")
+              dispatch(setPropertyTypeList(ws_onmessage?.data))
+            }
           } else {
+            dispatch(setPropertySubtypeList(ws_onmessage?.data))
             dispatch(setPropertyTypeList(ws_onmessage?.data))
           }
         }

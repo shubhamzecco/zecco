@@ -736,4 +736,5 @@ export interface IMainResponse {
   chat_messages_by_user: IChatMessage[] | null;
   user_package_list:  IUserPackagePayment[] | null;
   property_type_list: IPropertyType[] | null;
+  property_subtype_list: IPropertyType[] | null;
 }

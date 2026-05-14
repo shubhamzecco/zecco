@@ -40,7 +40,15 @@ export const ActionTypes = {
   SET_USER_CHAT_MESSAGES: 'SET_USER_CHAT_MESSAGES',
   SET_USER_PACKAGE_LIST: 'SET_USER_PACKAGE_LIST',
   SET_PROPERTY_TYPE_LIST : 'SET_PROPERTY_TYPE_LIST',
+  SET_PROPERTY_SUBTYPE_LIST : 'SET_PROPERTY_SUBTYPE_LIST',
 };
+
+export const setPropertySubtypeList = (payload: any) => {
+  return {
+    type: ActionTypes.SET_PROPERTY_SUBTYPE_LIST,
+    payload
+  }
+}
 
 export const setPropertyTypeList = (payload: any) => {
   return {
