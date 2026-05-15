@@ -220,7 +220,7 @@ flex-col
                 </h3>
 
                 <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider w-fit uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
-                  {region.property_count}
+                  {region.property_count} PROPERTIES
                 </span>
 
                 <ul className="space-y-2 flex-1">
