@@ -739,4 +739,5 @@ export interface IMainResponse {
   property_type_list: IPropertyType[] | null;
   property_subtype_list: IPropertyType[] | null;
   saved_searches : any
+  search_by_area : any
 }

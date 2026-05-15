@@ -1,7 +1,7 @@
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAuthData } from "@/redux/modules/common/user_data/action";
 import { IUserRes } from "@/redux/modules/common/user_data/types";
-import { setBlogListWithLimit, setFavoriteList, setLocationListWithLimit, setPackageListWithLimit, setPropertyDetails, setPropertyListWithLimit, setPropertySubtypeList, setPropertyTypeList, setSavedSearchesList, setUserChatList, setUserChatMessages, setUserPackageList, setZeccoFavoriteList } from "@/redux/modules/main/action";
+import { setBlogListWithLimit, setFavoriteList, setLocationListWithLimit, setPackageListWithLimit, setPropertyDetails, setPropertyListWithLimit, setPropertySubtypeList, setPropertyTypeList, setSavedSearchesList, setSearchByArea, setUserChatList, setUserChatMessages, setUserPackageList, setZeccoFavoriteList } from "@/redux/modules/main/action";
 import { toast } from "react-toastify";
 export const ws_response = (
   { evt }: { evt: { event: string; data: any } },
@@ -64,6 +64,14 @@ export const ws_response = (
             dispatch(setLocationListWithLimit(ws_onmessage?.data))
           } else {
             dispatch(setLocationListWithLimit(ws_onmessage?.data))
+          }
+        }
+
+         if (ws_onmessage?.request?.action === 'areas_list') {
+          if (ws_onmessage?.status === true) {
+            dispatch(setSearchByArea(ws_onmessage?.data))
+          } else {
+            dispatch(setSearchByArea(ws_onmessage?.data))
           }
         }
       }
@@ -132,7 +140,6 @@ export const ws_response = (
         }
       }
         break;
-
 
       case 'paymentService': {
         if (ws_onmessage?.request?.action === 'payment_history') {

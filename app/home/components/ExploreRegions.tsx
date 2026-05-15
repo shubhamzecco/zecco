@@ -1,9 +1,10 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 type ListingType = "buy" | "rent" | "new";
@@ -14,158 +15,66 @@ interface Region {
   items?: Record<ListingType, string[][]>;
 }
 
-const regions: Region[] = [
-  {
-    name: "Marbella",
-    count: "9,282 Properties",
-    // items: [
-    //   ["Golden Mile Residences", "9,282"],
-    //   ["Marbella Pearl Villas", "10,376"],
-    //   ["Costa Azul Heights", "7,252"],
-    //   ["La Brisa Luxury Homes", "13,868"],
-    //   ["Marbella Bay Gardens", "3,705"],
-    //   ["Sierra Blanca Retreat", "5,321"],
-    // ],
-
-    items: {
-      buy: [
-        ["Golden Mile Residences", "9,282"],
-        ["Marbella Pearl Villas", "10,376"],
-        ["Costa Azul Heights", "7,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "3,705"],
-        ["Sierra Blanca Retreat", "5,321"],
-      ],
-      rent: [
-        ["Golden Mile Residences", "11,282"],
-        ["Marbella Pearl Villas", "12,376"],
-        ["Costa Azul Heights", "8,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "2,705"],
-        ["Sierra Blanca Retreat", "1,321"],
-      ],
-      new: [
-        ["Golden Mile Residences", "28,202"],
-        ["Marbella Pearl Villas", "10,376"],
-        ["Costa Azul Heights", "18,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "2,705"],
-        ["Sierra Blanca Retreat", "1,321"],
-      ],
-    },
-  },
-  {
-    name: "Malaga",
-    count: "9,282 Properties",
-    items: {
-      buy: [
-        ["Golden Mile Residences", "9,282"],
-        ["Marbella Pearl Villas", "10,376"],
-        ["Costa Azul Heights", "7,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "3,705"],
-        ["Sierra Blanca Retreat", "5,321"],
-      ],
-      rent: [
-        ["Golden Mile Residences", "11,282"],
-        ["Marbella Pearl Villas", "12,376"],
-        ["Costa Azul Heights", "8,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "2,705"],
-        ["Sierra Blanca Retreat", "1,321"],
-      ],
-      new: [
-        ["Golden Mile Residences", "28,202"],
-        ["Marbella Pearl Villas", "10,376"],
-        ["Costa Azul Heights", "18,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "2,705"],
-        ["Sierra Blanca Retreat", "1,321"],
-      ],
-    },
-  },
-  {
-    name: "Fuengirola",
-    count: "9,282 Properties",
-    items: {
-      buy: [
-        ["Golden Mile Residences", "9,282"],
-        ["Marbella Pearl Villas", "10,376"],
-        ["Costa Azul Heights", "7,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "3,705"],
-        ["Sierra Blanca Retreat", "5,321"],
-      ],
-      rent: [
-        ["Golden Mile Residences", "11,282"],
-        ["Marbella Pearl Villas", "12,376"],
-        ["Costa Azul Heights", "8,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "2,705"],
-        ["Sierra Blanca Retreat", "1,321"],
-      ],
-      new: [
-        ["Golden Mile Residences", "28,202"],
-        ["Marbella Pearl Villas", "10,376"],
-        ["Costa Azul Heights", "18,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "2,705"],
-        ["Sierra Blanca Retreat", "1,321"],
-      ],
-    },
-  },
-  {
-    name: "Benalmadena",
-    count: "9,282 Properties",
-    items: {
-      buy: [
-        ["Golden Mile Residences", "9,282"],
-        ["Marbella Pearl Villas", "10,376"],
-        ["Costa Azul Heights", "7,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "3,705"],
-        ["Sierra Blanca Retreat", "5,321"],
-      ],
-      rent: [
-        ["Golden Mile Residences", "11,282"],
-        ["Marbella Pearl Villas", "12,376"],
-        ["Costa Azul Heights", "8,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "2,705"],
-        ["Sierra Blanca Retreat", "1,321"],
-      ],
-      new: [
-        ["Golden Mile Residences", "28,202"],
-        ["Marbella Pearl Villas", "10,376"],
-        ["Costa Azul Heights", "18,252"],
-        ["La Brisa Luxury Homes", "13,868"],
-        ["Marbella Bay Gardens", "2,705"],
-        ["Sierra Blanca Retreat", "1,321"],
-      ],
-    },
-  },
-];
-
 export default function ExploreRegions() {
   const [selectedButton, setSelectedButton] = useState<ListingType>("buy");
   const { sendMessage, isConnected } = useWebSocket();
   const dispatch = useDispatch();
+  const { mainReducer } = usePosterReducers()
   const router = useRouter();
+  const LIMIT = 10;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    if (isConnected) {
-      sendMessage("action", {
-        type: "locationService",
-        action: "areas_list",
-        payload: {
-          search: "",
-          limit: 4,
-          page: 1,
-          forSale: true
-        },
-      });
-    }
-  }, [isConnected]);
+    const container = scrollRef.current;
+
+    if (!container || isHovered) return;
+
+    const interval = setInterval(() => {
+      const isEnd =
+        container.scrollLeft + container.clientWidth >=
+        container.scrollWidth - 20;
+
+      if (isEnd) {
+        if (!loading) {
+          setLoading(true);
+
+          const nextPage = page + 1;
+
+          sendMessage("action", {
+            type: "locationService",
+            action: "areas_list",
+            payload: {
+              search: "",
+              limit: LIMIT,
+              page: nextPage,
+              forSale: true,
+            },
+          });
+
+          setPage(nextPage);
+
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
+        }
+
+        container.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
+      } else {
+        container.scrollBy({
+          left: container.clientWidth,
+          behavior: "smooth",
+        });
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [page, loading, isHovered]);
 
   const handleNavigate = (region: string) => {
     dispatch(clearBreadcrumbs());
@@ -209,11 +118,10 @@ export default function ExploreRegions() {
             <button
               key={i}
               onClick={() => setSelectedButton(tab?.value)}
-              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md  ${
-                tab?.value === selectedButton
-                  ? "bg-[#0F172A] text-white"
-                  : "text-slate-500 hover:bg-slate-100"
-              }`}
+              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md  ${tab?.value === selectedButton
+                ? "bg-[#0F172A] text-white"
+                : "text-slate-500 hover:bg-slate-100"
+                }`}
             >
               {tab?.label}
             </button>
@@ -221,8 +129,8 @@ export default function ExploreRegions() {
         </div>
 
         {/* CARDS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {regions.map((region, index) => (
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {mainReducer?.search_by_area?.data?.map((region: any, index: number) => (
             <div
               key={index}
               className="bg-white rounded-2xl p-6 shadow-sm flex flex-col"
@@ -232,23 +140,23 @@ export default function ExploreRegions() {
               </h3>
 
               <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider w-fit uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
-                {region.count}
+                {region.property_count}
               </span>
 
-              <ul className="space-y-3 flex-1">
-                {region?.items?.[selectedButton]?.map((item, i) => (
+              <ul className="space-y-2 flex-1">
+                {region?.areas?.slice(0, 11)?.map((item: any, i: number) => (
                   <li
                     key={i}
                     className="flex items-center justify-between text-sm text-[#64748B]"
                   >
                     <span className="flex items-center gap-2 font-manrope font-medium">
                       <ChevronRight className="w-4 h-4 text-[#64748B]" />
-                      {item[0]?.length > 23
-                        ? `${item[0]?.slice(0, 23)}...`
-                        : item[0]}
+                      {item?.name?.length > 23
+                        ? `${item?.name?.slice(0, 23)}...`
+                        : item?.name}
                     </span>
                     <span className="text-[#64748B] font-manrope font-medium">
-                      {item[1]}
+                      {item?.property_count}
                     </span>
                   </li>
                 ))}
@@ -262,6 +170,73 @@ export default function ExploreRegions() {
               </button>
             </div>
           ))}
+        </div> */}
+        <div
+          ref={scrollRef}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar py-2"
+        >
+          {mainReducer?.search_by_area?.data
+            ?.filter((region: any) => region?.areas?.length > 0)
+            ?.map((region: any, index: number) => (
+              <div
+                key={index}
+                className="
+          min-w-full
+          sm:min-w-[48%]
+          lg:min-w-[calc((100%-72px)/4)]
+          max-w-full
+          sm:max-w-[48%]
+          lg:max-w-[calc((100%-72px)/4)]
+          bg-white
+          rounded-2xl
+          p-6
+          shadow-sm
+          flex
+          flex-col
+          shrink-0
+        "
+              >
+                <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
+                  {region.name}
+                </h3>
+
+                <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider w-fit uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
+                  {region.property_count}
+                </span>
+
+                <ul className="space-y-2 flex-1">
+                  {region?.areas?.slice(0, 11)?.map(
+                    (item: any, i: number) => (
+                      <li
+                        key={i}
+                        className="flex items-center justify-between text-sm text-[#64748B]"
+                      >
+                        <span className="flex items-center gap-2 font-manrope font-medium">
+                          <ChevronRight className="w-4 h-4 text-[#64748B]" />
+
+                          {item?.name?.length > 23
+                            ? `${item?.name?.slice(0, 23)}...`
+                            : item?.name}
+                        </span>
+
+                        <span className="text-[#64748B] font-manrope font-medium">
+                          {item?.property_count}
+                        </span>
+                      </li>
+                    )
+                  )}
+                </ul>
+
+                <button
+                  onClick={() => handleNavigate(region?.name)}
+                  className="mt-6 bg-[#4A86E8] text-white py-2 font-manrope font-bold rounded-full text-sm transition"
+                >
+                  View all listings
+                </button>
+              </div>
+            ))}
         </div>
       </div>
     </section>

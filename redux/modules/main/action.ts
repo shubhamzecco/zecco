@@ -41,8 +41,17 @@ export const ActionTypes = {
   SET_USER_PACKAGE_LIST: 'SET_USER_PACKAGE_LIST',
   SET_PROPERTY_TYPE_LIST: 'SET_PROPERTY_TYPE_LIST',
   SET_PROPERTY_SUBTYPE_LIST: 'SET_PROPERTY_SUBTYPE_LIST',
-  SET_SAVED_SEARCHES_LIST: 'SET_SAVED_SEARCHES_LIST'
+  SET_SAVED_SEARCHES_LIST: 'SET_SAVED_SEARCHES_LIST',
+
+  SET_SEARCH_BY_AREA_LIST: 'SET_SEARCH_BY_AREA_LIST'
 };
+
+export const setSearchByArea = (payload : any) => {
+  return {
+    type: ActionTypes.SET_SEARCH_BY_AREA_LIST,
+    payload
+  }
+}
 
 export const setSavedSearchesList = (payload: any) => {
   return {
