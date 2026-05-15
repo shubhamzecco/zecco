@@ -26,18 +26,34 @@ export default function ExploreRegions() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
   useEffect(() => {
     const container = scrollRef.current;
 
     if (!container || isHovered) return;
 
+    const getScrollAmount = () => {
+      const width = window.innerWidth;
+      if (width < 640) {
+        return container.clientWidth;
+      }
+      return  (container.clientWidth - 72) / 4;;
+    };
+
     const interval = setInterval(() => {
+      const scrollAmount = getScrollAmount();
+
+      const maxScrollLeft =
+        container.scrollWidth - container.clientWidth;
+
       const isEnd =
-        container.scrollLeft + container.clientWidth >=
-        container.scrollWidth - 20;
+        container.scrollLeft + scrollAmount >= maxScrollLeft;
 
       if (isEnd) {
+        container.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
+
         if (!loading) {
           setLoading(true);
 
@@ -60,14 +76,9 @@ export default function ExploreRegions() {
             setLoading(false);
           }, 1000);
         }
-
-        container.scrollTo({
-          left: 0,
-          behavior: "smooth",
-        });
       } else {
         container.scrollBy({
-          left: container.clientWidth,
+          left: scrollAmount + 24,
           behavior: "smooth",
         });
       }
@@ -178,25 +189,21 @@ export default function ExploreRegions() {
           className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar py-2"
         >
           {mainReducer?.search_by_area?.data
-            ?.filter((region: any) => region?.areas?.length > 0)
             ?.map((region: any, index: number) => (
               <div
                 key={index}
                 className="
-          min-w-full
-          sm:min-w-[48%]
-          lg:min-w-[calc((100%-72px)/4)]
-          max-w-full
-          sm:max-w-[48%]
-          lg:max-w-[calc((100%-72px)/4)]
-          bg-white
-          rounded-2xl
-          p-6
-          shadow-sm
-          flex
-          flex-col
-          shrink-0
-        "
+flex-none
+w-full
+sm:w-[calc(50%-12px)]
+lg:w-[calc((100%-72px)/4)]
+bg-white
+rounded-2xl
+p-6
+shadow-sm
+flex
+flex-col
+"
               >
                 <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
                   {region.name}
