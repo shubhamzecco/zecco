@@ -25,6 +25,8 @@ interface MainLayoutProps {
     callBackPropertyType?: (value: string) => void; // callback
     propertyTypes?: string; // property types value
     handleSearch?: (value: string) => void;
+    savedSearch?: boolean
+    savedSearches?: () => void;
 }
 
 const HEADER_HEIGHT = 100       // h-16 (64px) + top spacing
@@ -44,7 +46,9 @@ const MainLayout = ({
     propertyTypes,
     callBackPropertyType,
     chatBotWidget = true,
-    handleSearch
+    handleSearch,
+    savedSearch,
+    savedSearches
 }: MainLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
@@ -110,6 +114,14 @@ const MainLayout = ({
                             )}
                         </div>
                         <div className="flex max-md:items-center justify-between max-md:w-full gap-5">
+                            {savedSearch && (
+                                <button
+                                    onClick={savedSearches}
+                                    className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md bg-blue_color text-white`}
+                                >
+                                    Save Searches
+                                </button>
+                            )}
                             {isPropertyType && (
                                 <div className="inline-flex gap-1 rounded-lg bg-[#E5E7EB] p-1 shrink-0">
                                     {TABS?.map((tab, i) => (
@@ -162,4 +174,4 @@ const MainLayout = ({
     )
 }
 
-export default MainLayout
+export default React.memo(MainLayout)

@@ -1,6 +1,8 @@
 'use client'
+import { URL } from '@/api/rest/fetchData'
 import { useWebSocket } from '@/api/socket/WebSocketContext'
 import { App_url } from '@/constant/static'
+import { IUserTypes } from '@/redux/modules/common/user_data'
 import { setLoginPopup } from '@/redux/modules/main/action'
 import { Mail, Phone } from 'lucide-react'
 import Image from 'next/image'
@@ -12,16 +14,18 @@ import { useDispatch } from 'react-redux'
 interface AgentCardProps {
   user_data?: {
     access_token?: string
+    user?: IUserTypes
   }
 }
 
 export function AgentCard({ user_data }: AgentCardProps) {
   const [contactMessage, setContactMessage] = useState('')
   const dispatch = useDispatch()
-  const { sendMessage, isConnected , lastEvent } = useWebSocket()
+  const { sendMessage, isConnected, lastEvent } = useWebSocket()
   const { id } = useParams()
 
   const isLoggedIn = !!user_data?.access_token
+  const agentAssign = isLoggedIn && user_data?.user?.agent
   const router = useRouter()
 
 
@@ -30,7 +34,7 @@ export function AgentCard({ user_data }: AgentCardProps) {
       type: "chatService",
       action: "create",
       payload: {
-        participants: '699ee20168b60e1beef07b22',
+        participants: agentAssign ? user_data?.user?.agent?.agent?._id : null,
         property_id: id,
         message: contactMessage
       }
@@ -47,33 +51,42 @@ export function AgentCard({ user_data }: AgentCardProps) {
     <div className="sticky top-24 bg-[#F7F8FC] border border-[#F3F4F6] rounded-lg p-6 mb-6 shadow-sm relative overflow-hidden">
       <div>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold">
+          <div className="relative overflow-hidden  w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold">
             <Image
-              src={App_url.image.profile}
+              src={agentAssign ? URL + (user_data?.user?.agent?.agent?.profile_image ?? '') : App_url.image.profile}
               alt="Agent Profile"
-              width={44}
-              height={44}
-              className="rounded-full object-cover"
+              fill
+              priority
+              className="object-cover"
             />
           </div>
-
           <div>
             <p className="text-xs text-[#64748B] font-manrope font-extrabold">
               Your appointed real estate agent
             </p>
 
             <p className="font-extrabold text-sm text-heading_text_color font-manrope">
-              Walter Haus Madrid
+             
+              {isLoggedIn
+              ? agentAssign
+                ? `${user_data?.user?.agent?.agent?.first_name || ""} ${user_data?.user?.agent?.agent?.last_name || ""}` : '' : ' Walter Haus Madrid'}
             </p>
           </div>
         </div>
 
         <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
-          <Phone className="w-4 h-4" /> {isLoggedIn ? "+44 7123 456789" : "+44*******789"}
+          <Phone className="w-4 h-4" /> {isLoggedIn ? agentAssign ? `${user_data?.user?.agent?.agent?.contact_no}` : "+44 7123 456789" : "+44*******789"}
         </p>
 
         <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
-          <Mail className="w-4 h-4" /> {isLoggedIn ? "johnsingh@gmail.com" : "*******@gmail.com"}
+          <Mail className="w-4 h-4" />
+          {
+            isLoggedIn
+              ? agentAssign
+                ? `${user_data?.user?.agent?.agent?.email || ""}`
+                : "johnsingh@gmail.com"
+              : "*******@gmail.com"
+          }
         </p>
 
         <div className="mb-4">

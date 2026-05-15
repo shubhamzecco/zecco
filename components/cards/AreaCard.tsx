@@ -7,6 +7,7 @@ import mainReducer from '@/redux/modules/main/reducer'
 import { ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 
 interface AreaCardProps {
@@ -17,13 +18,13 @@ interface AreaCardProps {
   onNavigate?: () => void;
 }
 
-export default function AreaCard({
+ const AreaCard = ({
   id,
   name,
   image,
   description,
   onNavigate
-}: AreaCardProps) {
+}: AreaCardProps) => {
   const router = useRouter()
   const dispatch = useDispatch()
   const { mainReducer } = usePosterReducers() 
@@ -71,3 +72,5 @@ export default function AreaCard({
     </div>
   )
 }
+
+export default React.memo(AreaCard)

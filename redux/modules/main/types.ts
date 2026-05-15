@@ -738,4 +738,5 @@ export interface IMainResponse {
   user_package_list:  IUserPackagePayment[] | null;
   property_type_list: IPropertyType[] | null;
   property_subtype_list: IPropertyType[] | null;
+  saved_searches : any
 }

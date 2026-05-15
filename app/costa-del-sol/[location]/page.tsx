@@ -84,29 +84,26 @@ const Page = () => {
     });
   };
 
-  useEffect(() => {
-    if (!isConnected) return;
-    sendMessage("action", {
-      type: "propertyService",
-      action: "list",
-      payload: {
-        limit: LIMIT,
-        page: page,
-        search: "",
-        cities: Number(id?.location),
-        country: 6,
-        categories: propertyTypes ? Number(propertyTypes) : 1,
-        ...(propertyType === "buy" && { forSale: true, sold: false }),
-        ...(propertyType === "rent" && {
-          forRent: true,
-          rented: false,
-          forSale: false,
-        }),
-        ...(propertyType === "new" && { isNewDev: true, forSale: true }),
-      },
-    });
-    setPage(1);
-  }, [id, propertyType]);
+    useEffect(() => {
+        if (!isConnected) return;
+        sendMessage("action", {
+            type: "propertyService",
+            action: "list",
+            payload: {
+                limit: LIMIT,
+                page: page,
+                search: "",
+                cities: Number(id?.location),
+                country: 6,
+                categories: propertyTypes ? Number(propertyTypes) : null,
+                ...(propertyType === 'buy' && { forSale: true, sold: false }),
+                ...(propertyType === 'rent' && { forRent: true, rented: false, forSale: false }),
+                ...(propertyType === 'new' && { isNewDev: true, forSale: true }),
+            },
+        });
+        setPage(1);
+
+    }, [isConnected, propertyType]);
 
   useEffect(() => {
     if (
@@ -149,44 +146,52 @@ const Page = () => {
     }
   }, []);
 
-  return (
-    <MainLayout
-      isBreadcrumb
-      isFilter
-      isPropertyType
-      isProperty
-      propertyTypes={propertyTypes}
-      callBackPropertyType={(value) => {
-        setPropertyTypes(value);
-        setPage(1);
-      }}
-      propertyCount={propertyList?.length}
-      propertyType={propertyType}
-      onPropertyTypeChange={(data: PropertyType) => {
-        sendMessage("action", {
-          type: "propertyService",
-          action: "list",
-          payload: {
-            ...filterData,
-            ...(data === "buy" && { forSale: true, sold: false }),
-            ...(data === "rent" && {
-              forRent: true,
-              rented: false,
-              forSale: false,
-            }),
-            ...(data === "new" && { isNewDev: true, forSale: true }),
-          },
-        });
-        setPropertyType(data);
-      }}
-    >
-      <div className="lg:mx-7 lg:pb-10 px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-4 lg:hidden">
-          <div>
-            <p className="font-manrope block lg:hidden font-semibold text-black">
-              {propertyList?.length} results in drawn area
-            </p>
-          </div>
+    const handleSavedSearches = () => {
+        sendMessage('action', {
+            type: "savedSearchService",
+            action: "add",
+            payload: {
+                ...filterData
+            }
+        })
+    }
+    return (
+        <MainLayout
+            isBreadcrumb
+            isFilter
+            isPropertyType
+            isProperty
+            propertyTypes={propertyTypes}
+            callBackPropertyType={(value) => {
+                setPropertyTypes(value);
+                setPage(1);
+            }}
+            propertyCount={propertyList?.length}
+            propertyType={propertyType}
+            onPropertyTypeChange={(data: PropertyType) => {
+                sendMessage("action", {
+                    type: "propertyService",
+                    action: "list",
+                    payload: {
+                        ...filterData,
+                        ...(data === 'buy' && { forSale: true, sold: false }),
+                        ...(data === 'rent' && { forRent: true, rented: false, forSale: false }),
+                        ...(data === 'new' && { isNewDev: true, forSale: true }),
+                    }
+                });
+                setPropertyType(data)
+            }}
+            savedSearch={Object.keys(filterData || {}).length > 0}
+            savedSearches={handleSavedSearches}
+        >
+            <div className="lg:mx-7 lg:pb-10 px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center mb-4 lg:hidden">
+                    <div>
+                        <p className="font-manrope block lg:hidden font-semibold text-black">
+                            {propertyList?.length} results
+                            in drawn area
+                        </p>
+                    </div>
 
           <button
             onClick={() => setIsFilterOpen(true)}
@@ -197,37 +202,49 @@ const Page = () => {
           </button>
         </div>
 
-        <div className="flex items-start gap-4">
-          <div
-            className="hidden lg:block sticky top-28 min-w-[300px]"
-            style={{
-              height: gridHeight ? `${gridHeight}px` : "100%",
-              maxHeight: "calc(100vh - 120px)",
-              overflowY: "auto",
-            }}
-          >
-            <FilterPanel onFilterChange={handleFilterChange} />
-          </div>
-          <div
-            ref={gridRef}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full"
-          >
-            {propertyList?.map((property) => (
-              <PropertyCard
-                property={property}
-                key={property.id}
-                {...property}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-      <div
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${
-          isFilterOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={() => setIsFilterOpen(false)}
-      />
+                <div className="flex items-start gap-4">
+                    <div
+                        className="hidden lg:block sticky top-28 min-w-[300px]"
+                        style={{
+                            height: gridHeight
+                                ? `${gridHeight}px`
+                                : "100%",
+                            maxHeight:
+                                "calc(100vh - 120px)",
+                            overflowY: "auto",
+                        }}
+                    >
+                        <FilterPanel
+                            onFilterChange={
+                                handleFilterChange
+                            }
+                        />
+                    </div>
+                    <div
+                        ref={gridRef}
+                        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 w-full"
+                    >
+                        {propertyList?.map(
+                            (property) => (
+                                <PropertyCard
+                                    property={property}
+                                    key={property.id}
+                                    {...property}
+                                />
+                            )
+                        )}
+                    </div>
+                </div>
+            </div>
+            <div
+                className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${isFilterOpen
+                    ? "opacity-100 visible"
+                    : "opacity-0 invisible"
+                    }`}
+                onClick={() =>
+                    setIsFilterOpen(false)
+                }
+            />
 
       {/* MOBILE FILTER DRAWER */}
 
