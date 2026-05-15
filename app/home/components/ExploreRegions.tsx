@@ -26,6 +26,32 @@ export default function ExploreRegions() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [areasData, setAreasData] = useState<any[]>([]);
+  const loadedPages = useRef<Set<number>>(new Set());
+
+  const fetchAreas = (nextPage: number) => {
+  // prevent duplicate api call
+  if (loading || loadedPages.current.has(nextPage)) return;
+
+  setLoading(true);
+
+  loadedPages.current.add(nextPage);
+
+  sendMessage("action", {
+    type: "locationService",
+    action: "areas_list",
+    payload: {
+      search: "",
+      limit: LIMIT,
+      page: nextPage,
+      forSale: true,
+    },
+  });
+
+  setPage(nextPage);
+};
+
   useEffect(() => {
     const container = scrollRef.current;
 
@@ -36,7 +62,7 @@ export default function ExploreRegions() {
       if (width < 640) {
         return container.clientWidth;
       }
-      return  (container.clientWidth - 72) / 4;;
+      return (container.clientWidth - 72) / 4;;
     };
 
     const interval = setInterval(() => {
@@ -45,37 +71,20 @@ export default function ExploreRegions() {
       const maxScrollLeft =
         container.scrollWidth - container.clientWidth;
 
-      const isEnd =
-        container.scrollLeft + scrollAmount >= maxScrollLeft;
+      const remaining =
+        maxScrollLeft - container.scrollLeft;
 
-      if (isEnd) {
+      // hit api when only 1 card pending
+      if (remaining <= scrollAmount * 1.2) {
+        fetchAreas(page + 1);
+      }
+
+      // reset after end
+      if (container.scrollLeft >= maxScrollLeft) {
         container.scrollTo({
           left: 0,
           behavior: "smooth",
         });
-
-        if (!loading) {
-          setLoading(true);
-
-          const nextPage = page + 1;
-
-          sendMessage("action", {
-            type: "locationService",
-            action: "areas_list",
-            payload: {
-              search: "",
-              limit: LIMIT,
-              page: nextPage,
-              forSale: true,
-            },
-          });
-
-          setPage(nextPage);
-
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        }
       } else {
         container.scrollBy({
           left: scrollAmount + 24,
@@ -86,6 +95,26 @@ export default function ExploreRegions() {
 
     return () => clearInterval(interval);
   }, [page, loading, isHovered]);
+
+  useEffect(() => {
+    const latestData = mainReducer?.search_by_area?.data || [];
+
+    if (latestData?.length > 0) {
+      setAreasData((prev) => {
+        const existingIds = new Set(
+          prev.map((item: any) => item?.name)
+        );
+
+        const newItems = latestData.filter(
+          (item: any) => !existingIds.has(item?.name)
+        );
+
+        return [...prev, ...newItems];
+      });
+
+      setLoading(false);
+    }
+  }, [mainReducer?.search_by_area?.data]);
 
   const handleNavigate = (region: string) => {
     dispatch(clearBreadcrumbs());
@@ -107,6 +136,30 @@ export default function ExploreRegions() {
     { label: "Rent", value: "rent" },
     { label: "New", value: "new" },
   ];
+
+  const handleScroll = () => {
+    const container = scrollRef.current;
+
+    if (!container || loading) return;
+
+    const scrollAmount =
+      window.innerWidth < 640
+        ? container.clientWidth
+        : window.innerWidth < 1024
+          ? container.clientWidth / 2
+          : (container.clientWidth - 72) / 4;
+
+    const maxScrollLeft =
+      container.scrollWidth - container.clientWidth;
+
+    const remaining =
+      maxScrollLeft - container.scrollLeft;
+
+    // if only last card pending
+    if (remaining <= scrollAmount * 1.2) {
+      fetchAreas(page + 1);
+    }
+  };
 
   return (
     <section className="bg-[#F8FAFC] py-14">
@@ -138,57 +191,14 @@ export default function ExploreRegions() {
             </button>
           ))}
         </div>
-
-        {/* CARDS */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {mainReducer?.search_by_area?.data?.map((region: any, index: number) => (
-            <div
-              key={index}
-              className="bg-white rounded-2xl p-6 shadow-sm flex flex-col"
-            >
-              <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
-                {region.name}
-              </h3>
-
-              <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider w-fit uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
-                {region.property_count}
-              </span>
-
-              <ul className="space-y-2 flex-1">
-                {region?.areas?.slice(0, 11)?.map((item: any, i: number) => (
-                  <li
-                    key={i}
-                    className="flex items-center justify-between text-sm text-[#64748B]"
-                  >
-                    <span className="flex items-center gap-2 font-manrope font-medium">
-                      <ChevronRight className="w-4 h-4 text-[#64748B]" />
-                      {item?.name?.length > 23
-                        ? `${item?.name?.slice(0, 23)}...`
-                        : item?.name}
-                    </span>
-                    <span className="text-[#64748B] font-manrope font-medium">
-                      {item?.property_count}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                onClick={() => handleNavigate(region?.name)}
-                className="mt-6 bg-[#4A86E8] text-white py-2 font-manrope font-bold rounded-full text-sm transition"
-              >
-                View all listings
-              </button>
-            </div>
-          ))}
-        </div> */}
         <div
           ref={scrollRef}
+          onScroll={handleScroll}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar py-2"
         >
-          {mainReducer?.search_by_area?.data
+          {areasData
             ?.map((region: any, index: number) => (
               <div
                 key={index}
