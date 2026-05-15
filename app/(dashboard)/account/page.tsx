@@ -20,7 +20,6 @@ const AccountPackagePage = () => {
         })
     }, [isConnected])
 
-    console.log("mainReducer?.user_package_list?.data ::: " , mainReducer?.user_package_list)
 
     return (
         <SidebarLayout>

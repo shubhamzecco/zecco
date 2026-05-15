@@ -1,11 +1,10 @@
-import { App_url } from '@/constant/static'
-import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
-import { ChevronRight } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-
-
+import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { App_url } from "@/constant/static";
+import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+import { ChevronRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 type ListingType = "buy" | "rent" | "new";
 
@@ -145,23 +144,43 @@ const regions: Region[] = [
       ],
     },
   },
-]
+];
 
 export default function ExploreRegions() {
   const [selectedButton, setSelectedButton] = useState<ListingType>("buy");
+  const { sendMessage, isConnected } = useWebSocket();
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  const dispatch = useDispatch()
-  const router = useRouter()
+  useEffect(() => {
+    if (isConnected) {
+      sendMessage("action", {
+        type: "locationService",
+        action: "areas_list",
+        payload: {
+          search: "",
+          limit: 4,
+          page: 1,
+          forSale: true
+        },
+      });
+    }
+  }, [isConnected]);
 
   const handleNavigate = (region: string) => {
-    dispatch(clearBreadcrumbs())
-    dispatch(setBreadcrumbs([
-      { label: "Home", href: "/" },
-      { label: "Costa del Sol areas and Cities", href: App_url.link.COSTA_DEL_SOL },
-      { label: region, href: `${App_url.link.COSTA_DEL_SOL}/${region}` },
-    ]))
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${region}`)
-  }
+    dispatch(clearBreadcrumbs());
+    dispatch(
+      setBreadcrumbs([
+        { label: "Home", href: "/" },
+        {
+          label: "Costa del Sol areas and Cities",
+          href: App_url.link.COSTA_DEL_SOL,
+        },
+        { label: region, href: `${App_url.link.COSTA_DEL_SOL}/${region}` },
+      ]),
+    );
+    router.push(`${App_url.link.COSTA_DEL_SOL}/${region}`);
+  };
 
   const TABS: { label: string; value: ListingType }[] = [
     { label: "Buy", value: "buy" },
@@ -179,7 +198,8 @@ export default function ExploreRegions() {
           </h2>
 
           <p className="text-slate_gray font-medium font-manrope text-md max-w-lg mt-4 md:mt-0">
-            Navigate through Spain's most iconic provinces and find the municipality that fits your lifestyle.
+            Navigate through Spain's most iconic provinces and find the
+            municipality that fits your lifestyle.
           </p>
         </div>
 
@@ -189,10 +209,11 @@ export default function ExploreRegions() {
             <button
               key={i}
               onClick={() => setSelectedButton(tab?.value)}
-              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md  ${tab?.value === selectedButton
-                ? "bg-[#0F172A] text-white"
-                : "text-slate-500 hover:bg-slate-100"
-                }`}
+              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md  ${
+                tab?.value === selectedButton
+                  ? "bg-[#0F172A] text-white"
+                  : "text-slate-500 hover:bg-slate-100"
+              }`}
             >
               {tab?.label}
             </button>
@@ -222,14 +243,21 @@ export default function ExploreRegions() {
                   >
                     <span className="flex items-center gap-2 font-manrope font-medium">
                       <ChevronRight className="w-4 h-4 text-[#64748B]" />
-                      {item[0]?.length > 23 ? `${item[0]?.slice(0, 23)}...` : item[0]}
+                      {item[0]?.length > 23
+                        ? `${item[0]?.slice(0, 23)}...`
+                        : item[0]}
                     </span>
-                    <span className="text-[#64748B] font-manrope font-medium">{item[1]}</span>
+                    <span className="text-[#64748B] font-manrope font-medium">
+                      {item[1]}
+                    </span>
                   </li>
                 ))}
               </ul>
 
-              <button onClick={() => handleNavigate(region?.name)} className="mt-6 bg-[#4A86E8] text-white py-2 font-manrope font-bold rounded-full text-sm transition">
+              <button
+                onClick={() => handleNavigate(region?.name)}
+                className="mt-6 bg-[#4A86E8] text-white py-2 font-manrope font-bold rounded-full text-sm transition"
+              >
                 View all listings
               </button>
             </div>
@@ -237,5 +265,5 @@ export default function ExploreRegions() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -39,7 +39,6 @@ export function AgentCard({ user_data }: AgentCardProps) {
 
   useEffect(() => {
     if (lastEvent?.data?.status && lastEvent?.data?.request?.type === 'chatService' && (lastEvent?.data?.request?.action === 'create')) {
-      console.log('Chat Created with ID:', lastEvent);
       router.push(`${App_url.link.MESSAGE}`)
     }
   }, [lastEvent])

@@ -38,7 +38,6 @@ const CostadelSol = () => {
         })
     }
 
-    console.log("mainReducer?.breadcrumbs?.length ::: " , mainReducer?.breadcrumbs?.length)
       useEffect(() => {
             if (mainReducer?.breadcrumbs?.length === 3) {
                 const breadcrumbsWithoutLast = mainReducer.breadcrumbs?.slice(0, -1) || []

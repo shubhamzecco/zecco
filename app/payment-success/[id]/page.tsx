@@ -23,7 +23,6 @@ const PaymentSuccess = () => {
       if (response?.status === 200) {
         if (response.success) {
           // window.location.href = response.data.checkoutUrl;
-          console.log("Payment Status:", response);
           setPaymentData(response);
         }
       } else {
