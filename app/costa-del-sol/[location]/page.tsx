@@ -85,7 +85,7 @@ const Page = () => {
         });
         setPage(1);
 
-    }, [id,propertyType]);
+    }, [isConnected, propertyType]);
 
     useEffect(() => {
         if (
@@ -128,6 +128,15 @@ const Page = () => {
         }
     }, [])
 
+    const handleSavedSearches = () => {
+        sendMessage('action', {
+            type: "savedSearchService",
+            action: "add",
+            payload: {
+                ...filterData
+            }
+        })
+    }
     return (
         <MainLayout
             isBreadcrumb
@@ -154,6 +163,8 @@ const Page = () => {
                 });
                 setPropertyType(data)
             }}
+            savedSearch={Object.keys(filterData || {}).length > 0}
+            savedSearches={handleSavedSearches}
         >
             <div className="lg:mx-7 lg:pb-10 px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center mb-4 lg:hidden">
@@ -189,7 +200,6 @@ const Page = () => {
                     >
                         <FilterPanel
                             onFilterChange={
-
                                 handleFilterChange
                             }
                         />

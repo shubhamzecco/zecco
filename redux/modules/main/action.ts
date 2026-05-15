@@ -39,9 +39,17 @@ export const ActionTypes = {
   SET_USER_CHAT_LIST: 'SET_USER_CHAT_LIST',
   SET_USER_CHAT_MESSAGES: 'SET_USER_CHAT_MESSAGES',
   SET_USER_PACKAGE_LIST: 'SET_USER_PACKAGE_LIST',
-  SET_PROPERTY_TYPE_LIST : 'SET_PROPERTY_TYPE_LIST',
-  SET_PROPERTY_SUBTYPE_LIST : 'SET_PROPERTY_SUBTYPE_LIST',
+  SET_PROPERTY_TYPE_LIST: 'SET_PROPERTY_TYPE_LIST',
+  SET_PROPERTY_SUBTYPE_LIST: 'SET_PROPERTY_SUBTYPE_LIST',
+  SET_SAVED_SEARCHES_LIST: 'SET_SAVED_SEARCHES_LIST'
 };
+
+export const setSavedSearchesList = (payload: any) => {
+  return {
+    type: ActionTypes.SET_SAVED_SEARCHES_LIST,
+    payload
+  }
+}
 
 export const setPropertySubtypeList = (payload: any) => {
   return {

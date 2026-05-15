@@ -12,6 +12,7 @@ import {
     Shield,
     ShieldCheck
 } from 'lucide-react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
 const icons = [
@@ -105,5 +106,4 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         </div>
     )
 }
-
-export default PackageCard;
+export default React.memo(PackageCard)

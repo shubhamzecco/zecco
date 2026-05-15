@@ -163,6 +163,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 /* ================= AGENT CARD (UNCHANGED) ================= */
 function AgentCard() {
     const router = useRouter();
+    const { user_data } = usePosterReducers()
     return (
         <>
             <p className="font-inter max-md:text-md text-[0.95rem] font-semibold text-[#111827] mb-3">
@@ -170,20 +171,20 @@ function AgentCard() {
             </p>
 
             <div className="bg-gradient-to-br from-[#E9EBEF] to-[#E9EBEF] rounded-2xl p-4 text-center">
-                <div className="border-2 border-white rounded-full w-16 h-16 mx-auto mb-4">
+                <div className="relative overflow-hidden border-2 border-white rounded-full w-16 h-16 mx-auto mb-4">
                     <Image
-                        src={App_url.image.profile}
+                        src={URL + (user_data?.user?.agent?.agent?.profile_image ?? '')}
                         alt="Agent"
-                        width={60}
-                        height={60}
-                        className="rounded-full mx-auto"
+                        fill
+                        priority
+                        className="object-cover"
                     />
                 </div>
                 <p className="text-[15px] font-inter font-semibold text-[#101828] my-1">
-                    John Wick
+                    {user_data?.user?.agent?.agent?.first_name + " " + user_data?.user?.agent?.agent?.last_name}
                 </p>
                 <p className="text-[14px] font-inter font-semibold text-[#101828] my-1">
-                    +34 612 345 678
+                    {user_data?.user?.agent?.agent?.contact_no}
                 </p>
                 <p className="text-[14px] font-inter font-semibold text-[#101828] my-1">
                     Website: <span className="underline cursor-pointer">zecco.es</span>

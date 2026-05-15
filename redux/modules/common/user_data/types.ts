@@ -29,7 +29,36 @@ export interface IPackage {
   purchasedAt:string
 }
 
+interface Agent {
+  _id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  contact_no: string;
+  status: boolean;
+  user_type: string;
+  verified: boolean;
+  registerCode: number;
+  createdAt: string;
+  updatedAt: string;
+  verificationCode: string | null;
+  password: string;
+  verificationCodeExpiry: string | null;
+  profile_image: string;
+}
+
+interface AssignedAgent {
+  _id: string;
+  agent: Agent;
+  client: string;
+  assigned_date: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface IUserTypes {
+  agent : AssignedAgent;
   contact_no: string;
   last_name: string;
   first_name: string;
