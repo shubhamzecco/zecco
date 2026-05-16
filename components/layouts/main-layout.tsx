@@ -10,7 +10,7 @@ import ChatbotWidget from '../chat/chatbot-widget'
 import { useWebSocket } from '@/api/socket/WebSocketContext'
 import { usePosterReducers } from '@/redux/getdata/usePostReducer'
 
-type PropertyType = "buy" | "rent" | "new";
+type PropertyType = "buy" | "rent" | "new" | "all";
 interface MainLayoutProps {
     children: React.ReactNode
     isBreadcrumb?: boolean
@@ -27,6 +27,7 @@ interface MainLayoutProps {
     handleSearch?: (value: string) => void;
     savedSearch?: boolean
     savedSearches?: () => void;
+    placeholder?:string
 }
 
 const HEADER_HEIGHT = 100       // h-16 (64px) + top spacing
@@ -48,7 +49,8 @@ const MainLayout = ({
     chatBotWidget = true,
     handleSearch,
     savedSearch,
-    savedSearches
+    savedSearches,
+    placeholder
 }: MainLayoutProps) => {
     const pathname = usePathname()
     const router = useRouter()
@@ -70,6 +72,7 @@ const MainLayout = ({
 
 
     const TABS: { label: string; value: PropertyType }[] = [
+         { label: "All", value: "all" },
         { label: "Buy", value: "buy" },
         { label: "Rent", value: "rent" },
         { label: "New", value: "new" },
@@ -97,7 +100,7 @@ const MainLayout = ({
                                 />
                                 <input
                                     type="text"
-                                    placeholder="Search by area"
+                                    placeholder={`Search by ${placeholder ? placeholder : "area"}`}
                                     className="w-full lg:max-w-[27rem] bg-[#fcfcfc] placeholder:font-manrope font-normal placeholder:text-[#999999] h-9 pl-10 pr-4 rounded-[7px] border border-gray-300 
                                      focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     onKeyDown={(e) => {

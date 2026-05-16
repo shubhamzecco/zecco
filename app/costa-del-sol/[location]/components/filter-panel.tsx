@@ -453,7 +453,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
             {mainReducer?.property_subtype_list?.map((item) => (
               <div key={item.id} className="flex items-center space-x-3">
                 <Checkbox
-                  id={item.id}
+                  id={String(item.id)}
                   checked={filters.types[item.id] || false}
                   onCheckedChange={(checked) =>
                     handleCheckboxChange("types", item.id, checked as boolean)
