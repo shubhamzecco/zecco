@@ -18,7 +18,7 @@ interface AreaCardProps {
   onNavigate?: () => void;
 }
 
- const AreaCard = ({
+const AreaCard = ({
   id,
   name,
   image,
@@ -27,7 +27,7 @@ interface AreaCardProps {
 }: AreaCardProps) => {
   const router = useRouter()
   const dispatch = useDispatch()
-  const { mainReducer } = usePosterReducers() 
+  const { mainReducer } = usePosterReducers()
   const handleClick = () => {
     if (onNavigate) {
       onNavigate()
@@ -41,6 +41,7 @@ interface AreaCardProps {
   }
 
 
+  console.log("image",image)
   return (
     <div
       className={`relative group rounded-2xl overflow-hidden shadow-md hover:shadow-xl h-[500px] transition-all cursor-pointer`}
@@ -49,7 +50,7 @@ interface AreaCardProps {
       {/* Image */}
       {image && (
         <Image
-          src={URL + image || "/placeholder.svg"}
+          src={URL + image || App_url?.image?.image_1}
           alt={name}
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-500"
