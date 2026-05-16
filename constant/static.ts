@@ -81,7 +81,10 @@ export const App_url = {
     CONTACT_US: '/contact-us',
     ABOUT_ZECCO: '/about-zecco',
     PROFILE: '/profile',
-    MESSAGE: '/messages'
+    MESSAGE: '/messages',
+    DRAW_AREA : '/draw-area',
+    NEAR_BY_LOCATIONS : '/near-by-locations',
+    SELECT_AREA : '/select-area'
   },
   endpoint_url: {
     GET_AUTH_USER : '/api/user',

@@ -1,6 +1,8 @@
 'use client'
 
+import { App_url } from '@/constant/static'
 import { ChevronDown, MapPin, Search, Sparkles, Pencil } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 export default function PropertySearchBar() {
@@ -8,6 +10,7 @@ export default function PropertySearchBar() {
   const [buttonActivate, setButtonActivate] = useState('buy')
   const [open, setOpen] = useState(false)
   const [selected, setSelected] = useState("Housing")
+  const router = useRouter()
 
   // 👇 search dropdown state
   const [searchDropdown, setSearchDropdown] = useState(false)
@@ -143,6 +146,7 @@ export default function PropertySearchBar() {
             <div className="absolute top-[110%] left-0 w-full bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
               
               <button
+                onClick={() => router.push(App_url.link.SELECT_AREA)}
                 className="w-full flex items-center gap-3 px-5 py-4 hover:bg-slate-50 transition text-left"
               >
                 <MapPin size={18} className="text-sky_blue_color" />
@@ -159,6 +163,7 @@ export default function PropertySearchBar() {
               </button>
 
               <button
+              onClick={() => router.push(App_url.link.DRAW_AREA)}
                 className="w-full flex items-center gap-3 px-5 py-4 hover:bg-slate-50 transition border-t"
               >
                 <Pencil size={18} className="text-sky_blue_color" />
@@ -175,6 +180,7 @@ export default function PropertySearchBar() {
               </button>
 
               <button
+                onClick={() => router.push(App_url.link.NEAR_BY_LOCATIONS)}
                 className="w-full flex items-center gap-3 px-5 py-4 hover:bg-slate-50 transition border-t"
               >
                 <Search size={18} className="text-sky_blue_color" />
