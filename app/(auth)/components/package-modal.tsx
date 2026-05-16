@@ -76,7 +76,7 @@ export default function PackagesModal({
           window.location.href = response.data.checkoutUrl;
         }
       } else {
-        console.log("error", response?.data?.message);
+        toast.error(response?.message);
       }
     });
   };

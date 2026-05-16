@@ -26,7 +26,7 @@ const PaymentSuccess = () => {
           setPaymentData(response);
         }
       } else {
-        console.log("error", response?.data?.message);
+        setPaymentData(null);
       }
     });
   }, [])

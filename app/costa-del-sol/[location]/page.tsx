@@ -14,7 +14,7 @@ import {
 } from "@/redux/modules/main/action";
 import { useParams } from "next/navigation";
 
-type PropertyType = "buy" | "rent" | "new";
+type PropertyType = "buy" | "rent" | "new" | "all";
 
 const LIMIT = 18;
 
@@ -28,7 +28,7 @@ const Page = () => {
         useState(false);
 
     const [propertyType, setPropertyType] =
-        useState<PropertyType>("buy");
+        useState<PropertyType>("all");
 
     const [propertyTypes, setPropertyTypes] =
         useState("");
@@ -109,6 +109,7 @@ const Page = () => {
                 ...(propertyType === "buy" && {
                     forSale: true,
                     sold: false,
+                     forRent: false,
                 }),
 
                 ...(propertyType === "rent" && {
@@ -339,9 +340,6 @@ const Page = () => {
         filterData,
     ]);
 
-    // ==========================================
-    // FAVORITE REFRESH
-    // ==========================================
     useEffect(() => {
         if (
             lastEvent?.data?.status &&
@@ -365,9 +363,6 @@ const Page = () => {
         }
     }, [lastEvent]);
 
-    // ==========================================
-    // OTHER EFFECTS
-    // ==========================================
     useEffect(() => {
         dispatch(setPropertyDetails(null));
     }, []);
@@ -391,9 +386,6 @@ const Page = () => {
         }
     }, []);
 
-    // ==========================================
-    // SAVE SEARCH
-    // ==========================================
     const handleSavedSearches =
         () => {
             sendMessage("action", {
