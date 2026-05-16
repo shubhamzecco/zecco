@@ -29,7 +29,7 @@ interface PropertyCardProps {
   property: IProperty
   onLikeToggle?: () => void;
 }
- const PropertyCard = ({
+const PropertyCard = ({
   aiInsights = false,
   property,
 }: PropertyCardProps) => {
@@ -203,7 +203,7 @@ interface PropertyCardProps {
         </button>
 
         <div className="absolute bottom-4 left-3 bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915] font-manrope">
-          {property?.isSale ? 'For Sale' : property?.isRent ? 'For Rent' : ''}
+          {property?.isSale && property?.isRent ? 'Rent / Sale' : property?.isSale ? 'For Sale' : property?.isRent ? 'For Rent' : ''}
         </div>
         {property?.propertyImages?.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
@@ -225,7 +225,7 @@ interface PropertyCardProps {
       <div className="space-y-1 py-3">
         <div className="flex items-center justify-between">
           <p className="text-md font-manrope font-bold text-[#727272]">
-            €{property?.salePrice ?? property?.rentalPrice}
+            €{property?.isSale && property?.isRent ? `Rent : ${property?.rentalPrice} Sale : ${property?.salePrice}` : property?.isSale ? property?.salePrice : property?.isRent ? property?.rentalPrice : 0}
           </p>
           {aiInsights && (
             <p className="underline text-[#2563EB] font-manrope font-bold text-sm">
