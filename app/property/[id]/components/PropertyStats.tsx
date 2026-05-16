@@ -1,5 +1,5 @@
 import { IProperty, Property } from "@/redux/modules/main/types";
-import { Square, BedDouble, Bath, ArrowUp, Scan, ArrowUpFromLine } from "lucide-react";
+import { Square, BedDouble, Bath, ArrowUp, Scan, ArrowUpFromLine, LandPlot, SquareActivity, ChartColumnDecreasing } from "lucide-react";
 
 interface PropertyStats {
   property: IProperty;
@@ -66,6 +66,54 @@ export default function PropertyStats({ property }: PropertyStats) {
               </p>
               <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
                 Exterior with lift
+              </p>
+            </div>
+          </div>
+        )}
+
+        {property?.mtsInterior && (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-md">
+              <ChartColumnDecreasing className="w-5 h-5 text-[#475569]" />
+            </div>
+            <div>
+              <p className="text-sm font-manrope font-bold text-[#111827]">
+                {property?.mtsInterior} /m²
+              </p>
+              <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
+                Interior area
+              </p>
+            </div>
+          </div>
+        )}
+
+        {property?.mtsTerrace && (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-md">
+              <SquareActivity className="w-5 h-5 text-[#475569]" />
+            </div>
+            <div>
+              <p className="text-sm font-manrope font-bold text-[#111827]">
+                {property?.mtsTerrace} /m²
+              </p>
+              <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
+                Terrace  area
+              </p>
+            </div>
+          </div>
+        )}
+
+        {property?.mtsPlot && (
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-white shadow-md">
+              <LandPlot className="w-5 h-5 text-[#475569]" />
+            </div>
+            <div>
+              <p className="text-sm font-manrope font-bold text-[#111827]">
+                {property?.mtsPlot} /m²
+              </p>
+              <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
+                Plot area
               </p>
             </div>
           </div>

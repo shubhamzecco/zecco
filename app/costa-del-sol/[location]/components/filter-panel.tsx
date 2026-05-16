@@ -39,7 +39,7 @@ type CheckboxGroup =
   | "multimedia"
   | "publicationDate";
 
-const filterList = [
+export const filterList = [
   { id: 1, label: "Front line golf", value: "FrontLineGolf" },
   { id: 2, label: "Front line beach", value: "FrontLineBeach" },
   { id: 3, label: "Mountainside", value: "MountaInSide" },
