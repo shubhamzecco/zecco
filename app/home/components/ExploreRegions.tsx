@@ -31,26 +31,38 @@ export default function ExploreRegions() {
   const loadedPages = useRef<Set<number>>(new Set());
 
   const fetchAreas = (nextPage: number) => {
-  // prevent duplicate api call
-  if (loading || loadedPages.current.has(nextPage)) return;
+    if (loading || loadedPages.current.has(nextPage)) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  loadedPages.current.add(nextPage);
+    loadedPages.current.add(nextPage);
 
-  sendMessage("action", {
-    type: "locationService",
-    action: "areas_list",
-    payload: {
-      search: "",
-      limit: LIMIT,
-      page: nextPage,
-      forSale: true,
-    },
-  });
+    sendMessage("action", {
+      type: "locationService",
+      action: "areas_list",
+      payload: {
+        search: "",
+        limit: LIMIT,
+        page: nextPage,
+        forSale: selectedButton === 'buy' ? true : false,
+        forRent: selectedButton === 'rent' ? true : false,
+        isNewDev: selectedButton === 'new' ? true : false
+      },
+    });
 
-  setPage(nextPage);
-};
+    setPage(nextPage);
+  };
+
+  useEffect(() => {
+    setAreasData([]);
+    setPage(1);
+    loadedPages.current.clear();
+    scrollRef.current?.scrollTo({
+      left: 0,
+      behavior: "smooth",
+    });
+    fetchAreas(1);
+  }, [selectedButton]);
 
   useEffect(() => {
     const container = scrollRef.current;
