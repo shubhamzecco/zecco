@@ -26,17 +26,14 @@ interface PropertyCardProps {
   featured?: boolean;
   aiInsights?: boolean;
   isLiked?: boolean;
-  property: IProperty
+  property: IProperty;
   onLikeToggle?: () => void;
 }
-const PropertyCard = ({
-  aiInsights = false,
-  property,
-}: PropertyCardProps) => {
+const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { mainReducer, user_data } = usePosterReducers();
-  const { sendMessage, lastEvent } = useWebSocket()
+  const { sendMessage, lastEvent } = useWebSocket();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
@@ -46,8 +43,11 @@ const PropertyCard = ({
     dispatch(
       setBreadcrumbs([
         ...mainReducer?.breadcrumbs,
-        { label: `Stylish ${property?.bedrooms}-Bedroom ${property?.propertyCategory?.name} in ${property?.locationCity?.name} , ${property?.locationCountry?.name}`, href: `${App_url.link.PROPERTY_DETAILS}/${property?.id}` },
-      ])
+        {
+          label: `Stylish ${property?.bedrooms}-Bedroom ${property?.propertyCategory?.name} in ${property?.locationCity?.name} , ${property?.locationCountry?.name}`,
+          href: `${App_url.link.PROPERTY_DETAILS}/${property?.id}`,
+        },
+      ]),
     );
     router.push(`${App_url.link.PROPERTY_DETAILS}/${property?.id}`);
   };
@@ -68,12 +68,11 @@ const PropertyCard = ({
     if (Math.abs(distance) > 50) {
       if (distance > 0) {
         setCurrentIndex((prev) =>
-          prev === property?.propertyImages.length - 1 ? 0 : prev + 1
+          prev === property?.propertyImages.length - 1 ? 0 : prev + 1,
         );
-      }
-      else {
+      } else {
         setCurrentIndex((prev) =>
-          prev === 0 ? property?.propertyImages.length - 1 : prev - 1
+          prev === 0 ? property?.propertyImages.length - 1 : prev - 1,
         );
       }
     }
@@ -88,46 +87,52 @@ const PropertyCard = ({
     }
   };
 
-
   const nextSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === property?.propertyImages.length - 1 ? 0 : prev + 1
+      prev === property?.propertyImages.length - 1 ? 0 : prev + 1,
     );
   };
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === 0 ? property?.propertyImages.length - 1 : prev - 1
+      prev === 0 ? property?.propertyImages.length - 1 : prev - 1,
     );
   };
 
   const handleFavoriteAdd = () => {
     if (!user_data?.access_token) {
       // router.push(App_url.link.SIGN_IN)
-      dispatch(setLoginPopup(true))
+      dispatch(setLoginPopup(true));
       return;
     } else {
-      if (mainReducer?.property_list_with_limit?.favorite_property?.includes(String(property?.id)) || mainReducer?.zecco_favorite?.favorite_property?.includes(String(property?.id))) {
-        sendMessage('action', {
+      if (
+        mainReducer?.property_list_with_limit?.favorite_property?.includes(
+          String(property?._id),
+        ) ||
+        mainReducer?.zecco_favorite?.favorite_property?.includes(
+          String(property?._id),
+        )
+      ) {
+        sendMessage("action", {
           type: "userService",
           action: "removeFavorite",
           payload: {
-            property_id: property?.id
+            property_id: property?._id,
           },
-        })
+        });
       } else {
-        sendMessage('action', {
+        sendMessage("action", {
           type: "userService",
           action: "addFavorite",
           payload: {
-            property_id: property?.id
+            property_id: property?._id,
           },
-        })
+        });
       }
     }
-  }
+  };
 
   return (
     <div
@@ -143,11 +148,14 @@ const PropertyCard = ({
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {property?.propertyImages?.slice(0, 3).map((img, index) => (
-            <div key={index} className="relative min-w-full h-full overflow-hidden">
+            <div
+              key={index}
+              className="relative min-w-full h-full overflow-hidden"
+            >
               <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-110">
                 <Image
                   src={img?.url || "/placeholder.svg"}
-                  alt={`${'property'}-${index}`}
+                  alt={`${"property"}-${index}`}
                   fill
                   className="object-cover"
                 />
@@ -190,12 +198,16 @@ const PropertyCard = ({
           onClick={(e) => {
             e.stopPropagation(); // prevent navigation
             // onLikeToggle?.();
-            handleFavoriteAdd?.()
-
+            handleFavoriteAdd?.();
           }}
           className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
         >
-          {(mainReducer?.property_list_with_limit?.favorite_property?.includes(String(property?.id)) || mainReducer?.zecco_favorite?.favorite_property?.includes(String(property?.id))) ? (
+          {mainReducer?.property_list_with_limit?.favorite_property?.includes(
+            String(property?._id),
+          ) ||
+          mainReducer?.zecco_favorite?.favorite_property?.includes(
+            String(property?._id),
+          ) ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
             <Heart size={20} className="text-white hover:text-red-500" />
@@ -203,7 +215,13 @@ const PropertyCard = ({
         </button>
 
         <div className="absolute bottom-4 left-3 bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915] font-manrope">
-          {property?.isSale && property?.isRent ? 'Rent / Sale' : property?.isSale ? 'For Sale' : property?.isRent ? 'For Rent' : ''}
+          {property?.isSale && property?.isRent
+            ? "Rent / Sale"
+            : property?.isSale
+              ? "For Sale"
+              : property?.isRent
+                ? "For Rent"
+                : ""}
         </div>
         {property?.propertyImages?.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
@@ -211,10 +229,9 @@ const PropertyCard = ({
               {property?.propertyImages?.slice(0, 3).map((_, i) => (
                 <span
                   key={i}
-                  className={`h-2 rounded-full transition-all ${i === currentIndex
-                    ? "w-4 bg-white"
-                    : "w-2 bg-white/50"
-                    }`}
+                  className={`h-2 rounded-full transition-all ${
+                    i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
+                  }`}
                 />
               ))}
             </div>
@@ -224,17 +241,23 @@ const PropertyCard = ({
       <div className="space-y-1 py-3">
         <div className="flex items-center justify-between">
           {property?.isSale && property?.isRent ? (
-            <p className="text-md font-manrope font-bold text-[#727272]">
-              {(property?.isSale && property?.isRent) ? (
-                <div className="flex justify-between items-center">
-                  <span>Sale : €{property?.salePrice} </span>
-                  <span>Rent : €{property?.rentalPrice ?? property?.rentalPriceLong}</span>
+            <div className="text-md font-manrope font-bold text-[#727272] w-full">
+              {property?.isSale && property?.isRent ? (
+                <div className="flex justify-between items-center w-full">
+                  <p className="text-md font-manrope font-bold text-[#727272]">
+                    Sale : €{property?.salePrice}
+                  </p>
+                  <p className="text-md font-manrope font-bold text-[#727272]">
+                    Rent : €{property?.rentalPrice ?? property?.rentalPriceLong}
+                  </p>
                 </div>
-              ) : 0}
-            </p>
+              ) : null}
+            </div>
           ) : (
             <p className="text-md font-manrope font-bold text-[#727272]">
-              {property?.isRent ? "€" + (property?.rentalPrice ?? property?.rentalPriceLong) : "€" + property?.salePrice}
+              {property?.isRent
+                ? "€" + (property?.rentalPrice ?? property?.rentalPriceLong)
+                : "€" + property?.salePrice}
             </p>
           )}
           {aiInsights && (
@@ -245,7 +268,9 @@ const PropertyCard = ({
         </div>
 
         <h3 className="text-[0.9rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
-          Stylish {property?.bedrooms}-Bedroom {property?.propertyCategory?.name} in {property?.locationCity?.name} , {property?.locationCountry?.name}
+          Stylish {property?.bedrooms}-Bedroom{" "}
+          {property?.propertyCategory?.name} in {property?.locationCity?.name} ,{" "}
+          {property?.locationCountry?.name}
         </h3>
 
         <div className="flex gap-5 items-center pt-4 text-sm">
@@ -267,9 +292,8 @@ const PropertyCard = ({
       </div>
 
       <LoginPopup />
-
     </div>
   );
-}
+};
 
-export default React.memo(PropertyCard)
+export default React.memo(PropertyCard);
