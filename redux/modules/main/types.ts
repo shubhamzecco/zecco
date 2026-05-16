@@ -495,6 +495,7 @@ export interface IUserPackagePayment {
 }
 
 export interface IProperty {
+  _id: string;
   id: number;
   agency: number;
   constructYear: number | null;

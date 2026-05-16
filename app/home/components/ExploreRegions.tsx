@@ -19,7 +19,7 @@ export default function ExploreRegions() {
   const [selectedButton, setSelectedButton] = useState<ListingType>("buy");
   const { sendMessage, isConnected } = useWebSocket();
   const dispatch = useDispatch();
-  const { mainReducer } = usePosterReducers()
+  const { mainReducer } = usePosterReducers();
   const router = useRouter();
   const LIMIT = 10;
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -28,40 +28,57 @@ export default function ExploreRegions() {
   const [isHovered, setIsHovered] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [areasData, setAreasData] = useState<any[]>([]);
-  const loadedPages = useRef<Set<number>>(new Set());
+  const loadedPages = useRef<Record<ListingType, Set<number>>>({
+    buy: new Set(),
+    rent: new Set(),
+    new: new Set(),
+  });
 
-  const fetchAreas = (nextPage: number) => {
-    if (loading || loadedPages.current.has(nextPage)) return;
+  const fetchAreas = (nextPage: number, selectedButtonType: ListingType) => {
+    if (loading || loadedPages.current[selectedButtonType].has(nextPage)) {
+      return;
+    }
 
     setLoading(true);
 
-    loadedPages.current.add(nextPage);
+    loadedPages.current[selectedButtonType].add(nextPage);
+
+    console.log("selectedButtonType", selectedButtonType);
+
+    const requestPayload: any = {
+      search: "",
+      limit: LIMIT,
+      page: nextPage,
+    };
+
+    if (selectedButtonType === "buy") {
+      requestPayload.forSale = true;
+    }
+
+    if (selectedButtonType === "rent") {
+      requestPayload.forRent = true;
+    }
+
+    if (selectedButtonType === "new") {
+      requestPayload.isNewDev = true;
+    }
 
     sendMessage("action", {
       type: "locationService",
       action: "areas_list",
-      payload: {
-        search: "",
-        limit: LIMIT,
-        page: nextPage,
-        forSale: selectedButton === 'buy' ? true : false,
-        forRent: selectedButton === 'rent' ? true : false,
-        isNewDev: selectedButton === 'new' ? true : false
-      },
+      payload: requestPayload,
     });
-
     setPage(nextPage);
   };
-
+  console.log("selectedButton", selectedButton);
   useEffect(() => {
     setAreasData([]);
     setPage(1);
-    loadedPages.current.clear();
     scrollRef.current?.scrollTo({
       left: 0,
       behavior: "smooth",
     });
-    fetchAreas(1);
+    fetchAreas(1, selectedButton);
   }, [selectedButton]);
 
   useEffect(() => {
@@ -74,21 +91,19 @@ export default function ExploreRegions() {
       if (width < 640) {
         return container.clientWidth;
       }
-      return (container.clientWidth - 72) / 4;;
+      return (container.clientWidth - 72) / 4;
     };
 
     const interval = setInterval(() => {
       const scrollAmount = getScrollAmount();
 
-      const maxScrollLeft =
-        container.scrollWidth - container.clientWidth;
+      const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
-      const remaining =
-        maxScrollLeft - container.scrollLeft;
+      const remaining = maxScrollLeft - container.scrollLeft;
 
       // hit api when only 1 card pending
       if (remaining <= scrollAmount * 1.2) {
-        fetchAreas(page + 1);
+        fetchAreas(page + 1, selectedButton);
       }
 
       // reset after end
@@ -113,12 +128,10 @@ export default function ExploreRegions() {
 
     if (latestData?.length > 0) {
       setAreasData((prev) => {
-        const existingIds = new Set(
-          prev.map((item: any) => item?.name)
-        );
+        const existingIds = new Set(prev.map((item: any) => item?.name));
 
         const newItems = latestData.filter(
-          (item: any) => !existingIds.has(item?.name)
+          (item: any) => !existingIds.has(item?.name),
         );
 
         return [...prev, ...newItems];
@@ -161,15 +174,13 @@ export default function ExploreRegions() {
           ? container.clientWidth / 2
           : (container.clientWidth - 72) / 4;
 
-    const maxScrollLeft =
-      container.scrollWidth - container.clientWidth;
+    const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
-    const remaining =
-      maxScrollLeft - container.scrollLeft;
+    const remaining = maxScrollLeft - container.scrollLeft;
 
     // if only last card pending
     if (remaining <= scrollAmount * 1.2) {
-      fetchAreas(page + 1);
+      fetchAreas(page + 1, selectedButton);
     }
   };
 
@@ -193,11 +204,15 @@ export default function ExploreRegions() {
           {TABS.map((tab, i) => (
             <button
               key={i}
-              onClick={() => setSelectedButton(tab?.value)}
-              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md  ${tab?.value === selectedButton
-                ? "bg-[#0F172A] text-white"
-                : "text-slate-500 hover:bg-slate-100"
-                }`}
+              onClick={() => {
+                (console.log("tab?.value", tab?.value),
+                  setSelectedButton(tab?.value));
+              }}
+              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md  ${
+                tab?.value === selectedButton
+                  ? "bg-[#0F172A] text-white"
+                  : "text-slate-500 hover:bg-slate-100"
+              }`}
             >
               {tab?.label}
             </button>
@@ -210,11 +225,10 @@ export default function ExploreRegions() {
           onMouseLeave={() => setIsHovered(false)}
           className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar py-2"
         >
-          {areasData
-            ?.map((region: any, index: number) => (
-              <div
-                key={index}
-                className="
+          {areasData?.map((region: any, index: number) => (
+            <div
+              key={index}
+              className="
 flex-none
 w-full
 sm:w-[calc(50%-12px)]
@@ -226,46 +240,44 @@ shadow-sm
 flex
 flex-col
 "
+            >
+              <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
+                {region.name}
+              </h3>
+
+              <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider w-fit uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
+                {region.property_count} PROPERTIES
+              </span>
+
+              <ul className="space-y-2 flex-1">
+                {region?.areas?.slice(0, 11)?.map((item: any, i: number) => (
+                  <li
+                    key={i}
+                    className="flex items-center justify-between text-sm text-[#64748B]"
+                  >
+                    <span className="flex items-center gap-2 font-manrope font-medium">
+                      <ChevronRight className="w-4 h-4 text-[#64748B]" />
+
+                      {item?.name?.length > 23
+                        ? `${item?.name?.slice(0, 23)}...`
+                        : item?.name}
+                    </span>
+
+                    <span className="text-[#64748B] font-manrope font-medium">
+                      {item?.property_count}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => handleNavigate(region?.name)}
+                className="mt-6 bg-[#4A86E8] text-white py-2 font-manrope font-bold rounded-full text-sm transition"
               >
-                <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
-                  {region.name}
-                </h3>
-
-                <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider w-fit uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
-                  {region.property_count} PROPERTIES
-                </span>
-
-                <ul className="space-y-2 flex-1">
-                  {region?.areas?.slice(0, 11)?.map(
-                    (item: any, i: number) => (
-                      <li
-                        key={i}
-                        className="flex items-center justify-between text-sm text-[#64748B]"
-                      >
-                        <span className="flex items-center gap-2 font-manrope font-medium">
-                          <ChevronRight className="w-4 h-4 text-[#64748B]" />
-
-                          {item?.name?.length > 23
-                            ? `${item?.name?.slice(0, 23)}...`
-                            : item?.name}
-                        </span>
-
-                        <span className="text-[#64748B] font-manrope font-medium">
-                          {item?.property_count}
-                        </span>
-                      </li>
-                    )
-                  )}
-                </ul>
-
-                <button
-                  onClick={() => handleNavigate(region?.name)}
-                  className="mt-6 bg-[#4A86E8] text-white py-2 font-manrope font-bold rounded-full text-sm transition"
-                >
-                  View all listings
-                </button>
-              </div>
-            ))}
+                View all listings
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </section>
