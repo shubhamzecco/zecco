@@ -224,9 +224,20 @@ const PropertyCard = ({
 
       <div className="space-y-1 py-3">
         <div className="flex items-center justify-between">
-          <p className="text-md font-manrope font-bold text-[#727272]">
-            {property?.isSale && property?.isRent ? `Sale : €${property?.salePrice}  Rent : €${property?.rentalPrice ?? property?.rentalPriceLong} ` : property?.isSale ? "€"+property?.salePrice : property?.isRent ? "€"+property?.rentalPrice : 0}
-          </p>
+          {property?.isSale && property?.isRent ? (
+            <p className="text-md font-manrope font-bold text-[#727272]">
+              {(property?.isSale && property?.isRent) ? (
+                <div className="flex justify-between items-center">
+                  <span>Sale : €{property?.salePrice} </span>
+                  <span>Rent : €{property?.rentalPrice ?? property?.rentalPriceLong}</span>
+                </div>
+              ) : 0}
+            </p>
+          ) : (
+            <p className="text-md font-manrope font-bold text-[#727272]">
+              {property?.isRent ? "€" + (property?.rentalPrice ?? property?.rentalPriceLong) : "€" + property?.salePrice}
+            </p>
+          )}
           {aiInsights && (
             <p className="underline text-[#2563EB] font-manrope font-bold text-sm">
               AI Insights
