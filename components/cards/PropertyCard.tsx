@@ -221,7 +221,6 @@ const PropertyCard = ({
           </div>
         )}
       </div>
-
       <div className="space-y-1 py-3">
         <div className="flex items-center justify-between">
           {property?.isSale && property?.isRent ? (
