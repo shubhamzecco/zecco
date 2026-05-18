@@ -89,7 +89,8 @@ export interface IUserTypes {
   phone?: string;
   dob?: string;
   designation: "project_manager" | "team_lead" | "quality_assurance" | "detailer" | "director";
-  package?: IPackage
+  package?: IPackage;
+  chatId?:string
 }
 export interface IChangePasswordTypes {
   old_password: string;

@@ -11,13 +11,27 @@ import { App_url } from "@/constant/static"
 const MessagePage = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null)
   const { sendMessage, isConnected, lastEvent } = useWebSocket()
-  const { mainReducer } = usePosterReducers()
+  const { mainReducer, user_data } = usePosterReducers()
+  console.log("user_data ::: ", user_data)
   useEffect(() => {
+    if (!user_data?.user?.chatId) {
+      sendMessage('action', {
+        type: "chatService",
+        action: "create",
+        payload: {
+          participants: user_data?.user?.agent?.agent?._id,
+        }
+      })
+    }
     sendMessage('action', {
       type: "chatService",
       action: "list",
       payload: {}
     })
+    const userFind = mainReducer?.chat_user_list?.find((user) => {
+      return user?._id === user_data?.user?.chatId
+    })
+    setSelectedUser(userFind)
   }, [isConnected])
 
   useEffect(() => {

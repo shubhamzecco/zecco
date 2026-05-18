@@ -62,7 +62,7 @@ export default function PackagesModal({
     const payload = {
       package_id: value,
       user_id: userId || user_data?.user?._id,
-      webhook_url:`https://movie-expectations-reply-magical.trycloudflare.com `,
+      webhook_url:`https://living-sin-headlines-lucky.trycloudflare.com `,
     };
     CommonApiRequest(
       "POST",
