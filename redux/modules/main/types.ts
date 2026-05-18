@@ -513,7 +513,7 @@ export interface IProperty {
   dateModified: string;
   dateReview: string;
   dateListed: string;
-
+  zeccoSold?: boolean
   d218RefCatastro: string | null;
 
   energyKwLevel: string | null;
@@ -548,6 +548,7 @@ export interface IProperty {
 
   isRent: boolean;
   isRented: boolean;
+  zeccoRented:boolean;
   isRentLongterm: boolean;
   isRentShortterm: boolean;
   isSale: boolean;

@@ -102,6 +102,7 @@ const Page = () => {
                 cities: Number(id?.location),
                 country: 6,
                 status: true,
+                forAll : propertyType === "all" ? true : false,
                 categories: propertyTypes
                     ? Number(propertyTypes)
                     : null,

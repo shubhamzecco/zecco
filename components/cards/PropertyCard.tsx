@@ -139,7 +139,7 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="group bg-white overflow-hidden shadow-card transition-all cursor-pointer"
+      className={`${(property?.isSold || property?.zeccoSold) || (property?.isRented || property?.zeccoRented) ? 'pointer-events-none select-none cursor-not-allowed' : 'cursor-pointer'} group bg-white overflow-hidden shadow-card transition-all`}
     >
       <div className="relative h-64 rounded-lg bg-gray-200 overflow-hidden">
         <div
@@ -204,9 +204,9 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           {mainReducer?.property_list_with_limit?.favorite_property?.includes(
             String(property?._id),
           ) ||
-          mainReducer?.zecco_favorite?.favorite_property?.includes(
-            String(property?._id),
-          ) ? (
+            mainReducer?.zecco_favorite?.favorite_property?.includes(
+              String(property?._id),
+            ) ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
             <Heart size={20} className="text-white hover:text-red-500" />
@@ -228,13 +228,25 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
               {property?.propertyImages?.slice(0, 3).map((_, i) => (
                 <span
                   key={i}
-                  className={`h-2 rounded-full transition-all ${
-                    i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
-                  }`}
+                  className={`h-2 rounded-full transition-all ${i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
+                    }`}
                 />
               ))}
             </div>
           </div>
+        )}
+        {((property?.isSold || property?.zeccoSold) || (property?.isRented || property?.zeccoRented)) && (
+          <>
+            <div className="absolute inset-0 bg-black/45 z-20" />
+            <div className="absolute inset-0 z-30 flex items-center justify-center">
+              <div className="relative w-full flex items-center justify-center">
+                <div className="absolute w-full h-[2px]" />
+                <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-2xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
+                  {(property?.isSold || property?.zeccoSold) ? 'Sold' : 'Rented'}
+                </div>
+              </div>
+            </div>
+          </>
         )}
       </div>
       <div className="space-y-1 py-3">

@@ -97,6 +97,7 @@ export default function PricingPlans({ heading, description }: IPricePlans) {
         search: "",
         limit: 12,
         page: 1,
+        status : true
       }
     })
   }, [isConnected])

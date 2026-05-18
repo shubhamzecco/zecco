@@ -37,6 +37,7 @@ export default function Blogs() {
         search: "",
         limit: 12,
         page: 1,
+        status : true
       }
     })
   }, [isConnected])
