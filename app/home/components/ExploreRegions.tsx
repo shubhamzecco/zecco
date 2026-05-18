@@ -1,18 +1,10 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import {
-  clearBreadcrumbs,
-  setBreadcrumbs,
-} from "@/redux/modules/main/action";
+import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
 type ListingType = "buy" | "rent" | "new";
@@ -23,8 +15,7 @@ const LIMIT = 10;
 const REGIONS_PER_CARD = 2;
 
 export default function ExploreRegions() {
-  const [selectedButton, setSelectedButton] =
-    useState<ListingType>("buy");
+  const [selectedButton, setSelectedButton] = useState<ListingType>("buy");
 
   const { sendMessage } = useWebSocket();
 
@@ -43,10 +34,9 @@ export default function ExploreRegions() {
   const [isHovered, setIsHovered] = useState(false);
 
   const [areasData, setAreasData] = useState<any[]>([]);
-
-  const loadedPages = useRef<
-    Record<ListingType, Set<number>>
-  >({
+  const [totalCount, setTotalCount] = useState(0);
+  const totalPages = Math.ceil(totalCount / LIMIT);
+  const loadedPages = useRef<Record<ListingType, Set<number>>>({
     buy: new Set(),
     rent: new Set(),
     new: new Set(),
@@ -55,25 +45,18 @@ export default function ExploreRegions() {
   // =========================
   // FETCH AREAS
   // =========================
+  const fetchAreas = (nextPage: number, selectedButtonType: ListingType) => {
+    if (nextPage > totalPages && totalPages !== 0) {
+      return;
+    }
 
-  const fetchAreas = (
-    nextPage: number,
-    selectedButtonType: ListingType,
-  ) => {
-    if (
-      loading ||
-      loadedPages.current[
-        selectedButtonType
-      ].has(nextPage)
-    ) {
+    if (loading || loadedPages.current[selectedButtonType].has(nextPage)) {
       return;
     }
 
     setLoading(true);
 
-    loadedPages.current[
-      selectedButtonType
-    ].add(nextPage);
+    loadedPages.current[selectedButtonType].add(nextPage);
 
     const requestPayload: any = {
       search: "",
@@ -110,6 +93,11 @@ export default function ExploreRegions() {
     setAreasData([]);
 
     setPage(1);
+    loadedPages.current = {
+      buy: new Set(),
+      rent: new Set(),
+      new: new Set(),
+    };
 
     scrollRef.current?.scrollTo({
       left: 0,
@@ -124,23 +112,21 @@ export default function ExploreRegions() {
   // =========================
 
   useEffect(() => {
-    const latestData =
-      mainReducer?.search_by_area?.data || [];
+    const latestData = mainReducer?.search_by_area?.data || [];
 
     if (latestData?.length > 0) {
       setAreasData((prev) => {
-        const existingIds = new Set(
-          prev.map((item: any) => item?.name),
-        );
+        const existingIds = new Set(prev.map((item: any) => item?.name));
 
         const newItems = latestData.filter(
-          (item: any) =>
-            !existingIds.has(item?.name),
+          (item: any) => !existingIds.has(item?.name),
         );
 
         return [...prev, ...newItems];
       });
     }
+
+    setTotalCount(mainReducer?.search_by_area?.pagination?.totalCount || 0);
 
     setLoading(false);
   }, [mainReducer?.search_by_area?.data]);
@@ -152,14 +138,8 @@ export default function ExploreRegions() {
   const groupedCards = useMemo(() => {
     const cards: any[] = [];
 
-    for (
-      let i = 0;
-      i < areasData.length;
-      i += REGIONS_PER_CARD
-    ) {
-      cards.push(
-        areasData.slice(i, i + REGIONS_PER_CARD),
-      );
+    for (let i = 0; i < areasData.length; i += REGIONS_PER_CARD) {
+      cards.push(areasData.slice(i, i + REGIONS_PER_CARD));
     }
 
     return cards;
@@ -174,10 +154,7 @@ export default function ExploreRegions() {
 
     if (!container || isHovered) return;
 
-    const card =
-      container.querySelector<HTMLElement>(
-        ".region-card",
-      );
+    const card = container.querySelector<HTMLElement>(".region-card");
 
     if (!card) return;
 
@@ -186,24 +163,15 @@ export default function ExploreRegions() {
     const interval = setInterval(() => {
       if (!container) return;
 
-      const maxScrollLeft =
-        container.scrollWidth -
-        container.clientWidth;
+      const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
       // fetch more
-      if (
-        maxScrollLeft -
-          container.scrollLeft <
-        container.clientWidth * 1.5
-      ) {
+      if (maxScrollLeft - container.scrollLeft < container.clientWidth * 1.5) {
         fetchAreas(page + 1, selectedButton);
       }
 
       // reset to first
-      if (
-        container.scrollLeft + cardWidth >=
-        maxScrollLeft
-      ) {
+      if (container.scrollLeft + cardWidth >= maxScrollLeft) {
         container.scrollTo({
           left: 0,
           behavior: "smooth",
@@ -229,17 +197,11 @@ export default function ExploreRegions() {
 
     if (!container || loading) return;
 
-    const maxScrollLeft =
-      container.scrollWidth -
-      container.clientWidth;
+    const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
-    const remaining =
-      maxScrollLeft - container.scrollLeft;
+    const remaining = maxScrollLeft - container.scrollLeft;
 
-    if (
-      remaining <=
-      container.clientWidth * 1.2
-    ) {
+    if (remaining <= container.clientWidth * 1.2) {
       fetchAreas(page + 1, selectedButton);
     }
   };
@@ -258,8 +220,7 @@ export default function ExploreRegions() {
           href: "/",
         },
         {
-          label:
-            "Costa del Sol areas and Cities",
+          label: "Costa del Sol areas and Cities",
           href: App_url.link.COSTA_DEL_SOL,
         },
         {
@@ -269,9 +230,7 @@ export default function ExploreRegions() {
       ]),
     );
 
-    router.push(
-      `${App_url.link.COSTA_DEL_SOL}/${region}`,
-    );
+    router.push(`${App_url.link.COSTA_DEL_SOL}/${region}`);
   };
 
   const TABS = [
@@ -300,9 +259,8 @@ export default function ExploreRegions() {
           </h2>
 
           <p className="text-slate_gray font-medium font-manrope text-md max-w-lg mt-4 md:mt-0">
-            Navigate through Spain's most iconic
-            provinces and find the municipality
-            that fits your lifestyle.
+            Navigate through Spain's most iconic provinces and find the
+            municipality that fits your lifestyle.
           </p>
         </div>
 
@@ -312,9 +270,7 @@ export default function ExploreRegions() {
           {TABS.map((tab: any, i: number) => (
             <button
               key={i}
-              onClick={() =>
-                setSelectedButton(tab?.value)
-              }
+              onClick={() => setSelectedButton(tab?.value)}
               className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md transition-all duration-300 ${
                 tab?.value === selectedButton
                   ? "bg-[#0F172A] text-white"
@@ -331,12 +287,8 @@ export default function ExploreRegions() {
         <div
           ref={scrollRef}
           onScroll={handleScroll}
-          onMouseEnter={() =>
-            setIsHovered(true)
-          }
-          onMouseLeave={() =>
-            setIsHovered(false)
-          }
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
           className="
             flex
             gap-6
@@ -348,14 +300,10 @@ export default function ExploreRegions() {
             py-2
           "
         >
-          {groupedCards?.map(
-            (
-              card: any,
-              cardIndex: number,
-            ) => (
-              <div
-                key={cardIndex}
-                className="
+          {groupedCards?.map((card: any, cardIndex: number) => (
+            <div
+              key={cardIndex}
+              className="
                   region-card
                   snap-start
                   flex-none
@@ -369,76 +317,53 @@ export default function ExploreRegions() {
                   h-[520px]
                   overflow-hidden
                 "
-              >
-                <div className="flex flex-col h-full gap-6">
-                  {card.map(
-                    (
-                      region: any,
-                      regionIndex: number,
-                    ) => (
-                      <div
-                        key={regionIndex}
-                        className="
+            >
+              <div className="flex flex-col h-full gap-6">
+                {card.map((region: any, regionIndex: number) => (
+                  <div
+                    key={regionIndex}
+                    className="
                           flex-1
                           border-b
                           last:border-b-0
                           border-slate-100
                           pb-4
                         "
-                      >
-                        <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
-                          {region.name}
-                        </h3>
+                  >
+                    <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
+                      {region.name}
+                    </h3>
 
-                        <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
-                          {
-                            region.property_count
-                          }{" "}
-                          PROPERTIES
-                        </span>
+                    <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
+                      {region.property_count} PROPERTIES
+                    </span>
 
-                        <ul className="space-y-2 mb-4">
-                          {region?.areas
-                            ?.slice(0, 3)
-                            ?.map(
-                              (
-                                item: any,
-                                i: number,
-                              ) => (
-                                <li
-                                  key={i}
-                                  className="flex items-center justify-between text-sm text-[#64748B]"
-                                >
-                                  <span className="flex items-center gap-2 font-manrope font-medium">
-                                    <ChevronRight className="w-4 h-4 text-[#64748B]" />
+                    <ul className="space-y-2 mb-4">
+                      {region?.areas
+                        ?.slice(0, 3)
+                        ?.map((item: any, i: number) => (
+                          <li
+                            key={i}
+                            className="flex items-center justify-between text-sm text-[#64748B]"
+                          >
+                            <span className="flex items-center gap-2 font-manrope font-medium">
+                              <ChevronRight className="w-4 h-4 text-[#64748B]" />
 
-                                    {item?.name
-                                      ?.length >
-                                    23
-                                      ? `${item?.name?.slice(
-                                          0,
-                                          23,
-                                        )}...`
-                                      : item?.name}
-                                  </span>
+                              {item?.name?.length > 23
+                                ? `${item?.name?.slice(0, 23)}...`
+                                : item?.name}
+                            </span>
 
-                                  <span className="text-[#64748B] font-manrope font-medium">
-                                    {
-                                      item?.property_count
-                                    }
-                                  </span>
-                                </li>
-                              ),
-                            )}
-                        </ul>
+                            <span className="text-[#64748B] font-manrope font-medium">
+                              {item?.property_count}
+                            </span>
+                          </li>
+                        ))}
+                    </ul>
 
-                        <button
-                          onClick={() =>
-                            handleNavigate(
-                              region?.name,
-                            )
-                          }
-                          className="
+                    <button
+                      onClick={() => handleNavigate(region?.name)}
+                      className="
                             bg-[#4A86E8]
                             text-white
                             py-2
@@ -450,16 +375,14 @@ export default function ExploreRegions() {
                             transition
                             hover:opacity-90
                           "
-                        >
-                          View all listings
-                        </button>
-                      </div>
-                    ),
-                  )}
-                </div>
+                    >
+                      View all listings
+                    </button>
+                  </div>
+                ))}
               </div>
-            ),
-          )}
+            </div>
+          ))}
         </div>
       </div>
     </section>

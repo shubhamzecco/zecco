@@ -233,21 +233,21 @@ const SignUpPage = () => {
           </div>
         </Form>
       </AuthLayout>
-      {packageModal && (
+      {/* {packageModal && (
         <PackagesModal
           userId={userId}
           formValue={formValue ?? {} as IFormValue}
           onClose={() => setPackageModal(false)} />
-      )}
+      )} */}
 
-      {emailVerificationPopup && (
+      {/* {emailVerificationPopup && (
         <CheckInboxModal
           onClose={() => setEmailVerificationPopup(false)}
           onReturn={() =>
             router.push(App_url.link.INITIAL_URL)
           }
         />
-      )}
+      )} */}
     </>
 
   );

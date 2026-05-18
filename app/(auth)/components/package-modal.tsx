@@ -34,7 +34,7 @@ export default function PackagesModal({
   onClose,
   userId
 }: {
-  formValue: IFormValue,
+  formValue?: IFormValue,
   onClose?: () => void,
   userId?: string
 }) {

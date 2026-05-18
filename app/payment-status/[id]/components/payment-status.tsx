@@ -254,7 +254,7 @@ export function PaymentStatus({
                   });
                 } else if (status === 'paid') {
                   if (localStorage.getItem('isRegister') === 'true') {
-                    setEmailVerificationPopup(true)
+                    // setEmailVerificationPopup(true)
                     localStorage.removeItem('isRegister');
                   } else {
                     CommonApiRequest(
@@ -300,7 +300,7 @@ export function PaymentStatus({
             </button>
           </div>
         </div>
-        {
+        {/* {
           emailVerificationPopup && (
             <CheckInboxModal
               onClose={() => setEmailVerificationPopup(false)}
@@ -309,7 +309,7 @@ export function PaymentStatus({
               }
             />
           )
-        }
+        } */}
       </div>
     </div>
   );

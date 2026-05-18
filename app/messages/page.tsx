@@ -12,7 +12,7 @@ const MessagePage = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null)
   const { sendMessage, isConnected, lastEvent } = useWebSocket()
   const { mainReducer, user_data } = usePosterReducers()
-  console.log("user_data ::: ", user_data)
+
   useEffect(() => {
     if (!user_data?.user?.chatId) {
       sendMessage('action', {
