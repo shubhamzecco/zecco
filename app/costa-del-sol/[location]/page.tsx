@@ -101,6 +101,7 @@ const Page = () => {
                 search: "",
                 cities: Number(id?.location),
                 country: 6,
+                status: true,
                 categories: propertyTypes
                     ? Number(propertyTypes)
                     : null,
@@ -109,7 +110,7 @@ const Page = () => {
                 ...(propertyType === "buy" && {
                     forSale: true,
                     sold: false,
-                     forRent: false,
+                    forRent: false,
                 }),
 
                 ...(propertyType === "rent" && {
@@ -289,9 +290,6 @@ const Page = () => {
         );
     };
 
-    // ==========================================
-    // INFINITE SCROLL
-    // ==========================================
     useEffect(() => {
         const handleScroll = () => {
             if (loading || !hasMore)
@@ -512,8 +510,8 @@ const Page = () => {
             {/* OVERLAY */}
             <div
                 className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${isFilterOpen
-                        ? "visible opacity-100"
-                        : "invisible opacity-0"
+                    ? "visible opacity-100"
+                    : "invisible opacity-0"
                     }`}
                 onClick={() =>
                     setIsFilterOpen(false)
@@ -523,8 +521,8 @@ const Page = () => {
             {/* MOBILE FILTER DRAWER */}
             <div
                 className={`fixed left-0 top-0 z-50 mt-[4.7rem] h-full w-[85%] max-w-sm transform bg-white transition-transform duration-300 ease-in-out lg:hidden ${isFilterOpen
-                        ? "translate-x-0"
-                        : "-translate-x-full"
+                    ? "translate-x-0"
+                    : "-translate-x-full"
                     }`}
             >
                 <div className="flex items-center justify-between border-b bg-gray-50 p-4">

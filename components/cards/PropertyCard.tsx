@@ -103,7 +103,6 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
 
   const handleFavoriteAdd = () => {
     if (!user_data?.access_token) {
-      // router.push(App_url.link.SIGN_IN)
       dispatch(setLoginPopup(true));
       return;
     } else {

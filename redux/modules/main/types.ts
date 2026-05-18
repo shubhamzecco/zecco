@@ -508,7 +508,7 @@ export interface IProperty {
   level: number | null;
   onsuiteBathrooms: number | null;
   toilet: number | null;
-
+  agent_assigned: any;
   dateCreated: string;
   dateModified: string;
   dateReview: string;
@@ -729,16 +729,16 @@ export interface IMainResponse {
   blogs_list_with_limit: IBlogsResponse | null
   property_list_with_limit: IPropertyResponse | null
   property_list_without_limit: IPropertyResponse | null
-  property_details:  IProperty | null
+  property_details: IProperty | null
   ai_insight: PropertyAnalysis | null
   favorite_property_list: IFavoriteProperty | null
   zecco_favorite: IPropertyResponse | null,
   login_popup: boolean;
   chat_user_list: IChat[] | null;
   chat_messages_by_user: IChatMessage[] | null;
-  user_package_list:  IUserPackagePayment[] | null;
+  user_package_list: IUserPackagePayment[] | null;
   property_type_list: IPropertyType[] | null;
   property_subtype_list: IPropertyType[] | null;
-  saved_searches : any
-  search_by_area : any
+  saved_searches: any
+  search_by_area: any
 }

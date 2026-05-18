@@ -56,6 +56,7 @@ export default function AreasOfInterest() {
         search: "",
         limit: 12,
         page: 1,
+        status : true
       }
     })
   }, [isConnected])

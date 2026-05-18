@@ -16,17 +16,20 @@ interface AgentCardProps {
     access_token?: string
     user?: IUserTypes
   }
+  agent_details?: any
 }
 
-export function AgentCard({ user_data }: AgentCardProps) {
+export function AgentCard({ user_data, agent_details }: AgentCardProps) {
   const [contactMessage, setContactMessage] = useState('')
   const dispatch = useDispatch()
   const { sendMessage, isConnected, lastEvent } = useWebSocket()
   const { id } = useParams()
 
   const isLoggedIn = !!user_data?.access_token
-  const agentAssign = isLoggedIn && user_data?.user?.agent
+  const agentAssign = user_data?.user?.agent
   const router = useRouter()
+
+  console.log("user_data?.user?.agent ::: ", agentAssign)
 
 
   const handleCreateChat = () => {
@@ -53,7 +56,7 @@ export function AgentCard({ user_data }: AgentCardProps) {
         <div className="flex items-center gap-3 mb-4">
           <div className="relative overflow-hidden  w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold">
             <Image
-              src={agentAssign ? URL + (user_data?.user?.agent?.agent?.profile_image ?? '') : App_url.image.profile}
+              src={isLoggedIn ? agentAssign ? URL + (user_data?.user?.agent?.agent?.profile_image ?? '') : URL + (agent_details?.profile_image ?? '') : App_url.image.profile}
               alt="Agent Profile"
               fill
               priority
@@ -66,16 +69,16 @@ export function AgentCard({ user_data }: AgentCardProps) {
             </p>
 
             <p className="font-extrabold text-sm text-heading_text_color font-manrope">
-             
+
               {isLoggedIn
-              ? agentAssign
-                ? `${user_data?.user?.agent?.agent?.first_name || ""} ${user_data?.user?.agent?.agent?.last_name || ""}` : '' : ' Walter Haus Madrid'}
+                ? agentAssign
+                  ? `${user_data?.user?.agent?.agent?.first_name || ""} ${user_data?.user?.agent?.agent?.last_name || ""}` : `${agent_details?.first_name || ""} ${agent_details?.last_name || ""}` : ' Walter Haus Madrid'}
             </p>
           </div>
         </div>
 
         <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
-          <Phone className="w-4 h-4" /> {isLoggedIn ? agentAssign ? `${user_data?.user?.agent?.agent?.contact_no}` : "+44 7123 456789" : "+44*******789"}
+          <Phone className="w-4 h-4" /> {isLoggedIn ? agentAssign ? `${user_data?.user?.agent?.agent?.contact_no}` : agent_details?.contact_no : "+44*******789"}
         </p>
 
         <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
@@ -84,28 +87,32 @@ export function AgentCard({ user_data }: AgentCardProps) {
             isLoggedIn
               ? agentAssign
                 ? `${user_data?.user?.agent?.agent?.email || ""}`
-                : "johnsingh@gmail.com"
+                : `${agent_details?.email}`
               : "*******@gmail.com"
           }
         </p>
+        {(!isLoggedIn || user_data?.user?.agent) && (
 
-        <div className="mb-4">
-          <p className="text-lg font-semibold font-manrope text-heading_text_color mb-3">
-            Ask to real estate agent
-          </p>
+          <>
+            <div className="mb-4">
+              <p className="text-lg font-semibold font-manrope text-heading_text_color mb-3">
+                Ask to real estate agent
+              </p>
 
-          <textarea
-            value={contactMessage}
-            onChange={(e) => setContactMessage(e.target.value)}
-            placeholder="State your strategic interest for personal acquisition..."
-            className="w-full p-3 border border-border rounded-lg placeholder:font-manrope placeholder:font-medium placeholder:text-[#64748B] text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-            rows={4}
-          />
-        </div>
+              <textarea
+                value={contactMessage}
+                onChange={(e) => setContactMessage(e.target.value)}
+                placeholder="State your strategic interest for personal acquisition..."
+                className="w-full p-3 border border-border rounded-lg placeholder:font-manrope placeholder:font-medium placeholder:text-[#64748B] text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                rows={4}
+              />
+            </div>
 
-        <button onClick={() => isLoggedIn ? handleCreateChat() : dispatch(setLoginPopup(true))} className="w-full cursor-pointer bg-heading_text_color text-white font-semibold py-3 rounded-full transition mb-4">
-          SUBMIT
-        </button>
+            <button onClick={() => isLoggedIn ? handleCreateChat() : dispatch(setLoginPopup(true))} className="w-full cursor-pointer bg-heading_text_color text-white font-semibold py-3 rounded-full transition mb-4">
+              SUBMIT
+            </button>
+          </>
+        )}
 
         <button onClick={() => isLoggedIn ? '' : dispatch(setLoginPopup(true))} className="w-full cursor-pointer mb-5 border flex items-center gap-2 justify-center border-[#DDDFE3] text-heading_text_color font-semibold py-2 rounded-full bg-white transition">
           <Phone className="w-4 h-4" /> CALL ADVISOR

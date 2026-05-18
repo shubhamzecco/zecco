@@ -28,6 +28,7 @@ import { PropertyDescription } from "./components/PropertyDescription";
 import { PropertyInfo } from "./components/PropertyInfo";
 import PropertyStats from "./components/PropertyStats";
 import ZeccoFavorites from "./components/ZeccoFavorites";
+import LoginPopup from "@/components/login-popup";
 
 const Page = () => {
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
@@ -93,10 +94,10 @@ const Page = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <PropertyInfo
-              property={mainReducer?.property_details as  IProperty}
+              property={mainReducer?.property_details as IProperty}
             />
             <PropertyStats
-              property={mainReducer?.property_details as  IProperty}
+              property={mainReducer?.property_details as IProperty}
             />
             <div className="flex items-center gap-5 mb-2">
               <Button
@@ -125,7 +126,7 @@ const Page = () => {
           </div>
 
           <div className="lg:col-span-1">
-            <AgentCard user_data={user_data} />
+            <AgentCard agent_details={mainReducer?.property_details?.agent_assigned} user_data={user_data} />
           </div>
         </div>
         <div className="lg:col-span-1">
@@ -137,6 +138,7 @@ const Page = () => {
           <ZeccoFavorites />
         </div>
       </div>
+      <LoginPopup />
     </MainLayout>
   );
 };

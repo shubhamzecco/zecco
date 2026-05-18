@@ -25,10 +25,6 @@ const CostadelSol = () => {
 
     // ✅ avoid duplicate api call
     const fetchedPages = useRef<Set<string>>(new Set());
-
-    // ==============================
-    // API CALL
-    // ==============================
     const fetchAreas = (
         currentPage: number,
         searchValue: string,
@@ -50,6 +46,7 @@ const CostadelSol = () => {
                 search: searchValue,
                 limit: LIMIT,
                 page: currentPage,
+                status : true
             },
         });
     };

@@ -41,20 +41,30 @@ const AreaCard = ({
   }
 
 
-  console.log("image",image)
+  console.log("image", image)
   return (
     <div
       className={`relative group rounded-2xl overflow-hidden shadow-md hover:shadow-xl h-[500px] transition-all cursor-pointer`}
       onClick={handleClick}
     >
       {/* Image */}
-      {image && (
+      {image ? (
         <Image
           src={URL + image || App_url?.image?.image_1}
           alt={name}
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-500"
         />
+      ) : (
+        <div className="flex justify-center items-center">
+          <Image
+            src={App_url?.image?.chat_logo}
+            alt={name}
+            width={200}
+            height={200}
+            className="object-contain mt-28 group-hover:scale-110 transition-transform duration-500"
+          />
+        </div>
       )}
 
       {/* Dark Overlay */}
