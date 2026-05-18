@@ -142,7 +142,7 @@ const OtpVerification = () => {
   /* -------------------- SUBMIT -------------------- */
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    postData(forgetPassword === 'forget-password' ? App_url?.endpoint_url?.FORGET_PASSWORD_VERIFY_OTP : App_url?.endpoint_url?.VERIFY_OTP, {
+    postData(forgetPassword === 'forget-password' ? App_url?.endpoint_url?.FORGET_PASSWORD_VERIFY_OTP : App_url?.endpoint_url?.VERIFY_ACCOUNT, {
       otp: String(values.otp),
       email,
     }).then((response) => {

@@ -40,8 +40,6 @@ const AreaCard = ({
     }
   }
 
-
-  console.log("image", image)
   return (
     <div
       className={`relative group rounded-2xl overflow-hidden shadow-md hover:shadow-xl h-[500px] transition-all cursor-pointer`}

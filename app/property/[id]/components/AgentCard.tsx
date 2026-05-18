@@ -29,9 +29,6 @@ export function AgentCard({ user_data, agent_details }: AgentCardProps) {
   const agentAssign = user_data?.user?.agent
   const router = useRouter()
 
-  console.log("user_data?.user?.agent ::: ", agentAssign)
-
-
   const handleCreateChat = () => {
     sendMessage('action', {
       type: "chatService",

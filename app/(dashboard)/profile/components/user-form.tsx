@@ -17,7 +17,7 @@ import ProfileAvatar from '@/components/profile'
 const formSchema = z.object({
     first_name: z.string().min(1, "First name is required"),
     last_name: z.string().min(1, "Last name is required"),
-    mobile_no: z.string().min(1, "Mobile number is required"),
+    contact_no: z.string().min(1, "Mobile number is required"),
     email: z.string().email("Invalid email address"),
     consultation: z.string().optional(),
     project_information: z.string().optional(),
@@ -49,7 +49,7 @@ const UserForm = () => {
         defaultValues: {
             first_name: "",
             last_name: "",
-            mobile_no: "",
+            contact_no: "",
             email: "",
         },
     });
@@ -87,6 +87,7 @@ const UserForm = () => {
                 first_name: data.first_name,
                 last_name: data.last_name,
                 status: true,
+                contact_no: data.contact_no
             },
         }
         sendMessage('action', payload)
@@ -110,7 +111,7 @@ const UserForm = () => {
         form?.reset({
             first_name: user_data?.user?.first_name,
             last_name: user_data?.user?.last_name,
-            mobile_no: user_data?.user?.contact_no,
+            contact_no: user_data?.user?.contact_no,
             email: user_data?.user?.email,
         })
     }, [user_data])
@@ -242,7 +243,7 @@ const UserForm = () => {
 
                                         <FormField
                                             control={form.control}
-                                            name="mobile_no"
+                                            name="contact_no"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel className="font-medium font-inter text-[#101828]">

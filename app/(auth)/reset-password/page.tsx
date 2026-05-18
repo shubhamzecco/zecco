@@ -56,6 +56,7 @@ const ResetPassword = () => {
             sessionStorage.setItem("otp_email", '')
             sessionStorage.setItem("otp", '')
             sessionStorage.setItem("forget_password", '')
+            toast.success(response?.data?.message);
           } else {
             toast.error(response?.message);
           }

@@ -62,6 +62,8 @@ const SignUpPage = () => {
           setFormValue(values)
           setUserId(response?.data?.data?.user?._id)
           toast.success(response.data.message);
+          sessionStorage.setItem("otp_email", values.email);
+          router.push(App_url?.link?.OTP_VERIFICATION);
         } else {
           toast.error(response?.data?.message);
         }
