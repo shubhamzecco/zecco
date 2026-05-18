@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 const formSchema = z.object({
     first_name: z.string().min(1, "First name is required"),
     last_name: z.string().min(1, "Last name is required"),
-    mobile_no: z.string().min(1, "Mobile number is required"),
+    contact_no: z.string().min(1, "Mobile number is required"),
     email: z.string().email("Invalid email address"),
     consultation: z.string().optional(),
     project_information: z.string().optional(),
@@ -31,7 +31,7 @@ const ContactUs = () => {
         defaultValues: {
             first_name: "",
             last_name: "",
-            mobile_no: "",
+            contact_no: "",
             email: "",
             consultation: '',
             project_information: ''
@@ -55,7 +55,7 @@ const ContactUs = () => {
             payload: {
                 first_name: values?.first_name,
                 last_name: values?.last_name,
-                contact_no: values?.mobile_no,
+                contact_no: values?.contact_no,
                 email: values?.email,
                 consultation: values?.consultation,
                 project_information: values?.project_information
@@ -125,7 +125,7 @@ const ContactUs = () => {
 
                                         <FormField
                                             control={form.control}
-                                            name="mobile_no"
+                                            name="contact_no"
                                             render={({ field }) => (
                                                 <FormItem>
                                                     <FormLabel className="font-medium font-inter text-[#101828]">

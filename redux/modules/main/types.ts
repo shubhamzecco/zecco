@@ -478,6 +478,7 @@ export interface IPaymentMetadata {
 export interface IUserPackagePayment {
   _id: string;
   package: IPackage;
+  packageData: IPackage;
   user: string;
   amount: number;
   currency: string;

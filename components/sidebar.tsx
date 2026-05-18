@@ -23,7 +23,7 @@ const menuItems = [
     { name: "Favorites", href: App_url.link.FAVORITES, icon: Heart },
     { name: "Account / Package", href: App_url.link.ACCOUNT_PACKAGE, icon: Archive },
     { name: "Saved Searches", href: App_url.link.SAVED_SEARCHES, icon: Search },
-    { name: "Messages", href: App_url.link.MESSAGE, icon: MessagesSquare },
+    { name: "Chat with Agent", href: App_url.link.MESSAGE, icon: MessagesSquare },
     { name: "AI Insights", href: App_url.link.AI_INSIGHTS, icon: Sparkles },
 ];
 type SidebarProps = {

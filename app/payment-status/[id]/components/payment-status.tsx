@@ -160,7 +160,7 @@ export function PaymentStatus({
               style={{ animationDuration: '0.6s', animationDelay: '0.3s' }}>
               {message || config.description}
             </p>
-            {amount && (
+            {typeof amount === 'number' && (
               <div className={`${config.detailBg} rounded-xl p-6 mb-4 border border-opacity-50 ${config.borderColor} transition-transform hover:scale-102 ${isVisible ? 'animate-in fade-in slide-in-from-up' : ''}`}
                 style={{ animationDuration: '0.6s', animationDelay: '0.4s' }}>
                 <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 font-semibold">
@@ -235,7 +235,7 @@ export function PaymentStatus({
                   const payload = {
                     package_id: package_id,
                     user_id: user_data?.user?._id,
-                    webhook_url: `https://suggestions-acquisitions-singing-navy.trycloudflare.com `,
+                    webhook_url: `https://movie-expectations-reply-magical.trycloudflare.com `,
                   };
                   CommonApiRequest(
                     "POST",

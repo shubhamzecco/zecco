@@ -38,7 +38,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         const payload = {
             package_id: value,
             user_id: user_data?.user?._id,
-            webhook_url: `https://suggestions-acquisitions-singing-navy.trycloudflare.com `,
+            webhook_url: `https://movie-expectations-reply-magical.trycloudflare.com `,
         };
         CommonApiRequest(
             "POST",
