@@ -230,7 +230,9 @@ export function PaymentStatus({
               style={{ animationDuration: '0.6s', animationDelay: '0.7s' }}
               onClick={() => {
                 if (status === 'open') {
-                  window.location.reload();
+                  if (typeof window !== "undefined") {
+                    window.location.reload();
+                  }
                 } else if (status === 'failed' || status === 'expired') {
                   const payload = {
                     package_id: package_id,
@@ -278,7 +280,9 @@ export function PaymentStatus({
                         dispatch(setAuthData({} as any));
                       }
                     });
-                    window.location.href = App_url.link.INITIAL_URL || '/';
+                    if (typeof window !== "undefined") {
+                      window.location.href = App_url.link.INITIAL_URL || '/';
+                    }
                   }
                 }
 

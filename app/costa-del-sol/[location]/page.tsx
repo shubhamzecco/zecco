@@ -102,7 +102,7 @@ const Page = () => {
                 cities: Number(id?.location),
                 country: 6,
                 status: true,
-                forAll : propertyType === "all" ? true : false,
+                forAll: propertyType === "all" ? true : false,
                 categories: propertyTypes
                     ? Number(propertyTypes)
                     : null,
@@ -293,45 +293,47 @@ const Page = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (loading || !hasMore)
-                return;
+            if (typeof window !== "undefined") {
+                if (loading || !hasMore)
+                    return;
 
-            const scrollTop =
-                window.scrollY;
+                const scrollTop =
+                    window.scrollY;
 
-            const windowHeight =
-                window.innerHeight;
+                const windowHeight =
+                    window.innerHeight;
 
-            const documentHeight =
-                document.documentElement
-                    .scrollHeight;
+                const documentHeight =
+                    document.documentElement
+                        .scrollHeight;
 
-            if (
-                scrollTop + windowHeight >=
-                documentHeight - 300
-            ) {
-                const nextPage =
-                    page + 1;
+                if (
+                    scrollTop + windowHeight >=
+                    documentHeight - 300
+                ) {
+                    const nextPage =
+                        page + 1;
 
-                setPage(nextPage);
+                    setPage(nextPage);
 
-                fetchProperties(
-                    nextPage
-                );
-            }
-        };
+                    fetchProperties(
+                        nextPage
+                    );
+                }
+            };
 
-        window.addEventListener(
-            "scroll",
-            handleScroll
-        );
-
-        return () => {
-            window.removeEventListener(
+            window.addEventListener(
                 "scroll",
                 handleScroll
             );
-        };
+
+            return () => {
+                window.removeEventListener(
+                    "scroll",
+                    handleScroll
+                );
+            };
+        }
     }, [
         page,
         loading,

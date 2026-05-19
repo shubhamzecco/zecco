@@ -117,7 +117,9 @@ const UserMessage = ({
         {!isMobile && (
           <button
             onClick={() => {
-              window.location.href = `tel:${findParticipant?.contact_no}`
+              if (typeof window !== "undefined") {
+                window.location.href = `tel:${findParticipant?.contact_no}`
+              }
             }}
             className="ml-auto bg-black text-white w-11 h-11 rounded-full flex items-center justify-center hover:scale-105 transition">
             <Phone size={18} />

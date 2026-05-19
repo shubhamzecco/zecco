@@ -62,7 +62,7 @@ export default function PackagesModal({
     const payload = {
       package_id: value,
       user_id: userId || user_data?.user?._id,
-      webhook_url:`https://living-sin-headlines-lucky.trycloudflare.com `,
+      webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
     };
     CommonApiRequest(
       "POST",
@@ -73,7 +73,9 @@ export default function PackagesModal({
     )?.then(async (response: any) => {
       if (response?.status === 200) {
         if (response.success) {
-          window.location.href = response.data.checkoutUrl;
+          if(typeof window !== "undefined"){
+            window.location.href = response.data.checkoutUrl;
+          }
         }
       } else {
         toast.error(response?.message);
