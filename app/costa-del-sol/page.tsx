@@ -46,7 +46,7 @@ const CostadelSol = () => {
                 search: searchValue,
                 limit: LIMIT,
                 page: currentPage,
-                status: true
+                status : true
             },
         });
     };
@@ -95,42 +95,39 @@ const CostadelSol = () => {
     };
     useEffect(() => {
         const handleScroll = () => {
-            if (typeof window !== "undefined") {
+            if (loading || !hasMore) return;
 
-                if (loading || !hasMore) return;
+            const scrollTop =
+                window.scrollY;
 
-                const scrollTop =
-                    window.scrollY;
+            const windowHeight =
+                window.innerHeight;
 
-                const windowHeight =
-                    window.innerHeight;
+            const documentHeight =
+                document.documentElement.scrollHeight;
+            if (
+                scrollTop + windowHeight >=
+                documentHeight - 300
+            ) {
+                const nextPage = page + 1;
 
-                const documentHeight =
-                    document.documentElement.scrollHeight;
-                if (
-                    scrollTop + windowHeight >=
-                    documentHeight - 300
-                ) {
-                    const nextPage = page + 1;
+                setPage(nextPage);
 
-                    setPage(nextPage);
+                fetchAreas(nextPage, search);
+            }
+        };
 
-                    fetchAreas(nextPage, search);
-                }
-            };
+        window.addEventListener(
+            "scroll",
+            handleScroll
+        );
 
-            window.addEventListener(
+        return () => {
+            window.removeEventListener(
                 "scroll",
                 handleScroll
             );
-
-            return () => {
-                window.removeEventListener(
-                    "scroll",
-                    handleScroll
-                );
-            };
-        }
+        };
     }, [page, loading, hasMore, search]);
 
     useEffect(() => {

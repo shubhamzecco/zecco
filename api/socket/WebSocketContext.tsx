@@ -81,9 +81,6 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       console.log('⚠️ NEXT_PUBLIC_ENDPOINT_API_URL is not set');
       return;
     }
-
-    // console.log('🌐 Connecting to WebSocket server:', url);
-
     singletonSocket = io(url, {
       auth: buildAuthPayload(),
       transports: ['websocket'],

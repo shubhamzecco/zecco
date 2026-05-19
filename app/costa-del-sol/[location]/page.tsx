@@ -102,7 +102,7 @@ const Page = () => {
                 cities: Number(id?.location),
                 country: 6,
                 status: true,
-                forAll: propertyType === "all" ? true : false,
+                forAll : propertyType === "all" ? true : false,
                 categories: propertyTypes
                     ? Number(propertyTypes)
                     : null,
@@ -182,6 +182,7 @@ const Page = () => {
     // ==========================================
     // FILTER CHANGE
     // ==========================================
+
     const handleFilterChange = (
         filters: any
     ) => {
@@ -293,47 +294,45 @@ const Page = () => {
 
     useEffect(() => {
         const handleScroll = () => {
-            if (typeof window !== "undefined") {
-                if (loading || !hasMore)
-                    return;
+            if (loading || !hasMore)
+                return;
 
-                const scrollTop =
-                    window.scrollY;
+            const scrollTop =
+                window.scrollY;
 
-                const windowHeight =
-                    window.innerHeight;
+            const windowHeight =
+                window.innerHeight;
 
-                const documentHeight =
-                    document.documentElement
-                        .scrollHeight;
+            const documentHeight =
+                document.documentElement
+                    .scrollHeight;
 
-                if (
-                    scrollTop + windowHeight >=
-                    documentHeight - 300
-                ) {
-                    const nextPage =
-                        page + 1;
+            if (
+                scrollTop + windowHeight >=
+                documentHeight - 300
+            ) {
+                const nextPage =
+                    page + 1;
 
-                    setPage(nextPage);
+                setPage(nextPage);
 
-                    fetchProperties(
-                        nextPage
-                    );
-                }
-            };
+                fetchProperties(
+                    nextPage
+                );
+            }
+        };
 
-            window.addEventListener(
+        window.addEventListener(
+            "scroll",
+            handleScroll
+        );
+
+        return () => {
+            window.removeEventListener(
                 "scroll",
                 handleScroll
             );
-
-            return () => {
-                window.removeEventListener(
-                    "scroll",
-                    handleScroll
-                );
-            };
-        }
+        };
     }, [
         page,
         loading,
