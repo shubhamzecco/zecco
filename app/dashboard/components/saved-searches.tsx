@@ -432,7 +432,7 @@ const SavedSearches = ({
                     <h2 className="font-bold text-lg mb-2 font-inter text-[#111827]"> Saved Searches</h2>
                 </div>
 
-                <div className="rounded-2xl border border-gray-100 bg-white px-4 py-2 shadow-sm">
+                {/* <div className="rounded-2xl border border-gray-100 bg-white px-4 py-2 shadow-sm">
                     <span className="font-semibold text-[#2563EB]">
                         {mainReducer
                             ?.saved_searches
@@ -440,11 +440,11 @@ const SavedSearches = ({
                             ?.length || 0}
                     </span>{" "}
                     Searches
-                </div>
+                </div> */}
             </div>
 
             <div className="space-y-5">
-                {mainReducer?.saved_searches?.data?.map(
+                {mainReducer?.saved_searches?.data?.slice(0, 3)?.map(
                     (item: any) => {
                         const filters =
                             generateFilters(item);
