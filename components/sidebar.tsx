@@ -79,10 +79,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 key={item.name}
                 href={item.href}
                 className={`flex font-manrope text-[0.9rem] font-semibold items-center gap-3 px-4 py-2.5 rounded-full transition
-                  ${
-                    isActive
-                      ? "bg-[#2563EB] text-white"
-                      : "text-[#111827] hover:bg-[#F3F4F6]"
+                  ${isActive
+                    ? "bg-[#2563EB] text-white"
+                    : "text-[#111827] hover:bg-[#F3F4F6]"
                   }`}
               >
                 <Icon size={23} />
@@ -99,15 +98,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       </aside>
 
       <div
-        className={`md:hidden fixed inset-0 z-40 mb-28  transition ${
-          isOpen ? "visible" : "invisible"
-        }`}
+        className={`md:hidden fixed inset-0 z-40 mb-28  transition ${isOpen ? "visible" : "invisible"
+          }`}
       >
         <div
           onClick={onClose}
-          className={`absolute inset-0  transition-opacity ${
-            isOpen ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0  transition-opacity ${isOpen ? "opacity-100" : "opacity-0"
+            }`}
         />
         <div
           onClick={(e) => e.stopPropagation()}
@@ -117,27 +114,27 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <div className="flex items-center justify-between p-4 border-b">
             <div className="flex items-center gap-3">
               {user_data?.user?.profile_image ? (
-            <Image
-              src={URL + user_data?.user?.profile_image}
-              alt="Profile"
-              width={70}
-              height={70}
-              className="rounded-full object-cover w-12 h-12"
-            />
-          ) : (
-            <>
-              <ProfileAvatar
-                name={`${user_data?.user?.first_name + " " + user_data?.user?.last_name}`}
-                className="!w-12 !h-12 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
-              />
-            </>
-          )}
+                <Image
+                  src={URL + user_data?.user?.profile_image}
+                  alt="Profile"
+                  width={70}
+                  height={70}
+                  className="rounded-full object-cover w-12 h-12"
+                />
+              ) : (
+                <>
+                  <ProfileAvatar
+                    name={`${user_data?.user?.first_name + " " + user_data?.user?.last_name}`}
+                    className="!w-12 !h-12 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
+                  />
+                </>
+              )}
               <div>
                 <p className="text-sm font-manrope font-semibold text-[#111827]">
-                   {user_data?.user?.first_name + " " + user_data?.user?.last_name}
+                  {user_data?.user?.first_name + " " + user_data?.user?.last_name}
                 </p>
                 <p className="text-xs font-manrope font-medium text-[#A19F9F]">
-                   {user_data?.user?.email}
+                  {user_data?.user?.email}
                 </p>
               </div>
             </div>
@@ -156,10 +153,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                     href={item.href}
                     onClick={onClose}
                     className={`flex font-manrope text-[0.9rem] font-semibold items-center gap-3 px-4 py-2.5 rounded-full transition
-                      ${
-                        isActive
-                          ? "bg-[#2563EB] text-white"
-                          : "text-[#111827] hover:bg-[#F3F4F6]"
+                      ${isActive
+                        ? "bg-[#2563EB] text-white"
+                        : "text-[#111827] hover:bg-[#F3F4F6]"
                       }`}
                   >
                     <Icon size={23} />
@@ -192,13 +188,20 @@ function AgentCard() {
 
       <div className="bg-gradient-to-br from-[#E9EBEF] to-[#E9EBEF] rounded-2xl p-4 text-center">
         <div className="relative overflow-hidden border-2 border-white rounded-full w-16 h-16 mx-auto mb-4">
-          <Image
+          {user_data?.user?.agent?.agent?.profile_image ? (<Image
             src={URL + (user_data?.user?.agent?.agent?.profile_image ?? "")}
             alt="Agent"
             fill
             priority
             className="object-cover"
-          />
+          />) : (
+            <>
+              <ProfileAvatar
+                name={`${user_data?.user?.agent?.agent?.first_name+ " " + user_data?.user?.agent?.agent?.last_name}`}
+                className="!w-12 !h-12 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
+              />
+            </>
+          )}
         </div>
         <p className="text-[15px] font-inter font-semibold text-[#101828] my-1">
           {user_data?.user?.agent?.agent?.first_name +
