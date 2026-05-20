@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { PropertyMap } from "./map";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { useDispatch } from "react-redux";
+import { setPropertyFilter } from "@/redux/modules/main/action";
 
 interface FilterPanelProps {
   onFilterChange?: (filters: any) => void;
@@ -269,7 +271,7 @@ export const filterList = [
 
 export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const [filters, setFilters] = useState<FiltersState>({
-    propertyType: "1",
+    propertyType: "",
     priceMin: "",
     priceMax: "",
     sizeMin: "",
@@ -285,7 +287,102 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
     publicationDate: {},
   });
   const { mainReducer } = usePosterReducers();
-  const { sendMessage } = useWebSocket();
+  const { sendMessage, lastEvent } = useWebSocket();
+  const dispatch = useDispatch()
+
+const defaultFilters: FiltersState = {
+  propertyType: "",
+  priceMin: "",
+  priceMax: "",
+  sizeMin: "",
+  sizeMax: "",
+  types: {},
+  propertyStatus: { bareOwnership: true },
+  bedroomsFrom: null,
+  bedroomsTo: null,
+  condition: {},
+  moreFilters: {},
+  floor: {},
+  multimedia: {},
+  publicationDate: {},
+};
+
+useEffect(() => {
+  if (mainReducer?.propertyFilter) {
+    setFilters({
+      propertyType:
+        mainReducer?.propertyFilter?.categories || "",
+
+      priceMin:
+        mainReducer?.propertyFilter?.priceFrom || "",
+
+      priceMax:
+        mainReducer?.propertyFilter?.priceTo || "",
+
+      sizeMin:
+        mainReducer?.propertyFilter?.buildFrom || "",
+
+      sizeMax:
+        mainReducer?.propertyFilter?.buildTo || "",
+
+      bedroomsFrom:
+        mainReducer?.propertyFilter?.bedroomsFrom || null,
+
+      bedroomsTo:
+        mainReducer?.propertyFilter?.bedroomsTo || null,
+
+      types: Array.isArray(mainReducer?.propertyFilter?.types)
+  ? mainReducer.propertyFilter.types.reduce(
+      (
+        acc: Record<number, boolean>,
+        item: number
+      ) => {
+        acc[item] = true
+        return acc
+      },
+      {}
+    )
+  : {},
+
+moreFilters: Array.isArray(mainReducer?.propertyFilter?.features)
+  ? mainReducer.propertyFilter.features.reduce(
+      (
+        acc: Record<number, boolean>,
+        item: number
+      ) => {
+        acc[item] = true
+        return acc
+      },
+      {}
+    )
+  : {},
+
+      propertyStatus: { bareOwnership: true },
+      condition: {},
+      floor: {},
+      multimedia: {},
+      publicationDate: {},
+    });
+  } else {
+    dispatch(setPropertyFilter(defaultFilters));
+    setFilters(defaultFilters);
+  }
+}, []);
+
+  useEffect(() => {
+    if (mainReducer?.propertyFilter?.propertyTypes) {
+      sendMessage("action", {
+        type: "propertyService",
+        action: "propertyTypes",
+        payload: {
+          id: Number(mainReducer?.propertyFilter?.propertyTypes),
+          is_subtype: true,
+        },
+      });
+    }
+  },[mainReducer?.propertyFilter?.propertyTypes])
+
+
   const handleInputChange = (field: string, value: string | number) => {
     let updated: FiltersState = {
       ...filters,
@@ -294,7 +391,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
     if (field === "propertyType") {
       updated = {
         ...updated,
-        types: {}, 
+        types: {},
       };
       sendMessage("action", {
         type: "propertyService",
@@ -309,12 +406,14 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
 
     if (field === "propertyType") {
       onFilterChange?.(updated);
+      dispatch(setPropertyFilter(updated));
     }
   };
 
   const handleEnterPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === "tab") {
       onFilterChange?.(filters);
+      dispatch(setPropertyFilter(filters));
     }
   };
 
@@ -332,8 +431,37 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
     };
 
     setFilters(updated);
+    dispatch(setPropertyFilter(updated));
     onFilterChange?.(updated);
   };
+
+  useEffect(() => {
+    if (
+      lastEvent?.data?.status &&
+      lastEvent?.data?.request?.type === "savedSearchService" &&
+      lastEvent?.data?.request?.action === "add"
+    ) {
+      const emptyFilters: FiltersState = {
+        propertyType: "",
+        priceMin: "",
+        priceMax: "",
+        sizeMin: "",
+        sizeMax: "",
+        types: {},
+        propertyStatus: { bareOwnership: true },
+        bedroomsFrom: null,
+        bedroomsTo: null,
+        condition: {},
+        moreFilters: {},
+        floor: {},
+        multimedia: {},
+        publicationDate: {},
+      };
+      setFilters(emptyFilters);
+      dispatch(setPropertyFilter(emptyFilters));
+      onFilterChange?.(emptyFilters);
+    }
+  }, [lastEvent]);
 
   return (
     <div className="w-full bg-[#F8FAFC] rounded-lg h-full overflow-y-auto">
@@ -454,7 +582,8 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div key={item.id} className="flex items-center space-x-3">
                 <Checkbox
                   id={String(item.id)}
-                  checked={filters.types[item.id] || false}
+                  // checked={filters.types[item.id] || false}
+                  checked={!!filters?.types?.[item.id]}
                   onCheckedChange={(checked) =>
                     handleCheckboxChange("types", item.id, checked as boolean)
                   }
@@ -522,7 +651,8 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div key={item.id} className="flex items-center space-x-3">
                 <Checkbox
                   id={item.name}
-                  checked={filters.moreFilters?.[item.id]}
+                  // checked={filters.moreFilters?.[item.id]}
+                 checked={!!filters?.moreFilters?.[item.id]}
                   onCheckedChange={(checked) =>
                     handleCheckboxChange(
                       "moreFilters",

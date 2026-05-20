@@ -238,7 +238,13 @@ export const featureMap: Record<number, string> = {
     167: "Wheelchair Accesible Home",
 };
 
-const SavedSearches = () => {
+type SavedSearchesProps = {
+    isDashboard?: boolean;
+};
+
+const SavedSearches = ({
+    isDashboard = false,
+}: SavedSearchesProps) => {
     const { sendMessage, lastEvent } = useWebSocket();
     const { mainReducer } = usePosterReducers();
     const router = useRouter()
@@ -279,111 +285,120 @@ const SavedSearches = () => {
     };
 
 
-    const generateFilters = (item: any) => {
+    const generateFilters = (
+        item: any
+    ) => {
         const filters: {
             label: string;
             value: string | string[];
         }[] = [];
 
-        // CITY
-        if (item?.city) {
-            filters.push({
-                label: "Location",
-                value: item?.city?.name || "",
-            });
-
-            // filters.push({
-            //     label: "City ID",
-            //     value: String(item?.city?.id || ""),
-            // });
-
-            // filters.push({
-            //     label: "Coordinates",
-            //     value: `${item?.city?.point?.coordinates?.[1]}, ${item?.city?.point?.coordinates?.[0]}`,
-            // });
-
-            // filters.push({
-            //     label: "City Image",
-            //     value: item?.city?.image || "",
-            // });
-        }
-
-        // PROPERTY TYPE
-        if (item?.categories) {
+        if (
+            item?.categories) {
             filters.push({
                 label: "Property Type",
                 value: propertyTypeMap[item?.categories],
             });
         }
 
-        // TYPES
-        if (item?.types?.filter(Boolean)?.length > 0) {
+        if (
+            item?.types?.filter(Boolean)
+                ?.length > 0
+        ) {
             filters.push({
                 label: "Types",
-                value: item?.types
-                    ?.filter(Boolean)
-                    ?.map(
-                        (type: number) =>
-                            propertyTypeMap[type] || `Type ${type}`
-                    )
-                    ?.join(", "),
+                value:
+                    item?.types
+                        ?.filter(Boolean)
+                        ?.map(
+                            (
+                                type: number
+                            ) =>
+                                propertyTypeMap[
+                                type
+                                ] ||
+                                `Type ${type}`
+                        )?.join(', '),
             });
         }
 
-        // FEATURES
-        if (item?.features?.filter(Boolean)?.length > 0) {
+        if (
+            item?.features?.filter(Boolean)
+                ?.length > 0
+        ) {
             filters.push({
                 label: "Features",
-                value: item?.features
-                    ?.filter(Boolean)
-                    ?.map(
-                        (feature: number) =>
-                            featureMap[feature] || `Feature ${feature}`
-                    )
-                    ?.join(", "),
+                value:
+                    item?.features
+                        ?.filter(Boolean)
+                        ?.map(
+                            (
+                                feature: number
+                            ) =>
+                                featureMap[
+                                feature
+                                ] ||
+                                `Feature ${feature}`
+                        ),
             });
         }
 
-        // BEDROOMS
-        if (item?.bedroomsFrom || item?.bedroomsTo) {
+        if (
+            item?.bedroomsFrom ||
+            item?.bedroomsTo
+        ) {
             filters.push({
                 label: "Bedrooms",
-                value: `${item?.bedroomsFrom || 0} - ${item?.bedroomsTo || 0
+                value: `${item?.bedroomsFrom || 0
+                    } - ${item?.bedroomsTo || 0
                     }`,
             });
         }
 
-        // PRICE
-        if (item?.priceFrom || item?.priceTo) {
+        if (
+            item?.priceFrom ||
+            item?.priceTo
+        ) {
             filters.push({
                 label: "Price",
-                value: `€${item?.priceFrom?.toLocaleString() || 0} - €${item?.priceTo?.toLocaleString() || 0
+                value: `€${item?.priceFrom?.toLocaleString() || 0
+                    } - €${item?.priceTo?.toLocaleString() || 0
                     }`,
             });
         }
 
-        // BUILD SIZE
-        if (item?.buildFrom || item?.buildTo) {
+        if (
+            item?.buildFrom ||
+            item?.buildTo
+        ) {
             filters.push({
                 label: "Build Size",
-                value: `${item?.buildFrom || 0}m² - ${item?.buildTo || 0
+                value: `${item?.buildFrom || 0
+                    }m² - ${item?.buildTo || 0
                     }m²`,
             });
         }
 
-        // STATUS
+
+
         const status: string[] = [];
 
         if (item?.forSale) {
-            status.push("For Sale");
+            status.push(
+                "For Sale"
+            );
         }
 
         if (item?.forRent) {
-            status.push("For Rent");
+            status.push(
+                "For Rent"
+            );
         }
 
         if (item?.isNewDev) {
-            status.push("New Development");
+            status.push(
+                "New Development"
+            );
         }
 
         if (status?.length > 0) {
@@ -410,137 +425,122 @@ const SavedSearches = () => {
 
 
     return (
-        <SidebarLayout>
-            <div
-                className="min-h-screen bg-gradient-to-r
-                from-[#60A5FA]/10
-                via-[#fafafa]
-                to-[#fafafa]
-                px-5 py-8 lg:px-12"
-            >
-                <section className="mt-5">
-                    <div className="mb-8 flex items-center justify-between">
-                        <div>
-                            <h2 className="font-inter text-2xl font-bold text-[#111827]">
-                                Saved Searches
-                            </h2>
 
-                            <p className="mt-1 text-sm text-gray-500">
-                                Your saved
-                                property filters
-                            </p>
-                        </div>
+        <section className="mt-5">
+            <div className="mb-3 flex items-center justify-between">
+                <div>
+                    <h2 className="font-bold text-lg mb-2 font-inter text-[#111827]"> Saved Searches</h2>
+                </div>
 
-                        <div className="rounded-2xl border border-gray-100 bg-white px-4 py-2 shadow-sm">
-                            <span className="font-semibold text-[#2563EB]">
-                                {mainReducer
-                                    ?.saved_searches
-                                    ?.data
-                                    ?.length || 0}
-                            </span>{" "}
-                            Searches
-                        </div>
-                    </div>
-
-                    <div className="space-y-5">
-                        {mainReducer?.saved_searches?.data?.map(
-                            (item: any) => {
-                                const filters =
-                                    generateFilters(item);
-
-                                return (
-                                    <div
-                                        key={item?._id}
-                                        className="rounded-md flex gap-4 py-4 bg-white px-5 shadow-sm transition-all duration-300 hover:shadow-lg"
-                                    >
-                                        {item?.city && (
-                                            <div className="shrink-0">
-                                                <img
-                                                    src={`${URL}${item?.city?.image}`}
-                                                    alt={item?.city?.name}
-                                                    className="h-16 w-16 rounded-2xl object-cover border border-gray-200"
-                                                />
-                                            </div>
-                                        )}
-
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm leading-7 text-gray-500 break-words">
-                                                {filters?.map((filter, index) => (
-                                                    <span key={index}>
-                                                        <span className="font-semibold uppercase text-xs text-black">
-                                                            {filter.label} :
-                                                        </span>{" "}
-
-                                                        {Array.isArray(filter.value)
-                                                            ? filter.value.join(", ")
-                                                            : filter.value}
-
-                                                        {index !== filters.length - 1 && (
-                                                            <span className="mx-2 text-gray-300">
-                                                                |
-                                                            </span>
-                                                        )}
-                                                    </span>
-                                                ))}
-
-                                                <div className="flex justify-end items-center gap-3 ml-auto shrink-0">
-                                                    <button
-                                                        onClick={() =>
-                                                            handleApplySearch(
-                                                                item
-                                                            )
-                                                        }
-                                                        className="rounded-2xl border border-blue-200 p-2 text-blue-600 transition-all hover:bg-blue-50"
-                                                    >
-                                                        <Eye size={15} />
-                                                    </button>
-
-                                                    <button
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                item?._id
-                                                            )
-                                                        }
-                                                        className="rounded-2xl border border-red-200 p-2 text-red-600 transition-all hover:bg-red-50"
-                                                    >
-                                                        <Trash2
-                                                            size={15}
-                                                        />
-                                                    </button>
-                                                </div>
-                                            </p>
-                                        </div>
-                                    </div>
-                                );
-                            }
-                        )}
-                    </div>
-
-                    {mainReducer
-                        ?.saved_searches
-                        ?.data
-                        ?.length ===
-                        0 && (
-                            <div className="mt-24 flex flex-col items-center justify-center">
-                                <div className="rounded-full bg-blue-100 p-5">
-                                    <MapPin className="text-blue-600" />
-                                </div>
-
-                                <h2 className="mt-5 text-2xl font-bold text-gray-800">
-                                    No Saved
-                                    Searches
-                                </h2>
-
-                                <p className="mt-2 text-center text-sm text-gray-500">
-                                    Your saved
-                                    filters will
-                                    appear here
-                                </p>
-                            </div>
-                        )}
-                </section>
+                <div className="rounded-2xl border border-gray-100 bg-white px-4 py-2 shadow-sm">
+                    <span className="font-semibold text-[#2563EB]">
+                        {mainReducer
+                            ?.saved_searches
+                            ?.data
+                            ?.length || 0}
+                    </span>{" "}
+                    Searches
+                </div>
             </div>
-        </SidebarLayout>
+
+            <div className="space-y-5">
+                {mainReducer?.saved_searches?.data?.map(
+                    (item: any) => {
+                        const filters =
+                            generateFilters(item);
+
+                        return (
+                            <div
+                                key={item?._id}
+                                className="rounded-md flex gap-4 py-4 bg-white px-5 shadow-sm transition-all duration-300 hover:shadow-lg"
+                            >
+                                {item?.city && (
+                                    <div className="shrink-0">
+                                        <img
+                                            src={`${URL}${item?.city?.image}`}
+                                            alt={item?.city?.name}
+                                            className="h-16 w-16 rounded-2xl object-cover border border-gray-200"
+                                        />
+                                    </div>
+                                )}
+
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm leading-7 text-gray-500 break-words">
+                                        {filters?.map((filter, index) => (
+                                            <span key={index}>
+                                                <span className="font-semibold uppercase text-xs text-black">
+                                                    {filter.label} :
+                                                </span>{" "}
+
+                                                {Array.isArray(filter.value)
+                                                    ? filter.value.join(", ")
+                                                    : filter.value}
+
+                                                {index !== filters.length - 1 && (
+                                                    <span className="mx-2 text-gray-300">
+                                                        |
+                                                    </span>
+                                                )}
+                                            </span>
+                                        ))}
+
+                                        <div className="flex justify-end items-center gap-3 ml-auto shrink-0">
+                                            <button
+                                                onClick={() =>
+                                                    handleApplySearch(
+                                                        item
+                                                    )
+                                                }
+                                                className="rounded-2xl border border-blue-200 p-2 text-blue-600 transition-all hover:bg-blue-50"
+                                            >
+                                                <Eye size={15} />
+                                            </button>
+
+                                            <button
+                                                onClick={() =>
+                                                    handleDelete(
+                                                        item?._id
+                                                    )
+                                                }
+                                                className="rounded-2xl border border-red-200 p-2 text-red-600 transition-all hover:bg-red-50"
+                                            >
+                                                <Trash2
+                                                    size={15}
+                                                />
+                                            </button>
+                                        </div>
+                                    </p>
+                                </div>
+                            </div>
+                        );
+                    }
+                )}
+            </div>
+
+            {mainReducer
+                ?.saved_searches
+                ?.data
+                ?.length ===
+                0 && (
+                    <div className="mt-24 flex flex-col items-center justify-center">
+                        <div className="rounded-full bg-blue-100 p-5">
+                            <MapPin className="text-blue-600" />
+                        </div>
+
+                        <h2 className="mt-5 text-2xl font-bold text-gray-800">
+                            No Saved
+                            Searches
+                        </h2>
+
+                        <p className="mt-2 text-center text-sm text-gray-500">
+                            Your saved
+                            filters will
+                            appear here
+                        </p>
+                    </div>
+                )}
+        </section>
+
     );
 };
 

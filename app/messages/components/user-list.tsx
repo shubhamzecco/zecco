@@ -1,5 +1,6 @@
 import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import ProfileAvatar from "@/components/profile";
 import { App_url } from "@/constant/static"
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { Search } from "lucide-react"
@@ -84,17 +85,20 @@ const UserList: React.FC<UserListProps> = ({ onSelect, userList, selectedUser })
             className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer ${selectedUser?._id === user._id ? 'bg-white hover:bg-blue-100' : 'hover:bg-white'} hover:bg-white transition mt-3`}
           >
             <div className="relative w-12 h-12">
-              <Image
-                src={
-                  findParticipant?.profile_image
-                    ? URL + findParticipant.profile_image
-                    : App_url.image.image_6
-                }
+              {findParticipant?.profile_image ? (<Image
+                src={URL + findParticipant.profile_image}
                 alt={findParticipant?.first_name}
                 width={48}
                 height={48}
                 className="rounded-full h-full w-full object-cover"
-              />
+              />) : (
+                <>
+                  <ProfileAvatar
+                    name={`${findParticipant?.first_name}  ${findParticipant?.last_name}`}
+                    className="!w-12 !h-12 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
+                  />
+                </>
+              )}
               {/* <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" /> */}
             </div>
             <div>
@@ -104,15 +108,17 @@ const UserList: React.FC<UserListProps> = ({ onSelect, userList, selectedUser })
               <p className="text-xs text-gray-400">{user?.message}</p>
             </div>
 
-            {user.unread_count > 0 && (
-              <span className="ml-auto bg-[#111827] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">
-                {user.unread_count}
-              </span>
-            )}
+            {
+              user.unread_count > 0 && (
+                <span className="ml-auto bg-[#111827] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">
+                  {user.unread_count}
+                </span>
+              )
+            }
           </div>
         )
       })}
-    </div>
+    </div >
   )
 }
 

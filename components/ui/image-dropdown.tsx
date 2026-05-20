@@ -38,17 +38,10 @@ export default function ImageDropdown({
 
   return (
     <div ref={ref} className="relative">
-      {/* Trigger */}
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-3 rounded-full bg-[#136AED] px-2 py-2 text-sm font-semibold text-[#0F172A]"
       >
-        {/* <img
-          src={avatar}
-          alt="profile"
-          className="w-8 h-8 rounded-full object-cover"
-        /> */}
-
         <User size={20} className='text-white'/>
 
         <span className="hidden sm:block text-white font-inter">{name}</span>

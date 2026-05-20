@@ -67,7 +67,7 @@ export const ws_response = (
           }
         }
 
-         if (ws_onmessage?.request?.action === 'areas_list') {
+        if (ws_onmessage?.request?.action === 'areas_list') {
           if (ws_onmessage?.status === true) {
             dispatch(setSearchByArea(ws_onmessage?.data))
           } else {
@@ -152,7 +152,12 @@ export const ws_response = (
       }
         break;
 
-       case 'savedSearchService': {
+      case 'savedSearchService': {
+        if (ws_onmessage?.request?.action === "add" || ws_onmessage?.request?.action === "delete") {
+          if (ws_onmessage?.status === true) {
+            toast.success(ws_onmessage?.msg);
+          }
+        }
         if (ws_onmessage?.request?.action === 'list') {
           if (ws_onmessage?.status === true) {
             dispatch(setSavedSearchesList(ws_onmessage?.data))
@@ -161,7 +166,7 @@ export const ws_response = (
           }
         }
       }
-        break;  
+        break;
 
       default:
         return;

@@ -102,10 +102,10 @@ const Page = () => {
                 cities: Number(id?.location),
                 country: 6,
                 status: true,
-                forAll : propertyType === "all" ? true : false,
+                forAll: propertyType === "all" ? true : false,
                 categories: propertyTypes
                     ? Number(propertyTypes)
-                    : null,
+                    : filters?.propertyType,
                 ...filters,
 
                 ...(propertyType === "buy" && {
@@ -128,9 +128,6 @@ const Page = () => {
         });
     };
 
-    // ==========================================
-    // INITIAL API
-    // ==========================================
     useEffect(() => {
         setPage(1);
         setProperties([]);
@@ -143,11 +140,9 @@ const Page = () => {
         isConnected,
         propertyType,
         propertyTypes,
+        mainReducer?.propertyFilter
     ]);
 
-    // ==========================================
-    // HANDLE RESPONSE
-    // ==========================================
     useEffect(() => {
         const response =
             mainReducer?.property_list_with_limit;
@@ -361,11 +356,26 @@ const Page = () => {
                 true
             );
         }
+        if (
+            lastEvent?.data?.status &&
+            lastEvent?.data?.request
+                ?.type ===
+            "savedSearchService" &&
+            (lastEvent?.data?.request
+                ?.action ===
+                "add")
+        ) {
+            fetchedPages.current.clear();
+            setFilterData(null)
+
+            fetchProperties(
+                1,
+                filterData,
+                true
+            );
+        }
     }, [lastEvent]);
 
-    useEffect(() => {
-        dispatch(setPropertyDetails(null));
-    }, []);
 
     useEffect(() => {
         if (
@@ -384,7 +394,11 @@ const Page = () => {
                 )
             );
         }
+        dispatch(setPropertyDetails(null));
     }, []);
+
+    console.log("filterData ::: " , filterData)
+    console.log("propertyTypes :: " , propertyTypes)
 
     const handleSavedSearches =
         () => {
@@ -393,6 +407,8 @@ const Page = () => {
                 action: "add",
                 payload: {
                     ...filterData,
+                    categories: propertyTypes ?? filterData?.propertyType,
+                    cities: id?.location
                 },
             });
         };

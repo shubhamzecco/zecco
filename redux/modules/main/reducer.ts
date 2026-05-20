@@ -25,7 +25,8 @@ const initialState: IMainResponse = {
   property_type_list: null,
   property_subtype_list: null,
   saved_searches: null,
-  search_by_area: null
+  search_by_area: null,
+  propertyFilter : null
 };
 
 const mainReducer = (
@@ -33,6 +34,13 @@ const mainReducer = (
   action: any
 ): IMainResponse => {
   switch (action.type) {
+
+    case ActionTypes.SET_PROPERTY_FILTERS: {
+      return {
+        ...state,
+        propertyFilter: action.payload
+      }
+    }
 
 
     case ActionTypes.SET_SEARCH_BY_AREA_LIST: {

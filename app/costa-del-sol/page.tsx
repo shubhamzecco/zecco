@@ -4,7 +4,7 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import AreaCard from "@/components/cards/AreaCard";
 import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs } from "@/redux/modules/main/action";
+import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -144,6 +144,7 @@ const CostadelSol = () => {
                 )
             );
         }
+        dispatch(setPropertyFilter({}))
     }, []);
 
     return (

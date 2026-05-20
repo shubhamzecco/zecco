@@ -3,6 +3,7 @@ import React from 'react'
 import DashboardCard from './components/dashboard-cards'
 import Favorite from './components/favorite'
 import AiInsights from './components/aiInsights'
+import SavedSearches from './components/saved-searches'
 
 const DashboardPage = () => {
     return (
@@ -12,7 +13,7 @@ const DashboardPage = () => {
                         from-[#60A5FA]/10
                         via-[#fafafa] via-[70%]
                         to-[#fafafa] to-[100%]">
-                <DashboardCard/>
+                <SavedSearches/>
                 <Favorite/>
                 <AiInsights/>
             </div>

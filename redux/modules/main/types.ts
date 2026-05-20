@@ -694,6 +694,37 @@ export interface IPropertyDescription {
   priceDescription: string | null;
 }
 
+export interface SavedSearch {
+    _id: string;
+    user: string;
+
+    types: number[];
+    features: number[];
+
+    bedroomsFrom: number | null;
+    bedroomsTo: number | null;
+
+    priceFrom: number | null;
+    priceTo: number | null;
+
+    buildFrom: number | null;
+    buildTo: number | null;
+
+    forSale: boolean;
+    forRent: boolean;
+    isNewDev: boolean;
+
+    status: boolean;
+
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface ISavedSearches {
+  data: SavedSearch[],
+  pagination: IPagination
+}
+
 export interface IPackageResponse {
   data: IPlan[],
   pagination: IPagination
@@ -720,6 +751,7 @@ export interface IFavoriteProperty {
   pagination: IPagination;
 }
 
+
 export interface IMainResponse {
   chat_messages: ChatMessagesResponse | null;
   breadcrumbs: BreadcrumbItem[]
@@ -741,6 +773,7 @@ export interface IMainResponse {
   user_package_list: IUserPackagePayment[] | null;
   property_type_list: IPropertyType[] | null;
   property_subtype_list: IPropertyType[] | null;
-  saved_searches: any
-  search_by_area: any
+  saved_searches: ISavedSearches | null
+  search_by_area: any;
+  propertyFilter : any
 }

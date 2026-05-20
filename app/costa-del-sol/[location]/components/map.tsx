@@ -8,9 +8,6 @@ export function PropertyMap() {
     const map = useRef<any>(null)
     const markersRef = useRef<any[]>([])
     const [selectedLocation] = useState('Marbella')
-    const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
-
     useEffect(() => {
         if (!mapContainer.current) return
 
@@ -20,14 +17,14 @@ export function PropertyMap() {
             await import('leaflet/dist/leaflet.css')
 
             // Initialize map
-            if (!map.current) {
-                map.current = L.map(mapContainer.current ? mapContainer.current : '', {
+            if (!map?.current) {
+                map.current = L?.map(mapContainer?.current ? mapContainer?.current : '', {
                     attributionControl: false,
                 }).setView([36.5116, -4.8848], 9)
 
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     maxZoom: 19,
-                }).addTo(map.current)
+                }).addTo(map?.current)
             }
 
             // Clear existing markers
@@ -39,13 +36,13 @@ export function PropertyMap() {
             const center = getLocationCenter(selectedLocation)
 
             // Center map on location
-            if (map.current) {
-                map.current.setView([center.lat, center.lng], selectedLocation === 'Marbella' ? 10 : 11)
+            if (map?.current) {
+                map?.current.setView([center.lat, center.lng], selectedLocation === 'Marbella' ? 10 : 11)
             }
 
             // Add property markers
             locationProps.forEach((property: Property) => {
-                if (map.current) {
+                if (map?.current) {
                     // Create custom icon
                     const iconHtml = `
             <div class="flex items-center justify-center bg-blue-600 text-white rounded-full w-10 h-10 font-bold text-sm shadow-lg border-2 border-white">
@@ -70,7 +67,7 @@ export function PropertyMap() {
                 <p class="text-sm text-gray-600"><strong>Beds:</strong> ${property.beds}</p>
               </div>
             `)
-                        .addTo(map.current)
+                        .addTo(map?.current)
 
                     markersRef.current.push(marker)
                 }

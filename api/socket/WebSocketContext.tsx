@@ -14,6 +14,9 @@ import { useDispatch } from 'react-redux';
 import { io, Socket } from 'socket.io-client';
 import { ws_response } from './ws_response';
 import { usePosterReducers } from '@/redux/getdata/usePostReducer';
+import CommonApiRequest from '../rest/fetchData';
+import { App_url } from '@/constant/static';
+import { setAuthData, setLogin } from '@/redux/modules/common/user_data/action';
 
 // Singleton socket reference
 let singletonSocket: Socket | null = null;
@@ -108,6 +111,30 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
     singletonSocket.onAny((event, data) => {
       console.log('📥 Received event:', event, data);
+      if (event === 'agent_assigned') {
+        CommonApiRequest(
+          "GET",
+          `${App_url.endpoint_url?.GET_AUTH_USER}/${user_data?.user?.email}`,
+          {},
+          {},
+          user_data?.access_token
+        )?.then((response: any) => {
+          if (response?.status === 200) {
+            const payload = {
+              user: response.data,
+              access_token: user_data?.access_token,
+            };
+            localStorage.setItem("access_token", user_data?.access_token);
+            dispatch(setLogin(true));
+            dispatch(setAuthData(payload as any));
+          } else {
+            localStorage.clear()
+            dispatch(setLogin(false));
+            dispatch(setAuthData({} as any));
+          }
+        });
+        return
+      }
       setLastEvent({ event, data });
       dispatch(
         ws_response({ evt: { event, data } }, router, (d: any) =>

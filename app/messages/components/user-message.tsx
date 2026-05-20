@@ -2,9 +2,11 @@
 
 import { URL } from "@/api/rest/fetchData"
 import { useWebSocket } from "@/api/socket/WebSocketContext"
+import ProfileAvatar from "@/components/profile"
 import { usePosterReducers } from "@/redux/getdata/usePostReducer"
 import { formatTime } from "@/utils/common"
 import { ArrowLeft, Check, CheckCheck, Phone, Send } from "lucide-react"
+import Image from "next/image"
 import { useEffect, useRef, useState } from "react"
 
 const UserMessage = ({
@@ -93,11 +95,25 @@ const UserMessage = ({
 
         <div className="relative">
           <div className="w-14 h-14 border rounded-full p-1 bg-white shadow-sm">
-            <img
+            {/* <img
               src={URL + findParticipant?.profile_image}
               alt={findParticipant?.first_name}
               className="rounded-full w-full h-full object-cover"
-            />
+            /> */}
+            {findParticipant?.profile_image ? (
+              <img
+                src={URL + findParticipant?.profile_image}
+                alt={findParticipant?.first_name}
+                className="rounded-full w-full h-full object-cover"
+              />
+            ) : (
+              <>
+                <ProfileAvatar
+                  name={`${findParticipant?.first_name}  ${findParticipant?.last_name}`}
+                  className="!w-12 !h-12 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
+                />
+              </>
+            )}
           </div>
 
           {/* online dot */}
