@@ -1,7 +1,6 @@
+"use client";
 
-'use client';
-
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import React, {
   createContext,
   ReactNode,
@@ -9,15 +8,17 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from 'react';
-import { useDispatch } from 'react-redux';
-import { io, Socket } from 'socket.io-client';
-import { ws_response } from './ws_response';
-import { usePosterReducers } from '@/redux/getdata/usePostReducer';
-import CommonApiRequest from '../rest/fetchData';
-import { App_url } from '@/constant/static';
-import { setAuthData, setLogin } from '@/redux/modules/common/user_data/action';
-import { toast } from 'react-toastify';
+} from "react";
+import { useDispatch } from "react-redux";
+import { io, Socket } from "socket.io-client";
+import { ws_response } from "./ws_response";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import CommonApiRequest from "../rest/fetchData";
+import { App_url } from "@/constant/static";
+import { setAuthData, setLogin } from "@/redux/modules/common/user_data/action";
+import { toast } from "react-toastify";
+import { setLogout } from "@/redux/actions/action";
+import { setReduxClear } from "@/redux/modules/main/action";
 
 // Singleton socket reference
 let singletonSocket: Socket | null = null;
@@ -32,7 +33,7 @@ type WebSocketContextType = {
 
 export const WebSocketContext = createContext<WebSocketContextType>({
   socket: null,
-  sendMessage: () => { },
+  sendMessage: () => {},
   isConnected: false,
   lastEvent: null,
 });
@@ -51,9 +52,10 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
   const guestAccessToken = process.env.NEXT_PUBLIC_GUEST_ACCESS_TOKEN;
 
   const [isConnected, setIsConnected] = useState(false);
-  const [lastEvent, setLastEvent] = useState<{ event: string; data: any } | null>(
-    null
-  );
+  const [lastEvent, setLastEvent] = useState<{
+    event: string;
+    data: any;
+  } | null>(null);
 
   const buildAuthPayload = () => {
     if (accessToken) {
@@ -67,7 +69,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       // console.log('📤 Sending message:', event, data);
       singletonSocket.emit(event, data);
     } else {
-      console.log('⚠️ Socket not connected. Cannot send:', event, data);
+      console.log("⚠️ Socket not connected. Cannot send:", event, data);
     }
   }, []);
 
@@ -82,12 +84,12 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
     const url = process.env.NEXT_PUBLIC_ENDPOINT_API_URL;
     if (!url) {
-      console.log('⚠️ NEXT_PUBLIC_ENDPOINT_API_URL is not set');
+      console.log("⚠️ NEXT_PUBLIC_ENDPOINT_API_URL is not set");
       return;
     }
     singletonSocket = io(url, {
       auth: buildAuthPayload(),
-      transports: ['websocket'],
+      transports: ["websocket"],
       reconnection: true,
       reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
@@ -95,32 +97,32 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
       autoConnect: true,
     });
 
-    singletonSocket.on('connect', () => {
-      console.log('✅ Socket.IO connected');
+    singletonSocket.on("connect", () => {
+      console.log("✅ Socket.IO connected");
       setIsConnected(true);
     });
 
-    singletonSocket.on('disconnect', (reason) => {
-      console.log('❌ Socket.IO disconnected:', reason);
+    singletonSocket.on("disconnect", (reason) => {
+      console.log("❌ Socket.IO disconnected:", reason);
       setIsConnected(false);
     });
 
-    singletonSocket.on('connect_error', (err) => {
-      console.error('🚨 Socket.IO connection error:', err);
+    singletonSocket.on("connect_error", (err) => {
+      console.error("🚨 Socket.IO connection error:", err);
       setIsConnected(false);
     });
 
     singletonSocket.onAny((event, data) => {
-      console.log('📥 Received event:', event, data);
-      if (event === 'agent_assigned') {
+      console.log("📥 Received event:", event, data);
+      if (event === "agent_assigned") {
         CommonApiRequest(
           "GET",
           `${App_url.endpoint_url?.GET_AUTH_USER}/${user_data?.user?.email}`,
           {},
           {},
-          user_data?.access_token
+          user_data?.access_token,
         )?.then((response: any) => {
-          console.log("response", response)
+          console.log("response", response);
           if (response?.status === 200) {
             const payload = {
               user: response.data,
@@ -129,20 +131,33 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             localStorage.setItem("access_token", user_data?.access_token);
             dispatch(setLogin(true));
             dispatch(setAuthData(payload as any));
-            toast.info(`${response?.data?.agent?.agent?.first_name} ${response?.data?.agent?.agent?.last_name} has been assigned as your agent.`);
+            toast.info(
+              `${response?.data?.agent?.agent?.first_name} ${response?.data?.agent?.agent?.last_name} has been assigned as your agent.`,
+            );
           } else {
-            localStorage.clear()
+            localStorage.clear();
             dispatch(setLogin(false));
             dispatch(setAuthData({} as any));
           }
         });
-        return
+        return;
+      }
+      if (event === "unauthorized") {
+        dispatch(setLogout());
+        localStorage.clear();
+        dispatch(setAuthData({} as any));
+        dispatch(setReduxClear());
+        router.push(App_url.link.INITIAL_URL);
+        return;
       }
       setLastEvent({ event, data });
       dispatch(
-        ws_response({ evt: { event, data } }, router, (d: any) =>
-          sendMessage(event, d), user_data
-        ) as any
+        ws_response(
+          { evt: { event, data } },
+          router,
+          (d: any) => sendMessage(event, d),
+          user_data,
+        ) as any,
       );
     });
 
@@ -154,7 +169,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     if (!accessToken && !guestAccessToken) return;
 
     if (singletonSocket) {
-      console.log('♻️ Reconnecting socket due to token change...');
+      console.log("♻️ Reconnecting socket due to token change...");
       singletonSocket.disconnect();
       singletonSocket = null;
       isSocketInitialized = false;
