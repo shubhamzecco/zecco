@@ -379,6 +379,7 @@ moreFilters: Array.isArray(mainReducer?.propertyFilter?.features)
           is_subtype: true,
         },
       });
+      setFilters({...mainReducer?.propertyFilter , propertyType : mainReducer?.propertyFilter?.propertyTypes})
     }
   },[mainReducer?.propertyFilter?.propertyTypes])
 
