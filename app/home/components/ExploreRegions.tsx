@@ -333,14 +333,29 @@ export default function ExploreRegions() {
                     <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
                       {region.name}
                     </h3>
-
-                    <span className="inline-block text-xs font-medium text-[#64748B] tracking-wider uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
-                      {region.property_count} PROPERTIES
-                    </span>
-
+                    <div className="flex justify-between items-center text-center gap-2">
+                      <h2 className="inline-block text-xs font-medium text-[#64748B] tracking-wider uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
+                        {region.property_count} PROPERTIES
+                      </h2>
+                      <button
+                        onClick={() => handleNavigate(region?.name)}
+                        className="
+                            text-[#4A86E8]
+                            font-manrope
+                            py-1
+                            mb-4
+                            font-bold
+                            text-sm
+                            transition
+                            hover:opacity-90
+                          "
+                      >
+                        View
+                      </button>
+                    </div>
                     <ul className="space-y-2 mb-4">
                       {region?.areas
-                        ?.slice(0, 3)
+                        ?.slice(0, 5)
                         ?.map((item: any, i: number) => (
                           <li
                             key={i}
@@ -360,24 +375,6 @@ export default function ExploreRegions() {
                           </li>
                         ))}
                     </ul>
-
-                    <button
-                      onClick={() => handleNavigate(region?.name)}
-                      className="
-                            bg-[#4A86E8]
-                            text-white
-                            py-2
-                            px-4
-                            font-manrope
-                            font-bold
-                            rounded-full
-                            text-sm
-                            transition
-                            hover:opacity-90
-                          "
-                    >
-                      View all listings
-                    </button>
                   </div>
                 ))}
               </div>

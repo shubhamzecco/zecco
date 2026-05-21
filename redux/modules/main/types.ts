@@ -247,6 +247,7 @@ export interface IBlogs {
   _id: string;
   name: string;
   description: string;
+  page_description: string;
   image: string;
   status: boolean;
   createdAt: string;   // ISO date string
@@ -720,6 +721,15 @@ export interface SavedSearch {
     updatedAt: string;
 }
 
+export interface IStoreAiInsight {
+  client: string;
+  property: IProperty;
+  data: PropertyAnalysis
+  createdAt: string;
+  updatedAt: string;
+
+}
+
 export interface ISavedSearches {
   data: SavedSearch[],
   pagination: IPagination
@@ -732,6 +742,11 @@ export interface IPackageResponse {
 
 export interface ILocationResponse {
   data: ILocation[];
+  pagination: IPagination;
+}
+
+export interface IStoredAiInsightResponse {
+  data: IStoreAiInsight[];
   pagination: IPagination;
 }
 
@@ -761,6 +776,7 @@ export interface IMainResponse {
   ai_chat_badge_open: boolean;
   location_list_with_limit: ILocationResponse | null
   blogs_list_with_limit: IBlogsResponse | null
+  blog_details: IBlogs | null
   property_list_with_limit: IPropertyResponse | null
   property_list_without_limit: IPropertyResponse | null
   property_details: IProperty | null
@@ -776,4 +792,5 @@ export interface IMainResponse {
   saved_searches: ISavedSearches | null
   search_by_area: any;
   propertyFilter : any
+  stored_aiInsight: IStoredAiInsightResponse | null
 }

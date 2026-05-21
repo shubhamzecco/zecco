@@ -72,6 +72,7 @@ export const App_url = {
     ZECCO_FAVORITES: "/zecco-favorites",
     COSTA_DEL_SOL: '/costa-del-sol',
     PROPERTY_DETAILS: '/property',
+    BLOGS: '/blogs',
 
     DASHBOARD: '/dashboard',
     FAVORITES: '/favorites',

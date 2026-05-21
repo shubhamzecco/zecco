@@ -39,11 +39,20 @@ export const ActionTypes = {
   SET_SAVED_SEARCHES_LIST: 'SET_SAVED_SEARCHES_LIST',
   SET_SEARCH_BY_AREA_LIST: 'SET_SEARCH_BY_AREA_LIST',
   SET_PROPERTY_FILTERS: 'SET_PROPERTY_FILTERS',
+  SET_BLOG_DETAILS: 'SET_BLOG_DETAILS',
+  SET_STORED_AI_INSIGHT_LIST: 'SET_STORED_AI_INSIGHT_LIST',
 };
 
 export const setPropertyFilter = (payload: any) => {
   return {
     type: ActionTypes.SET_PROPERTY_FILTERS,
+    payload
+  }
+}
+
+export const setBlogDetails = (payload: any) => {
+  return {
+    type: ActionTypes.SET_BLOG_DETAILS,
     payload
   }
 }
@@ -58,6 +67,13 @@ export const setSearchByArea = (payload: any) => {
 export const setSavedSearchesList = (payload: ISavedSearches) => {
   return {
     type: ActionTypes.SET_SAVED_SEARCHES_LIST,
+    payload
+  }
+}
+
+export const setStoredAiInsightList = (payload: any) => {
+  return {
+    type: ActionTypes.SET_STORED_AI_INSIGHT_LIST,
     payload
   }
 }

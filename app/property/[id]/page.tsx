@@ -14,7 +14,7 @@ import {
   IPropertyDescription,
   IPropertyResponse,
   Property,
-  PropertyAnalysis
+  PropertyAnalysis,
 } from "@/redux/modules/main/types";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -37,7 +37,7 @@ const Page = () => {
   const dispatch = useDispatch();
   const [step, setStep] = useState("intro");
   const [isCompleted, setIsCompleted] = useState(false);
-  const isLoggedIn = !!user_data?.access_token
+  const isLoggedIn = !!user_data?.access_token;
 
   useEffect(() => {
     if (!isConnected || !params?.id) return;
@@ -51,7 +51,12 @@ const Page = () => {
   }, [isConnected, params?.id]);
 
   useEffect(() => {
-    if (lastEvent?.data?.status && lastEvent?.data?.request?.type === 'userService' && (lastEvent?.data?.request?.action === 'addFavorite' || lastEvent?.data?.request?.action === 'removeFavorite')) {
+    if (
+      lastEvent?.data?.status &&
+      lastEvent?.data?.request?.type === "userService" &&
+      (lastEvent?.data?.request?.action === "addFavorite" ||
+        lastEvent?.data?.request?.action === "removeFavorite")
+    ) {
       sendMessage("action", {
         type: "propertyService",
         action: "get",
@@ -60,14 +65,24 @@ const Page = () => {
         },
       });
     }
-  }, [lastEvent])
+  }, [lastEvent]);
+
+  useEffect(() => {
+    if (
+      mainReducer?.ai_insight &&
+      Object.keys(mainReducer.ai_insight).length > 0
+    ) {
+      setStep("complete");
+      setIsCompleted(true);
+    }
+  }, [mainReducer?.ai_insight]);
 
   const handleAIInsight = () => {
     setStep("processing");
     setIsCompleted(false);
     CommonApiRequest(
       "GET",
-      `${App_url.endpoint_url?.AI_INSIGHT}/${params.id}`,
+      `${App_url.endpoint_url?.AI_INSIGHT}/${params.id}/${user_data?.user?._id}`,
       {},
       {},
       // true,
@@ -102,7 +117,9 @@ const Page = () => {
             <div className="flex items-center gap-5 mb-2">
               <Button
                 type="submit"
-                onClick={() => isLoggedIn ? handleAIInsight() : dispatch(setLoginPopup(true))}
+                onClick={() =>
+                  isLoggedIn ? handleAIInsight() : dispatch(setLoginPopup(true))
+                }
                 className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-11 my-4 text-white rounded-full shadow-md"
               >
                 AI Market Intelligence
@@ -120,13 +137,23 @@ const Page = () => {
                 ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
               />
             )}
-            <PropertyDescription propertyDescriptions={mainReducer?.property_details?.propertyDescriptions as IPropertyDescription[]} />
-            <BasicFeatures features={mainReducer?.property_details?.features as IFeature[]} />
+            <PropertyDescription
+              propertyDescriptions={
+                mainReducer?.property_details
+                  ?.propertyDescriptions as IPropertyDescription[]
+              }
+            />
+            <BasicFeatures
+              features={mainReducer?.property_details?.features as IFeature[]}
+            />
             <MapSection />
           </div>
 
           <div className="lg:col-span-1">
-            <AgentCard agent_details={mainReducer?.property_details?.agent_assigned} user_data={user_data} />
+            <AgentCard
+              agent_details={mainReducer?.property_details?.agent_assigned}
+              user_data={user_data}
+            />
           </div>
         </div>
         <div className="lg:col-span-1">

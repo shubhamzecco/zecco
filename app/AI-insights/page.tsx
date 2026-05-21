@@ -7,7 +7,7 @@ import PropertyInsights from "./components/property-insights";
 import { useEffect, useState } from "react";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { Property } from "@/redux/modules/main/types";
+import { IProperty, IPropertyResponse, Property } from "@/redux/modules/main/types";
 import { useParams } from "next/navigation";
 import CommonApiRequest from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
@@ -67,7 +67,7 @@ const AIInsights = () => {
         {step === "intro" && (
           <AiInsights
             property={
-              mainReducer?.property_list_with_limit?.data?.[2] as Property
+              mainReducer?.property_list_with_limit?.data?.[2] as unknown as Property
             }
             onGetStarted={handleStarted}
           />

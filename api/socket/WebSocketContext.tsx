@@ -17,6 +17,7 @@ import { usePosterReducers } from '@/redux/getdata/usePostReducer';
 import CommonApiRequest from '../rest/fetchData';
 import { App_url } from '@/constant/static';
 import { setAuthData, setLogin } from '@/redux/modules/common/user_data/action';
+import { toast } from 'react-toastify';
 
 // Singleton socket reference
 let singletonSocket: Socket | null = null;
@@ -119,6 +120,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           {},
           user_data?.access_token
         )?.then((response: any) => {
+          console.log("response", response)
           if (response?.status === 200) {
             const payload = {
               user: response.data,
@@ -127,6 +129,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             localStorage.setItem("access_token", user_data?.access_token);
             dispatch(setLogin(true));
             dispatch(setAuthData(payload as any));
+            toast.info(`${response?.data?.agent?.agent?.first_name} ${response?.data?.agent?.agent?.last_name} has been assigned as your agent.`);
           } else {
             localStorage.clear()
             dispatch(setLogin(false));

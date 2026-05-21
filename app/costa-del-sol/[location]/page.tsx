@@ -9,10 +9,12 @@ import { useEffect, useRef, useState } from "react";
 import FilterPanel from "./components/filter-panel";
 import { useDispatch } from "react-redux";
 import {
+    setAiInsight,
     setBreadcrumbs,
     setPropertyDetails,
 } from "@/redux/modules/main/action";
 import { useParams } from "next/navigation";
+import { IPropertyResponse } from "@/redux/modules/main/types";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 
@@ -395,10 +397,9 @@ const Page = () => {
             );
         }
         dispatch(setPropertyDetails(null));
-    }, []);
+        dispatch(setAiInsight({} as IPropertyResponse));
 
-    console.log("filterData ::: " , filterData)
-    console.log("propertyTypes :: " , propertyTypes)
+    }, []); 
 
     const handleSavedSearches =
         () => {

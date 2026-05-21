@@ -26,77 +26,77 @@ const initialState: IMainResponse = {
   property_subtype_list: null,
   saved_searches: null,
   search_by_area: null,
-  propertyFilter : null
+  propertyFilter: null,
+  blog_details: null,
+  stored_aiInsight: null,
 };
 
 const mainReducer = (
   state: IMainResponse = initialState,
-  action: any
+  action: any,
 ): IMainResponse => {
   switch (action.type) {
-
     case ActionTypes.SET_PROPERTY_FILTERS: {
       return {
         ...state,
-        propertyFilter: action.payload
-      }
+        propertyFilter: action.payload,
+      };
     }
-
 
     case ActionTypes.SET_SEARCH_BY_AREA_LIST: {
       return {
         ...state,
-        search_by_area: action.payload
-      }
+        search_by_area: action.payload,
+      };
     }
 
     case ActionTypes.SET_SAVED_SEARCHES_LIST: {
       return {
         ...state,
-        saved_searches: action.payload
-      }
+        saved_searches: action.payload,
+      };
     }
 
     case ActionTypes.SET_PROPERTY_SUBTYPE_LIST: {
       return {
         ...state,
-        property_subtype_list: action.payload
-      }
+        property_subtype_list: action.payload,
+      };
     }
 
     case ActionTypes.SET_PROPERTY_TYPE_LIST: {
       return {
         ...state,
-        property_type_list: action.payload
-      }
+        property_type_list: action.payload,
+      };
     }
 
     case ActionTypes.SET_USER_PACKAGE_LIST: {
       return {
         ...state,
-        user_package_list: action.payload
-      }
+        user_package_list: action.payload,
+      };
     }
 
     case ActionTypes.SET_USER_CHAT_MESSAGES: {
       return {
         ...state,
-        chat_messages_by_user: action.payload
-      }
+        chat_messages_by_user: action.payload,
+      };
     }
 
     case ActionTypes.SET_USER_CHAT_LIST: {
       return {
         ...state,
-        chat_user_list: action.payload?.data || null
-      }
+        chat_user_list: action.payload?.data || null,
+      };
     }
 
     case ActionTypes.SET_LOGIN_POPUP: {
       return {
         ...state,
-        login_popup: action.payload
-      }
+        login_popup: action.payload,
+      };
     }
 
     case ActionTypes.SET_ZEECO_FAVORITE_LIST: {
@@ -105,8 +105,8 @@ const mainReducer = (
         zecco_favorite: {
           data: action?.payload?.data,
           favorite_property: action.payload.favorite_property,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
@@ -115,25 +115,34 @@ const mainReducer = (
         ...state,
         favorite_property_list: {
           data: action?.payload?.data,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
+      };
+    }
+
+    case ActionTypes.SET_STORED_AI_INSIGHT_LIST: {
+      return {
+        ...state,
+        stored_aiInsight: {
+          data: action?.payload?.data,
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
     case ActionTypes.SET_AI_INSIGHT: {
       return {
         ...state,
-        ai_insight: action?.payload
+        ai_insight: action?.payload,
       };
     }
 
     case ActionTypes.SET_PROPERTY_DETAILS: {
       return {
         ...state,
-        property_details: action?.payload
+        property_details: action?.payload,
       };
     }
-
 
     case ActionTypes.SET_PROPERTY_LIST_WITH_LIMIT: {
       return {
@@ -141,19 +150,18 @@ const mainReducer = (
         property_list_with_limit: {
           data: action?.payload?.data,
           favorite_property: action.payload.favorite_property,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
-
 
     case ActionTypes.SET_BLOGS_LIST_WITH_LIMIT: {
       return {
         ...state,
         blogs_list_with_limit: {
           data: action?.payload?.data,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
@@ -162,8 +170,8 @@ const mainReducer = (
         ...state,
         location_list_with_limit: {
           data: action?.payload?.data,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
@@ -172,8 +180,8 @@ const mainReducer = (
         ...state,
         package_list_with_limit: {
           data: action?.payload?.data,
-          pagination: action?.payload?.pagination
-        }
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
@@ -183,8 +191,6 @@ const mainReducer = (
         ai_chat_messages: [...(state.ai_chat_messages ?? []), action.payload],
       };
     }
-
-
 
     case ActionTypes.AI_CHAT_SET_LOADING: {
       return {
@@ -201,15 +207,21 @@ const mainReducer = (
       };
     }
 
-    case ActionTypes.SET_BREADCRUMBS: { return { ...state, breadcrumbs: action.payload, } }
+    case ActionTypes.SET_BREADCRUMBS: {
+      return { ...state, breadcrumbs: action.payload };
+    }
     case ActionTypes.CLEAR_BREADCRUMBS:
       return {
         ...state,
         breadcrumbs: [],
-      }
+      };
 
     case ActionTypes.AI_CHAT_BADGE_OPEN: {
-      return { ...state, ai_chat_badge_open: action.payload, }
+      return { ...state, ai_chat_badge_open: action.payload };
+    }
+
+    case ActionTypes.SET_BLOG_DETAILS: {
+      return { ...state, blog_details: action.payload };
     }
 
     case ActionTypes.SET_CLEAR_REDUX: {
