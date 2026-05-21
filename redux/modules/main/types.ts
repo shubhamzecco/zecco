@@ -775,6 +775,7 @@ export interface IMainResponse {
   ai_chat_loading: boolean;
   ai_chat_badge_open: boolean;
   location_list_with_limit: ILocationResponse | null
+  location_list_without_limit: ILocationResponse | null
   blogs_list_with_limit: IBlogsResponse | null
   blog_details: IBlogs | null
   property_list_with_limit: IPropertyResponse | null

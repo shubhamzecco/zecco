@@ -49,11 +49,16 @@ const Page = () => {
     const [filterData, setFilterData] =
         useState<any>({});
 
+    // SEARCH STATE
+    const [search, setSearch] =
+        useState("");
+
     const fetchedPages = useRef<Set<string>>(
         new Set()
     );
 
-    const { mainReducer } = usePosterReducers();
+    const { mainReducer } =
+        usePosterReducers();
 
     const {
         sendMessage,
@@ -65,13 +70,11 @@ const Page = () => {
 
     const id = useParams();
 
-    // ==========================================
-    // COMMON API CALL
-    // ==========================================
     const fetchProperties = (
         currentPage: number,
         filters = filterData,
-        reset = false
+        reset = false,
+        searchValue = search
     ) => {
         if (!isConnected || loading) return;
 
@@ -80,6 +83,7 @@ const Page = () => {
             propertyType,
             propertyTypes,
             filters,
+            search: searchValue,
         });
 
         // prevent duplicate api call
@@ -100,29 +104,39 @@ const Page = () => {
             payload: {
                 limit: LIMIT,
                 page: currentPage,
-                search: "",
+
+                // SEARCH VALUE
+                search: searchValue,
+
                 cities: Number(id?.location),
                 country: 6,
                 status: true,
-                forAll: propertyType === "all" ? true : false,
+
+                forAll:
+                    propertyType === "all",
+
                 categories: propertyTypes
                     ? Number(propertyTypes)
                     : filters?.propertyType,
+
                 ...filters,
 
-                ...(propertyType === "buy" && {
+                ...(propertyType ===
+                    "buy" && {
                     forSale: true,
                     sold: false,
                     forRent: false,
                 }),
 
-                ...(propertyType === "rent" && {
+                ...(propertyType ===
+                    "rent" && {
                     forRent: true,
                     rented: false,
                     forSale: false,
                 }),
 
-                ...(propertyType === "new" && {
+                ...(propertyType ===
+                    "new" && {
                     isNewDev: true,
                     forSale: true,
                 }),
@@ -131,54 +145,89 @@ const Page = () => {
     };
 
     useEffect(() => {
+        if (mainReducer?.propertyFilter) {
+            setPropertyType(
+                mainReducer?.propertyFilter
+                    ?.propertyType
+            );
+
+            setPropertyTypes(
+                mainReducer?.propertyFilter
+                    ?.propertyTypes
+            );
+
+            setFilterData(
+                mainReducer?.propertyFilter
+            );
+        }
+    }, [isConnected]);
+
+    // FETCH ON FILTER / TYPE / SEARCH CHANGE
+    useEffect(() => {
         setPage(1);
         setProperties([]);
         setHasMore(true);
 
         fetchedPages.current.clear();
 
-        fetchProperties(1, filterData, true);
+        fetchProperties(
+            1,
+            filterData,
+            true,
+            search
+        );
     }, [
         isConnected,
         propertyType,
         propertyTypes,
-        mainReducer?.propertyFilter
+        mainReducer?.propertyFilter,
+        search,
     ]);
 
+    // API RESPONSE
     useEffect(() => {
         const response =
             mainReducer?.property_list_with_limit;
 
         if (!response?.data) return;
 
-        const newData = response?.data || [];
+        const newData =
+            response?.data || [];
 
         if (page === 1) {
             setProperties(newData);
         } else {
             setProperties((prev) => {
-                const existingIds = new Set(
-                    prev.map((item) => item.id)
-                );
+                const existingIds =
+                    new Set(
+                        prev.map(
+                            (item) => item.id
+                        )
+                    );
 
                 const filtered =
                     newData.filter(
                         (item: any) =>
-                            !existingIds.has(item.id)
+                            !existingIds.has(
+                                item.id
+                            )
                     );
 
-                return [...prev, ...filtered];
+                return [
+                    ...prev,
+                    ...filtered,
+                ];
             });
         }
 
-        setHasMore(newData.length >= LIMIT);
+        setHasMore(
+            newData.length >= LIMIT
+        );
 
         setLoading(false);
-    }, [mainReducer?.property_list_with_limit]);
-
-    // ==========================================
-    // FILTER CHANGE
-    // ==========================================
+    }, [
+        mainReducer?.property_list_with_limit,
+    ]);
 
     const handleFilterChange = (
         filters: any
@@ -197,7 +246,9 @@ const Page = () => {
             ).filter(
                 (key) =>
                     Number(
-                        filters?.moreFilters?.[key]
+                        filters?.moreFilters?.[
+                        key
+                        ]
                     ) && key !== "all"
             );
 
@@ -275,7 +326,7 @@ const Page = () => {
 
         setFilterData(cleanPayload);
 
-        // reset
+        // RESET
         setPage(1);
         setProperties([]);
         setHasMore(true);
@@ -285,10 +336,32 @@ const Page = () => {
         fetchProperties(
             1,
             cleanPayload,
-            true
+            true,
+            search
         );
     };
 
+    // SEARCH
+    const handleSearch = (
+        value: string
+    ) => {
+        setSearch(value);
+
+        setPage(1);
+        setProperties([]);
+        setHasMore(true);
+
+        fetchedPages.current.clear();
+
+        fetchProperties(
+            1,
+            filterData,
+            true,
+            value
+        );
+    };
+
+    // INFINITE SCROLL
     useEffect(() => {
         const handleScroll = () => {
             if (loading || !hasMore)
@@ -314,7 +387,10 @@ const Page = () => {
                 setPage(nextPage);
 
                 fetchProperties(
-                    nextPage
+                    nextPage,
+                    filterData,
+                    false,
+                    search
                 );
             }
         };
@@ -335,8 +411,10 @@ const Page = () => {
         loading,
         hasMore,
         filterData,
+        search,
     ]);
 
+    // FAVORITE / SAVE SEARCH
     useEffect(() => {
         if (
             lastEvent?.data?.status &&
@@ -355,29 +433,30 @@ const Page = () => {
             fetchProperties(
                 1,
                 filterData,
-                true
+                true,
+                search
             );
         }
+
         if (
             lastEvent?.data?.status &&
             lastEvent?.data?.request
                 ?.type ===
             "savedSearchService" &&
-            (lastEvent?.data?.request
+            lastEvent?.data?.request
                 ?.action ===
-                "add")
+            "add"
         ) {
             fetchedPages.current.clear();
-            setFilterData(null)
 
             fetchProperties(
                 1,
                 filterData,
-                true
+                true,
+                search
             );
         }
     }, [lastEvent]);
-
 
     useEffect(() => {
         if (
@@ -396,10 +475,17 @@ const Page = () => {
                 )
             );
         }
-        dispatch(setPropertyDetails(null));
-        dispatch(setAiInsight({} as IPropertyResponse));
 
-    }, []); 
+        dispatch(
+            setPropertyDetails(null)
+        );
+
+        dispatch(
+            setAiInsight(
+                {} as IPropertyResponse
+            )
+        );
+    }, []);
 
     const handleSavedSearches =
         () => {
@@ -408,8 +494,11 @@ const Page = () => {
                 action: "add",
                 payload: {
                     ...filterData,
-                    categories: propertyTypes ?? filterData?.propertyType,
-                    cities: id?.location
+                    search,
+                    categories:
+                        propertyTypes ??
+                        filterData?.propertyType,
+                    cities: id?.location,
                 },
             });
         };
@@ -421,6 +510,9 @@ const Page = () => {
             isPropertyType
             isProperty
             propertyTypes={propertyTypes}
+            handleSearch={(e) =>
+                handleSearch(e)
+            }
             callBackPropertyType={(
                 value
             ) => {
@@ -446,7 +538,7 @@ const Page = () => {
             <div className="px-4 sm:px-6 lg:mx-7 lg:px-8 lg:pb-10">
                 {/* MOBILE FILTER */}
                 <div className="mb-4 flex items-center justify-between lg:hidden">
-                    <p className="block font-manrope text-black font-semibold lg:hidden">
+                    <p className="block font-manrope font-semibold text-black lg:hidden">
                         {properties?.length} results
                         in drawn area
                     </p>
@@ -545,7 +637,7 @@ const Page = () => {
                     }`}
             >
                 <div className="flex items-center justify-between border-b bg-gray-50 p-4">
-                    <h2 className="text-lg font-manrope font-semibold">
+                    <h2 className="font-manrope text-lg font-semibold">
                         Filters
                     </h2>
 

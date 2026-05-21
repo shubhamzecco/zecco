@@ -12,7 +12,7 @@ type ListingType = "buy" | "rent" | "new";
 const LIMIT = 10;
 
 // regions per card
-const REGIONS_PER_CARD = 2;
+const REGIONS_PER_CARD = 3;
 
 export default function ExploreRegions() {
   const [selectedButton, setSelectedButton] = useState<ListingType>("buy");
@@ -135,15 +135,53 @@ export default function ExploreRegions() {
   // GROUP CARDS
   // =========================
 
-  const groupedCards = useMemo(() => {
-    const cards: any[] = [];
+// =========================
+// GROUP CARDS DYNAMIC
+// =========================
 
-    for (let i = 0; i < areasData.length; i += REGIONS_PER_CARD) {
-      cards.push(areasData.slice(i, i + REGIONS_PER_CARD));
+const groupedCards = useMemo(() => {
+  const cards: any[] = [];
+
+  let currentCard: any[] = [];
+  let currentCount = 0;
+
+  areasData.forEach((region: any) => {
+    // max 5 areas per region
+    const limitedAreas = region?.areas?.slice(0, 5) || [];
+
+    // dynamic size
+    let regionWeight = 1;
+
+    // if region has more content take more height
+    if (limitedAreas.length >= 5) {
+      regionWeight = 2;
+    } else if (limitedAreas.length >= 3) {
+      regionWeight = 1.5;
     }
 
-    return cards;
-  }, [areasData]);
+    // if current card already filled
+    if (currentCount + regionWeight > 4) {
+      cards.push(currentCard);
+
+      currentCard = [];
+      currentCount = 0;
+    }
+
+    currentCard.push({
+      ...region,
+      areas: limitedAreas,
+    });
+
+    currentCount += regionWeight;
+  });
+
+  // push remaining
+  if (currentCard.length > 0) {
+    cards.push(currentCard);
+  }
+
+  return cards;
+}, [areasData]);
 
   // =========================
   // AUTO SCROLL
@@ -354,9 +392,7 @@ export default function ExploreRegions() {
                       </button>
                     </div>
                     <ul className="space-y-2 mb-4">
-                      {region?.areas
-                        ?.slice(0, 5)
-                        ?.map((item: any, i: number) => (
+                      {region?.areas?.map((item: any, i: number) => (
                           <li
                             key={i}
                             className="flex items-center justify-between text-sm text-[#64748B]"

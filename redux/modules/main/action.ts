@@ -41,6 +41,7 @@ export const ActionTypes = {
   SET_PROPERTY_FILTERS: 'SET_PROPERTY_FILTERS',
   SET_BLOG_DETAILS: 'SET_BLOG_DETAILS',
   SET_STORED_AI_INSIGHT_LIST: 'SET_STORED_AI_INSIGHT_LIST',
+  SET_LOCATION_LIST_WITHOUT_LIMIT : 'SET_LOCATION_LIST_WITHOUT_LIMIT'
 };
 
 export const setPropertyFilter = (payload: any) => {
@@ -173,6 +174,14 @@ export const setBlogListWithLimit = (payload: IBlogsResponse) => {
 export const setLocationListWithLimit = (payload: IPackageResponse) => {
   return {
     type: ActionTypes.SET_LOCATION_LIST_WITH_LIMIT,
+    payload
+  }
+}
+
+
+export const setLocationListWithoutLimit = (payload: IPackageResponse) => {
+  return {
+    type: ActionTypes.SET_LOCATION_LIST_WITHOUT_LIMIT,
     payload
   }
 }

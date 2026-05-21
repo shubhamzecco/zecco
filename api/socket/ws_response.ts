@@ -6,6 +6,7 @@ import {
   setBlogListWithLimit,
   setFavoriteList,
   setLocationListWithLimit,
+  setLocationListWithoutLimit,
   setPackageListWithLimit,
   setPropertyDetails,
   setPropertyListWithLimit,
@@ -32,7 +33,7 @@ export const ws_response = (
     dispatch: any,
     getState: () => {
       (): any;
-      new (): any;
+      new(): any;
       adminReducers: { device_id: string; access_token: string };
     },
   ) => {
@@ -84,8 +85,13 @@ export const ws_response = (
         {
           if (ws_onmessage?.request?.action === "list") {
             if (ws_onmessage?.status === true) {
-              dispatch(setLocationListWithLimit(ws_onmessage?.data));
+              if (ws_onmessage?.request?.payload?.limit === 0) {
+                dispatch(setLocationListWithoutLimit(ws_onmessage?.data));
+              } else {
+                dispatch(setLocationListWithLimit(ws_onmessage?.data));
+              }
             } else {
+              dispatch(setLocationListWithoutLimit(ws_onmessage?.data));
               dispatch(setLocationListWithLimit(ws_onmessage?.data));
             }
           }

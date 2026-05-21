@@ -11,6 +11,7 @@ const initialState: IMainResponse = {
   breadcrumbs: [],
   ai_chat_badge_open: false,
   location_list_with_limit: null,
+  location_list_without_limit: null,
   blogs_list_with_limit: null,
   property_list_with_limit: null,
   property_list_without_limit: null,
@@ -159,6 +160,16 @@ const mainReducer = (
       return {
         ...state,
         blogs_list_with_limit: {
+          data: action?.payload?.data,
+          pagination: action?.payload?.pagination,
+        },
+      };
+    }
+
+    case ActionTypes.SET_LOCATION_LIST_WITHOUT_LIMIT: {
+      return {
+        ...state,
+        location_list_without_limit: {
           data: action?.payload?.data,
           pagination: action?.payload?.pagination,
         },

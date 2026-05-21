@@ -241,8 +241,8 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
             <div className="absolute inset-0 z-30 flex items-center justify-center">
               <div className="relative w-full flex items-center justify-center">
                 <div className="absolute w-full h-[2px]" />
-                <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-2xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
-                  {(property?.isSold || property?.zeccoSold) ? 'Sold' : 'Rented'}
+                <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
+                  {(property?.isSold || property?.zeccoSold) ? 'Sold Out' : 'Rent Out'}
                 </div>
               </div>
             </div>

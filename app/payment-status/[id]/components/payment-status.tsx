@@ -32,7 +32,6 @@ export function PaymentStatus({
   package_id
 }: PaymentStatusProps) {
   const [isVisible, setIsVisible] = useState(false);
-  const [emailVerificationPopup, setEmailVerificationPopup] = useState(false)
   const router = useRouter()
   const dispatch = useDispatch();
   const { user_data } = usePosterReducers();
@@ -258,6 +257,7 @@ export function PaymentStatus({
                   if (localStorage.getItem('isRegister') === 'true') {
                     // setEmailVerificationPopup(true)
                     localStorage.removeItem('isRegister');
+                    router.push(App_url.link.SIGN_IN)
                   } else {
                     CommonApiRequest(
                       "GET",
@@ -280,9 +280,7 @@ export function PaymentStatus({
                         dispatch(setAuthData({} as any));
                       }
                     });
-                    if (typeof window !== "undefined") {
-                      window.location.href = App_url.link.INITIAL_URL || '/';
-                    }
+                    router.push(App_url.link.INITIAL_URL)  
                   }
                 }
 

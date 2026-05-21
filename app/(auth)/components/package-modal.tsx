@@ -130,7 +130,11 @@ export default function PackagesModal({
                   key={plan._id}
                   selected={selectedPackage === plan?._id}
                   onClick={() => {
-                    setSelectedPackage(plan._id)
+                    if(plan?.price === 'VIP'){
+                      setSelectedPackage('VIP')
+                    }else{
+                      setSelectedPackage(plan._id)
+                    }
                   }}
                   icon={icons[index]}
                   title={plan.name}
@@ -149,7 +153,7 @@ export default function PackagesModal({
             Cancel
           </button>
           <button
-            onClick={() => createPayment(selectedPackage)}
+            onClick={() => selectedPackage === 'VIP' ? router.push(App_url.link.CONTACT_US) : createPayment(selectedPackage)}
             className="flex-1 font-circular_std rounded-lg bg-[#0C87F1] px-4 py-2.5 text-sm font-medium text-white"
           >
             Apply Coupon
