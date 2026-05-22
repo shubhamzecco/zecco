@@ -45,12 +45,39 @@ const AiInsights = () => {
                   dispatch(setAiInsight(item?.data)));
                 dispatch(
                   setBreadcrumbs([
-                   {
+                    {
                       label: `Dashboard`,
                       href: `${App_url.link.DASHBOARD}`,
                     },
                     {
-                      label: `Stylish ${item?.property?.bedrooms}-Bedroom ${item?.property?.propertyCategory?.name} in ${item?.property?.locationCity?.name} , ${item?.property?.locationCountry?.name}`,
+                      label: `${
+                        item?.property?.bedrooms
+                          ? `${item?.property?.bedrooms} Bedroom `
+                          : ""
+                      }${" "}
+                            ${item?.property?.propertyCategory?.name} for${" "}
+                            ${
+                              item?.property?.isSale && item?.property?.isRent
+                                ? "Sale or Rent"
+                                : item?.property?.isSale
+                                  ? "Sale"
+                                  : item?.property?.isRent
+                                    ? "Rent"
+                                    : ""
+                            }${" "}
+                            in${""}
+                            ${
+                              item?.property?.locationSubarea
+                                ? `${item?.property?.locationSubarea?.name},`
+                                : ""
+                            }${" "}
+                            ${
+                              item?.property?.locationArea
+                                ? `${item?.property?.locationArea?.name},`
+                                : ""
+                            }${" "}
+                            ${item?.property?.locationCity?.name},${" "}
+                            ${item?.property?.locationCountry?.name}`,
                       href: `${App_url.link.PROPERTY_DETAILS}/${item?.property?.id}`,
                     },
                   ]),
@@ -76,9 +103,25 @@ const AiInsights = () => {
                 </div>
                 <div className="">
                   <h1 className="font-bold text-lg font-inter px-4 pt-4 text-[#111827]">
-                    Stylish {item?.property?.bedrooms}-Bedroom{" "}
-                    {item?.property?.propertyCategory?.name} in{" "}
-                    {item?.property?.locationCity?.name} ,{" "}
+                    {item?.property?.bedrooms
+                      ? `${item?.property?.bedrooms} Bedroom `
+                      : ""}{" "}
+                    {item?.property?.propertyCategory?.name} for{" "}
+                    {item?.property?.isSale && item?.property?.isRent
+                      ? "Sale or Rent"
+                      : item?.property?.isSale
+                        ? "Sale"
+                        : item?.property?.isRent
+                          ? "Rent"
+                          : ""}{" "}
+                    in{""}
+                    {item?.property?.locationSubarea
+                      ? `${item?.property?.locationSubarea?.name},`
+                      : ""}{" "}
+                    {item?.property?.locationArea
+                      ? `${item?.property?.locationArea?.name},`
+                      : ""}{" "}
+                    {item?.property?.locationCity?.name},{" "}
                     {item?.property?.locationCountry?.name}
                   </h1>
                   <div className="flex gap-5 items-center pt-2 px-4 text-sm">

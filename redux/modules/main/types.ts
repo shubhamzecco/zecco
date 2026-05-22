@@ -2,6 +2,7 @@ interface IPagination {
   total_page: number;
   page: number;
   page_limit: number;
+  totalCount?:number
 }
 
 export interface LocationImage {
@@ -622,6 +623,7 @@ export interface IProperty {
   catastroStatus: string;
 
   clonedFromNetworkId: string | null;
+  favorite: boolean;
 }
 
 export interface ILookup {
@@ -794,4 +796,5 @@ export interface IMainResponse {
   search_by_area: any;
   propertyFilter : any
   stored_aiInsight: IStoredAiInsightResponse | null
+  location_area_list: any
 }

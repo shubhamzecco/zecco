@@ -5,6 +5,7 @@ import {
   setBlogDetails,
   setBlogListWithLimit,
   setFavoriteList,
+  setLocationAreaList,
   setLocationListWithLimit,
   setLocationListWithoutLimit,
   setPackageListWithLimit,
@@ -33,7 +34,7 @@ export const ws_response = (
     dispatch: any,
     getState: () => {
       (): any;
-      new(): any;
+      new (): any;
       adminReducers: { device_id: string; access_token: string };
     },
   ) => {
@@ -43,7 +44,9 @@ export const ws_response = (
       case "userService":
         if (
           ws_onmessage?.request?.action === "update" ||
-          ws_onmessage?.request?.action === "updatePassword"
+          ws_onmessage?.request?.action === "updatePassword" ||
+          ws_onmessage?.request?.action === "removeFavorite" ||
+          ws_onmessage?.request?.action === "addFavorite"
         ) {
           if (ws_onmessage?.status === true) {
             toast.success(ws_onmessage?.msg);
@@ -101,6 +104,13 @@ export const ws_response = (
               dispatch(setSearchByArea(ws_onmessage?.data));
             } else {
               dispatch(setSearchByArea(ws_onmessage?.data));
+            }
+          }
+          if (ws_onmessage?.request?.action === "list_city_area") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setLocationAreaList(ws_onmessage?.data));
+            } else {
+              dispatch(setLocationAreaList(ws_onmessage?.data));
             }
           }
         }

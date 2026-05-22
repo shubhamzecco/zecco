@@ -30,6 +30,7 @@ const initialState: IMainResponse = {
   propertyFilter: null,
   blog_details: null,
   stored_aiInsight: null,
+  location_area_list: null,
 };
 
 const mainReducer = (
@@ -135,6 +136,13 @@ const mainReducer = (
       return {
         ...state,
         ai_insight: action?.payload,
+      };
+    }
+
+    case ActionTypes.SET_LOCATION_AREA_LIST: {
+      return {
+        ...state,
+        location_area_list: action?.payload,
       };
     }
 

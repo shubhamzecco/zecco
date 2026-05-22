@@ -18,13 +18,35 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
           <span>Verified Seller</span>
         </div>
       </div>
-      <h1 className="text-3xl font-manrope text-heading_text_color font-semibold  mb-2">Stylish {property?.bedrooms}-Bedroom {property?.propertyCategory?.name} in {property?.locationCity?.name} , {property?.locationCountry?.name}</h1>
+      <h1 className="text-3xl font-manrope text-heading_text_color font-semibold  mb-2">
+        {property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""}{" "}
+        {property?.propertyCategory?.name} for{" "}
+        {property?.isSale && property?.isRent
+          ? "Sale or Rent"
+          : property?.isSale
+            ? "Sale"
+            : property?.isRent
+              ? "Rent"
+              : ""}{" "}
+        in{""}
+        {property?.locationSubarea
+          ? `${property?.locationSubarea?.name},`
+          : ""}{" "}
+        {property?.locationArea ? `${property?.locationArea?.name},` : ""}{" "}
+        {property?.locationCity?.name}, {property?.locationCountry?.name}
+      </h1>
       <div className="flex items-baseline gap-3 mb-4">
-        <span className="text-3xl font-manrope font-bold text-heading_text_color">€{property?.salePrice}</span>
-        <span className="text-md text-[#9CA3AF] font-manrope  line-through">{property?.salePrice}</span>
+        <span className="text-3xl font-manrope font-bold text-heading_text_color">
+          €{property?.salePrice}
+        </span>
+        <span className="text-md text-[#9CA3AF] font-manrope  line-through">
+          {property?.salePrice}
+        </span>
         <span className="text-red-600 font-semibold text-lg">0%</span>
       </div>
-      <p className="font-manrope font-semibold uppercase text-[#64748B] text-sm mb-4">{property?.locationCity?.name} , {property?.locationCountry?.name}</p>
+      <p className="font-manrope font-semibold uppercase text-[#64748B] text-sm mb-4">
+        {property?.locationCity?.name} , {property?.locationCountry?.name}
+      </p>
     </div>
-  )
+  );
 }

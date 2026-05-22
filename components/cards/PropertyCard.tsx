@@ -44,7 +44,32 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
       setBreadcrumbs([
         ...mainReducer?.breadcrumbs,
         {
-          label: `Stylish ${property?.bedrooms}-Bedroom ${property?.propertyCategory?.name} in ${property?.locationCity?.name} , ${property?.locationCountry?.name}`,
+          label: `${
+            property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""
+          }${" "}
+                            ${property?.propertyCategory?.name} for${" "}
+                            ${
+                              property?.isSale && property?.isRent
+                                ? "Sale or Rent"
+                                : property?.isSale
+                                  ? "Sale"
+                                  : property?.isRent
+                                    ? "Rent"
+                                    : ""
+                            }${" "}
+                            in${""}
+                            ${
+                              property?.locationSubarea
+                                ? `${property?.locationSubarea?.name},`
+                                : ""
+                            }${" "}
+                            ${
+                              property?.locationArea
+                                ? `${property?.locationArea?.name},`
+                                : ""
+                            }${" "}
+                            ${property?.locationCity?.name},${" "}
+                            ${property?.locationCountry?.name}`,
           href: `${App_url.link.PROPERTY_DETAILS}/${property?.id}`,
         },
       ]),
@@ -139,7 +164,7 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className={`${(property?.isSold || property?.zeccoSold) || (property?.isRented || property?.zeccoRented) ? 'pointer-events-none select-none cursor-not-allowed' : 'cursor-pointer'} group bg-white overflow-hidden shadow-card transition-all`}
+      className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white overflow-hidden shadow-card transition-all`}
     >
       <div className="relative h-64 rounded-lg bg-gray-200 overflow-hidden">
         <div
@@ -204,9 +229,9 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           {mainReducer?.property_list_with_limit?.favorite_property?.includes(
             String(property?._id),
           ) ||
-            mainReducer?.zecco_favorite?.favorite_property?.includes(
-              String(property?._id),
-            ) ? (
+          mainReducer?.zecco_favorite?.favorite_property?.includes(
+            String(property?._id),
+          ) ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
             <Heart size={20} className="text-white hover:text-red-500" />
@@ -228,21 +253,27 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
               {property?.propertyImages?.slice(0, 3).map((_, i) => (
                 <span
                   key={i}
-                  className={`h-2 rounded-full transition-all ${i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
-                    }`}
+                  className={`h-2 rounded-full transition-all ${
+                    i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
+                  }`}
                 />
               ))}
             </div>
           </div>
         )}
-        {((property?.isSold || property?.zeccoSold) || (property?.isRented || property?.zeccoRented)) && (
+        {(property?.isSold ||
+          property?.zeccoSold ||
+          property?.isRented ||
+          property?.zeccoRented) && (
           <>
             <div className="absolute inset-0 bg-black/45 z-20" />
             <div className="absolute inset-0 z-30 flex items-center justify-center">
               <div className="relative w-full flex items-center justify-center">
                 <div className="absolute w-full h-[2px]" />
                 <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
-                  {(property?.isSold || property?.zeccoSold) ? 'Sold Out' : 'Rent Out'}
+                  {property?.isSold || property?.zeccoSold
+                    ? "Sold Out"
+                    : "Rent Out"}
                 </div>
               </div>
             </div>
@@ -279,9 +310,21 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
         </div>
 
         <h3 className="text-[0.9rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
-          Stylish {property?.bedrooms}-Bedroom{" "}
-          {property?.propertyCategory?.name} in {property?.locationCity?.name} ,{" "}
-          {property?.locationCountry?.name}
+          {property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""}{" "}
+          {property?.propertyCategory?.name} for{" "}
+          {property?.isSale && property?.isRent
+            ? "Sale or Rent"
+            : property?.isSale
+              ? "Sale"
+              : property?.isRent
+                ? "Rent"
+                : ""}{" "}
+          in{" "}
+          {property?.locationSubarea
+            ? `${property?.locationSubarea?.name},`
+            : ""}{" "}
+          {property?.locationArea ? `${property?.locationArea?.name},` : ""}{" "}
+          {property?.locationCity?.name}, {property?.locationCountry?.name}
         </h3>
 
         <div className="flex gap-5 items-center pt-4 text-sm">

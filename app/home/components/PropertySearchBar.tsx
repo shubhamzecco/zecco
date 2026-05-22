@@ -12,7 +12,7 @@ import React, {
 import { useRouter } from "next/navigation";
 import { useDispatch, shallowEqual } from "react-redux";
 
-import { ChevronDown, Search, Sparkles } from "lucide-react";
+import { ChevronDown, Search, SearchIcon, Sparkles } from "lucide-react";
 
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
@@ -264,7 +264,7 @@ const PropertySearchBar = () => {
                 onClick={() =>
                   setOpen((prev) => !prev)
                 }
-                className="flex items-center justify-between gap-2 rounded-full px-3 py-2 text-sm font-semibold min-w-[120px]"
+                className="flex items-center w-[130px] truncate justify-between gap-2 rounded-full px-3 py-2 text-sm font-semibold min-w-[120px]"
               >
                 {selected?.name}
 
@@ -370,7 +370,7 @@ const PropertySearchBar = () => {
               hover:opacity-90 transition
             "
           >
-            <Sparkles size={16} />
+            <SearchIcon size={16} />
             Search
           </button>
         </div>

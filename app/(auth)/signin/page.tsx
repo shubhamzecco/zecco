@@ -54,6 +54,7 @@ const Signin = () => {
           dispatch(setLogin(true));
           dispatch(setAuthData(payload));
           const redirectUrl = localStorage.getItem('redirect_after_login');
+          toast.success(response?.message);
           if (redirectUrl) {
             router.push(redirectUrl);
             localStorage.removeItem('redirect_after_login');

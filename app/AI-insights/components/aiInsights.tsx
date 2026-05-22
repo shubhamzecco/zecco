@@ -121,8 +121,24 @@ const AiInsights = ({ onGetStarted, property }: AiInsightsProps) => {
 
             <div className="flex flex-col gap-1 max-md:mb-5">
               <h1 className="px-4 pt-4 font-inter text-md font-bold text-[#111827]">
-                Stylish {selectedProperty?.bedrooms}
-                -Bedroom {selectedProperty?.propertyCategory?.name} in{" "}
+                {selectedProperty?.bedrooms
+                  ? `${selectedProperty?.bedrooms} Bedroom `
+                  : ""}{" "}
+                {selectedProperty?.propertyCategory?.name} for{" "}
+                {selectedProperty?.isSale && selectedProperty?.isRent
+                  ? "Sale or Rent"
+                  : selectedProperty?.isSale
+                    ? "Sale"
+                    : selectedProperty?.isRent
+                      ? "Rent"
+                      : ""}{" "}
+                in{""}
+                {selectedProperty?.locationSubarea
+                  ? `${selectedProperty?.locationSubarea?.name},`
+                  : ""}{" "}
+                {selectedProperty?.locationArea
+                  ? `${selectedProperty?.locationArea?.name},`
+                  : ""}{" "}
                 {selectedProperty?.locationCity?.name},{" "}
                 {selectedProperty?.locationCountry?.name}
               </h1>
@@ -198,9 +214,27 @@ const AiInsights = ({ onGetStarted, property }: AiInsightsProps) => {
 
                         <div className="flex flex-col gap-1 p-3">
                           <h1 className="font-inter text-sm font-bold text-[#111827]">
-                            Stylish {item?.bedrooms}
-                            -Bedroom {item?.propertyCategory?.name} in{" "}
-                            {item?.locationCity?.name}
+                            {item?.bedrooms
+                              ? `${item?.bedrooms} Bedroom `
+                              : ""}{" "}
+                            {item?.propertyCategory?.name} for{" "}
+                            {item?.isSale &&
+                            item?.isRent
+                              ? "Sale or Rent"
+                              : item?.isSale
+                                ? "Sale"
+                                : item?.isRent
+                                  ? "Rent"
+                                  : ""}{" "}
+                            in{""}
+                            {item?.locationSubarea
+                              ? `${item?.locationSubarea?.name},`
+                              : ""}{" "}
+                            {item?.locationArea
+                              ? `${item?.locationArea?.name},`
+                              : ""}{" "}
+                            {item?.locationCity?.name},{" "}
+                            {item?.locationCountry?.name}
                           </h1>
 
                           <h2 className="font-manrope text-sm font-bold text-[#64748B]">
