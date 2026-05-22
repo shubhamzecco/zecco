@@ -319,7 +319,7 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
               : property?.isRent
                 ? "Rent"
                 : ""}{" "}
-          in{""}
+          in{" "}
           {property?.locationSubarea
             ? `${property?.locationSubarea?.name},`
             : ""}{" "}
