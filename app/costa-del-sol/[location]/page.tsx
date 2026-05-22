@@ -131,11 +131,57 @@ const Page = () => {
   useEffect(() => {
     if (!mainReducer?.propertyFilter) return;
     if (mainReducer?.propertyFilter) {
+      console.log("filters ::: ", mainReducer?.propertyFilter)
+      const selectedKeys = Object.keys(mainReducer?.propertyFilter?.types || {}).filter(
+        (key) => Number(mainReducer?.propertyFilter?.types?.[key]) && key !== "all",
+      );
+
+      const selectedFeatures = Object.keys(mainReducer?.propertyFilter?.moreFilters || {}).filter(
+        (key) => Number(mainReducer?.propertyFilter?.moreFilters?.[key]) && key !== "all",
+      );
+
+      console.log("selectedFeatures ::: ", selectedFeatures)
+
+      const payload = {
+        categories:
+          selectedKeys?.length > 0 ? null : Number(mainReducer?.propertyFilter?.propertyType),
+
+        types:
+          selectedKeys?.length === 0
+            ? null
+            : selectedKeys?.length > 1
+              ? selectedKeys?.map((key) => Number(key))
+              : Number(selectedKeys),
+
+        features: selectedFeatures,
+
+        bedroomsFrom: mainReducer?.propertyFilter?.bedroomsFrom
+          ? Number(mainReducer?.propertyFilter?.bedroomsFrom)
+          : null,
+
+        bedroomsTo: mainReducer?.propertyFilter?.bedroomsTo ? Number(mainReducer?.propertyFilter?.bedroomsTo) : null,
+
+        priceFrom: mainReducer?.propertyFilter?.priceMin ? Number(mainReducer?.propertyFilter?.priceMin) : null,
+
+        priceTo: mainReducer?.propertyFilter?.priceMax ? Number(mainReducer?.propertyFilter?.priceMax) : null,
+
+        buildFrom: mainReducer?.propertyFilter?.sizeMin ? Number(mainReducer?.propertyFilter?.sizeMin) : null,
+
+        buildTo: mainReducer?.propertyFilter?.sizeMax ? Number(mainReducer?.propertyFilter?.sizeMax) : null,
+      };
+
+      const cleanPayload = Object.fromEntries(
+        Object.entries(payload).filter(
+          ([_, value]) => value !== null && value !== undefined,
+        ),
+      );
+
+      setFilterData(cleanPayload);
       setPropertyType(mainReducer?.propertyFilter?.propertyType || "all");
 
       setPropertyTypes(mainReducer?.propertyFilter?.propertyTypes || "");
 
-      setFilterData(mainReducer?.propertyFilter);
+      setFilterData(cleanPayload);
     }
   }, [mainReducer?.propertyFilter]);
 
@@ -184,6 +230,7 @@ const Page = () => {
   }, [mainReducer?.property_list_with_limit]);
 
   const handleFilterChange = (filters: any) => {
+    console.log("filters ::: ", filters)
     const selectedKeys = Object.keys(filters?.types || {}).filter(
       (key) => Number(filters?.types?.[key]) && key !== "all",
     );
@@ -192,7 +239,7 @@ const Page = () => {
       (key) => Number(filters?.moreFilters?.[key]) && key !== "all",
     );
 
-    console.log("selectedFeatures ::: " , selectedFeatures)
+    console.log("selectedFeatures ::: ", selectedFeatures)
 
     const payload = {
       categories:
@@ -410,17 +457,15 @@ const Page = () => {
 
       {/* OVERLAY */}
       <div
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${
-          isFilterOpen ? "visible opacity-100" : "invisible opacity-0"
-        }`}
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${isFilterOpen ? "visible opacity-100" : "invisible opacity-0"
+          }`}
         onClick={() => setIsFilterOpen(false)}
       />
 
       {/* MOBILE FILTER DRAWER */}
       <div
-        className={`fixed left-0 top-0 z-50 mt-[4.7rem] h-full w-[85%] max-w-sm transform bg-white transition-transform duration-300 ease-in-out lg:hidden ${
-          isFilterOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed left-0 top-0 z-50 mt-[4.7rem] h-full w-[85%] max-w-sm transform bg-white transition-transform duration-300 ease-in-out lg:hidden ${isFilterOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between border-b bg-gray-50 p-4">
           <h2 className="font-manrope text-lg font-semibold">Filters</h2>

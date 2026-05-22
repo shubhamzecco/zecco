@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { App_url } from '@/constant/static'
 import { useDispatch } from 'react-redux'
-import { clearBreadcrumbs, setBreadcrumbs, setReduxClear } from '@/redux/modules/main/action'
+import { clearBreadcrumbs, setBreadcrumbs, setPropertyFilter, setReduxClear } from '@/redux/modules/main/action'
 import { NAV_ITEMS } from '@/utils/common'
 import { usePosterReducers } from '@/redux/getdata/usePostReducer'
 import { setAuthData } from '@/redux/modules/common/user_data/action'
@@ -32,6 +32,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
 
   const handleNavClick = (item: any) => {
     dispatch(clearBreadcrumbs())
+    dispatch(setPropertyFilter({}))
     if (item.breadcrumbs) dispatch(setBreadcrumbs(item.breadcrumbs))
     router.push(item.href)
     setIsOpen(false) // ✅ close menu on click
@@ -117,8 +118,9 @@ export default function Header({ onProfileClick }: HeaderProps) {
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
 
-              {(pathname === App_url.link.DASHBOARD || pathname === App_url.link.FAVORITES || pathname === App_url.link.ACCOUNT_PACKAGE
-                || pathname === App_url.link.SAVED_SEARCHES || pathname === App_url.link.MESSAGE || pathname === App_url.link.AI_INSIGHTS) && (
+              {/* {
+              (pathname === App_url.link.DASHBOARD || pathname === App_url.link.FAVORITES || pathname === App_url.link.ACCOUNT_PACKAGE
+                || pathname === App_url.link.SAVED_SEARCHES || pathname === App_url.link.MESSAGE || pathname === App_url.link.AI_INSIGHTS) && ( */}
                   <button
                     onClick={onProfileClick}
                     className="md:hidden w-10 h-10 rounded-full overflow-hidden border"
@@ -131,7 +133,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
                       className="rounded-full"
                     />
                   </button>
-                )}
+                {/* )} */}
             </div>
           </div>
         </div >
@@ -152,10 +154,10 @@ export default function Header({ onProfileClick }: HeaderProps) {
             </button>
           ))}
 
-          {user_data?.user ? (
+          {user_data?.access_token ? (
             <div className="hidden md:flex justify-end items-center gap-2">
               <ImageDropdown
-                name={user_data?.user?.first_name}
+                name={user_data?.user?.first_name ?? ''}
                 avatar={App_url.image.image_1}
                 onNavigate={(path) => router.push(path)}
                 items={[

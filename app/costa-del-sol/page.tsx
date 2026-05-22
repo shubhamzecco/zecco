@@ -90,7 +90,6 @@ const CostadelSol = () => {
         setHasMore(true);
         setAllAreas([]);
         fetchedPages.current.clear();
-
         fetchAreas(1, value, true);
     };
     useEffect(() => {

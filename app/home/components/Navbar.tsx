@@ -131,11 +131,6 @@ export default function Navbar() {
         ))}
 
         {user_data?.user ? (
-          // <div className="border-t px-5 py-3 space-y-2">
-          //   <div className="block text-sky_blue_color font-medium">
-          //     {user_data?.user?.first_name}
-          //   </div>
-          // </div>
           <ImageDropdown
             name={user_data?.user?.first_name}
             avatar="/images/user.jpg"
@@ -156,27 +151,14 @@ export default function Navbar() {
             ]}
           />
         ) : (
-          // <div className="border-t px-5 py-3 space-y-2">
-          //   <Link href={App_url.link.SIGN_IN} className="block text-gray-700">
-          //     Login
-          //   </Link>
-          //   <Link href={App_url.link.SIGN_UP} className="block text-sky_blue_color font-medium">
-          //     Registration
-          //   </Link>
-          // </div>
-          <ImageDropdown
-            name={'Ajit'}
-            avatar={App_url.image.image_1}
-            onNavigate={(path) => router.push(path)}
-            items={[
-              { label: 'Profile', path: App_url?.link.PROFILE },
-              { label: 'Dashboard', path: App_url.link.DASHBOARD },
-              {
-                label: 'Logout',
-                onClick: () => console.log('logout'),
-              },
-            ]}
-          />
+          <div className="border-t px-5 py-3 space-y-2">
+            <Link href={App_url.link.SIGN_IN} className="block text-gray-700">
+              Login
+            </Link>
+            <Link href={App_url.link.SIGN_UP} className="block text-sky_blue_color font-medium">
+              Registration
+            </Link>
+          </div>
         )}
 
       </div>

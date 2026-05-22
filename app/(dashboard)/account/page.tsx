@@ -95,7 +95,7 @@ const AccountPackagePage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {(user_data?.user?.package?.packagePermissions ?? [])?.length >
-                0 ? (
+                  0 ? (
                   (user_data?.user?.package?.packagePermissions ?? [])?.map(
                     (permission: any, index: number) => (
                       <div
@@ -124,9 +124,9 @@ const AccountPackagePage = () => {
               </div>
             </div>
           )}
-          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden w-full">
-            <div className="max-h-[400px] overflow-y-auto overflow-x-auto scrollbar-hide">
-              <table className="min-w-full divide-y divide-gray-200">
+          {/* <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden w-full">
+            <div className="max-h-[400px] w-full overflow-x-auto overflow-y-auto scrollbar-hide">
+              <table className="min-w-[850px] w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50 sticky top-0 z-10">
                   <tr>
                     <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
@@ -208,13 +208,129 @@ const AccountPackagePage = () => {
                             <td className="px-6 py-3">
                               <span
                                 className={`inline-flex items-center rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wide
-                                ${
-                                  item?.status === "paid"
+                                ${item?.status === "paid"
                                     ? "bg-green-100 text-green-700"
                                     : item?.status === "failed"
                                       ? "bg-red-100 text-red-700"
                                       : "bg-yellow-100 text-yellow-700"
-                                }`}
+                                  }`}
+                              >
+                                {item?.status}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={5}
+                        className="px-6 py-10 text-center text-gray-500"
+                      >
+                        No package history found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div> */}
+          <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden w-full">
+            <div className="max-h-[400px] w-full overflow-x-auto overflow-y-auto scrollbar-hide">
+
+              <table className="min-w-[850px] md:min-w-full w-full divide-y divide-gray-200">
+
+                <thead className="bg-gray-50 sticky top-0 z-10">
+                  <tr>
+                    <th className="whitespace-nowrap px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                      Package Name
+                    </th>
+
+                    <th className="whitespace-nowrap px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                      Price
+                    </th>
+
+                    <th className="whitespace-nowrap px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                      Purchase Date
+                    </th>
+
+                    <th className="whitespace-nowrap px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                      Expiry Date
+                    </th>
+
+                    <th className="whitespace-nowrap px-4 md:px-6 py-3 md:py-4 text-left text-xs md:text-sm font-semibold text-gray-700 uppercase tracking-wider">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody className="divide-y divide-gray-100 bg-white">
+                  {(mainReducer?.user_package_list?.length ?? 0) > 0 ? (
+                    [...(mainReducer?.user_package_list ?? [])]
+                      .sort(
+                        (a: any, b: any) =>
+                          new Date(b.paidAt).getTime() -
+                          new Date(a.paidAt).getTime(),
+                      )
+                      .map((item: any, index: number, array: any[]) => {
+                        const previousPackage = array[index - 1];
+
+                        const expiryDate = previousPackage?.paidAt
+                          ? formatDateMonth(new Date(previousPackage.paidAt))
+                          : "Active";
+
+                        return (
+                          <tr
+                            key={item?._id || index}
+                            className="hover:bg-gray-50 transition-colors"
+                          >
+                            <td className="whitespace-nowrap px-4 md:px-6 py-3">
+                              <div className="flex items-center gap-2 md:gap-3">
+
+                                <div className="bg-blue-100 p-1.5 md:p-2 rounded-lg">
+                                  <Crown
+                                    className="text-blue-600"
+                                    size={16}
+                                  />
+                                </div>
+
+                                <div>
+                                  <p className="font-semibold text-sm md:text-base text-gray-900">
+                                    {item?.packageData?.name}
+                                  </p>
+
+                                  <p className="text-xs md:text-sm text-gray-500">
+                                    {item?.packageData?.tag_line}
+                                  </p>
+                                </div>
+                              </div>
+                            </td>
+
+                            <td className="whitespace-nowrap px-4 md:px-6 py-3">
+                              <span className="font-semibold text-sm md:text-base text-gray-900">
+                                €{item?.amount || item?.packageData?.price}
+                              </span>
+                            </td>
+
+                            <td className="whitespace-nowrap px-4 md:px-6 py-3 text-sm md:text-base text-gray-700">
+                              {item?.paidAt
+                                ? formatDateMonth(new Date(item?.paidAt))
+                                : "-"}
+                            </td>
+
+                            <td className="whitespace-nowrap px-4 md:px-6 py-3 text-sm md:text-base text-gray-700">
+                              {expiryDate}
+                            </td>
+
+                            <td className="whitespace-nowrap px-4 md:px-6 py-3">
+                              <span
+                                className={`inline-flex items-center rounded-full px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold uppercase tracking-wide
+                      ${item?.status === "paid"
+                                    ? "bg-green-100 text-green-700"
+                                    : item?.status === "failed"
+                                      ? "bg-red-100 text-red-700"
+                                      : "bg-yellow-100 text-yellow-700"
+                                  }`}
                               >
                                 {item?.status}
                               </span>
