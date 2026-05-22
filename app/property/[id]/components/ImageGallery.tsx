@@ -115,6 +115,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
     setOpen(true);
   };
 
+
   const handleFavoriteAdd = () => {
     if (!user_data?.access_token) {
       // router.push(App_url.link.SIGN_IN)
@@ -122,17 +123,12 @@ export default function PropertyGallery({ property }: PropertyStats) {
       return;
     } else {
       const idString = typeof id === "string" ? id : "";
-      if (
-        mainReducer?.property_list_with_limit?.favorite_property?.includes(
-          idString,
-        ) ||
-        mainReducer?.zecco_favorite?.favorite_property?.includes(idString)
-      ) {
+      if (mainReducer?.property_details?.favorite) {
         sendMessage("action", {
           type: "userService",
           action: "removeFavorite",
           payload: {
-            property_id: idString,
+            property_id: mainReducer?.property_details?._id,
           },
         });
       } else {
@@ -140,7 +136,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
           type: "userService",
           action: "addFavorite",
           payload: {
-            property_id: idString,
+            property_id: mainReducer?.property_details?._id,
           },
         });
       }
@@ -259,7 +255,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
             <Heart className="w-4 h-4 text-red-500 fill-red-500" />
           </button>
 
-          <div className="absolute bottom-3 left-3 flex gap-2">
+          {/* <div className="absolute bottom-3 left-3 flex gap-2">
             <ActionBtn
               icon={<Play size={14} />}
               label="Video"
@@ -284,7 +280,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
                 setPopupType("3d");
               }}
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
@@ -323,7 +319,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
             <X size={28} />
           </button>
 
-          <div className="absolute top-7 left-1/2 -translate-x-1/2 flex gap-2 z-40">
+          {/* <div className="absolute top-7 left-1/2 -translate-x-1/2 flex gap-2 z-40">
             <ActionBtn
               icon={<GalleryThumbnails size={14} />}
               label="Gallery"
@@ -348,7 +344,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               onClick={() => setPopupType("3d")}
               isActivate={popupType === "3d"}
             />
-          </div>
+          </div> */}
 
           <div
             className="w-full h-full flex items-center justify-center"
