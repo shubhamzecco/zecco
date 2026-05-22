@@ -1,72 +1,85 @@
-"use client"
-import { useWebSocket } from '@/api/socket/WebSocketContext'
-import PropertyCard from '@/components/cards/PropertyCard'
-import { App_url } from '@/constant/static'
-import { usePosterReducers } from '@/redux/getdata/usePostReducer'
-import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
-import { useRouter } from 'next/navigation'
-import { useEffect, useMemo } from 'react'
-import { useDispatch } from 'react-redux'
+"use client";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
+import PropertyCard from "@/components/cards/PropertyCard";
+import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import { useDispatch } from "react-redux";
 
 export default function ZeccoFavorites() {
-  const dispatch = useDispatch()
-  const router = useRouter()
-  const { mainReducer } = usePosterReducers()
-  const { sendMessage, isConnected, lastEvent } = useWebSocket()
-
-
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { mainReducer } = usePosterReducers();
+  const { sendMessage, isConnected, lastEvent } = useWebSocket();
 
   const handleNavigate = () => {
-    dispatch(clearBreadcrumbs())
-    dispatch(setBreadcrumbs([
-      { label: "Home", href: "/" },
-      { label: "Zecco's Favorites", href: App_url.link.ZECCO_FAVORITES },
-    ]))
-    router.push(`${App_url.link.ZECCO_FAVORITES}`)
-  }
+    dispatch(clearBreadcrumbs());
+    dispatch(
+      setBreadcrumbs([
+        { label: "Home", href: "/" },
+        { label: "Zecco's Favorites", href: App_url.link.ZECCO_FAVORITES },
+      ]),
+    );
+    router.push(`${App_url.link.ZECCO_FAVORITES}`);
+  };
 
   useEffect(() => {
-    sendMessage('action', {
+    sendMessage("action", {
       type: "propertyService",
       action: "list",
       payload: {
         limit: 10,
         page: 1,
-        search: '',
+        search: "",
         location_id: null,
-        favorite: true
-      }
-    })
-  }, [isConnected])
+        favorite: true,
+      },
+    });
+  }, [isConnected]);
 
   useEffect(() => {
-    if (lastEvent?.data?.status && lastEvent?.data?.request?.type === 'userService' && (lastEvent?.data?.request?.action === 'addFavorite' || lastEvent?.data?.request?.action === 'removeFavorite')) {
-      sendMessage('action', {
+    if (
+      lastEvent?.data?.status &&
+      lastEvent?.data?.request?.type === "userService" &&
+      (lastEvent?.data?.request?.action === "addFavorite" ||
+        lastEvent?.data?.request?.action === "removeFavorite")
+    ) {
+      sendMessage("action", {
         type: "propertyService",
         action: "list",
         payload: {
           limit: 0,
           page: 1,
-          search: '',
+          search: "",
           location_id: null,
-          favorite: true
-        }
-      })
+          favorite: true,
+        },
+      });
     }
-  }, [lastEvent])
+  }, [lastEvent]);
 
   const randomFavorites = useMemo(() => {
     return [...(mainReducer?.zecco_favorite?.data || [])]
       .sort(() => Math.random() - 0.5)
-      .slice(0, 4)
-  }, [mainReducer?.zecco_favorite?.data])
+      .slice(0, 4);
+  }, [mainReducer?.zecco_favorite?.data]);
 
   return (
     <section className=" bg-white mb-20">
       <div className="">
         {/* Header */}
         <div className="flex justify-between items-center mb-5">
-          <h2 className="text-xl sm:text-xl font-bold font-manrope text-[#00000]">Zecco's Favorites</h2>
+          <h2 className="text-xl sm:text-xl font-bold font-manrope text-[#00000]">
+            Zecco's Favorites
+          </h2>
+          <button
+            onClick={handleNavigate}
+            className="rounded-full font-manrope bg-btn_color font-medium  px-3 lg:px-7   py-2 text-xs lg:text-sm shadow-sm  text-white "
+          >
+            View All
+          </button>
         </div>
 
         {/* Grid */}
@@ -77,5 +90,5 @@ export default function ZeccoFavorites() {
         </div>
       </div>
     </section>
-  )
+  );
 }

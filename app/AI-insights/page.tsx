@@ -1,49 +1,48 @@
 "use client";
 
+import CommonApiRequest from "@/api/rest/fetchData";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
+import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setAiInsight } from "@/redux/modules/main/action";
+import { IProperty } from "@/redux/modules/main/types";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import AiInsights from "./components/aiInsights";
 import AIProcessingCard from "./components/analyzing-property-details";
 import PropertyInsights from "./components/property-insights";
-import { useEffect, useState } from "react";
-import { useWebSocket } from "@/api/socket/WebSocketContext";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { IProperty, IPropertyResponse, Property } from "@/redux/modules/main/types";
-import { useParams } from "next/navigation";
-import CommonApiRequest from "@/api/rest/fetchData";
-import { App_url } from "@/constant/static";
-import { useDispatch } from "react-redux";
-import { setAiInsight } from "@/redux/modules/main/action";
 
 const AIInsights = () => {
   const [step, setStep] = useState("intro");
-  const { mainReducer } = usePosterReducers();
+  const { mainReducer, user_data } = usePosterReducers();
   const { sendMessage, isConnected } = useWebSocket();
   const params = useParams();
   const dispatch = useDispatch();
   const [isCompleted, setIsCompleted] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<IProperty | null>(
+    null,
+  );
 
   useEffect(() => {
-    sendMessage("action", {
-      type: "propertyService",
-      action: "list",
-      payload: {
-        limit: 10,
-        page: 1,
-        search: "",
-        location_id: "69afc5c0cdb3ce6e5f5eccc4",
-      },
-    });
-  }, [isConnected]);
+    const firstProperty = mainReducer?.favorite_property_list?.data?.[0];
 
-  const handleStarted = () => {
+    if (firstProperty) {
+      setSelectedProperty(firstProperty);
+    }
+  }, [mainReducer?.favorite_property_list]);
+
+  const handleStarted = (property: IProperty) => {
+    if (!property?._id) return;
     setStep("processing");
     setIsCompleted(false);
     CommonApiRequest(
       "GET",
-      `${App_url.endpoint_url?.AI_INSIGHT}/${mainReducer?.property_list_with_limit?.data?.[2]?._id}`,
+      `${App_url.endpoint_url?.AI_INSIGHT}/${property.id}/${user_data?.user?._id}`,
       {},
       {},
-    //   true,
+      //   true,
     )?.then((response: any) => {
       if (response?.status === 200) {
         dispatch(setAiInsight(response?.data));
@@ -66,9 +65,7 @@ const AIInsights = () => {
       >
         {step === "intro" && (
           <AiInsights
-            property={
-              mainReducer?.property_list_with_limit?.data?.[2] as unknown as Property
-            }
+            property={selectedProperty as IProperty}
             onGetStarted={handleStarted}
           />
         )}

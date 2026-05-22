@@ -12,7 +12,7 @@ type ListingType = "buy" | "rent" | "new";
 const LIMIT = 10;
 
 // regions per card
-const REGIONS_PER_CARD = 3;
+const REGIONS_PER_CARD = 2;
 
 export default function ExploreRegions() {
   const [selectedButton, setSelectedButton] = useState<ListingType>("buy");
@@ -132,56 +132,60 @@ export default function ExploreRegions() {
   }, [mainReducer?.search_by_area?.data]);
 
   // =========================
-  // GROUP CARDS
+  // GROUP CARDS (STRATIFIED PACKING)
   // =========================
 
-// =========================
-// GROUP CARDS DYNAMIC
-// =========================
+  const groupedCards = useMemo(() => {
+    const cards: any[][] = [];
 
-const groupedCards = useMemo(() => {
-  const cards: any[] = [];
+    // 1. Separate cities based on whether they have exactly 5 areas
+    const exactFiveAreaCities = areasData.filter(
+      (region) => Math.min(region?.areas?.length || 0, 5) === 5,
+    );
+    const remainingCities = areasData.filter(
+      (region) => Math.min(region?.areas?.length || 0, 5) < 5,
+    );
 
-  let currentCard: any[] = [];
-  let currentCount = 0;
-
-  areasData.forEach((region: any) => {
-    // max 5 areas per region
-    const limitedAreas = region?.areas?.slice(0, 5) || [];
-
-    // dynamic size
-    let regionWeight = 1;
-
-    // if region has more content take more height
-    if (limitedAreas.length >= 5) {
-      regionWeight = 2;
-    } else if (limitedAreas.length >= 3) {
-      regionWeight = 1.5;
+    // 2. First Phase: Force exactly 5-area cities into cards of 2
+    for (let i = 0; i < exactFiveAreaCities.length; i += 2) {
+      const pair = exactFiveAreaCities.slice(i, i + 2);
+      cards.push(pair);
     }
 
-    // if current card already filled
-    if (currentCount + regionWeight > 4) {
-      cards.push(currentCard);
+    // 3. Second Phase: Run layout packing calculations on the remaining smaller cities
+    let currentCard: any[] = [];
+    let currentCardSlotCount = 0;
 
-      currentCard = [];
-      currentCount = 0;
-    }
+    // Total virtual slots allowed for smaller cities per card
+    const MAX_SLOTS_PER_CARD = 12;
 
-    currentCard.push({
-      ...region,
-      areas: limitedAreas,
+    remainingCities.forEach((region) => {
+      const activeAreasCount = Math.min(region?.areas?.length || 0, 5);
+
+      // Cost calculation: 2 slots for headers/spacing + area list length
+      const regionSlotCost = 2 + activeAreasCount;
+
+      // If it overflows the card capacity, push current card container and reset
+      if (
+        currentCardSlotCount + regionSlotCost > MAX_SLOTS_PER_CARD &&
+        currentCard.length > 0
+      ) {
+        cards.push(currentCard);
+        currentCard = [];
+        currentCardSlotCount = 0;
+      }
+
+      currentCard.push(region);
+      currentCardSlotCount += regionSlotCost;
     });
 
-    currentCount += regionWeight;
-  });
+    // Push any remaining small cities left over in the loop
+    if (currentCard.length > 0) {
+      cards.push(currentCard);
+    }
 
-  // push remaining
-  if (currentCard.length > 0) {
-    cards.push(currentCard);
-  }
-
-  return cards;
-}, [areasData]);
+    return cards;
+  }, [areasData]);
 
   // =========================
   // AUTO SCROLL
@@ -322,87 +326,75 @@ const groupedCards = useMemo(() => {
 
         {/* CARDS */}
 
+        {/* CARDS CONTAINER */}
         <div
           ref={scrollRef}
           onScroll={handleScroll}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
-          className="
-            flex
-            gap-6
-            overflow-x-auto
-            scroll-smooth
-            no-scrollbar
-            snap-x
-            snap-mandatory
-            py-2
-          "
+          className="flex gap-6 overflow-x-auto scroll-smooth no-scrollbar snap-x snap-mandatory py-2"
         >
           {groupedCards?.map((card: any, cardIndex: number) => (
             <div
               key={cardIndex}
               className="
-                  region-card
-                  snap-start
-                  flex-none
-                  w-full
-                  sm:w-[calc(50%-12px)]
-                  lg:w-[calc((100%-72px)/4)]
-                  bg-white
-                  rounded-2xl
-                  p-6
-                  shadow-sm
-                  h-[520px]
-                  overflow-hidden
-                "
+        region-card
+        snap-start
+        flex-none
+        w-full
+        sm:w-[calc(50%-12px)]
+        lg:w-[calc((100%-72px)/4)]
+        bg-white
+        rounded-2xl
+        p-6
+        shadow-sm
+        h-[490px]             {/* Keeps all UI cards a consistent uniform height */}
+        overflow-hidden
+      "
             >
-              <div className="flex flex-col h-full gap-6">
+              {/* Changed gap-6 to justify-between or smaller gap to maximize space */}
+              <div className="flex flex-col h-full gap-4 justify-start">
                 {card.map((region: any, regionIndex: number) => (
                   <div
                     key={regionIndex}
                     className="
-                          flex-1
-                          border-b
-                          last:border-b-0
-                          border-slate-100
-                          pb-4
-                        "
+              border-b
+              last:border-b-0
+              border-slate-100
+              pb-2
+            "
                   >
-                    <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-2">
+                    <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-1">
                       {region.name}
                     </h3>
-                    <div className="flex justify-between items-center text-center gap-2">
-                      <h2 className="inline-block text-xs font-medium text-[#64748B] tracking-wider uppercase bg-[#F3F4F6] px-3 py-1 rounded-md mb-4">
+
+                    <div className="flex justify-between items-center gap-2 my-2">
+                      <h2 className="inline-block text-xs font-medium text-[#64748B] tracking-wider uppercase bg-[#F3F4F6] px-3 py-1 rounded-md">
                         {region.property_count} PROPERTIES
                       </h2>
                       <button
                         onClick={() => handleNavigate(region?.name)}
-                        className="
-                            text-[#4A86E8]
-                            font-manrope
-                            py-1
-                            mb-4
-                            font-bold
-                            text-sm
-                            transition
-                            hover:opacity-90
-                          "
+                        className="text-[#4A86E8] font-manrope font-bold text-sm transition hover:opacity-90"
                       >
                         View
                       </button>
                     </div>
-                    <ul className="space-y-2 mb-4">
-                      {region?.areas?.map((item: any, i: number) => (
+
+                    <ul className="space-y-2 my-2">
+                      {region?.areas
+                        ?.slice(0, 5)
+                        ?.map((item: any, i: number) => (
                           <li
                             key={i}
                             className="flex items-center justify-between text-sm text-[#64748B]"
                           >
-                            <span className="flex items-center gap-2 font-manrope font-medium">
-                              <ChevronRight className="w-4 h-4 text-[#64748B]" />
-
-                              {item?.name?.length > 23
-                                ? `${item?.name?.slice(0, 23)}...`
-                                : item?.name}
+                            <span className="flex items-center gap-2 font-manrope font-medium truncate max-w-[80%]">
+                              <ChevronRight className="w-4 h-4 text-[#64748B] flex-shrink-0" />
+                              <span className="truncate">
+                                {item?.name?.length > 23
+                                  ? `${item?.name?.slice(0, 23)}...`
+                                  : item?.name}
+                              </span>
                             </span>
 
                             <span className="text-[#64748B] font-manrope font-medium">

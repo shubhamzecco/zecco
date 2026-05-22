@@ -1,88 +1,311 @@
-import { App_url } from '@/constant/static';
-import { Property } from '@/redux/modules/main/types';
-import { ArrowRight, Bath, BedSingle, Cpu, Expand, FileText, Search } from 'lucide-react';
-import Image from 'next/image';
+"use client";
+
+import { IProperty } from "@/redux/modules/main/types";
+import {
+  ArrowRight,
+  Bath,
+  BedSingle,
+  ChevronDown,
+  Cpu,
+  Expand,
+  FileText,
+  Heart,
+  Search,
+} from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
 
 type AiInsightsProps = {
-    property : Property
-    onGetStarted: () => void;
+  property: IProperty;
+  onGetStarted: (property: IProperty) => void;
 };
 
-const AiInsights = ({ onGetStarted , property}: AiInsightsProps) => {
-    return (
-        <section className=" mb-6">
-            <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">AI Insights</h2>
-            <div className="flex flex-col gap-6">
-                <div className="bg-white/70 rounded-2xl relative">
-                    <div className="lg:flex items-start gap-3">
-                        <div className="lg:h-32 max-md:h-52">
-                            <Image
-                                src={property?.images?.[0]}
-                                alt="AI Insights"
-                                width={160}
-                                height={100}
-                                className="lg:rounded-l-2xl max-md:rounded-t-2xl max-md:w-full object-cover max-md:h-52 lg:h-32"
-                            />
-                
-                        </div>
-                        <div className="flex flex-col gap-1 max-md:mb-5">
-                            <h2 className='font-bold text-lg font-manrope px-4 pt-4 text-[#64748B]'>€{property?.salePrice}</h2>
-                            <h1 className="font-bold text-md font-inter px-4 pt-1 text-[#111827]">Stylish {property?.bedrooms}-Bedroom {property?.propertyCategory} in {property?.city?.name} , {property?.country}</h1>
-                            <div className="flex gap-5 items-center pt-2 px-4 text-sm">
-                                <div className="flex font-manrope font-normal items-center gap-1">
-                                    <Expand size={18} className="text-gray-400" />
-                                    <span>{property?.mtsBuild} /m²</span>
-                                </div>
+const AiInsights = ({ onGetStarted, property }: AiInsightsProps) => {
+  const { mainReducer } = usePosterReducers();
 
-                                <div className="flex font-manrope font-normal items-center gap-1">
-                                    <BedSingle size={18} className="text-gray-400" />
-                                    <span>{property?.bedrooms} Bed</span>
-                                </div>
-                                <div className="flex font-manrope font-normal items-center gap-1">
-                                    <Bath size={18} className="text-gray-400" />
-                                    <span>{property?.bathrooms} Bath</span>
-                                </div>
+  const { sendMessage, isConnected } = useWebSocket();
+
+  const [selectedProperty, setSelectedProperty] = useState<IProperty>(property);
+
+  const [openDropdown, setOpenDropdown] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // LOAD FAVORITE PROPERTY LIST
+  useEffect(() => {
+    if (isConnected) {
+      sendMessage("action", {
+        type: "userService",
+        action: "favoritePropertyList",
+        payload: {},
+      });
+    }
+  }, [isConnected]);
+
+  // SET FIRST FAVORITE PROPERTY
+  useEffect(() => {
+    if (
+      mainReducer?.favorite_property_list?.data &&
+      mainReducer.favorite_property_list.data.length > 0
+    ) {
+      setSelectedProperty(mainReducer.favorite_property_list.data[0]);
+    }
+  }, [mainReducer?.favorite_property_list]);
+
+  // CLOSE DROPDOWN ON OUTSIDE CLICK
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <section className="mb-6">
+      <h2 className="mb-4 font-inter text-lg font-bold text-[#111827]">
+        AI Insights
+      </h2>
+
+      {/* PROPERTY CARD */}
+      <div className="relative flex flex-col gap-6" ref={dropdownRef}>
+        <div className="relative overflow-visible rounded-2xl bg-white/70">
+          {/* DROPDOWN BUTTON */}
+          <button
+            type="button"
+            onClick={() => setOpenDropdown(!openDropdown)}
+            className="
+              absolute right-4 top-12 z-30
+              flex items-center gap-2
+              rounded-full  px-3 py-2 hover:bg-slate-100
+              hover:shadow-md hover:transition hover:scale-105
+            "
+          >
+            <ChevronDown
+              size={16}
+              className={`transition-transform ${
+                openDropdown ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+
+          {/* SELECTED PROPERTY */}
+          <div className="lg:flex items-start gap-3">
+            <div className="lg:h-32 max-md:h-52">
+              <Image
+                src={selectedProperty?.propertyImages?.[0]?.url || ""}
+                alt="AI Insights"
+                width={160}
+                height={100}
+                className="
+                  object-cover
+                  lg:h-32
+                  max-md:h-52
+                  max-md:w-full
+                  lg:rounded-l-2xl
+                  max-md:rounded-t-2xl
+                "
+              />
+            </div>
+
+            <div className="flex flex-col gap-1 max-md:mb-5">
+              <h1 className="px-4 pt-4 font-inter text-md font-bold text-[#111827]">
+                Stylish {selectedProperty?.bedrooms}
+                -Bedroom {selectedProperty?.propertyCategory?.name} in{" "}
+                {selectedProperty?.locationCity?.name},{" "}
+                {selectedProperty?.locationCountry?.name}
+              </h1>
+              <h2 className="px-4 pt-1 font-manrope text-lg font-bold text-[#64748B]">
+                €{selectedProperty?.salePrice}
+              </h2>
+
+              <div className="flex items-center gap-5 px-4 pt-2 text-sm">
+                <div className="flex items-center gap-1 font-manrope font-normal">
+                  <Expand size={18} className="text-gray-400" />
+
+                  <span>{selectedProperty?.mtsBuild} /m²</span>
+                </div>
+
+                <div className="flex items-center gap-1 font-manrope font-normal">
+                  <BedSingle size={18} className="text-gray-400" />
+
+                  <span>{selectedProperty?.bedrooms} Bed</span>
+                </div>
+
+                <div className="flex items-center gap-1 font-manrope font-normal">
+                  <Bath size={18} className="text-gray-400" />
+
+                  <span>{selectedProperty?.bathrooms} Bath</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* DROPDOWN PROPERTY LIST */}
+          {openDropdown && (
+            <div
+              className="
+                absolute left-0 top-full z-50 mt-3
+                max-h-[400px] w-full overflow-y-auto scrollbar-hidee
+                rounded-2xl border border-gray-100
+                bg-white p-3 shadow-2xl
+              "
+            >
+              <div className="space-y-3">
+                {mainReducer?.favorite_property_list?.data?.map(
+                  (item: IProperty, index: number) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => {
+                        setSelectedProperty(item);
+
+                        setOpenDropdown(false);
+                      }}
+                      className="
+                        w-full overflow-hidden
+                        rounded-2xl border
+                        border-gray-100 bg-white
+                        text-left transition
+                        hover:border-[#2563EB]
+                      "
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="h-24 w-[150px]">
+                          <Image
+                            src={item?.propertyImages?.[0]?.url || ""}
+                            alt="Property"
+                            width={110}
+                            height={90}
+                            className="
+                              h-24 w-full
+                              rounded-l-2xl
+                              object-cover
+                            "
+                          />
+                        </div>
+
+                        <div className="flex flex-col gap-1 p-3">
+                          <h1 className="font-inter text-sm font-bold text-[#111827]">
+                            Stylish {item?.bedrooms}
+                            -Bedroom {item?.propertyCategory?.name} in{" "}
+                            {item?.locationCity?.name}
+                          </h1>
+
+                          <h2 className="font-manrope text-sm font-bold text-[#64748B]">
+                            €{item?.salePrice}
+                          </h2>
+
+                          <div className="flex items-center gap-3 pt-1 text-xs">
+                            <div className="flex items-center gap-1">
+                              <Expand size={14} className="text-gray-400" />
+
+                              <span>{item?.mtsBuild} /m²</span>
                             </div>
+
+                            <div className="flex items-center gap-1">
+                              <BedSingle size={14} className="text-gray-400" />
+
+                              <span>{item?.bedrooms} Bed</span>
+                            </div>
+
+                            <div className="flex items-center gap-1">
+                              <Bath size={14} className="text-gray-400" />
+
+                              <span>{item?.bathrooms} Bath</span>
+                            </div>
+                          </div>
                         </div>
-                    </div>
-                </div>
+                      </div>
+                    </button>
+                  ),
+                )}
+              </div>
             </div>
+          )}
+        </div>
+      </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 my-5">
-                <div className="bg-white rounded-lg p-4 flex items-start gap-4 ">
-                    <div className="bg-[#4A86E8] p-2 rounded-xl flex items-center justify-center w-16 h-16">
-                        <Search size={25} className="text-white " />
-                    </div>
-                    <div className="w-[80%]">
-                        <h1 className="font-bold text-md font-inter text-[#111827]">1. Select Property</h1>
-                        <p className='font-inter font-medium text-[#4B5563] text-sm'>Choose a property based on your location, budget, and preferences.</p>
-                    </div>
-                </div>
-                <div className="bg-white rounded-lg p-4 flex items-start gap-4 ">
-                    <div className="bg-[#4A86E8] p-2 rounded-xl flex items-center justify-center w-16 h-16">
-                        <Cpu size={25} className="text-white " />
-                    </div>
-                    <div className="w-[80%]">
-                        <h1 className="font-bold text-md  font-inter text-[#111827]">2. AI Analysis</h1>
-                        <p className='font-inter font-medium text-[#4B5563] text-sm'>Our AI processes property details using market trends, pricing data, and comparable properties.</p>
-                    </div>
-                </div>
-            </div>
-            <div className="bg-white rounded-lg p-4 flex items-start gap-4 ">
-                <div className="bg-[#4A86E8] p-2 rounded-xl flex items-center justify-center w-16 h-16">
-                    <FileText size={25} className="text-white " />
-                </div>
-                <div className="w-[80%]">
-                    <h1 className="font-bold text-md  font-inter text-[#111827]">3. Property Analysis Report</h1>
-                    <p className='font-inter font-medium text-[#4B5563] text-sm'>Receive a personalized AI-powered report with valuation, investment insights, and market recommendations.</p>
-                </div>
-            </div>
+      {/* STEPS */}
+      <div className="my-5 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
+        <div className="flex items-start gap-4 rounded-lg bg-white p-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#4A86E8] p-2">
+            <Search size={25} className="text-white" />
+          </div>
 
-            <button onClick={onGetStarted} className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[15px] py-2.5 rounded-[10px] font-inter font-extrabold flex items-center gap-2">
-                Get Started <ArrowRight size={18} className="ml-2" />
-            </button>
-        </section>
-    )
-}
+          <div className="w-[80%]">
+            <h1 className="font-inter text-md font-bold text-[#111827]">
+              1. Select Property
+            </h1>
 
-export default AiInsights
+            <p className="font-inter text-sm font-medium text-[#4B5563]">
+              Choose a property based on your location, budget, and preferences.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-4 rounded-lg bg-white p-4">
+          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#4A86E8] p-2">
+            <Cpu size={25} className="text-white" />
+          </div>
+
+          <div className="w-[80%]">
+            <h1 className="font-inter text-md font-bold text-[#111827]">
+              2. AI Analysis
+            </h1>
+
+            <p className="font-inter text-sm font-medium text-[#4B5563]">
+              Our AI processes property details using market trends, pricing
+              data, and comparable properties.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-start gap-4 rounded-lg bg-white p-4">
+        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#4A86E8] p-2">
+          <FileText size={25} className="text-white" />
+        </div>
+
+        <div className="w-[80%]">
+          <h1 className="font-inter text-md font-bold text-[#111827]">
+            3. Property Analysis Report
+          </h1>
+
+          <p className="font-inter text-sm font-medium text-[#4B5563]">
+            Receive a personalized AI-powered report with valuation, investment
+            insights, and market recommendations.
+          </p>
+        </div>
+      </div>
+
+      {/* BUTTON */}
+      <button
+        onClick={() => onGetStarted(selectedProperty)}
+        className="
+          my-4 flex w-fit items-center gap-2
+          rounded-[10px] bg-[#111827]
+          px-10 py-2.5 text-[15px]
+          font-extrabold tracking-wider
+          text-white shadow-md
+        "
+      >
+        Get Started
+        <ArrowRight size={18} className="ml-2" />
+      </button>
+    </section>
+  );
+};
+
+export default AiInsights;
