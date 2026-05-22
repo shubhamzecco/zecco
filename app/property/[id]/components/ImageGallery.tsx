@@ -1,7 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Box, GalleryThumbnails, Heart, LayoutPanelLeft, Play, X } from "lucide-react";
+import {
+  Box,
+  GalleryThumbnails,
+  Heart,
+  LayoutPanelLeft,
+  Play,
+  X,
+} from "lucide-react";
 import { App_url } from "@/constant/static";
 import Image from "next/image";
 import { IImage, IProperty, Property } from "@/redux/modules/main/types";
@@ -17,7 +24,6 @@ interface PropertyStats {
   property: IImage[];
 }
 
-
 export default function PropertyGallery({ property }: PropertyStats) {
   const shuffleArray = (array: IImage[] = []) => {
     return [...array].sort(() => Math.random() - 0.5);
@@ -30,18 +36,17 @@ export default function PropertyGallery({ property }: PropertyStats) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [dragX, setDragX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const { mainReducer, user_data } = usePosterReducers()
-  const dispatch = useDispatch()
-  const { sendMessage } = useWebSocket()
-  const { id } = useParams()
-  const idString = typeof id === 'string' ? id : ''
+  const { mainReducer, user_data } = usePosterReducers();
+  const dispatch = useDispatch();
+  const { sendMessage } = useWebSocket();
+  const { id } = useParams();
+  const idString = typeof id === "string" ? id : "";
 
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
   const mouseStartX = useRef<number | null>(null);
 
   const SWIPE_THRESHOLD = 50;
-
 
   useEffect(() => {
     if (Array.isArray(property)) {
@@ -59,14 +64,9 @@ export default function PropertyGallery({ property }: PropertyStats) {
   };
 
   const handleTouchEnd = () => {
-    if (
-      touchStartX.current === null ||
-      touchEndX.current === null
-    )
-      return;
+    if (touchStartX.current === null || touchEndX.current === null) return;
 
-    const distance =
-      touchStartX.current - touchEndX.current;
+    const distance = touchStartX.current - touchEndX.current;
 
     if (distance > SWIPE_THRESHOLD && active < images.length - 1) {
       setActive((p) => p + 1);
@@ -102,8 +102,6 @@ export default function PropertyGallery({ property }: PropertyStats) {
     setIsDragging(false);
   };
 
-
-
   /* ================= EXISTING LOGIC ================= */
   const swapImage = (index: number) => {
     if (index === 0) return;
@@ -120,30 +118,34 @@ export default function PropertyGallery({ property }: PropertyStats) {
   const handleFavoriteAdd = () => {
     if (!user_data?.access_token) {
       // router.push(App_url.link.SIGN_IN)
-      dispatch(setLoginPopup(true))
+      dispatch(setLoginPopup(true));
       return;
     } else {
-      const idString = typeof id === 'string' ? id : '';
-      if (mainReducer?.property_list_with_limit?.favorite_property?.includes(idString) || mainReducer?.zecco_favorite?.favorite_property?.includes(idString)) {
-        sendMessage('action', {
+      const idString = typeof id === "string" ? id : "";
+      if (
+        mainReducer?.property_list_with_limit?.favorite_property?.includes(
+          idString,
+        ) ||
+        mainReducer?.zecco_favorite?.favorite_property?.includes(idString)
+      ) {
+        sendMessage("action", {
           type: "userService",
           action: "removeFavorite",
           payload: {
-            property_id: idString
+            property_id: idString,
           },
-        })
+        });
       } else {
-        sendMessage('action', {
+        sendMessage("action", {
           type: "userService",
           action: "addFavorite",
           payload: {
-            property_id: idString
+            property_id: idString,
           },
-        })
+        });
       }
     }
-  }
-
+  };
 
   return (
     <>
@@ -151,27 +153,32 @@ export default function PropertyGallery({ property }: PropertyStats) {
       <div className="hidden md:grid grid-cols-[2.5fr_1.2fr_1.2fr] gap-3 h-[450px] mb-8">
         <div
           className="rounded-2xl overflow-hidden cursor-pointer relative"
-          onClick={() => swapImage(0)}
+          onClick={() => {
+            setActive(0);
+            setOpen(true);
+          }}
         >
-          <img src={images?.[0]?.url} className="lg:w-[650px] lg:h-[460px] object-cover rounded-xl" />
+          <img
+            src={images?.[0]?.url}
+            className="lg:w-[650px] lg:h-[460px] object-cover rounded-xl"
+          />
 
           <button
             onClick={(e) => {
               e.stopPropagation(); // prevent navigation
               // onLikeToggle?.();
-              handleFavoriteAdd?.()
-
+              handleFavoriteAdd?.();
             }}
             className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
           >
-            {(mainReducer?.property_list_with_limit?.favorite_property?.includes(idString) || mainReducer?.zecco_favorite?.favorite_property?.includes(idString)) ? (
+            {mainReducer?.property_details?.favorite ? (
               <Heart size={20} className="text-red-500 fill-red-500" />
             ) : (
               <Heart size={20} className="text-white hover:text-red-500" />
             )}
           </button>
 
-          <div className="absolute bottom-4 left-4 flex gap-2">
+          {/* <div className="absolute bottom-4 left-4 flex gap-2">
             <ActionBtn icon={<Play size={14} />} label="Watch Video"
               onClick={() => {
                 setOpen(true)
@@ -187,16 +194,37 @@ export default function PropertyGallery({ property }: PropertyStats) {
                 setOpen(true)
                 setPopupType("3d")
               }} />
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col gap-3 lg:h-[460px]">
-          <img src={images?.[1]?.url} onClick={() => swapImage(1)} className="flex-1 h-1/2 object-cover cursor-pointer" />
-          <img src={images?.[2]?.url} onClick={() => swapImage(2)} className="flex-1 h-1/2 object-cover cursor-pointer" />
+          <img
+            src={images?.[1]?.url}
+            onClick={() => {
+              setActive(1);
+              setOpen(true);
+            }}
+            className="flex-1 h-1/2 object-cover cursor-pointer"
+          />
+          <img
+            src={images?.[2]?.url}
+            onClick={() => {
+              setActive(2);
+              setOpen(true);
+            }}
+            className="flex-1 h-1/2 object-cover cursor-pointer"
+          />
         </div>
 
         <div className="flex flex-col lg:h-[460px] gap-5">
-          <img src={images?.[3]?.url} onClick={() => swapImage(3)} className="flex-1  object-cover cursor-pointer" />
+          <img
+            src={images?.[3]?.url}
+            onClick={() => {
+              setActive(3);
+              setOpen(true);
+            }}
+            className="flex-1  object-cover cursor-pointer"
+          />
 
           <div
             onClick={() => {
@@ -205,7 +233,10 @@ export default function PropertyGallery({ property }: PropertyStats) {
             }}
             className="relative h-12 cursor-pointer overflow-hidden rounded-md"
           >
-            <img src={images?.[4]?.url} className="w-full h-full object-cover" />
+            <img
+              src={images?.[4]?.url}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-black/80" />
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-white font-semibold text-sm">
@@ -218,35 +249,50 @@ export default function PropertyGallery({ property }: PropertyStats) {
 
       <div className="md:hidden mb-6">
         <div className="relative rounded-xl overflow-hidden mb-3">
-          <img onClick={openGallery} src={images?.[0]?.url} className="w-full h-[260px] object-cover" />
+          <img
+            onClick={openGallery}
+            src={images?.[0]?.url}
+            className="w-full h-[260px] object-cover"
+          />
 
           <button className="absolute top-3 right-3 bg-white p-2 rounded-full shadow">
             <Heart className="w-4 h-4 text-red-500 fill-red-500" />
           </button>
 
           <div className="absolute bottom-3 left-3 flex gap-2">
-            <ActionBtn icon={<Play size={14} />} label="Video"
+            <ActionBtn
+              icon={<Play size={14} />}
+              label="Video"
               onClick={() => {
-                setOpen(true)
-                setPopupType("video")
+                setOpen(true);
+                setPopupType("video");
               }}
             />
-            <ActionBtn icon={<LayoutPanelLeft size={14} />} label="Plan"
+            <ActionBtn
+              icon={<LayoutPanelLeft size={14} />}
+              label="Plan"
               onClick={() => {
-                setOpen(true)
-                setPopupType("plan")
+                setOpen(true);
+                setPopupType("plan");
               }}
             />
-            <ActionBtn icon={<Box size={14} />} label="3D"
+            <ActionBtn
+              icon={<Box size={14} />}
+              label="3D"
               onClick={() => {
-                setOpen(true)
-                setPopupType("3d")
-              }} />
+                setOpen(true);
+                setPopupType("3d");
+              }}
+            />
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <img src={images?.[1]?.url} onClick={openGallery} className="h-32 w-full object-cover rounded-lg cursor-pointer" />
+          <img
+            src={images?.[1]?.url}
+            onClick={openGallery}
+            className="h-32 w-full object-cover rounded-lg cursor-pointer"
+          />
 
           <div
             onClick={() => {
@@ -255,7 +301,10 @@ export default function PropertyGallery({ property }: PropertyStats) {
             }}
             className="relative h-32 rounded-lg overflow-hidden cursor-pointer"
           >
-            <img src={images?.[2]?.url} className="w-full h-full object-cover" />
+            <img
+              src={images?.[2]?.url}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-black/70" />
             <div className="absolute inset-0 flex items-center justify-center">
               <span className="text-white font-semibold text-sm">
@@ -275,10 +324,30 @@ export default function PropertyGallery({ property }: PropertyStats) {
           </button>
 
           <div className="absolute top-7 left-1/2 -translate-x-1/2 flex gap-2 z-40">
-            <ActionBtn icon={<GalleryThumbnails size={14} />} label="Gallery" onClick={() => setPopupType("gallery")} isActivate={popupType === 'gallery'} />
-            <ActionBtn icon={<Play size={14} />} label="Video" onClick={() => setPopupType("video")} isActivate={popupType === 'video'} />
-            <ActionBtn icon={<LayoutPanelLeft size={14} />} label="Plan" onClick={() => setPopupType("plan")} isActivate={popupType === 'plan'} />
-            <ActionBtn icon={<Box size={14} />} label="3D" onClick={() => setPopupType("3d")} isActivate={popupType === '3d'} />
+            <ActionBtn
+              icon={<GalleryThumbnails size={14} />}
+              label="Gallery"
+              onClick={() => setPopupType("gallery")}
+              isActivate={popupType === "gallery"}
+            />
+            <ActionBtn
+              icon={<Play size={14} />}
+              label="Video"
+              onClick={() => setPopupType("video")}
+              isActivate={popupType === "video"}
+            />
+            <ActionBtn
+              icon={<LayoutPanelLeft size={14} />}
+              label="Plan"
+              onClick={() => setPopupType("plan")}
+              isActivate={popupType === "plan"}
+            />
+            <ActionBtn
+              icon={<Box size={14} />}
+              label="3D"
+              onClick={() => setPopupType("3d")}
+              isActivate={popupType === "3d"}
+            />
           </div>
 
           <div
@@ -303,7 +372,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               />
             )}
 
-            {popupType === '3d' && (
+            {popupType === "3d" && (
               <div className="bg-white rounded-xl w-[90%] max-w-xl mt-20 p-6 text-center">
                 <Image
                   src={App_url.image.plan_3d}
@@ -316,7 +385,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               </div>
             )}
 
-            {popupType === 'plan' && (
+            {popupType === "plan" && (
               <div className="bg-white rounded-xl w-[90%] max-w-xl mt-20 text-center">
                 <Image
                   src={App_url.image.plan}
@@ -329,7 +398,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               </div>
             )}
 
-            {popupType === 'video' && (
+            {popupType === "video" && (
               <div className="">
                 <video
                   ref={videoRef}
@@ -337,8 +406,8 @@ export default function PropertyGallery({ property }: PropertyStats) {
                   src={App_url.image.video}
                   controls
                   autoPlay
-                // onPlay={() => setIsPlaying(true)}
-                // onPause={() => setIsPlaying(false)}
+                  // onPlay={() => setIsPlaying(true)}
+                  // onPause={() => setIsPlaying(false)}
                 />
               </div>
             )}
@@ -352,8 +421,11 @@ export default function PropertyGallery({ property }: PropertyStats) {
                   key={i}
                   src={img?.url}
                   onClick={() => setActive(i)}
-                  className={`w-20 h-14 rounded-lg object-cover cursor-pointer border-2 ${active === i ? "border-white" : "border-transparent opacity-70"
-                    }`}
+                  className={`w-20 h-14 rounded-lg object-cover cursor-pointer border-2 ${
+                    active === i
+                      ? "border-white"
+                      : "border-transparent opacity-70"
+                  }`}
                 />
               ))}
             </div>
@@ -369,18 +441,18 @@ function ActionBtn({
   icon,
   label,
   onClick,
-  isActivate
+  isActivate,
 }: {
   icon: React.ReactNode;
   label: string;
   onClick?: () => void;
-  isActivate?: boolean
+  isActivate?: boolean;
 }) {
   return (
     <button
       onClick={onClick}
       className={`flex uppercase font-bold items-center gap-2
-      ${isActivate ? 'bg-[#0A96F4] text-white' : 'bg-white/90 text-[#111827]'} backdrop-blur 
+      ${isActivate ? "bg-[#0A96F4] text-white" : "bg-white/90 text-[#111827]"} backdrop-blur 
       px-3 py-1.5 rounded-lg text-xs
       border border-white/40`}
     >

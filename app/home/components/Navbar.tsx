@@ -13,6 +13,7 @@ import { usePosterReducers } from '@/redux/getdata/usePostReducer'
 import ImageDropdown from '@/components/ui/image-dropdown'
 import { setAuthData } from '@/redux/modules/common/user_data/action'
 import { setLogout } from '@/redux/actions/action'
+import { toast } from 'react-toastify'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -84,6 +85,7 @@ export default function Navbar() {
                         dispatch(setAuthData({} as any))
                         dispatch(setReduxClear())
                         router.push(App_url.link.INITIAL_URL)
+                        toast.success('Logout successfully')
                       },
                     },
                   ]}

@@ -370,7 +370,7 @@ const PropertySearchBar = () => {
               hover:opacity-90 transition
             "
           >
-            <Sparkles size={16} />
+            {/* <Sparkles size={16} /> */}
             Search
           </button>
         </div>

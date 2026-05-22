@@ -29,8 +29,6 @@ const Page = () => {
 
   const [propertyType, setPropertyType] = useState<PropertyType>("all");
 
-  console.log("propertyType", propertyType);
-
   const [propertyTypes, setPropertyTypes] = useState("");
 
   const [page, setPage] = useState(1);
@@ -123,11 +121,6 @@ const Page = () => {
     });
   };
 
-  console.log(
-    "mainReducer?.propertyFilter?.propertyType",
-    mainReducer?.propertyFilter,
-  );
-
   useEffect(() => {
     if (!mainReducer?.propertyFilter) return;
     if (mainReducer?.propertyFilter) {
@@ -191,8 +184,6 @@ const Page = () => {
     const selectedFeatures = Object.keys(filters?.moreFilters || {}).filter(
       (key) => Number(filters?.moreFilters?.[key]) && key !== "all",
     );
-
-    console.log("selectedFeatures ::: " , selectedFeatures)
 
     const payload = {
       categories:
@@ -330,6 +321,16 @@ const Page = () => {
     });
   };
 
+  useEffect(() => {
+    sendMessage("action", {
+      type: "locationService",
+      action: "list_city_area",
+      payload: {
+        id: id?.location,
+      },
+    });
+  }, [id]);
+
   return (
     <MainLayout
       isBreadcrumb
@@ -341,13 +342,16 @@ const Page = () => {
       callBackPropertyType={(value) => {
         setPropertyTypes(value);
       }}
-      propertyCount={properties?.length}
+      propertyCount={
+        mainReducer?.property_list_with_limit?.pagination?.totalCount
+      }
       propertyType={propertyType}
       onPropertyTypeChange={(data: PropertyType) => {
         setPropertyType(data);
       }}
       savedSearch={Object.keys(filterData || {}).length > 0}
       savedSearches={handleSavedSearches}
+      filteredLocations={mainReducer?.location_area_list || []}
     >
       <div className="px-4 sm:px-6 lg:mx-7 lg:px-8 lg:pb-10">
         {/* MOBILE FILTER */}

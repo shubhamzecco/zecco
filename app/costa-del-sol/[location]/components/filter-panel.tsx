@@ -16,7 +16,7 @@ interface FilterPanelProps {
 }
 
 type FiltersState = {
-  propertyType: string;
+  propertyType: string | null;
   priceMin: string;
   priceMax: string;
   sizeMin: string;
@@ -271,7 +271,7 @@ export const filterList = [
 
 export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   const [filters, setFilters] = useState<FiltersState>({
-    propertyType: "",
+    propertyType: null,
     priceMin: "",
     priceMax: "",
     sizeMin: "",
@@ -288,86 +288,73 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   });
   const { mainReducer } = usePosterReducers();
   const { sendMessage, lastEvent } = useWebSocket();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-const defaultFilters: FiltersState = {
-  propertyType: "",
-  priceMin: "",
-  priceMax: "",
-  sizeMin: "",
-  sizeMax: "",
-  types: {},
-  propertyStatus: { bareOwnership: true },
-  bedroomsFrom: null,
-  bedroomsTo: null,
-  condition: {},
-  moreFilters: {},
-  floor: {},
-  multimedia: {},
-  publicationDate: {},
-};
+  const defaultFilters: FiltersState = {
+    propertyType: null,
+    priceMin: "",
+    priceMax: "",
+    sizeMin: "",
+    sizeMax: "",
+    types: {},
+    propertyStatus: { bareOwnership: true },
+    bedroomsFrom: null,
+    bedroomsTo: null,
+    condition: {},
+    moreFilters: {},
+    floor: {},
+    multimedia: {},
+    publicationDate: {},
+  };
 
-useEffect(() => {
-  if (mainReducer?.propertyFilter) {
-    setFilters({
-      propertyType:
-        mainReducer?.propertyFilter?.categories || "",
+  useEffect(() => {
+    if (mainReducer?.propertyFilter) {
+      setFilters({
+        propertyType: mainReducer?.propertyFilter?.categories || "",
 
-      priceMin:
-        mainReducer?.propertyFilter?.priceFrom || "",
+        priceMin: mainReducer?.propertyFilter?.priceFrom || "",
 
-      priceMax:
-        mainReducer?.propertyFilter?.priceTo || "",
+        priceMax: mainReducer?.propertyFilter?.priceTo || "",
 
-      sizeMin:
-        mainReducer?.propertyFilter?.buildFrom || "",
+        sizeMin: mainReducer?.propertyFilter?.buildFrom || "",
 
-      sizeMax:
-        mainReducer?.propertyFilter?.buildTo || "",
+        sizeMax: mainReducer?.propertyFilter?.buildTo || "",
 
-      bedroomsFrom:
-        mainReducer?.propertyFilter?.bedroomsFrom || null,
+        bedroomsFrom: mainReducer?.propertyFilter?.bedroomsFrom || null,
 
-      bedroomsTo:
-        mainReducer?.propertyFilter?.bedroomsTo || null,
+        bedroomsTo: mainReducer?.propertyFilter?.bedroomsTo || null,
 
-      types: Array.isArray(mainReducer?.propertyFilter?.types)
-  ? mainReducer.propertyFilter.types.reduce(
-      (
-        acc: Record<number, boolean>,
-        item: number
-      ) => {
-        acc[item] = true
-        return acc
-      },
-      {}
-    )
-  : {},
+        types: Array.isArray(mainReducer?.propertyFilter?.types)
+          ? mainReducer.propertyFilter.types.reduce(
+              (acc: Record<number, boolean>, item: number) => {
+                acc[item] = true;
+                return acc;
+              },
+              {},
+            )
+          : {},
 
-moreFilters: Array.isArray(mainReducer?.propertyFilter?.features)
-  ? mainReducer.propertyFilter.features.reduce(
-      (
-        acc: Record<number, boolean>,
-        item: number
-      ) => {
-        acc[item] = true
-        return acc
-      },
-      {}
-    )
-  : {},
+        moreFilters: Array.isArray(mainReducer?.propertyFilter?.features)
+          ? mainReducer.propertyFilter.features.reduce(
+              (acc: Record<number, boolean>, item: number) => {
+                acc[item] = true;
+                return acc;
+              },
+              {},
+            )
+          : {},
 
-      propertyStatus: { bareOwnership: true },
-      condition: {},
-      floor: {},
-      multimedia: {},
-      publicationDate: {},
-    });
-  } else {
-    dispatch(setPropertyFilter(defaultFilters));
-    setFilters(defaultFilters);
-  }
-}, []);
+        propertyStatus: { bareOwnership: true },
+        condition: {},
+        floor: {},
+        multimedia: {},
+        publicationDate: {},
+      });
+    } else {
+      dispatch(setPropertyFilter(defaultFilters));
+      setFilters(defaultFilters);
+    }
+  }, []);
 
   useEffect(() => {
     if (mainReducer?.propertyFilter?.propertyTypes) {
@@ -379,10 +366,12 @@ moreFilters: Array.isArray(mainReducer?.propertyFilter?.features)
           is_subtype: true,
         },
       });
-      setFilters({...mainReducer?.propertyFilter , propertyType : mainReducer?.propertyFilter?.propertyTypes})
+      setFilters({
+        ...mainReducer?.propertyFilter,
+        propertyType: mainReducer?.propertyFilter?.propertyTypes,
+      });
     }
-  },[mainReducer?.propertyFilter?.propertyTypes])
-
+  }, [mainReducer?.propertyFilter?.propertyTypes]);
 
   const handleInputChange = (field: string, value: string | number) => {
     let updated: FiltersState = {
@@ -443,7 +432,7 @@ moreFilters: Array.isArray(mainReducer?.propertyFilter?.features)
       lastEvent?.data?.request?.action === "add"
     ) {
       const emptyFilters: FiltersState = {
-        propertyType: "",
+        propertyType: null,
         priceMin: "",
         priceMax: "",
         sizeMin: "",
@@ -476,12 +465,13 @@ moreFilters: Array.isArray(mainReducer?.propertyFilter?.features)
           </Label>
           <div className="relative">
             <select
-              value={filters.propertyType}
+              value={filters.propertyType ?? ""}
               onChange={(e) => {
                 handleInputChange("propertyType", e.target.value);
               }}
               className="w-full px-3 py-2.5 border border-gray-300 rounded-lg appearance-none bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
+              <option value="">All Property Types</option>
               {mainReducer?.property_type_list?.map((type) => {
                 return (
                   <option key={type.id} value={type?.id}>
@@ -653,7 +643,7 @@ moreFilters: Array.isArray(mainReducer?.propertyFilter?.features)
                 <Checkbox
                   id={item.name}
                   // checked={filters.moreFilters?.[item.id]}
-                 checked={!!filters?.moreFilters?.[item.id]}
+                  checked={!!filters?.moreFilters?.[item.id]}
                   onCheckedChange={(checked) =>
                     handleCheckboxChange(
                       "moreFilters",
