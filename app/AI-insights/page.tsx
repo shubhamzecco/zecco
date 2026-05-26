@@ -6,13 +6,14 @@ import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAiInsight } from "@/redux/modules/main/action";
-import { IProperty } from "@/redux/modules/main/types";
+import { IProperty, IPropertyResponse } from "@/redux/modules/main/types";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import AiInsights from "./components/aiInsights";
 import AIProcessingCard from "./components/analyzing-property-details";
 import PropertyInsights from "./components/property-insights";
+import { toast } from "react-toastify";
 
 const AIInsights = () => {
   const [step, setStep] = useState("intro");
@@ -49,7 +50,9 @@ const AIInsights = () => {
         setStep("complete");
         setIsCompleted(true);
       } else {
-        dispatch(setAiInsight(response?.data));
+        setStep("intro");
+        dispatch(setAiInsight({} as IPropertyResponse));
+        toast.error(response?.data?.message);
       }
     });
   };
@@ -77,7 +80,7 @@ const AIInsights = () => {
           />
         )}
 
-        {step === "complete" && <PropertyInsights />}
+        {step === "complete" && mainReducer?.ai_insight && <PropertyInsights />}
       </div>
     </SidebarLayout>
   );

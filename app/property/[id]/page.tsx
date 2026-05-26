@@ -29,6 +29,7 @@ import { PropertyInfo } from "./components/PropertyInfo";
 import PropertyStats from "./components/PropertyStats";
 import ZeccoFavorites from "./components/ZeccoFavorites";
 import LoginPopup from "@/components/login-popup";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
@@ -93,7 +94,8 @@ const Page = () => {
         setIsCompleted(true);
       } else {
         setStep("intro");
-        dispatch(setAiInsight(response?.data));
+        dispatch(setAiInsight({} as IPropertyResponse));
+        toast.error(response?.data?.message);
       }
     });
   };
@@ -132,7 +134,7 @@ const Page = () => {
                 heading="AI Market Intelligence"
               />
             )}
-            {step === "complete" && (
+            {step === "complete" && mainReducer?.ai_insight && (
               <AIMarketIntelligence
                 ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
               />

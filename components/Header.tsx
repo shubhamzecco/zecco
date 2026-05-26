@@ -7,12 +7,13 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { App_url } from '@/constant/static'
 import { useDispatch } from 'react-redux'
-import { clearBreadcrumbs, setBreadcrumbs, setPropertyFilter, setReduxClear } from '@/redux/modules/main/action'
+import { clearBreadcrumbs, setAiInsight, setBreadcrumbs, setPropertyFilter, setReduxClear } from '@/redux/modules/main/action'
 import { NAV_ITEMS } from '@/utils/common'
 import { usePosterReducers } from '@/redux/getdata/usePostReducer'
 import { setAuthData } from '@/redux/modules/common/user_data/action'
 import ImageDropdown from './ui/image-dropdown'
 import { setLogout } from '@/redux/actions/action'
+import { IPropertyResponse } from '@/redux/modules/main/types'
 
 type HeaderProps = {
   onProfileClick?: () => void;
@@ -33,6 +34,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
   const handleNavClick = (item: any) => {
     dispatch(clearBreadcrumbs())
     dispatch(setPropertyFilter({}))
+    dispatch(setAiInsight({} as IPropertyResponse));
     if (item.breadcrumbs) dispatch(setBreadcrumbs(item.breadcrumbs))
     router.push(item.href)
     setIsOpen(false) // ✅ close menu on click
