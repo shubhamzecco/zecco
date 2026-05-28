@@ -1,6 +1,6 @@
-import Image from 'next/image'
-import PropertySearchBar from './PropertySearchBar'
-import { App_url } from '@/constant/static'
+import { App_url } from "@/constant/static";
+import Image from "next/image";
+import PropertySearchBar from "./PropertySearchBar";
 
 export default function HeroSection() {
   return (
@@ -13,7 +13,7 @@ export default function HeroSection() {
         className="lg:object-fill max-md:object-none mx-auto"
         priority
       />
-      <div className="absolute top-[23%] lg:top-[28%] left-0 right-0 flex flex-col items-center text-center px-4 -translate-y-1/2">
+      <div className="absolute top-[23%] lg:top-[25%] left-0 right-0 flex flex-col items-center text-center px-4 -translate-y-1/2">
         <Image
           src={App_url.image.logo}
           alt="logo"
@@ -22,15 +22,10 @@ export default function HeroSection() {
           className="lg:object-cover max-md:object-cover mx-auto"
           priority
         />
-        {/* <p className="text-md sm:text-lg font-manrope text-[#0B5394] mx-auto">
-          The new standard in property search. Smarter with AI.
-          Trusted by local experts.
-        </p> */}
-
       </div>
 
       {/* Search Bar pinned to bottom */}
-      <div className="absolute bottom-24 left-0 right-0 px-4">
+      <div className="absolute bottom-12 left-0 right-0 px-4">
         <div className="max-w-4xl mx-auto">
           <PropertySearchBar />
         </div>
