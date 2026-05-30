@@ -1,16 +1,15 @@
-'use client'
+"use client";
 
-import { Button } from '@/components/ui/button'
-import { App_url } from '@/constant/static'
-import { motion } from 'framer-motion'
-import { CheckCircle } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { Button } from "@/components/ui/button";
+import { App_url } from "@/constant/static";
+import { motion } from "framer-motion";
+import { CheckCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function EmailVerifiedPage() {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#CFE0FF] via-[#EAF1FF] to-white px-4">
-
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -21,7 +20,7 @@ export default function EmailVerifiedPage() {
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          transition={{ type: "spring", stiffness: 200, damping: 15 }}
           className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100"
         >
           <CheckCircle className="text-green-600" size={40} />
@@ -44,8 +43,8 @@ export default function EmailVerifiedPage() {
           transition={{ delay: 0.3 }}
           className="mt-4 text-md font-instrument_sans text-text_gray_color leading-relaxed"
         >
-          Your email address has been successfully verified.
-          You can now explore properties and access your account.
+          Your email address has been successfully verified. You can now explore
+          properties and access your account.
         </motion.p>
 
         {/* Button */}
@@ -63,5 +62,5 @@ export default function EmailVerifiedPage() {
         </motion.div>
       </motion.div>
     </div>
-  )
+  );
 }

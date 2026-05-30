@@ -1,25 +1,23 @@
-"use client"
+"use client";
 
-import { usePosterReducers } from "@/redux/getdata/usePostReducer"
-import { ChevronsRight } from "lucide-react"
-import { useDispatch } from "react-redux"
-import { useRouter } from "next/navigation"
-import { setBreadcrumbs } from "@/redux/modules/main/action"
-import { useEffect } from "react"
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setBreadcrumbs } from "@/redux/modules/main/action";
+import { ChevronsRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
 
 const Breadcrumb = () => {
-  const { mainReducer } = usePosterReducers()
-  const dispatch = useDispatch()
-  const router = useRouter()
+  const { mainReducer } = usePosterReducers();
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  const breadcrumbs = mainReducer?.breadcrumbs || []
+  const breadcrumbs = mainReducer?.breadcrumbs || [];
 
   const handleClick = (index: number, href?: string | null) => {
-    const updatedBreadcrumbs = breadcrumbs?.slice(0, index + 1)
-    dispatch(setBreadcrumbs(updatedBreadcrumbs))
-    if (href) router.push(href)
-  }
-
+    const updatedBreadcrumbs = breadcrumbs?.slice(0, index + 1);
+    dispatch(setBreadcrumbs(updatedBreadcrumbs));
+    if (href) router.push(href);
+  };
 
   return (
     <nav
@@ -27,7 +25,7 @@ const Breadcrumb = () => {
       className="min-h-12 max-md:flex-wrap flex items-center text-md gap-1 font-manrope font-normal text-[#666666]"
     >
       {breadcrumbs.map((item, index) => {
-        const isLast = index === breadcrumbs.length - 1
+        const isLast = index === breadcrumbs.length - 1;
 
         return (
           <span key={index} className="flex items-center gap-1">
@@ -43,16 +41,13 @@ const Breadcrumb = () => {
             )}
 
             {!isLast && (
-              <ChevronsRight
-                size={20}
-                className="mt-[2px] text-[#000000]"
-              />
+              <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
             )}
           </span>
-        )
+        );
       })}
     </nav>
-  )
-}
+  );
+};
 
-export default Breadcrumb
+export default Breadcrumb;

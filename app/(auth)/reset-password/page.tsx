@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { postData } from "@/api/rest/fetchData";
 import { Button } from "@/components/ui/button";
@@ -8,36 +8,34 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { App_url } from "@/constant/static";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, House } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as z from "zod";
 import AuthLayout from "../layout/page";
 
 const formSchema = z.object({
-  confirm_password: z.string({ required_error: "Confirm password is required" }),
+  confirm_password: z.string({
+    required_error: "Confirm password is required",
+  }),
   password: z.string({
     required_error: "Password is required",
   }),
 });
 
 const ResetPassword = () => {
-  const router = useRouter()
-  const dispatch = useDispatch()
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       confirm_password: "",
-      password: '',
+      password: "",
     },
   });
 
@@ -53,9 +51,9 @@ const ResetPassword = () => {
           if (response?.status === 200) {
             toast.success(response?.message);
             router?.push(App_url.link.SIGN_IN);
-            sessionStorage.setItem("otp_email", '')
-            sessionStorage.setItem("otp", '')
-            sessionStorage.setItem("forget_password", '')
+            sessionStorage.setItem("otp_email", "");
+            sessionStorage.setItem("otp", "");
+            sessionStorage.setItem("forget_password", "");
             toast.success(response?.data?.message);
           } else {
             toast.error(response?.message);
@@ -76,19 +74,25 @@ const ResetPassword = () => {
   };
 
   return (
-    <AuthLayout 
-    heading="Welcome Back to Zecco!"
-    description="Sign in to Your Account">
-      
+    <AuthLayout
+      heading="Welcome Back to Zecco!"
+      description="Sign in to Your Account"
+    >
       <Form {...form}>
-        <form className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3" onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
           <div className="grid grid-cols-1 gap-5">
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required className="font-semibold font-inter text-[#101828]">
+                  <FormLabel
+                    required
+                    className="font-semibold font-inter text-[#101828]"
+                  >
                     New Password
                   </FormLabel>
                   <FormControl>
@@ -109,7 +113,10 @@ const ResetPassword = () => {
               name="confirm_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required className="font-semibold font-inter text-[#101828]">
+                  <FormLabel
+                    required
+                    className="font-semibold font-inter text-[#101828]"
+                  >
                     Confirm Password
                   </FormLabel>
                   <FormControl>
@@ -124,7 +131,6 @@ const ResetPassword = () => {
                 </FormItem>
               )}
             />
-
           </div>
 
           <div className="flex items-center mt-4 mb-5 gap-5">
@@ -143,7 +149,10 @@ const ResetPassword = () => {
             className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
           >
             Don't have an account?
-            <span className="text-[#3B82F6] font-bold font-inter text-base">  Register</span>
+            <span className="text-[#3B82F6] font-bold font-inter text-base">
+              {" "}
+              Register
+            </span>
           </Link>
         </div>
       </Form>

@@ -2,6 +2,7 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+import { citySlug } from "@/utils/common";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -45,36 +46,24 @@ export default function ExploreRegions() {
   // =========================
   // FETCH AREAS
   // =========================
-  const fetchAreas = (nextPage: number, selectedButtonType: ListingType) => {
+  const fetchAreas = (nextPage: number) => {
     if (nextPage > totalPages && totalPages !== 0) {
       return;
     }
 
-    if (loading || loadedPages.current[selectedButtonType].has(nextPage)) {
+    if (loading || loadedPages.current[selectedButton].has(nextPage)) {
       return;
     }
 
     setLoading(true);
 
-    loadedPages.current[selectedButtonType].add(nextPage);
+    loadedPages.current[selectedButton].add(nextPage);
 
     const requestPayload: any = {
       search: "",
       limit: LIMIT,
       page: nextPage,
     };
-
-    if (selectedButtonType === "buy") {
-      requestPayload.forSale = true;
-    }
-
-    if (selectedButtonType === "rent") {
-      requestPayload.forRent = true;
-    }
-
-    if (selectedButtonType === "new") {
-      requestPayload.isNewDev = true;
-    }
 
     sendMessage("action", {
       type: "locationService",
@@ -90,8 +79,6 @@ export default function ExploreRegions() {
   // =========================
 
   useEffect(() => {
-    setAreasData([]);
-
     setPage(1);
     loadedPages.current = {
       buy: new Set(),
@@ -104,7 +91,7 @@ export default function ExploreRegions() {
       behavior: "smooth",
     });
 
-    fetchAreas(1, selectedButton);
+    fetchAreas(1);
   }, [selectedButton]);
 
   // =========================
@@ -135,14 +122,46 @@ export default function ExploreRegions() {
   // GROUP CARDS (STRATIFIED PACKING)
   // =========================
 
+  const getCountKey = () => {
+    switch (selectedButton) {
+      case "buy":
+        return "sale_count";
+      case "rent":
+        return "rent_count";
+      case "new":
+        return "newDev_count";
+      default:
+        return "property_count";
+    }
+  };
+
+  const filteredAreasData = useMemo(() => {
+    const countKey = getCountKey();
+
+    return areasData
+      .map((city: any) => ({
+        ...city,
+        property_count: city[countKey] || 0,
+
+        areas:
+          city.areas
+            ?.filter((area: any) => (area[countKey] || 0) > 0)
+            ?.map((area: any) => ({
+              ...area,
+              property_count: area[countKey] || 0,
+            })) || [],
+      }))
+      .filter((city: any) => city.property_count > 0 && city.areas?.length > 0);
+  }, [areasData, selectedButton]);
+
   const groupedCards = useMemo(() => {
     const cards: any[][] = [];
 
     // 1. Separate cities based on whether they have exactly 5 areas
-    const exactFiveAreaCities = areasData.filter(
+    const exactFiveAreaCities = filteredAreasData.filter(
       (region) => Math.min(region?.areas?.length || 0, 5) === 5,
     );
-    const remainingCities = areasData.filter(
+    const remainingCities = filteredAreasData.filter(
       (region) => Math.min(region?.areas?.length || 0, 5) < 5,
     );
 
@@ -185,7 +204,7 @@ export default function ExploreRegions() {
     }
 
     return cards;
-  }, [areasData]);
+  }, [filteredAreasData]);
 
   // =========================
   // AUTO SCROLL
@@ -209,7 +228,7 @@ export default function ExploreRegions() {
 
       // fetch more
       if (maxScrollLeft - container.scrollLeft < container.clientWidth * 1.5) {
-        fetchAreas(page + 1, selectedButton);
+        fetchAreas(page + 1);
       }
 
       // reset to first
@@ -244,7 +263,7 @@ export default function ExploreRegions() {
     const remaining = maxScrollLeft - container.scrollLeft;
 
     if (remaining <= container.clientWidth * 1.2) {
-      fetchAreas(page + 1, selectedButton);
+      fetchAreas(page + 1);
     }
   };
 
@@ -252,7 +271,7 @@ export default function ExploreRegions() {
   // NAVIGATION
   // =========================
 
-  const handleNavigate = (region: string) => {
+  const handleNavigate = (region: any) => {
     dispatch(clearBreadcrumbs());
 
     dispatch(
@@ -266,13 +285,13 @@ export default function ExploreRegions() {
           href: App_url.link.COSTA_DEL_SOL,
         },
         {
-          label: region,
-          href: `${App_url.link.COSTA_DEL_SOL}/${region}`,
+          label: region?.name,
+          href: `${App_url.link.COSTA_DEL_SOL}/${region?.name}`,
         },
       ]),
     );
 
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${region}`);
+    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(region?.name)}`);
   };
 
   const TABS = [
@@ -373,7 +392,7 @@ export default function ExploreRegions() {
                         {region.property_count} PROPERTIES
                       </h2>
                       <button
-                        onClick={() => handleNavigate(region?.name)}
+                        onClick={() => handleNavigate(region)}
                         className="text-[#4A86E8] font-manrope font-bold text-sm transition hover:opacity-90"
                       >
                         View

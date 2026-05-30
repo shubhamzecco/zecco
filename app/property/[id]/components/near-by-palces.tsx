@@ -2,7 +2,6 @@
 import { App_url } from "@/constant/static";
 import { Infrastructure } from "@/redux/modules/main/types";
 import Image from "next/image";
-import React from "react";
 
 interface INearByPlacesProps {
   near_places: Infrastructure;

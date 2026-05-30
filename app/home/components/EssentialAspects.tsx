@@ -1,25 +1,27 @@
-import Image from 'next/image'
-import { CheckCircle2, Users, Lightbulb, LayoutPanelLeft, Layers } from 'lucide-react'
 import { App_url } from "@/constant/static";
+import Image from "next/image";
 
 export default function EssentialAspects() {
   const features = [
     {
       icon: App_url.image.local,
-      title: 'Local Expertise',
-      description: 'Deep understanding of Spanish property laws, regions, and market trends.',
+      title: "Local Expertise",
+      description:
+        "Deep understanding of Spanish property laws, regions, and market trends.",
     },
     {
       icon: App_url.image.ai_search,
-      title: 'Personalized AI Search',
-      description: 'Smart recommendations tailored to your lifestyle, budget, and goals.',
+      title: "Personalized AI Search",
+      description:
+        "Smart recommendations tailored to your lifestyle, budget, and goals.",
     },
     {
       icon: App_url.image.modular,
-      title: 'Modular Solutions',
-      description: 'Buy, rent, invest, or relocate—everything in one seamless platform.',
+      title: "Modular Solutions",
+      description:
+        "Buy, rent, invest, or relocate—everything in one seamless platform.",
     },
-  ]
+  ];
 
   return (
     <section className=" mt-10 bg-[#F8FAFC]">
@@ -37,10 +39,10 @@ export default function EssentialAspects() {
                 <div key={index} className="flex gap-4">
                   <div className="flex-shrink-0 bg-[#4A86E8] w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
                     <Image
-                    src={feature?.icon}
-                    alt={feature?.title}
-                    width={30}
-                    height={30}
+                      src={feature?.icon}
+                      alt={feature?.title}
+                      width={30}
+                      height={30}
                     />
                   </div>
                   <div>

@@ -9,7 +9,11 @@ type Props = {
   heading?: string;
 };
 
-export default function AIProcessingCard({ isCompleted, onComplete, heading }: Props) {
+export default function AIProcessingCard({
+  isCompleted,
+  onComplete,
+  heading,
+}: Props) {
   const TOTAL_TIME = 50;
   const INTERVAL = 500;
 

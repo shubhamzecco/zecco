@@ -1,14 +1,14 @@
 "use client";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
-import { ChevronDown, Search, Share2, TriangleAlert } from "lucide-react";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Footer from "../Footer";
 import Header from "../Header";
 import Breadcrumb from "../breadcrumbs";
 import ChatbotWidget from "../chat/chatbot-widget";
-import { useWebSocket } from "@/api/socket/WebSocketContext";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 interface MainLayoutProps {
@@ -24,11 +24,12 @@ interface MainLayoutProps {
   chatBotWidget?: boolean;
   callBackPropertyType?: (value: string) => void; // callback
   propertyTypes?: string; // property types value
-  handleSearch?: (value: string) => void;
+  handleSearch?: (value: any) => void;
   savedSearch?: boolean;
   savedSearches?: () => void;
   placeholder?: string;
   filteredLocations?: any[];
+  searchValueProp?: string;
 }
 
 const HEADER_HEIGHT = 100; // h-16 (64px) + top spacing
@@ -53,18 +54,24 @@ const MainLayout = ({
   savedSearches,
   placeholder,
   filteredLocations = [],
+  searchValueProp,
 }: MainLayoutProps) => {
   const pathname = usePathname();
-  const router = useRouter();
   const { sendMessage, isConnected } = useWebSocket();
-  const { mainReducer } = usePosterReducers();
-  const [searchValue, setSearchValue] = useState("");
+  const { user_data } = usePosterReducers();
+  const [searchValue, setSearchValue] = useState(searchValueProp || "");
   const [searchDropdown, setSearchDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const searchedLocations = filteredLocations?.filter((item: any) =>
-    item?.name?.toLowerCase()?.includes(searchValue.toLowerCase()),
-  );
+  const searchedLocations = searchValue.trim()
+    ? filteredLocations?.filter((item: any) =>
+        item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
+      )
+    : [];
+
+  useEffect(() => {
+    setSearchValue(searchValueProp || "");
+  }, [searchValueProp]);
 
   useEffect(() => {
     if (!isPropertyType) return;
@@ -131,18 +138,22 @@ const MainLayout = ({
                   placeholder={`Search by ${placeholder ? placeholder : "area"}`}
                   className="w-full lg:max-w-[27rem] bg-[#fcfcfc] placeholder:font-manrope font-normal placeholder:text-[#999999] h-9 pl-10 pr-4 rounded-[7px] border border-gray-300 
                                      focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  //   onKeyDown={(e) => {
-                  //     if (e.key === "Enter") {
-                  //       handleSearch?.(searchValue);
-                  //       setSearchDropdown(false);
-                  //     }
-                  //   }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      if (searchValue.trim() === "") {
+                        handleSearch?.("");
+                      }
+                      setSearchDropdown(false);
+                    }
+                  }}
                   onChange={(e) => {
-                    setSearchValue(e.target.value);
+                    const value = e.target.value;
+                    setSearchValue(value);
+                    setSearchDropdown(value.trim().length > 0);
                   }}
                   onFocus={() => setSearchDropdown(true)}
                 />
-                {searchDropdown && (
+                {searchDropdown && searchValue && (
                   <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[300px] overflow-y-auto scrollbar-hide">
                     {searchedLocations?.length > 0 ? (
                       <ul className="py-1 text-sm text-slate-700">
@@ -152,7 +163,7 @@ const MainLayout = ({
                               type="button"
                               onClick={() => {
                                 setSearchValue(item?.name);
-                                handleSearch?.(item?.name);
+                                handleSearch?.(item);
                                 setSearchDropdown(false);
                               }}
                               className="w-full px-4 py-3 text-left hover:bg-slate-100 transition"
@@ -178,22 +189,23 @@ const MainLayout = ({
                 </div>
               )}
             </div>
-            <div className="flex max-md:items-center justify-between max-md:w-full gap-5">
-              {/* {savedSearch && (
-                                <button
-                                    onClick={savedSearches}
-                                    className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md bg-blue_color text-white`}
-                                >
-                                    Save Searches
-                                </button>
-                            )} */}
+            <div className="flex max-md:flex-col lg:justify-between max-md:w-full gap-5">
+              {savedSearch && user_data?.access_token && (
+                <button
+                  onClick={savedSearches}
+                  className={`px-4 py-1.5 max-md:py-2.5 font-manrope font-semibold  max-md:w-full uppercase text-xs rounded-md bg-blue_color text-white`}
+                >
+                  Save Searches
+                </button>
+              )}
               {isPropertyType && (
-                <div className="inline-flex gap-1 rounded-lg bg-[#E5E7EB] p-1 shrink-0">
+                <div className="inline-flex gap-1 rounded-lg max-md:w-fit bg-[#E5E7EB] p-1 shrink-0">
                   {TABS?.map((tab, i) => (
                     <button
-                      onClick={() =>
-                        onPropertyTypeChange && onPropertyTypeChange(tab?.value)
-                      }
+                      onClick={() => {
+                        onPropertyTypeChange &&
+                          onPropertyTypeChange(tab?.value);
+                      }}
                       key={i}
                       className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md
                                         ${
@@ -207,25 +219,6 @@ const MainLayout = ({
                   ))}
                 </div>
               )}
-
-              {/* {isProperty && (
-                <div className="space-y-3">
-                  <div className="relative">
-                    <select
-                      value={propertyTypes}
-                      onChange={(e) => callBackPropertyType?.(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg appearance-none bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                    >
-                      {mainReducer?.property_type_list?.map((type) => (
-                        <option key={type.id} value={type?.name}>
-                          {type.name}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-              )} */}
             </div>
           </div>
         )}

@@ -1,4 +1,4 @@
-import { IProperty, Property } from "@/redux/modules/main/types";
+import { IProperty } from "@/redux/modules/main/types";
 import { ShieldCheck, Sparkles } from "lucide-react";
 
 interface PropertyInfoProps {
@@ -28,12 +28,10 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
             : property?.isRent
               ? "Rent"
               : ""}{" "}
-        in{""}
-        {property?.locationSubarea
-          ? `${property?.locationSubarea?.name},`
-          : ""}{" "}
-        {property?.locationArea ? `${property?.locationArea?.name},` : ""}{" "}
-        {property?.locationCity?.name}, {property?.locationCountry?.name}
+        in{" "}
+        {property?.locationSubarea ? `${property?.locationSubarea},` : ""}{" "}
+        {property?.locationArea ? `${property?.locationArea},` : ""}{" "}
+        {property?.locationCity}, {property?.locationCountry}
       </h1>
       <div className="flex items-baseline gap-3 mb-4">
         <span className="text-3xl font-manrope font-bold text-heading_text_color">
@@ -45,7 +43,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
         <span className="text-red-600 font-semibold text-lg">0%</span>
       </div>
       <p className="font-manrope font-semibold uppercase text-[#64748B] text-sm mb-4">
-        {property?.locationCity?.name} , {property?.locationCountry?.name}
+        {property?.locationCity} , {property?.locationCountry}
       </p>
     </div>
   );

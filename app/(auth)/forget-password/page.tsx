@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { postData } from "@/api/rest/fetchData";
 import { Button } from "@/components/ui/button";
@@ -8,13 +8,11 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { App_url } from "@/constant/static";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, House } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -27,7 +25,7 @@ const formSchema = z.object({
 });
 
 const ForgetPassword = () => {
-  const router = useRouter()
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,15 +38,15 @@ const ForgetPassword = () => {
       .then((response) => {
         try {
           if (response?.data?.success) {
-            toast.success(response?.data?.message)
+            toast.success(response?.data?.message);
             sessionStorage.setItem("otp_email", values.email);
-            sessionStorage?.setItem('forget_password', 'forget-password')
+            sessionStorage?.setItem("forget_password", "forget-password");
             router.push(App_url?.link?.OTP_VERIFICATION);
           } else {
             toast.error(response?.data?.message);
           }
         } catch (error) {
-          toast.error('Something went wrong');
+          toast.error("Something went wrong");
         }
       })
       .catch((error) => {
@@ -63,17 +61,22 @@ const ForgetPassword = () => {
   };
 
   return (
-    <AuthLayout heading="Forget Password"
-    description="Verify your email">
+    <AuthLayout heading="Forget Password" description="Verify your email">
       <Form {...form}>
-        <form className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3" onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
           <div className="grid grid-cols-1 gap-4">
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required className="font-semibold font-inter text-[#101828]">
+                  <FormLabel
+                    required
+                    className="font-semibold font-inter text-[#101828]"
+                  >
                     Your Email
                   </FormLabel>
                   <FormControl>
@@ -87,7 +90,6 @@ const ForgetPassword = () => {
                 </FormItem>
               )}
             />
-
           </div>
 
           <div className="flex items-center mt-4 mb-5 gap-5">
@@ -106,7 +108,10 @@ const ForgetPassword = () => {
             className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
           >
             Don't have an account?
-            <span className="text-[#3B82F6] font-bold font-inter text-base">  Register</span>
+            <span className="text-[#3B82F6] font-bold font-inter text-base">
+              {" "}
+              Register
+            </span>
           </Link>
         </div>
       </Form>

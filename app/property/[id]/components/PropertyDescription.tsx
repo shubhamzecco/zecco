@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { IPropertyDescription } from "@/redux/modules/main/types";
+import { useState } from "react";
 
 export function PropertyDescription({
   propertyDescriptions,

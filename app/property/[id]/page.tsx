@@ -3,6 +3,7 @@ import CommonApiRequest from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import AIProcessingCard from "@/app/AI-insights/components/analyzing-property-details";
 import MainLayout from "@/components/layouts/main-layout";
+import LoginPopup from "@/components/login-popup";
 import { Button } from "@/components/ui/button";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
@@ -13,12 +14,12 @@ import {
   IProperty,
   IPropertyDescription,
   IPropertyResponse,
-  Property,
-  PropertyAnalysis,
+  PropertyAnalysis
 } from "@/redux/modules/main/types";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import { AIMarketIntelligence } from "./components/AIMarketIntelligence";
 import { AgentCard } from "./components/AgentCard";
 import BasicFeatures from "./components/BasicFeatures";
@@ -28,8 +29,6 @@ import { PropertyDescription } from "./components/PropertyDescription";
 import { PropertyInfo } from "./components/PropertyInfo";
 import PropertyStats from "./components/PropertyStats";
 import ZeccoFavorites from "./components/ZeccoFavorites";
-import LoginPopup from "@/components/login-popup";
-import { toast } from "react-toastify";
 
 const Page = () => {
   const { sendMessage, isConnected, lastEvent } = useWebSocket();

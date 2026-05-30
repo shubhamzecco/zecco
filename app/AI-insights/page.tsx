@@ -10,16 +10,14 @@ import { IProperty, IPropertyResponse } from "@/redux/modules/main/types";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 import AiInsights from "./components/aiInsights";
 import AIProcessingCard from "./components/analyzing-property-details";
 import PropertyInsights from "./components/property-insights";
-import { toast } from "react-toastify";
 
 const AIInsights = () => {
   const [step, setStep] = useState("intro");
   const { mainReducer, user_data } = usePosterReducers();
-  const { sendMessage, isConnected } = useWebSocket();
-  const params = useParams();
   const dispatch = useDispatch();
   const [isCompleted, setIsCompleted] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<IProperty | null>(
@@ -40,7 +38,7 @@ const AIInsights = () => {
     setIsCompleted(false);
     CommonApiRequest(
       "GET",
-      `${App_url.endpoint_url?.AI_INSIGHT}/${property.id}/${user_data?.user?._id}`,
+      `${App_url.endpoint_url?.AI_INSIGHT}/${property._id}/${user_data?.user?._id}`,
       {},
       {},
       //   true,

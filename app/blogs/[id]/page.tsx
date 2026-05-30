@@ -5,7 +5,7 @@ import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
 const detailPage = () => {
   const id = useParams();

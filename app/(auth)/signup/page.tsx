@@ -20,10 +20,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { App_url } from "@/constant/static";
-import { useState } from "react";
-import PackagesModal, { IFormValue } from "../components/package-modal";
+import { setPropertyFilter } from "@/redux/modules/main/action";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import AuthLayout from "../layout/page";
-import CheckInboxModal from "../components/mail-send-modal";
 
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
@@ -36,11 +36,11 @@ const formSchema = z.object({
 
 const SignUpPage = () => {
   const router = useRouter();
-  const [packageModal, setPackageModal] = useState(false)
-  const [emailVerificationPopup, setEmailVerificationPopup] = useState(false)
-  const [formValue, setFormValue] = useState<z.infer<typeof formSchema>>()
-  const [userId, setUserId] = useState('')
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(setPropertyFilter({}));
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,18 +49,18 @@ const SignUpPage = () => {
       last_name: "",
       contact_no: "",
       email: "",
-      password: '',
-      confirm_password: ''
+      password: "",
+      confirm_password: "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    postData(App_url.endpoint_url.USER_LOGIN, { ...values, user_type: 'client'})
+    postData(App_url.endpoint_url.USER_LOGIN, {
+      ...values,
+      user_type: "client",
+    })
       ?.then((response: any) => {
         if (response?.status === 200) {
-          setPackageModal(true)
-          setFormValue(values)
-          setUserId(response?.data?.data?.user?._id)
           toast.success(response.data.message);
           sessionStorage.setItem("otp_email", values.email);
           router.push(App_url?.link?.OTP_VERIFICATION);
@@ -74,15 +74,14 @@ const SignUpPage = () => {
       });
   };
 
-
   return (
-
     <>
-      <AuthLayout
-        heading="Create Your Zecco Account"
-        description="">
+      <AuthLayout heading="Create Your Zecco Account" description="">
         <Form {...form}>
-          <form className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3" onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <div className="grid grid-cols-1 gap-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <FormField
@@ -90,12 +89,14 @@ const SignUpPage = () => {
                   name="first_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required className="font-semibold font-inter text-[#101828]">
+                      <FormLabel
+                        required
+                        className="font-semibold font-inter text-[#101828]"
+                      >
                         First Name
                       </FormLabel>
                       <FormControl>
                         <Input
-
                           placeholder="Enter first name"
                           className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                           {...field}
@@ -110,12 +111,14 @@ const SignUpPage = () => {
                   name="last_name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required className="font-semibold font-inter text-[#101828]">
+                      <FormLabel
+                        required
+                        className="font-semibold font-inter text-[#101828]"
+                      >
                         Last Name
                       </FormLabel>
                       <FormControl>
                         <Input
-
                           placeholder="Enter last name"
                           className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                           {...field}
@@ -132,12 +135,14 @@ const SignUpPage = () => {
                 name="contact_no"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required className="font-semibold font-inter text-[#101828]">
+                    <FormLabel
+                      required
+                      className="font-semibold font-inter text-[#101828]"
+                    >
                       Mobile Number
                     </FormLabel>
                     <FormControl>
                       <Input
-
                         placeholder="Enter mobile number"
                         className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                         {...field}
@@ -153,12 +158,14 @@ const SignUpPage = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel required className="font-semibold font-inter text-[#101828]">
+                    <FormLabel
+                      required
+                      className="font-semibold font-inter text-[#101828]"
+                    >
                       Email
                     </FormLabel>
                     <FormControl>
                       <Input
-
                         placeholder="Enter email"
                         className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                         {...field}
@@ -175,7 +182,10 @@ const SignUpPage = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required className="font-semibold font-inter text-[#101828]">
+                      <FormLabel
+                        required
+                        className="font-semibold font-inter text-[#101828]"
+                      >
                         Password
                       </FormLabel>
                       <FormControl>
@@ -195,7 +205,10 @@ const SignUpPage = () => {
                   name="confirm_password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel required className="font-semibold font-inter text-[#101828]">
+                      <FormLabel
+                        required
+                        className="font-semibold font-inter text-[#101828]"
+                      >
                         Confirm Password
                       </FormLabel>
                       <FormControl>
@@ -228,7 +241,10 @@ const SignUpPage = () => {
               className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
             >
               Already have an account?
-              <span className="text-[#3B82F6] font-bold font-inter text-base">  Log In</span>
+              <span className="text-[#3B82F6] font-bold font-inter text-base">
+                {" "}
+                Log In
+              </span>
             </Link>
           </div>
         </Form>
@@ -249,9 +265,7 @@ const SignUpPage = () => {
         />
       )} */}
     </>
-
   );
 };
 
 export default SignUpPage;
-

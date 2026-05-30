@@ -42,7 +42,8 @@ export const ActionTypes = {
   SET_BLOG_DETAILS: 'SET_BLOG_DETAILS',
   SET_STORED_AI_INSIGHT_LIST: 'SET_STORED_AI_INSIGHT_LIST',
   SET_LOCATION_LIST_WITHOUT_LIMIT : 'SET_LOCATION_LIST_WITHOUT_LIMIT',
-  SET_LOCATION_AREA_LIST: 'SET_LOCATION_AREA_LIST'
+  SET_LOCATION_AREA_LIST: 'SET_LOCATION_AREA_LIST',
+  SET_ALL_LOCATION_LIST: 'SET_ALL_LOCATION_LIST'
 };
 
 export const setPropertyFilter = (payload: any) => {
@@ -63,6 +64,13 @@ export const setBlogDetails = (payload: any) => {
 export const setLocationAreaList = (payload: any) => {
   return {
     type: ActionTypes.SET_LOCATION_AREA_LIST,
+    payload
+  }
+}
+
+export const setAllLocationList = (payload: any) => {
+  return {
+    type: ActionTypes.SET_ALL_LOCATION_LIST,
     payload
   }
 }

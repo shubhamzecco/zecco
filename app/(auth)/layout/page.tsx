@@ -1,22 +1,26 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import Link from 'next/link'
-import { ArrowLeft, House } from 'lucide-react'
-import { App_url } from '@/constant/static'
+import { App_url } from "@/constant/static";
+import { ArrowLeft, House } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 interface AuthImageLayoutProps {
-  children: React.ReactNode
-  bottomContent?: React.ReactNode
-  heading?: string
-  description?: string
+  children: React.ReactNode;
+  bottomContent?: React.ReactNode;
+  heading?: string;
+  description?: string;
 }
 
-export default function AuthLayout({ children, bottomContent, heading, description }: AuthImageLayoutProps) {
+export default function AuthLayout({
+  children,
+  bottomContent,
+  heading,
+  description,
+}: AuthImageLayoutProps) {
   return (
     <section className="lg:h-screen h-screen overflow-hidden bg-white lg:p-10 w-full">
       <div className="flex h-full items-center gap-10">
-
         {/* LEFT IMAGE */}
         <div className="w-[53%] hidden lg:block relative h-full">
           <Image
@@ -39,10 +43,11 @@ export default function AuthLayout({ children, bottomContent, heading, descripti
           </div>
         </div>
         <div className="relative w-full lg:w-[40%] h-fit flex flex-col   max-md:py-10  max-md:rounded-xl">
-
           <div
             className="absolute inset-0 bg-center bg-cover opacity-20 md:hidden max-md:rounded-xl"
-            style={{ backgroundImage: "url('/assets/images/signup-image.png')" }}
+            style={{
+              backgroundImage: "url('/assets/images/signup-image.png')",
+            }}
           />
           <div className="absolute inset-0 bg-black/10 md:hidden max-md:rounded-xl" />
 
@@ -57,22 +62,19 @@ export default function AuthLayout({ children, bottomContent, heading, descripti
               />
             </div>
             <div className="mt-4 my-3 flex flex-col gap-2 text-center mb-4">
-              <h1 className="capitalize font-inter font-bold text-[#101828] text-xl max-md:text-center lg:text-2xl">{heading}</h1>
-              <p className="font-inter font-medium text-[#6B7280] capitalize max-md:text-center">{description}</p>
+              <h1 className="capitalize font-inter font-bold text-[#101828] text-xl max-md:text-center lg:text-2xl">
+                {heading}
+              </h1>
+              <p className="font-inter font-medium text-[#6B7280] capitalize max-md:text-center">
+                {description}
+              </p>
             </div>
-
-            {/* CHILDREN */}
-            {/* <div className="lg:flex-1 overflow-y-auto">
-              {children}
-            </div> */}
 
             <div className="flex-1 lg:flex lg:flex-col lg:justify-center overflow-y-auto lg:overflow-visible">
               {children}
             </div>
 
-            {bottomContent && (
-              <div className="mt-6">{bottomContent}</div>
-            )}
+            {bottomContent && <div className="mt-6">{bottomContent}</div>}
 
             <div className="mt-4 flex justify-center">
               <Link
@@ -87,5 +89,5 @@ export default function AuthLayout({ children, bottomContent, heading, descripti
         </div>
       </div>
     </section>
-  )
+  );
 }

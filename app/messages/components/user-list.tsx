@@ -1,7 +1,6 @@
 import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import ProfileAvatar from "@/components/profile";
-import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { Search } from "lucide-react";
 import Image from "next/image";
@@ -49,7 +48,7 @@ const UserList: React.FC<UserListProps> = ({
   };
 
   return (
-    <div className="bg-[#F5F7FA] p-4 px-6 rounded-lg h-full">
+    <div className="bg-[#F5F7FA] p-4 px-9 md:px-6 rounded-lg h-full">
       <div className="flex items-center justify-between mb-3">
         <h2 className="font-bold text-md text-[#111827]">Messages</h2>
       </div>
@@ -108,7 +107,6 @@ const UserList: React.FC<UserListProps> = ({
                   />
                 </>
               )}
-              {/* <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" /> */}
             </div>
             <div>
               <h3 className="text-sm font-semibold text-[#111827]">

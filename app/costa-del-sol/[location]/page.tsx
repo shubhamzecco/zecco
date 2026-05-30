@@ -3,18 +3,21 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import PropertyCard from "@/components/cards/PropertyCard";
 import MainLayout from "@/components/layouts/main-layout";
+import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { SlidersHorizontal, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import FilterPanel from "./components/filter-panel";
-import { useDispatch } from "react-redux";
 import {
   setAiInsight,
   setBreadcrumbs,
   setPropertyDetails,
+  setPropertyFilter,
 } from "@/redux/modules/main/action";
-import { useParams } from "next/navigation";
 import { IPropertyResponse } from "@/redux/modules/main/types";
+import { SlidersHorizontal, X } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import FilterPanel from "./components/filter-panel";
+import { citySlug } from "@/utils/common";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 
@@ -29,7 +32,7 @@ const Page = () => {
 
   const [propertyType, setPropertyType] = useState<PropertyType>("all");
 
-  const [propertyTypes, setPropertyTypes] = useState("");
+  const [categories, setPropertyTypes] = useState("");
 
   const [page, setPage] = useState(1);
 
@@ -42,17 +45,21 @@ const Page = () => {
   const [filterData, setFilterData] = useState<any>({});
 
   // SEARCH STATE
-  const [search, setSearch] = useState("");
+  const { mainReducer } = usePosterReducers();
+  const [search, setSearch] = useState(
+    mainReducer?.propertyFilter?.search || "",
+  );
 
   const fetchedPages = useRef<Set<string>>(new Set());
 
-  const { mainReducer } = usePosterReducers();
+  const [filtersInitialized, setFiltersInitialized] = useState(false);
 
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
 
   const dispatch = useDispatch();
 
   const id = useParams();
+  const router = useRouter();
 
   const fetchProperties = (
     currentPage: number,
@@ -65,7 +72,7 @@ const Page = () => {
     const uniqueKey = JSON.stringify({
       page: currentPage,
       propertyType,
-      propertyTypes,
+      categories,
       filters,
       search: searchValue,
     });
@@ -89,15 +96,13 @@ const Page = () => {
         // SEARCH VALUE
         search: searchValue,
 
-        cities: Number(id?.location),
-        country: 6,
+        cities: id?.location,
+        country: "Spain",
         status: true,
 
         forAll: propertyType === "all",
 
-        categories: propertyTypes
-          ? Number(propertyTypes)
-          : filters?.propertyType,
+        categories: categories ? Number(categories) : filters?.categories,
 
         ...filters,
 
@@ -115,84 +120,87 @@ const Page = () => {
 
         ...(propertyType === "new" && {
           isNewDev: true,
-          forSale: true,
+          sold: false,
+          rented: false,
         }),
       },
     });
   };
 
   useEffect(() => {
-    if (!mainReducer?.propertyFilter) return;
-    if (mainReducer?.propertyFilter) {
-      const selectedKeys = Object.keys(mainReducer?.propertyFilter?.types || {}).filter(
-        (key) => Number(mainReducer?.propertyFilter?.types?.[key]) && key !== "all",
-      );
+    if (!mainReducer?.propertyFilter) {
+      setFiltersInitialized(true);
+      return;
+    }
 
-      const selectedFeatures = Object.keys(mainReducer?.propertyFilter?.moreFilters || {}).filter(
-        (key) => Number(mainReducer?.propertyFilter?.moreFilters?.[key]) && key !== "all",
-      );
-      const payload = {
-        categories:
-          selectedKeys?.length > 0 ? null : Number(mainReducer?.propertyFilter?.propertyType),
+    const filter = mainReducer.propertyFilter;
+    const selectedKeys = Array.isArray(filter?.types)
+      ? filter.types
+      : Object.entries(filter?.types || {})
+          .filter(([_, value]) => value)
+          .map(([key]) => Number(key));
 
-        types:
-          selectedKeys?.length === 0
-            ? null
-            : selectedKeys?.length > 1
-              ? selectedKeys?.map((key) => Number(key))
-              : Number(selectedKeys),
+    const selectedFeatures = Array.isArray(filter?.features)
+      ? filter.features
+      : Object.entries(filter?.features || {})
+          .filter(([_, value]) => value)
+          .map(([key]) => Number(key));
 
-        features: selectedFeatures,
+    const payload = {
+      categories: filter.categories ?? null,
+      types: selectedKeys ?? null,
+      features: selectedFeatures,
 
-        bedroomsFrom: mainReducer?.propertyFilter?.bedroomsFrom
-          ? Number(mainReducer?.propertyFilter?.bedroomsFrom)
-          : null,
+      bedroomsFrom: filter.bedroomsFrom ?? null,
+      bedroomsTo: filter.bedroomsTo ?? null,
 
-        bedroomsTo: mainReducer?.propertyFilter?.bedroomsTo ? Number(mainReducer?.propertyFilter?.bedroomsTo) : null,
+      priceFrom: filter.priceFrom ?? null,
+      priceTo: filter.priceTo ?? null,
 
-        priceFrom: mainReducer?.propertyFilter?.priceMin ? Number(mainReducer?.propertyFilter?.priceMin) : null,
+      buildFrom: filter.buildFrom ?? null,
+      buildTo: filter.buildTo ?? null,
+    };
 
-        priceTo: mainReducer?.propertyFilter?.priceMax ? Number(mainReducer?.propertyFilter?.priceMax) : null,
+    const cleanPayload = Object.fromEntries(
+      Object.entries(payload).filter(
+        ([_, value]) => value !== null && value !== undefined && value !== "",
+      ),
+    );
 
-        buildFrom: mainReducer?.propertyFilter?.sizeMin ? Number(mainReducer?.propertyFilter?.sizeMin) : null,
+    setFilterData(cleanPayload);
 
-        buildTo: mainReducer?.propertyFilter?.sizeMax ? Number(mainReducer?.propertyFilter?.sizeMax) : null,
-      };
-
-      const cleanPayload = Object.fromEntries(
-        Object.entries(payload).filter(
-          ([_, value]) => value !== null && value !== undefined,
-        ),
-      );
-      setFilterData(cleanPayload);
-
-      if (mainReducer?.propertyFilter?.propertyType) {
-        setPropertyType(mainReducer?.propertyFilter?.propertyType || '');
-      }else{
+    if (mainReducer?.propertyFilter?.propertyType) {
+      setPropertyType(mainReducer?.propertyFilter?.propertyType || "");
+    } else {
+      if (mainReducer?.propertyFilter?.forSale) {
+        setPropertyType("buy");
+      } else if (mainReducer?.propertyFilter?.forRent) {
+        setPropertyType("rent");
+      } else if (mainReducer?.propertyFilter?.isNewDev) {
+        setPropertyType("new");
+      } else {
         setPropertyType(propertyType);
       }
-
-      setPropertyTypes(mainReducer?.propertyFilter?.propertyType || "");
-
-      setFilterData(cleanPayload);
     }
+    setPropertyTypes(filter.categories ? String(filter.categories) : "");
+    // setSearch(search ? search : filter.search);
+    setFiltersInitialized(true);
   }, [mainReducer?.propertyFilter]);
 
-  // FETCH ON FILTER / TYPE / SEARCH CHANGE
   useEffect(() => {
+    if (!isConnected || !filtersInitialized) return;
     setPage(1);
     setProperties([]);
     setHasMore(true);
-
     fetchedPages.current.clear();
-
     fetchProperties(1, filterData, true, search);
   }, [
     isConnected,
     propertyType,
-    propertyTypes,
-    mainReducer?.propertyFilter,
+    categories,
+    filterData,
     search,
+    filtersInitialized,
   ]);
 
   // API RESPONSE
@@ -227,13 +235,12 @@ const Page = () => {
       (key) => Number(filters?.types?.[key]) && key !== "all",
     );
 
-    const selectedFeatures = Object.keys(filters?.moreFilters || {}).filter(
-      (key) => Number(filters?.moreFilters?.[key]) && key !== "all",
+    const selectedFeatures = Object.keys(filters?.features || {}).filter(
+      (key) => Number(filters?.features?.[key]) && key !== "all",
     );
 
     const payload = {
-      categories:
-        selectedKeys?.length > 0 ? null : Number(filters?.propertyType),
+      categories: selectedKeys?.length > 0 ? null : Number(filters?.categories),
 
       types:
         selectedKeys?.length === 0
@@ -250,13 +257,13 @@ const Page = () => {
 
       bedroomsTo: filters?.bedroomsTo ? Number(filters?.bedroomsTo) : null,
 
-      priceFrom: filters?.priceMin ? Number(filters?.priceMin) : null,
+      priceFrom: filters?.priceFrom ? Number(filters?.priceFrom) : null,
 
-      priceTo: filters?.priceMax ? Number(filters?.priceMax) : null,
+      priceTo: filters?.priceTo ? Number(filters?.priceTo) : null,
 
-      buildFrom: filters?.sizeMin ? Number(filters?.sizeMin) : null,
+      buildFrom: filters?.buildFrom ? Number(filters?.buildFrom) : null,
 
-      buildTo: filters?.sizeMax ? Number(filters?.sizeMax) : null,
+      buildTo: filters?.buildTo ? Number(filters?.buildTo) : null,
     };
 
     const cleanPayload = Object.fromEntries(
@@ -278,8 +285,9 @@ const Page = () => {
   };
 
   // SEARCH
-  const handleSearch = (value: string) => {
-    setSearch(value);
+  const handleSearch = (value: any) => {
+    setSearch(value.name);
+    dispatch(setPropertyFilter({ search: value.name }));
 
     setPage(1);
     setProperties([]);
@@ -287,7 +295,25 @@ const Page = () => {
 
     fetchedPages.current.clear();
 
-    fetchProperties(1, filterData, true, value);
+    fetchProperties(1, filterData, true, value.name);
+    if (value.city_name !== id?.location) {
+      dispatch(
+        setBreadcrumbs([
+          { label: "Home", href: "/" },
+          {
+            label: "Costa del Sol areas and Cities",
+            href: `${App_url.link.COSTA_DEL_SOL}`,
+          },
+          {
+            label: value?.city_name,
+            href: `${App_url.link.COSTA_DEL_SOL}/${value?.city_name}`,
+          },
+        ]),
+      );
+      router.replace(
+        `${App_url.link.COSTA_DEL_SOL}/${citySlug(value?.city_name)}`,
+      );
+    }
   };
 
   // INFINITE SCROLL
@@ -329,16 +355,6 @@ const Page = () => {
 
       fetchProperties(1, filterData, true, search);
     }
-
-    if (
-      lastEvent?.data?.status &&
-      lastEvent?.data?.request?.type === "savedSearchService" &&
-      lastEvent?.data?.request?.action === "add"
-    ) {
-      fetchedPages.current.clear();
-
-      fetchProperties(1, filterData, true, search);
-    }
   }, [lastEvent]);
 
   useEffect(() => {
@@ -361,8 +377,23 @@ const Page = () => {
       payload: {
         ...filterData,
         search,
-        categories: propertyTypes ?? filterData?.propertyType,
+        categories: categories ?? filterData?.categories,
         cities: id?.location,
+        ...(propertyType === "buy" && {
+          forSale: true,
+          sold: false,
+          forRent: false,
+        }),
+        ...(propertyType === "rent" && {
+          forRent: true,
+          rented: false,
+          forSale: false,
+        }),
+        ...(propertyType === "new" && {
+          isNewDev: true,
+          rented: false,
+          sold: false,
+        }),
       },
     });
   };
@@ -370,12 +401,10 @@ const Page = () => {
   useEffect(() => {
     sendMessage("action", {
       type: "locationService",
-      action: "list_city_area",
-      payload: {
-        id: id?.location,
-      },
+      action: "searchLocationArea",
+      payload: {},
     });
-  }, [id]);
+  }, []);
 
   return (
     <MainLayout
@@ -383,7 +412,8 @@ const Page = () => {
       isFilter
       isPropertyType
       isProperty
-      propertyTypes={propertyTypes}
+      propertyTypes={categories}
+      searchValueProp={search}
       handleSearch={(e) => handleSearch(e)}
       callBackPropertyType={(value) => {
         setPropertyTypes(value);
@@ -397,13 +427,14 @@ const Page = () => {
       }}
       savedSearch={Object.keys(filterData || {}).length > 0}
       savedSearches={handleSavedSearches}
-      filteredLocations={mainReducer?.location_area_list || []}
+      filteredLocations={mainReducer?.all_location_list || []}
     >
       <div className="px-4 sm:px-6 lg:mx-7 lg:px-8 lg:pb-10">
         {/* MOBILE FILTER */}
         <div className="mb-4 flex items-center justify-between lg:hidden">
           <p className="block font-manrope font-semibold text-black lg:hidden">
-            {properties?.length} results in drawn area
+            {mainReducer?.property_list_with_limit?.pagination?.totalCount}{" "}
+            results in drawn area
           </p>
 
           <button
@@ -435,7 +466,7 @@ const Page = () => {
           >
             {properties?.map((property) => (
               <PropertyCard
-                key={property.id}
+                key={property._id}
                 property={property}
                 {...property}
               />
@@ -452,7 +483,7 @@ const Page = () => {
 
         {/* NO DATA */}
         {!loading && properties?.length === 0 && (
-          <div className="py-10 text-center text-sm font-medium text-gray-500">
+          <div className="text-center text-sm font-medium text-gray-500">
             No Properties Found
           </div>
         )}
@@ -460,15 +491,17 @@ const Page = () => {
 
       {/* OVERLAY */}
       <div
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${isFilterOpen ? "visible opacity-100" : "invisible opacity-0"
-          }`}
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${
+          isFilterOpen ? "visible opacity-100" : "invisible opacity-0"
+        }`}
         onClick={() => setIsFilterOpen(false)}
       />
 
       {/* MOBILE FILTER DRAWER */}
       <div
-        className={`fixed left-0 top-0 z-50 mt-[4.7rem] h-full w-[85%] max-w-sm transform bg-white transition-transform duration-300 ease-in-out lg:hidden ${isFilterOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed left-0 top-0 z-50 mt-[4.7rem] h-full w-[85%] max-w-sm transform bg-white transition-transform duration-300 ease-in-out lg:hidden ${
+          isFilterOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
         <div className="flex items-center justify-between border-b bg-gray-50 p-4">
           <h2 className="font-manrope text-lg font-semibold">Filters</h2>

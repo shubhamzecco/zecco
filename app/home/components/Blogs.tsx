@@ -1,31 +1,12 @@
-import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import BlogCards from "@/components/cards/blog-Card";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-const blogs = [
-  {
-    title: "Mallorca Living Guide",
-    desc: "Discover luxury coastal lifestyles in the Balearic Islands",
-    image: App_url.image.blog_image_1,
-  },
-  {
-    title: "Barcelona Market Update",
-    desc: "Latest trends in pricing, demand, and rental yields",
-    image: App_url.image.blog_image_2,
-  },
-  {
-    title: "Digital Nomads in Spain",
-    desc: "Best cities, visas, and homes for remote professionals",
-    image: App_url.image.blog_image_3,
-  },
-];
 
 export default function Blogs() {
   const { mainReducer } = usePosterReducers();
@@ -83,9 +64,7 @@ export default function Blogs() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <BlogCards
-            data={mainReducer?.blogs_list_with_limit?.data || []}
-          />
+          <BlogCards data={mainReducer?.blogs_list_with_limit?.data || []} />
         </div>
       </div>
     </section>

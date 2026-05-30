@@ -2,13 +2,15 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import PropertyCard from "@/components/cards/PropertyCard";
 import MainLayout from "@/components/layouts/main-layout";
-import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import React, { useEffect, useState } from "react";
+import { setBreadcrumbs } from "@/redux/modules/main/action";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 const ZeccoFavorites = () => {
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     sendMessage("action", {
@@ -22,7 +24,26 @@ const ZeccoFavorites = () => {
         favorite: true,
       },
     });
+    sendMessage("action", {
+      type: "locationService",
+      action: "list",
+      payload: {
+        search: "",
+        limit: 0,
+        page: 1,
+        status: true,
+      },
+    });
   }, [isConnected]);
+
+  useEffect(() => {
+    if (mainReducer?.breadcrumbs?.length === 3) {
+      const breadcrumbsWithoutLast =
+        mainReducer.breadcrumbs?.slice(0, -1) || [];
+
+      dispatch(setBreadcrumbs(breadcrumbsWithoutLast));
+    }
+  }, []);
 
   useEffect(() => {
     if (
@@ -52,7 +73,7 @@ const ZeccoFavorites = () => {
       payload: {
         limit: 10,
         page: 1,
-        search: e,
+        search: e.name,
         location_id: null,
         favorite: true,
       },
@@ -65,6 +86,7 @@ const ZeccoFavorites = () => {
       isFilter
       placeholder="city name"
       handleSearch={(e) => handleSearch(e)}
+      filteredLocations={mainReducer?.location_list_without_limit?.data || []}
     >
       <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -72,9 +94,20 @@ const ZeccoFavorites = () => {
             <PropertyCard property={property} key={property.id} {...property} />
           ))}
         </div>
+        {mainReducer?.zecco_favorite?.data?.length === 0 && (
+          <div className="!bg-none flex flex-col items-center justify-center">
+            <h2 className="mt-5 text-xl font-bold text-gray-800">
+              No Favorite Properties
+            </h2>
+
+            <p className="mt-2 text-center text-sm text-gray-500">
+              Saved Zecco's favorite properties will appear here once added.
+            </p>
+          </div>
+        )}
       </div>
     </MainLayout>
   );
 };
 
-export default ZeccoFavorites
+export default ZeccoFavorites;

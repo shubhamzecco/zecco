@@ -1,44 +1,50 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { Menu, User, UserPlus, X } from 'lucide-react'
-import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
-import { App_url } from '@/constant/static'
-import { useDispatch } from 'react-redux'
-import { clearBreadcrumbs, setAiInsight, setBreadcrumbs, setPropertyFilter, setReduxClear } from '@/redux/modules/main/action'
-import { NAV_ITEMS } from '@/utils/common'
-import { usePosterReducers } from '@/redux/getdata/usePostReducer'
-import { setAuthData } from '@/redux/modules/common/user_data/action'
-import ImageDropdown from './ui/image-dropdown'
-import { setLogout } from '@/redux/actions/action'
-import { IPropertyResponse } from '@/redux/modules/main/types'
+import { App_url } from "@/constant/static";
+import { setLogout } from "@/redux/actions/action";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setAuthData } from "@/redux/modules/common/user_data/action";
+import {
+  clearBreadcrumbs,
+  setAiInsight,
+  setBreadcrumbs,
+  setPropertyFilter,
+  setReduxClear,
+} from "@/redux/modules/main/action";
+import { IPropertyResponse } from "@/redux/modules/main/types";
+import { NAV_ITEMS } from "@/utils/common";
+import { Menu, User, UserPlus, X } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import ImageDropdown from "./ui/image-dropdown";
 
 type HeaderProps = {
   onProfileClick?: () => void;
 };
 
 export default function Header({ onProfileClick }: HeaderProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const pathname = usePathname()
-  const dispatch = useDispatch()
-  const router = useRouter()
-  const { user_data } = usePosterReducers()
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { user_data } = usePosterReducers();
 
   const isActive = (href: string) => {
-    if (href === '#') return false
-    return pathname === href || pathname.startsWith(`${href}/`)
-  }
+    if (href === "#") return false;
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
 
   const handleNavClick = (item: any) => {
-    dispatch(clearBreadcrumbs())
-    dispatch(setPropertyFilter({}))
+    dispatch(clearBreadcrumbs());
+    dispatch(setPropertyFilter({}));
     dispatch(setAiInsight({} as IPropertyResponse));
-    if (item.breadcrumbs) dispatch(setBreadcrumbs(item.breadcrumbs))
-    router.push(item.href)
-    setIsOpen(false) // ✅ close menu on click
-  }
+    if (item.breadcrumbs) dispatch(setBreadcrumbs(item.breadcrumbs));
+    router.push(item.href);
+    setIsOpen(false); // ✅ close menu on click
+  };
 
   return (
     <>
@@ -61,7 +67,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item)}
-                  className={`relative ${isActive(item.href) ? 'text-[#1466EC]' : 'text-[#0B5394]'}  font-inter text-sm font-medium`}
+                  className={`relative ${isActive(item.href) ? "text-[#1466EC]" : "text-[#0B5394]"}  font-inter text-sm font-medium`}
                 >
                   {item.label}
                   {isActive(item.href) && (
@@ -79,16 +85,16 @@ export default function Header({ onProfileClick }: HeaderProps) {
                   avatar={App_url.image.image_1}
                   onNavigate={(path) => router.push(path)}
                   items={[
-                    { label: 'Profile', path: App_url?.link.PROFILE },
-                    { label: 'Dashboard', path: App_url.link.DASHBOARD },
+                    { label: "Profile", path: App_url?.link.PROFILE },
+                    { label: "Dashboard", path: App_url.link.DASHBOARD },
                     {
-                      label: 'Logout',
+                      label: "Logout",
                       onClick: () => {
                         dispatch(setLogout());
                         localStorage.clear();
-                        dispatch(setAuthData({} as any))
-                        dispatch(setReduxClear())
-                        router.push(App_url.link.INITIAL_URL)
+                        dispatch(setAuthData({} as any));
+                        dispatch(setReduxClear());
+                        router.push(App_url.link.INITIAL_URL);
                       },
                     },
                   ]}
@@ -123,34 +129,34 @@ export default function Header({ onProfileClick }: HeaderProps) {
               {/* {
               (pathname === App_url.link.DASHBOARD || pathname === App_url.link.FAVORITES || pathname === App_url.link.ACCOUNT_PACKAGE
                 || pathname === App_url.link.SAVED_SEARCHES || pathname === App_url.link.MESSAGE || pathname === App_url.link.AI_INSIGHTS) && ( */}
-                  <button
-                    onClick={onProfileClick}
-                    className="md:hidden w-10 h-10 rounded-full overflow-hidden border"
-                  >
-                    <Image
-                      src={App_url.image.profile}
-                      alt="Profile"
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                  </button>
-                {/* )} */}
+              <button
+                onClick={onProfileClick}
+                className="md:hidden w-10 h-10 rounded-full overflow-hidden border"
+              >
+                <Image
+                  src={App_url.image.profile}
+                  alt="Profile"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              </button>
+              {/* )} */}
             </div>
           </div>
-        </div >
-      </nav >
+        </div>
+      </nav>
 
       <div
         className={`fixed top-[5.5rem] left-0 right-0 z-40 md:hidden bg-white shadow-lg transition-all duration-300 overflow-hidden
-        ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
+        ${isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"}`}
       >
         <div className="px-6 py-4 space-y-4">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.label}
               onClick={() => handleNavClick(item)}
-              className={`block relative w-full text-left ${isActive(item.href) ? 'text-[#0B5394]' : 'text-gray-800'}  font-inter text-sm font-medium`}
+              className={`block relative w-full text-left ${isActive(item.href) ? "text-[#0B5394]" : "text-gray-800"}  font-inter text-sm font-medium`}
             >
               {item.label}
             </button>
@@ -159,20 +165,20 @@ export default function Header({ onProfileClick }: HeaderProps) {
           {user_data?.access_token ? (
             <div className="hidden md:flex justify-end items-center gap-2">
               <ImageDropdown
-                name={user_data?.user?.first_name ?? ''}
+                name={user_data?.user?.first_name ?? ""}
                 avatar={App_url.image.image_1}
                 onNavigate={(path) => router.push(path)}
                 items={[
-                  { label: 'Profile', path: App_url?.link.PROFILE },
-                  { label: 'Dashboard', path: App_url.link.DASHBOARD },
+                  { label: "Profile", path: App_url?.link.PROFILE },
+                  { label: "Dashboard", path: App_url.link.DASHBOARD },
                   {
-                    label: 'Logout',
+                    label: "Logout",
                     onClick: () => {
                       dispatch(setLogout());
                       localStorage.clear();
-                      dispatch(setAuthData({} as any))
-                      dispatch(setReduxClear())
-                      router.push(App_url.link.INITIAL_URL)
+                      dispatch(setAuthData({} as any));
+                      dispatch(setReduxClear());
+                      router.push(App_url.link.INITIAL_URL);
                     },
                   },
                 ]}
@@ -180,17 +186,22 @@ export default function Header({ onProfileClick }: HeaderProps) {
             </div>
           ) : (
             <div className="border-t pt-4 space-y-3">
-              <Link href={App_url.link.SIGN_IN} className="block text-gray-700 font-inter text-sm">
+              <Link
+                href={App_url.link.SIGN_IN}
+                className="block text-gray-700 font-inter text-sm"
+              >
                 Login
               </Link>
-              <Link href={App_url.link.SIGN_UP} className="block text-sky_blue_color text-sm font-inter font-semibold">
+              <Link
+                href={App_url.link.SIGN_UP}
+                className="block text-sky_blue_color text-sm font-inter font-semibold"
+              >
                 Registration
               </Link>
             </div>
           )}
-
-        </div >
-      </div >
+        </div>
+      </div>
     </>
-  )
+  );
 }

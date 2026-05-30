@@ -4,8 +4,7 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setBreadcrumbs, setLoginPopup } from "@/redux/modules/main/action";
-import { IProperty, Property } from "@/redux/modules/main/types";
-import { handleProtectedRoute } from "@/utils/common";
+import { IProperty } from "@/redux/modules/main/types";
 import {
   Bath,
   BedSingle,
@@ -57,24 +56,24 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
                                     ? "Rent"
                                     : ""
                             }${" "}
-                            in${""}
+                            in${" "}
                             ${
                               property?.locationSubarea
-                                ? `${property?.locationSubarea?.name},`
+                                ? `${property?.locationSubarea},`
                                 : ""
                             }${" "}
                             ${
                               property?.locationArea
-                                ? `${property?.locationArea?.name},`
+                                ? `${property?.locationArea},`
                                 : ""
                             }${" "}
-                            ${property?.locationCity?.name},${" "}
-                            ${property?.locationCountry?.name}`,
-          href: `${App_url.link.PROPERTY_DETAILS}/${property?.id}`,
+                            ${property?.locationCity},${" "}
+                            ${property?.locationCountry}`,
+          href: `${App_url.link.PROPERTY_DETAILS}/${property?._id}`,
         },
       ]),
     );
-    router.push(`${App_url.link.PROPERTY_DETAILS}/${property?.id}`);
+    router.push(`${App_url.link.PROPERTY_DETAILS}/${property?._id}`);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -319,29 +318,33 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
               : property?.isRent
                 ? "Rent"
                 : ""}{" "}
-          in{" "}
-          {property?.locationSubarea
-            ? `${property?.locationSubarea?.name},`
-            : ""}{" "}
-          {property?.locationArea ? `${property?.locationArea?.name},` : ""}{" "}
-          {property?.locationCity?.name}, {property?.locationCountry?.name}
+          in {property?.locationSubarea ? `${property?.locationSubarea},` : ""}{" "}
+          {property?.locationArea ? `${property?.locationArea},` : ""}{" "}
+          {property?.locationCity}, {property?.locationCountry}
         </h3>
 
         <div className="flex gap-5 items-center pt-4 text-sm">
-          <div className="flex font-manrope font-normal items-center gap-1">
-            <Expand size={18} className="text-gray-400" />
-            <span>{property?.mtsBuild} /m²</span>
-          </div>
+          {property?.mtsBuild !== null && property?.mtsBuild !== undefined && (
+            <div className="flex font-manrope font-normal items-center gap-1">
+              <Expand size={18} className="text-gray-400" />
+              <span>{property?.mtsBuild} /m²</span>
+            </div>
+          )}
 
-          <div className="flex font-manrope font-normal items-center gap-1">
-            <BedSingle size={18} className="text-gray-400" />
-            <span>{property?.bedrooms} Bed</span>
-          </div>
+          {property?.bedrooms !== null && property?.bedrooms !== undefined && (
+            <div className="flex font-manrope font-normal items-center gap-1">
+              <BedSingle size={18} className="text-gray-400" />
+              <span>{property?.bedrooms} Bed</span>
+            </div>
+          )}
 
-          <div className="flex font-manrope font-normal items-center gap-1">
-            <Bath size={18} className="text-gray-400" />
-            <span>{property?.bathrooms} Bath</span>
-          </div>
+          {property?.bathrooms !== null &&
+            property?.bathrooms !== undefined && (
+              <div className="flex font-manrope font-normal items-center gap-1">
+                <Bath size={18} className="text-gray-400" />
+                <span>{property?.bathrooms} Bath</span>
+              </div>
+            )}
         </div>
       </div>
 

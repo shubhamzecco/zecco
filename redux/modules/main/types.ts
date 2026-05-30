@@ -2,48 +2,48 @@ interface IPagination {
   total_page: number;
   page: number;
   page_limit: number;
-  totalCount?:number
+  totalCount?: number;
 }
 
 export interface LocationImage {
-  fileUrl: string
-  original_name: string
-  content_type: string
+  fileUrl: string;
+  original_name: string;
+  content_type: string;
 }
 
 export interface Location {
-  id: string
-  name: string
-  nearby_location: string
-  country: string
-  state: string
-  city: string
-  image: LocationImage
-  is_active: boolean
-  created_at: string
+  id: string;
+  name: string;
+  nearby_location: string;
+  country: string;
+  state: string;
+  city: string;
+  image: LocationImage;
+  is_active: boolean;
+  created_at: string;
 }
 
 interface Category {
-  id: string
-  name: string
-  locations: Location
+  id: string;
+  name: string;
+  locations: Location;
 }
 
 interface MediaFile {
-  fileUrl: string
-  original_name: string
-  content_type: string
+  fileUrl: string;
+  original_name: string;
+  content_type: string;
 }
 
 export interface INeedResponse {
-  id: string
-  category: Category
-  name: string
-  image: MediaFile
-  icon: string
-  tags: string[]
-  is_active: boolean
-  created_at: string
+  id: string;
+  category: Category;
+  name: string;
+  image: MediaFile;
+  icon: string;
+  tags: string[];
+  is_active: boolean;
+  created_at: string;
 }
 
 export interface OrganizationResponse {
@@ -51,57 +51,57 @@ export interface OrganizationResponse {
   coverage_level: string;
   website_link: string;
   email: string;
-  id: string
-  location: Location
-  category: ICategory
-  need: Need
-  name: string
-  contact: string
-  description: string
-  is_active: boolean
-  image: ImageFile | null
-  created_at: string
+  id: string;
+  location: Location;
+  category: ICategory;
+  need: Need;
+  name: string;
+  contact: string;
+  description: string;
+  is_active: boolean;
+  image: ImageFile | null;
+  created_at: string;
 }
 
 export interface Location {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 export interface ICategory {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 export interface Need {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 export interface ImageFile {
-  fileUrl: string
-  original_name: string
-  content_type: string
+  fileUrl: string;
+  original_name: string;
+  content_type: string;
 }
 
 interface ImageInfo {
-  fileUrl: string
-  original_name: string
-  content_type: string
+  fileUrl: string;
+  original_name: string;
+  content_type: string;
 }
 
 export interface CharityProfile {
-  id: string
-  name: string
-  contact: string
-  description: string
-  is_active: boolean
-  image?: ImageInfo
-  email: string
-  website_link: string
-  created_at: string
-  postal_code: string
-  user_id: string
+  id: string;
+  name: string;
+  contact: string;
+  description: string;
+  is_active: boolean;
+  image?: ImageInfo;
+  email: string;
+  website_link: string;
+  created_at: string;
+  postal_code: string;
+  user_id: string;
 }
 
 export interface ChatListResponse {
@@ -136,12 +136,11 @@ export interface ChatParticipant {
   email: string;
   phone: string;
   image: ImageInfo;
-  user_type: 'charity' | 'user' | string;
+  user_type: "charity" | "user" | string;
   is_active: boolean;
   created_at: string;
   verified: boolean;
 }
-
 
 export interface ChatMessage {
   id: string;
@@ -165,8 +164,6 @@ export interface Image {
   content_type: string;
 }
 
-
-
 export interface User {
   id: string;
   first_name: string;
@@ -180,16 +177,14 @@ export interface User {
   verified: boolean;
 }
 
-
 export interface Message {
   id: string;
   chat: Chat;
   message_content: string;
   read_by: boolean;
   created_at: string;
-  sender_id: string
+  sender_id: string;
 }
-
 
 export interface ChatMessagesResponse {
   recipient: User;
@@ -204,13 +199,12 @@ export interface AIChatMessage {
   timestamp: Date;
 }
 
-
 // interfaces/breadcrumb.ts
 
 export interface BreadcrumbItem {
   id?: string;
-  label: string
-  href?: string | null   // null / undefined = current page
+  label: string;
+  href?: string | null; // null / undefined = current page
 }
 
 export interface PackagePermissions {
@@ -235,13 +229,13 @@ export interface IPlan {
 
 export interface ILocation {
   _id: string;
-  id: string;
   name: string;
   description: string;
   image: string;
   status: boolean;
   createdAt: string;
   updatedAt: string;
+  name_slug: string;
 }
 
 export interface IBlogs {
@@ -251,8 +245,8 @@ export interface IBlogs {
   page_description: string;
   image: string;
   status: boolean;
-  createdAt: string;   // ISO date string
-  updatedAt: string;   // ISO date string
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
 
 export interface Property {
@@ -439,6 +433,13 @@ export interface IMessageSender {
   last_name: string;
 }
 
+export interface Attachment {
+  fileType: string;
+  fileUrl: string;
+  name: string;
+  originalName: string;
+}
+
 export interface IChatMessage {
   _id: string;
   chat: string;
@@ -447,6 +448,7 @@ export interface IChatMessage {
   is_read: boolean;
   createdAt: string;
   updatedAt: string;
+  attachment: Attachment[];
 }
 
 export interface IPackagePermission {
@@ -516,7 +518,7 @@ export interface IProperty {
   dateModified: string;
   dateReview: string;
   dateListed: string;
-  zeccoSold?: boolean
+  zeccoSold?: boolean;
   d218RefCatastro: string | null;
 
   energyKwLevel: string | null;
@@ -551,7 +553,7 @@ export interface IProperty {
 
   isRent: boolean;
   isRented: boolean;
-  zeccoRented:boolean;
+  zeccoRented: boolean;
   isRentLongterm: boolean;
   isRentShortterm: boolean;
   isSale: boolean;
@@ -594,11 +596,11 @@ export interface IProperty {
 
   currency: ICurrency;
 
-  locationCountry: ILocationCountry;
-  locationProvince: ILocationProvince;
-  locationCity: ILocationCity;
-  locationArea: ILocationArea | null;
-  locationSubarea: ILocationSubarea | null;
+  locationCountry: string;
+  locationProvince: string;
+  locationCity: string;
+  locationArea: string | null;
+  locationSubarea: string | null;
 
   tags: string[];
 
@@ -657,33 +659,6 @@ export interface ICurrency {
   symbol: string;
 }
 
-export interface ILocationCountry {
-  id: number;
-  codeIso: string;
-  name: string;
-}
-
-export interface ILocationProvince {
-  id: number;
-  name: string;
-  codeIso: string;
-}
-
-export interface ILocationCity {
-  id: number;
-  name: string;
-}
-
-export interface ILocationArea {
-  id: number;
-  name: string;
-}
-
-export interface ILocationSubarea {
-  id: number;
-  name: string;
-}
-
 export interface IFeature {
   id: number;
   name: string;
@@ -698,48 +673,47 @@ export interface IPropertyDescription {
 }
 
 export interface SavedSearch {
-    _id: string;
-    user: string;
+  _id: string;
+  user: string;
 
-    types: number[];
-    features: number[];
+  types: number[];
+  features: number[];
 
-    bedroomsFrom: number | null;
-    bedroomsTo: number | null;
+  bedroomsFrom: number | null;
+  bedroomsTo: number | null;
 
-    priceFrom: number | null;
-    priceTo: number | null;
+  priceFrom: number | null;
+  priceTo: number | null;
 
-    buildFrom: number | null;
-    buildTo: number | null;
+  buildFrom: number | null;
+  buildTo: number | null;
 
-    forSale: boolean;
-    forRent: boolean;
-    isNewDev: boolean;
+  forSale: boolean;
+  forRent: boolean;
+  isNewDev: boolean;
 
-    status: boolean;
+  status: boolean;
 
-    createdAt: string;
-    updatedAt: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IStoreAiInsight {
   client: string;
   property: IProperty;
-  data: PropertyAnalysis
+  data: PropertyAnalysis;
   createdAt: string;
   updatedAt: string;
-
 }
 
 export interface ISavedSearches {
-  data: SavedSearch[],
-  pagination: IPagination
+  data: SavedSearch[];
+  pagination: IPagination;
 }
 
 export interface IPackageResponse {
-  data: IPlan[],
-  pagination: IPagination
+  data: IPlan[];
+  pagination: IPagination;
 }
 
 export interface ILocationResponse {
@@ -759,7 +733,7 @@ export interface IBlogsResponse {
 
 export interface IPropertyResponse {
   data: IProperty[];
-  favorite_property: string[]
+  favorite_property: string[];
   pagination: IPagination | null;
 }
 
@@ -768,33 +742,33 @@ export interface IFavoriteProperty {
   pagination: IPagination;
 }
 
-
 export interface IMainResponse {
   chat_messages: ChatMessagesResponse | null;
-  breadcrumbs: BreadcrumbItem[]
-  package_list_with_limit: IPackageResponse | null
+  breadcrumbs: BreadcrumbItem[];
+  package_list_with_limit: IPackageResponse | null;
   ai_chat_messages: AIChatMessage[];
   ai_chat_loading: boolean;
   ai_chat_badge_open: boolean;
-  location_list_with_limit: ILocationResponse | null
-  location_list_without_limit: ILocationResponse | null
-  blogs_list_with_limit: IBlogsResponse | null
-  blog_details: IBlogs | null
-  property_list_with_limit: IPropertyResponse | null
-  property_list_without_limit: IPropertyResponse | null
-  property_details: IProperty | null
-  ai_insight: PropertyAnalysis | null
-  favorite_property_list: IFavoriteProperty | null
-  zecco_favorite: IPropertyResponse | null,
+  location_list_with_limit: ILocationResponse | null;
+  location_list_without_limit: ILocationResponse | null;
+  blogs_list_with_limit: IBlogsResponse | null;
+  blog_details: IBlogs | null;
+  property_list_with_limit: IPropertyResponse | null;
+  property_list_without_limit: IPropertyResponse | null;
+  property_details: IProperty | null;
+  ai_insight: PropertyAnalysis | null;
+  favorite_property_list: IFavoriteProperty | null;
+  zecco_favorite: IPropertyResponse | null;
   login_popup: boolean;
   chat_user_list: IChat[] | null;
   chat_messages_by_user: IChatMessage[] | null;
   user_package_list: IUserPackagePayment[] | null;
   property_type_list: IPropertyType[] | null;
   property_subtype_list: IPropertyType[] | null;
-  saved_searches: ISavedSearches | null
+  saved_searches: ISavedSearches | null;
   search_by_area: any;
-  propertyFilter : any
-  stored_aiInsight: IStoredAiInsightResponse | null
-  location_area_list: any
+  propertyFilter: any;
+  stored_aiInsight: IStoredAiInsightResponse | null;
+  location_area_list: any;
+  all_location_list: any;
 }

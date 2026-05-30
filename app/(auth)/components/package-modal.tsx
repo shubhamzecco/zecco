@@ -1,24 +1,21 @@
-'use client'
+"use client";
 
-import { useWebSocket } from '@/api/socket/WebSocketContext'
-import { App_url } from '@/constant/static'
-import { usePosterReducers } from '@/redux/getdata/usePostReducer'
-import { IPlan } from '@/redux/modules/main/types'
+import CommonApiRequest from "@/api/rest/fetchData";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { IPlan } from "@/redux/modules/main/types";
 import {
-  Box,
   Check,
   CircleStar,
   CircleUserRound,
   Crown,
-  Gem,
-  LockKeyholeOpen,
-  ShieldCheck,
-} from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import CheckInboxModal from './mail-send-modal'
-import CommonApiRequest, { postData } from '@/api/rest/fetchData'
-import { toast } from 'react-toastify'
+  Gem
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import CheckInboxModal from "./mail-send-modal";
 
 export interface IFormValue {
   email: string;
@@ -32,33 +29,33 @@ export interface IFormValue {
 export default function PackagesModal({
   formValue,
   onClose,
-  userId
+  userId,
 }: {
-  formValue?: IFormValue,
-  onClose?: () => void,
-  userId?: string
+  formValue?: IFormValue;
+  onClose?: () => void;
+  userId?: string;
 }) {
-  const [emailVerificationPopup, setEmailVerificationPopup] = useState(false)
-  const [selectedPackage, setSelectedPackage] = useState('')
-  const router = useRouter()
-  const { sendMessage, isConnected } = useWebSocket()
-  const { mainReducer, user_data } = usePosterReducers()
+  const [emailVerificationPopup, setEmailVerificationPopup] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState("");
+  const router = useRouter();
+  const { sendMessage, isConnected } = useWebSocket();
+  const { mainReducer, user_data } = usePosterReducers();
 
   useEffect(() => {
-    sendMessage('action', {
+    sendMessage("action", {
       type: "packageService",
       action: "list",
       payload: {
         search: "",
         limit: 12,
         page: 1,
-      }
-    })
-  }, [isConnected])
-
+        status: true
+      },
+    });
+  }, [isConnected]);
 
   const createPayment = async (value: any) => {
-    localStorage.setItem('isRegister', 'true')
+    localStorage.setItem("isRegister", "true");
     const payload = {
       package_id: value,
       user_id: userId || user_data?.user?._id,
@@ -73,7 +70,7 @@ export default function PackagesModal({
     )?.then(async (response: any) => {
       if (response?.status === 200) {
         if (response.success) {
-          if(typeof window !== "undefined"){
+          if (typeof window !== "undefined") {
             window.location.href = response.data.checkoutUrl;
           }
         }
@@ -88,15 +85,13 @@ export default function PackagesModal({
     <CircleStar className=" text-[#4A86E8]" size={20} />,
     <Gem className=" text-[#4A86E8]" size={20} />,
     <Crown className=" text-[#4A86E8]" size={20} />,
-  ]
+  ];
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm max-md:p-3">
       <div className="w-[470px] rounded-2xl bg-white shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-6 py-4 border-b bg-[#F9F9F9]">
-          <h2 className="text-lg font-semibold text-gray-900">
-            Packages
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">Packages</h2>
         </div>
 
         {/* Package List */}
@@ -124,16 +119,17 @@ export default function PackagesModal({
                 return 1;
               }
               return 0;
-            })?.map((plan: IPlan, index) => {
+            })
+            ?.map((plan: IPlan, index) => {
               return (
                 <SelectablePackage
                   key={plan._id}
                   selected={selectedPackage === plan?._id}
                   onClick={() => {
-                    if(plan?.price === 'VIP'){
-                      setSelectedPackage('VIP')
-                    }else{
-                      setSelectedPackage(plan._id)
+                    if (plan?.price === "VIP") {
+                      setSelectedPackage("VIP");
+                    } else {
+                      setSelectedPackage(plan._id);
                     }
                   }}
                   icon={icons[index]}
@@ -141,7 +137,7 @@ export default function PackagesModal({
                   price={plan.price}
                   desc={plan.description}
                 />
-              )
+              );
             })}
         </div>
 
@@ -153,7 +149,11 @@ export default function PackagesModal({
             Cancel
           </button>
           <button
-            onClick={() => selectedPackage === 'VIP' ? router.push(App_url.link.CONTACT_US) : createPayment(selectedPackage)}
+            onClick={() =>
+              selectedPackage === "VIP"
+                ? router.push(App_url.link.CONTACT_US)
+                : createPayment(selectedPackage)
+            }
             className="flex-1 font-circular_std rounded-lg bg-[#0C87F1] px-4 py-2.5 text-sm font-medium text-white"
           >
             Apply Coupon
@@ -164,13 +164,11 @@ export default function PackagesModal({
       {emailVerificationPopup && (
         <CheckInboxModal
           onClose={() => setEmailVerificationPopup(false)}
-          onReturn={() =>
-            router.push(App_url.link.INITIAL_URL)
-          }
+          onReturn={() => router.push(App_url.link.INITIAL_URL)}
         />
       )}
     </div>
-  )
+  );
 }
 
 /* ========================= */
@@ -182,28 +180,30 @@ function SelectablePackage({
   desc,
   selected,
   onClick,
-  price
+  price,
 }: {
-  icon: React.ReactNode
-  title: string
-  desc: string
-  selected: boolean
-  onClick: () => void
-  price: string
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  selected: boolean;
+  onClick: () => void;
+  price: string;
 }) {
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer rounded-xl p-[2px] transition ${selected
-        ? 'bg-gradient-to-r from-[#2563EB] via-[#92B1F5] to-[#2563EB]'
-        : 'bg-transparent'
-        }`}
+      className={`cursor-pointer rounded-xl p-[2px] transition ${
+        selected
+          ? "bg-gradient-to-r from-[#2563EB] via-[#92B1F5] to-[#2563EB]"
+          : "bg-transparent"
+      }`}
     >
       <div
-        className={`relative flex items-center justify-between gap-3 rounded-[10px] px-4 py-3 ${selected
-          ? 'bg-white'
-          : 'bg-white border border-gray-200 hover:border-blue-300'
-          }`}
+        className={`relative flex items-center justify-between gap-3 rounded-[10px] px-4 py-3 ${
+          selected
+            ? "bg-white"
+            : "bg-white border border-gray-200 hover:border-blue-300"
+        }`}
       >
         <div className="flex items-start gap-5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
@@ -212,23 +212,21 @@ function SelectablePackage({
 
           <div className="flex-1">
             <p className="text-md uppercase font-circular_std tracking-wider font-medium text-gray-900">
-              {title}  <span className='ml-1'>{price?.toLocaleLowerCase() === 'vip' ? '' : `€ ${price}`}</span>
+              {title}{" "}
+              <span className="ml-1">
+                {price?.toLocaleLowerCase() === "vip" ? "" : `€ ${price}`}
+              </span>
             </p>
-            <p className="text-sm text-gray-600">
-              {desc}
-            </p>
+            <p className="text-sm text-gray-600">{desc}</p>
           </div>
         </div>
 
         {selected && (
           <div className="w-6 h-6 p-1 rounded-full bg-green-500 flex justify-center items-center">
-            <Check
-              size={24}
-              className=" text-white"
-            />
+            <Check size={24} className=" text-white" />
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }

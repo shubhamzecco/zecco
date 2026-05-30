@@ -63,36 +63,36 @@ export default function ChatReplies({
           hour12: true,
         })
       : "";
-    const getMarkdownComponents = (isUser: boolean) => ({
-      strong: ({ children }: any) => (
-        <strong className="font-semibold text-[14px]">{children}</strong>
-      ),
-      p: ({ children }: any) => (
-        <p
-          className={`text-[14px] leading-6 whitespace-pre-line ${
-            isUser ? "mb-1" : "mb-3"
-          }`}
-        >
-          {children}
-        </p>
-      ),
-      ul: ({ children }: any) => (
-        <ul className="ml-4 mb-3 list-disc space-y-1">{children}</ul>
-      ),
-      li: ({ children }: any) => (
-        <li className="text-[14px] leading-6">{children}</li>
-      ),
-      a: ({ href, children }: any) => (
-        <a
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 underline hover:text-blue-700"
-        >
-          {children}
-        </a>
-      ),
-    });
+  const getMarkdownComponents = (isUser: boolean) => ({
+    strong: ({ children }: any) => (
+      <strong className="font-semibold text-[14px]">{children}</strong>
+    ),
+    p: ({ children }: any) => (
+      <p
+        className={`text-[14px] leading-6 whitespace-pre-line ${
+          isUser ? "mb-1" : "mb-3"
+        }`}
+      >
+        {children}
+      </p>
+    ),
+    ul: ({ children }: any) => (
+      <ul className="ml-4 mb-3 list-disc space-y-1">{children}</ul>
+    ),
+    li: ({ children }: any) => (
+      <li className="text-[14px] leading-6">{children}</li>
+    ),
+    a: ({ href, children }: any) => (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 underline hover:text-blue-700"
+      >
+        {children}
+      </a>
+    ),
+  });
 
   /* ---------------- render ---------------- */
 

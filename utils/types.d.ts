@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
+import { IInternalUserTypes } from "../redux/modules/admin/internal_user";
 import { ISizeSpecsTypes } from "../redux/modules/allMasters/sizeSpecs";
 import { ISupplierTypes } from "../redux/modules/allMasters/supplier";
 import { ITaxTypes } from "../redux/modules/allMasters/tax";
-import { IInternalUserTypes } from "../redux/modules/admin/internal_user";
-import { IContactPerson, ICustomers } from "../redux/modules/customers/types";
+import { ICustomers } from "../redux/modules/customers/types";
 
 export type IToggleModalTypes =
   | "hide"
@@ -28,14 +28,6 @@ export interface IPhoneData {
   format: boolean;
   input_value: string;
 }
-// export interface ILocalityTypes {
-//   name: string;
-//   address: string;
-//   country: string;
-//   active: boolean;
-//   created_at: string;
-//   updated_at: string;
-// }
 
 interface IPhoneTypes {
   phoneNumber?: {
@@ -45,31 +37,6 @@ interface IPhoneTypes {
     input_value?: string;
   };
 }
-
-// export interface IProjectTypes extends ICommonListTypes {
-//   name: string;
-// }
-// export interface IProductTypes extends ICommonListTypes {
-//   name: string;
-// }
-
-// export interface IGradeTypes extends ICommonListTypes {
-//   name: string;
-// }
-// export interface IBarType extends ICommonListTypes {
-//   name: string;
-//   product_id: string;
-// }
-
-// export interface IScopeOfWorkType extends ICommonListTypes {
-//   name: string;
-// }
-
-// export interface ISupplier extends ICommonListTypes, IPhoneTypes {
-//   name: string;
-//   email: string;
-//   location_name: string;
-// }
 
 export interface IContactType {
   phone: string;
@@ -210,7 +177,7 @@ export interface ILoginTypes {
   otp?: string;
   new_password?: string;
   confirm_password?: string;
-  user_type? :  string;
+  user_type?: string;
 }
 
 export type IToggleWarnModalTypes =
@@ -333,39 +300,38 @@ export interface ChatState {
   isLoading: boolean;
 }
 
-
 export interface IPaymentStatusResponse {
-  success: boolean
-  message: string
-  data: IPaymentData
-  timestamp: string
-  path: string
-  status: number
+  success: boolean;
+  message: string;
+  data: IPaymentData;
+  timestamp: string;
+  path: string;
+  status: number;
 }
 
 export interface IPaymentData {
-  _id: string
-  package: string
-  user: string
-  amount: number
-  currency: string
-  description: string
-  metadata: IPaymentMetadata
-  transaction_id: string
-  method: string
-  status: 'paid' | 'failed' | 'expired' | 'open'
-  expiresAt: string
-  createdAt: string
-  updatedAt: string
-  failedAt: string | null
-  paidAt: string | null
-  message: string
+  _id: string;
+  package: string;
+  user: string;
+  amount: number;
+  currency: string;
+  description: string;
+  metadata: IPaymentMetadata;
+  transaction_id: string;
+  method: string;
+  status: "paid" | "failed" | "expired" | "open";
+  expiresAt: string;
+  createdAt: string;
+  updatedAt: string;
+  failedAt: string | null;
+  paidAt: string | null;
+  message: string;
 }
 
 export interface IPaymentMetadata {
-  order_id: string
-  user_id: string
-  package_id: string
-  package_name: string
-  package_price: string
+  order_id: string;
+  user_id: string;
+  package_id: string;
+  package_name: string;
+  package_price: string;
 }

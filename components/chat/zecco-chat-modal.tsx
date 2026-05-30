@@ -27,7 +27,6 @@ type Props = {
   onClose?: () => void;
 };
 
-
 export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,47 +49,6 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [ai_chat_messages, isLoading]);
-
-  /* ---------------- SEND MESSAGE ---------------- */
-
-  //   const handleSend = async (text: string) => {
-  //     if (!text.trim() || isLoading) return;
-
-  //     const userMessage: ChatMessage = {
-  //       id: Date.now().toString(),
-  //       text,
-  //       sender: "user",
-  //       timestamp: new Date(),
-  //     };
-
-  //     setMessages((prev) => [...prev, userMessage]);
-  //     setIsLoading(true);
-
-  //     try {
-  //       const res = await sendChatMessage(text, getSessionId());
-
-  //       const botMessage: ChatMessage = {
-  //         id: Date.now().toString(),
-  //         text: res?.reply ?? "No response from Zecco AI",
-  //         sender: "bot",
-  //         timestamp: new Date(),
-  //       };
-
-  //       setMessages((prev) => [...prev, botMessage]);
-  //     } catch {
-  //       setMessages((prev) => [
-  //         ...prev,
-  //         {
-  //           id: Date.now().toString(),
-  //           text: "Sorry, something went wrong. Please try again.",
-  //           sender: "bot",
-  //           timestamp: new Date(),
-  //         },
-  //       ]);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
 
   const handleSend = async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -152,10 +110,6 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
               >
                 <X size={16} />
               </button>
-
-              {/* <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg">
-                <Sparkles size={22} />
-              </div> */}
 
               <div className="relative w-16 h-16">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-30 blur-md" />

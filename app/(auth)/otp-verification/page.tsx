@@ -7,7 +7,7 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { App_url } from "@/constant/static";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,7 +45,6 @@ const OTP_TIME = 300; // 5 minutes
 
 const OtpVerification = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const [email, setEmail] = useState<string | null>(null);
   const [forgetPassword, setForgetPassword] = useState<string | null>(null);
@@ -53,7 +52,6 @@ const OtpVerification = () => {
   const [timeLeft, setTimeLeft] = useState(OTP_TIME);
   const [canResend, setCanResend] = useState(false);
   const [userId, setUserId] = useState("");
-  const [formValue, setFormValue] = useState<z.infer<typeof formSchema>>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -165,7 +163,7 @@ const OtpVerification = () => {
           router.push(App_url?.link?.RESET_PASSWORD);
         } else {
           setUserId(response?.data?.data?._id);
-          setPackageModal(true);  
+          setPackageModal(true);
           // router.push(App_url?.link?.SIGN_IN);
         }
       }

@@ -1,89 +1,86 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState } from 'react'
 import {
-  getPropertiesByLocation,
   getLocationCenter,
+  getPropertiesByLocation,
   type Property,
-} from '@/lib/property-data'
+} from "@/lib/property-data";
+import { useEffect, useRef, useState } from "react";
 
 export function PropertyMap() {
-  const mapContainer = useRef<HTMLDivElement | null>(null)
-  const map = useRef<any>(null)
-  const markersRef = useRef<any[]>([])
+  const mapContainer = useRef<HTMLDivElement | null>(null);
+  const map = useRef<any>(null);
+  const markersRef = useRef<any[]>([]);
 
-  const [selectedLocation] = useState('Marbella')
+  const [selectedLocation] = useState("Marbella");
 
   useEffect(() => {
-    if (!mapContainer.current) return
+    if (!mapContainer.current) return;
 
-    let isMounted = true
+    let isMounted = true;
 
     const initMap = async () => {
-      const L = (await import('leaflet')).default
-      await import('leaflet/dist/leaflet.css')
+      const L = (await import("leaflet")).default;
+      await import("leaflet/dist/leaflet.css");
 
-      if (!isMounted || !mapContainer.current) return
+      if (!isMounted || !mapContainer.current) return;
 
       // Fix default marker icons
-      delete (L.Icon.Default.prototype as any)._getIconUrl
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
 
       L.Icon.Default.mergeOptions({
         iconRetinaUrl:
-          'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        iconUrl:
-          'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
         shadowUrl:
-          'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      })
+          "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+      });
 
       // Initialize map only once
       if (!map.current) {
         map.current = L.map(mapContainer.current, {
           attributionControl: false,
-        }).setView([36.5116, -4.8848], 9)
+        }).setView([36.5116, -4.8848], 9);
 
-        L.tileLayer(
-          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          {
-            maxZoom: 19,
-          }
-        ).addTo(map.current)
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+        }).addTo(map.current);
       }
 
       // Remove old markers
       markersRef.current.forEach((marker: any) => {
-        marker.remove()
-      })
+        marker.remove();
+      });
 
-      markersRef.current = []
+      markersRef.current = [];
 
-      const locationProps = getPropertiesByLocation(selectedLocation)
+      const locationProps = getPropertiesByLocation(selectedLocation);
 
-      const center = getLocationCenter(selectedLocation)
+      const center = getLocationCenter(selectedLocation);
 
       map.current.setView(
         [center.lat, center.lng],
-        selectedLocation === 'Marbella' ? 10 : 11
-      )
+        selectedLocation === "Marbella" ? 10 : 11,
+      );
 
       // Add markers
       locationProps.forEach((property: Property) => {
         const iconHtml = `
           <div class="flex items-center justify-center bg-blue-600 text-white rounded-full w-10 h-10 font-bold text-sm shadow-lg border-2 border-white">
-            ${property.priceFormatted.replace('€', '')}
+            ${property.priceFormatted.replace("€", "")}
           </div>
-        `
+        `;
 
         const marker = L.marker([property.lat, property.lng], {
           icon: L.divIcon({
             html: iconHtml,
-            className: 'property-marker',
+            className: "property-marker",
             iconSize: [40, 40],
             iconAnchor: [20, 20],
           }),
         })
-          .bindPopup(`
+          .bindPopup(
+            `
             <div class="p-3">
               <h3 class="font-bold text-lg mb-2">${property.name}</h3>
               <p class="text-sm text-gray-600 mb-1">
@@ -99,28 +96,29 @@ export function PropertyMap() {
                 <strong>Beds:</strong> ${property.beds}
               </p>
             </div>
-          `)
-          .addTo(map.current)
+          `,
+          )
+          .addTo(map.current);
 
-        markersRef.current.push(marker)
-      })
-    }
+        markersRef.current.push(marker);
+      });
+    };
 
-    initMap()
+    initMap();
 
     return () => {
-      isMounted = false
+      isMounted = false;
 
       if (map.current) {
-        map.current.remove()
-        map.current = null
+        map.current.remove();
+        map.current = null;
       }
-    }
-  }, [selectedLocation])
+    };
+  }, [selectedLocation]);
 
   return (
     <div className="relative w-full h-96 overflow-hidden rounded-xl">
       <div ref={mapContainer} className="w-full h-full" />
     </div>
-  )
+  );
 }

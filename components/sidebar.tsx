@@ -1,22 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { URL } from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import {
   Archive,
   Heart,
   LayoutGrid,
   MessagesSquare,
   Search,
-  Sparkles,
-  X,
+  Sparkles
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import ProfileAvatar from "./profile";
-import { URL } from "@/api/rest/fetchData";
 
 const menuItems = [
   { name: "Dashboard", href: App_url.link.DASHBOARD, icon: LayoutGrid },
@@ -203,10 +201,10 @@ function AgentCard() {
               className="object-cover"
             />
           ) : (
-              <ProfileAvatar
-                name={`${user_data?.user?.agent?.agent?.first_name + " " + user_data?.user?.agent?.agent?.last_name}`}
-                className="rounded-full w-full h-full !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
-              />
+            <ProfileAvatar
+              name={`${user_data?.user?.agent?.agent?.first_name + " " + user_data?.user?.agent?.agent?.last_name}`}
+              className="rounded-full w-full h-full !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
+            />
           )}
         </div>
         <p className="text-[15px] font-inter font-semibold text-[#101828] my-1">

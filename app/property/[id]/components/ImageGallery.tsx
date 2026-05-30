@@ -1,22 +1,15 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import {
-  Box,
-  GalleryThumbnails,
-  Heart,
-  LayoutPanelLeft,
-  Play,
-  X,
-} from "lucide-react";
-import { App_url } from "@/constant/static";
-import Image from "next/image";
-import { IImage, IProperty, Property } from "@/redux/modules/main/types";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { useDispatch } from "react-redux";
-import { setLoginPopup } from "@/redux/modules/main/action";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setLoginPopup } from "@/redux/modules/main/action";
+import { IImage } from "@/redux/modules/main/types";
+import { GalleryThumbnails, Heart, X } from "lucide-react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 type PopupType = "gallery" | "video" | "plan" | "3d";
 
@@ -110,11 +103,11 @@ export default function PropertyGallery({ property }: PropertyStats) {
     setImages(updated);
   };
 
-  const openGallery = () => {
+  const openGallery = (value: number) => {
     setPopupType("gallery");
     setOpen(true);
+    setActive(value);
   };
-
 
   const handleFavoriteAdd = () => {
     if (!user_data?.access_token) {
@@ -173,24 +166,6 @@ export default function PropertyGallery({ property }: PropertyStats) {
               <Heart size={20} className="text-white hover:text-red-500" />
             )}
           </button>
-
-          {/* <div className="absolute bottom-4 left-4 flex gap-2">
-            <ActionBtn icon={<Play size={14} />} label="Watch Video"
-              onClick={() => {
-                setOpen(true)
-                setPopupType("video")
-              }} />
-            <ActionBtn icon={<LayoutPanelLeft size={14} />} label="Floor Plan"
-              onClick={() => {
-                setOpen(true)
-                setPopupType("plan")
-              }} />
-            <ActionBtn icon={<Box size={14} />} label="3D Virtual Tour"
-              onClick={() => {
-                setOpen(true)
-                setPopupType("3d")
-              }} />
-          </div> */}
         </div>
 
         <div className="flex flex-col gap-3 lg:h-[460px]">
@@ -246,7 +221,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
       <div className="md:hidden mb-6">
         <div className="relative rounded-xl overflow-hidden mb-3">
           <img
-            onClick={openGallery}
+            onClick={() => openGallery(0)}
             src={images?.[0]?.url}
             className="w-full h-[260px] object-cover"
           />
@@ -254,39 +229,12 @@ export default function PropertyGallery({ property }: PropertyStats) {
           <button className="absolute top-3 right-3 bg-white p-2 rounded-full shadow">
             <Heart className="w-4 h-4 text-red-500 fill-red-500" />
           </button>
-
-          {/* <div className="absolute bottom-3 left-3 flex gap-2">
-            <ActionBtn
-              icon={<Play size={14} />}
-              label="Video"
-              onClick={() => {
-                setOpen(true);
-                setPopupType("video");
-              }}
-            />
-            <ActionBtn
-              icon={<LayoutPanelLeft size={14} />}
-              label="Plan"
-              onClick={() => {
-                setOpen(true);
-                setPopupType("plan");
-              }}
-            />
-            <ActionBtn
-              icon={<Box size={14} />}
-              label="3D"
-              onClick={() => {
-                setOpen(true);
-                setPopupType("3d");
-              }}
-            />
-          </div> */}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <img
             src={images?.[1]?.url}
-            onClick={openGallery}
+            onClick={() => openGallery(1)}
             className="h-32 w-full object-cover rounded-lg cursor-pointer"
           />
 
@@ -318,33 +266,17 @@ export default function PropertyGallery({ property }: PropertyStats) {
           >
             <X size={28} />
           </button>
-
-          {/* <div className="absolute top-7 left-1/2 -translate-x-1/2 flex gap-2 z-40">
+          <div className="absolute top-7 left-1/2 -translate-x-1/2 flex gap-2 z-40">
             <ActionBtn
               icon={<GalleryThumbnails size={14} />}
               label="Gallery"
               onClick={() => setPopupType("gallery")}
               isActivate={popupType === "gallery"}
             />
-            <ActionBtn
-              icon={<Play size={14} />}
-              label="Video"
-              onClick={() => setPopupType("video")}
-              isActivate={popupType === "video"}
-            />
-            <ActionBtn
-              icon={<LayoutPanelLeft size={14} />}
-              label="Plan"
-              onClick={() => setPopupType("plan")}
-              isActivate={popupType === "plan"}
-            />
-            <ActionBtn
-              icon={<Box size={14} />}
-              label="3D"
-              onClick={() => setPopupType("3d")}
-              isActivate={popupType === "3d"}
-            />
-          </div> */}
+            {/* <ActionBtn icon={<Play size={14} />} label="Video" onClick={() => setPopupType("video")} isActivate={popupType === 'video'} />
+            <ActionBtn icon={<LayoutPanelLeft size={14} />} label="Plan" onClick={() => setPopupType("plan")} isActivate={popupType === 'plan'} />
+            <ActionBtn icon={<Box size={14} />} label="3D" onClick={() => setPopupType("3d")} isActivate={popupType === '3d'} /> */}
+          </div>
 
           <div
             className="w-full h-full flex items-center justify-center"

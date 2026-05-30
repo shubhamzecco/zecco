@@ -9,9 +9,7 @@ import {
   CircleStar,
   CircleUserRound,
   Crown,
-  Gem,
-  Shield,
-  ShieldCheck,
+  Gem
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React from "react";
@@ -77,11 +75,6 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
             {plan?.name}
           </h3>
         </div>
-        {/* {user_data?.user?.package?._id === plan?._id && (
-                    <div className="-mt-5 bg-green-100 text-green-600 text-sm font-semibold mr-2 px-2.5 py-0.5 rounded-full">
-                        <h1>Active</h1>
-                    </div>
-                )} */}
       </div>
       <div className="flex items-end gap-2 mb-5">
         <h3 className="font-manrope capitalize font-bold text-2xl text-[#000000]">

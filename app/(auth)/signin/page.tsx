@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { AuthReq } from "@/api/rest/fetchData";
 import { Button } from "@/components/ui/button";
@@ -8,14 +8,16 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { App_url } from "@/constant/static";
 import { setAuthData, setLogin } from "@/redux/modules/common/user_data/action";
+import { setPropertyFilter } from "@/redux/modules/main/action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -41,8 +43,15 @@ const Signin = () => {
     },
   });
 
+  useEffect(() => {
+    dispatch(setPropertyFilter({}));
+  }, []);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    AuthReq(App_url.endpoint_url.USER_SIGN_IN, { ...values, user_type: 'client' })
+    AuthReq(App_url.endpoint_url.USER_SIGN_IN, {
+      ...values,
+      user_type: "client",
+    })
       .then((response) => {
         if (response?.success) {
           const payload = {
@@ -53,11 +62,11 @@ const Signin = () => {
           localStorage.setItem("access_token", response.data.accessToken);
           dispatch(setLogin(true));
           dispatch(setAuthData(payload));
-          const redirectUrl = localStorage.getItem('redirect_after_login');
+          const redirectUrl = localStorage.getItem("redirect_after_login");
           toast.success(response?.message);
           if (redirectUrl) {
             router.push(redirectUrl);
-            localStorage.removeItem('redirect_after_login');
+            localStorage.removeItem("redirect_after_login");
           } else {
             router.push(App_url.link.INITIAL_URL);
           }
@@ -68,8 +77,8 @@ const Signin = () => {
       .catch((error) => {
         toast.error(
           error?.response?.data?.error ||
-          error?.message ||
-          "An unexpected error occurred."
+            error?.message ||
+            "An unexpected error occurred.",
         );
       });
   };
@@ -78,9 +87,13 @@ const Signin = () => {
     <>
       <AuthLayout
         heading="Welcome Back to Zecco!"
-        description=" Sign in to Your Account">
+        description=" Sign in to Your Account"
+      >
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-5 max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
+          >
             <FormField
               control={form.control}
               name="email"
@@ -147,7 +160,6 @@ const Signin = () => {
                 Forgot password?
               </Link>
             </div>
-
 
             {/* BUTTON */}
             <Button

@@ -1,97 +1,93 @@
 import { IFeature } from "@/redux/modules/main/types";
 import {
-  Waves,
-  Mountain,
-  MapPin,
-  Bus,
-  Snowflake,
-  Flame,
-  Sofa,
-  ChefHat,
-  Warehouse,
-  Gem,
-  Bath,
-  Tv,
-  Building2,
-  Sun,
-  Bed,
-  Package,
-  Dumbbell,
-  ShieldAlert,
-  SunMedium,
-  ShieldCheck,
-  SquareStack,
-  Video,
-  Sparkles,
-  Utensils,
-  CookingPot,
-  Phone,
-  Toilet,
-  TentTree,
-  Home,
-  SofaIcon,
-  BookOpen,
-  Droplets,
-  Trees,
-  View,
-  Eye,
-  WavesLadder,
-  Thermometer,
-  Sprout,
-  Blinds,
-  Cpu,
-  Volume2,
-  Wine,
-  Wifi,
-  ConciergeBell,
-  Zap,
-  DoorOpen,
-  Fence,
-  Flower2,
-  Volleyball,
-  Clapperboard,
-  UserCheck,
-  Heater,
-  GlassWater,
   Accessibility,
   BadgeCheck,
-  Wrench,
-  LampDesk,
-  Grid2X2,
-  CookingPotIcon,
-  PanelsTopLeft,
-  CircleOff,
-  School,
-  Camera,
-  PawPrint,
-  Radiation,
-  Shield,
-  Coffee,
-  Tent,
-  Fish,
-  Cable,
-  ParkingCircle,
-  Bike,
-  TreesIcon,
-  Plane,
-  Hammer,
-  Car,
-  Building,
+  Bath,
+  Bed,
+  Blinds,
+  BookOpen,
   Briefcase,
-  Users,
-  RotateCcw,
-  Hand,
-  FlameKindling,
-  Siren,
-  ScanEye,
-  Scan,
-  Shirt,
+  Building,
+  Building2,
+  Bus,
+  Cable,
+  Camera,
+  Car,
+  ChefHat,
+  CircleOff,
+  Clapperboard,
+  Coffee,
+  ConciergeBell,
+  CookingPot,
+  CookingPotIcon,
+  Cpu,
+  DoorOpen,
+  Droplets,
+  Dumbbell,
+  Eye,
+  Fence,
+  Fish,
   Flag,
+  Flame,
+  FlameKindling,
+  Flower2,
   Gamepad2,
+  Gem,
+  GlassWater,
+  Grid2X2,
+  Hammer,
+  Hand,
+  Heater,
+  Home,
+  LucideIcon,
+  MapPin,
+  Mountain,
+  Package,
+  PanelsTopLeft,
+  ParkingCircle,
+  PawPrint,
+  Phone,
+  Plane,
+  RotateCcw,
+  Scan,
+  School,
+  Shield,
+  ShieldAlert,
+  ShieldCheck,
   Ship,
+  Shirt,
   ShoppingBag,
+  Siren,
+  Snowflake,
+  Sofa,
+  SofaIcon,
+  Sparkles,
+  Sprout,
+  SquareStack,
+  Sun,
+  SunMedium,
+  Tent,
+  TentTree,
+  Thermometer,
+  Toilet,
+  Trees,
+  TreesIcon,
+  Tv,
+  UserCheck,
+  Users,
+  Utensils,
+  Video,
+  View,
+  Volleyball,
+  Volume2,
+  Warehouse,
+  Waves,
+  WavesLadder,
+  Wifi,
   Wind,
-  LucideIcon
+  Wine,
+  Wrench,
+  Zap
 } from "lucide-react";
 import { useState } from "react";
 
@@ -265,7 +261,6 @@ export default function BasicFeatures(features: { features: IFeature[] }) {
     ? featureList
     : featureList.slice(0, 12);
 
-
   return (
     <div className="mb-8">
       <h3 className="text-xl font-bold font-manrope text-heading_text_color mb-4">
@@ -275,8 +270,7 @@ export default function BasicFeatures(features: { features: IFeature[] }) {
       <div className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-5 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-2 gap-x-2">
           {visibleFeatures?.map((feature, index) => {
-            const Icon =
-              iconMap[feature.name as keyof typeof iconMap] || Scan;
+            const Icon = iconMap[feature.name as keyof typeof iconMap] || Scan;
             return (
               <>
                 <Feature
@@ -288,28 +282,21 @@ export default function BasicFeatures(features: { features: IFeature[] }) {
             );
           })}
         </div>
-          {featureList.length > 10 && (
-            <button
-              onClick={() => setShowAllFeatures(!showAllFeatures)}
-              className="mt-4 w-full text-center text-blue-600 font-medium font-manrope hover:underline"
-            >
-              {showAllFeatures ? "Show Less" : "More"}
-            </button>
-          )}
-
+        {featureList.length > 10 && (
+          <button
+            onClick={() => setShowAllFeatures(!showAllFeatures)}
+            className="mt-4 w-full text-center text-blue-600 font-medium font-manrope hover:underline"
+          >
+            {showAllFeatures ? "Show Less" : "More"}
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
 /* Reusable row */
-function Feature({
-  icon,
-  text,
-}: {
-  icon: React.ReactNode;
-  text: string;
-}) {
+function Feature({ icon, text }: { icon: React.ReactNode; text: string }) {
   return (
     <div className="flex items-center gap-3">
       <div className="w-9 h-9 flex items-center justify-center rounded-lg text-[#94A3B8] ">

@@ -1,7 +1,7 @@
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAuthData } from "@/redux/modules/common/user_data/action";
 import { IUserRes } from "@/redux/modules/common/user_data/types";
 import {
+  setAllLocationList,
   setBlogDetails,
   setBlogListWithLimit,
   setFavoriteList,
@@ -111,6 +111,13 @@ export const ws_response = (
               dispatch(setLocationAreaList(ws_onmessage?.data));
             } else {
               dispatch(setLocationAreaList(ws_onmessage?.data));
+            }
+          }
+          if (ws_onmessage?.request?.action === "searchLocationArea") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setAllLocationList(ws_onmessage?.data));
+            } else {
+              dispatch(setAllLocationList(ws_onmessage?.data));
             }
           }
         }

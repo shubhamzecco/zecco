@@ -81,14 +81,14 @@ const CostadelSol = () => {
     setLoading(false);
   }, [mainReducer?.location_list_with_limit]);
 
-  const handleSearch = (value: string) => {
-    setSearch(value);
+  const handleSearch = (value: any) => {
+    setSearch(value.name);
     setPage(1);
     setHasMore(true);
     setAllAreas([]);
     fetchedPages.current.clear();
 
-    fetchAreas(1, value, true);
+    fetchAreas(1, value.name, true);
   };
   useEffect(() => {
     const handleScroll = () => {
@@ -124,6 +124,20 @@ const CostadelSol = () => {
     }
     dispatch(setPropertyFilter({}));
   }, []);
+
+  useEffect(() => {
+    if (!isConnected) return;
+    sendMessage("action", {
+      type: "locationService",
+      action: "list",
+      payload: {
+        search: "",
+        limit: 0,
+        page: 1,
+        status: true,
+      },
+    });
+  }, [isConnected, sendMessage]);
 
   return (
     <MainLayout
