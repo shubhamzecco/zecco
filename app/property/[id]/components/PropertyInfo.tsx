@@ -20,7 +20,10 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
       </div>
       <h1 className="text-3xl font-manrope text-heading_text_color font-semibold  mb-2">
         {property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""}{" "}
-        {property?.propertyCategory?.name} for{" "}
+        {property?.propertyType
+          ? property?.propertyType?.name
+          : property?.propertyCategory?.name}{" "}
+        for{" "}
         {property?.isSale && property?.isRent
           ? "Sale or Rent"
           : property?.isSale
@@ -28,8 +31,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
             : property?.isRent
               ? "Rent"
               : ""}{" "}
-        in{" "}
-        {property?.locationSubarea ? `${property?.locationSubarea},` : ""}{" "}
+        in {property?.locationSubarea ? `${property?.locationSubarea},` : ""}{" "}
         {property?.locationArea ? `${property?.locationArea},` : ""}{" "}
         {property?.locationCity}, {property?.locationCountry}
       </h1>
@@ -37,10 +39,10 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
         <span className="text-3xl font-manrope font-bold text-heading_text_color">
           €{property?.salePrice}
         </span>
-        <span className="text-md text-[#9CA3AF] font-manrope  line-through">
+        {/* <span className="text-md text-[#9CA3AF] font-manrope  line-through">
           {property?.salePrice}
         </span>
-        <span className="text-red-600 font-semibold text-lg">0%</span>
+        <span className="text-red-600 font-semibold text-lg">0%</span> */}
       </div>
       <p className="font-manrope font-semibold uppercase text-[#64748B] text-sm mb-4">
         {property?.locationCity} , {property?.locationCountry}

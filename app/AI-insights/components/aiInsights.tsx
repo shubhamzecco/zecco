@@ -138,7 +138,10 @@ const AiInsights = ({ onGetStarted, property }: AiInsightsProps) => {
                     {selectedProperty?.bedrooms
                       ? `${selectedProperty?.bedrooms} Bedroom `
                       : ""}{" "}
-                    {selectedProperty?.propertyCategory?.name} for{" "}
+                    {selectedProperty?.propertyType
+                      ? selectedProperty?.propertyType?.name
+                      : selectedProperty?.propertyCategory?.name}{" "}
+                    for{" "}
                     {selectedProperty?.isSale && selectedProperty?.isRent
                       ? "Sale or Rent"
                       : selectedProperty?.isSale
@@ -276,8 +279,7 @@ const AiInsights = ({ onGetStarted, property }: AiInsightsProps) => {
                               {item?.locationArea
                                 ? `${item?.locationArea},`
                                 : ""}{" "}
-                              {item?.locationCity},{" "}
-                              {item?.locationCountry}
+                              {item?.locationCity}, {item?.locationCountry}
                             </h1>
 
                             <h2 className="font-manrope text-sm font-bold text-[#64748B]">

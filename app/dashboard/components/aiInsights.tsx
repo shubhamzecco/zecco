@@ -41,7 +41,7 @@ const AiInsights = () => {
                             ? `${item?.property?.bedrooms} Bedroom `
                             : ""
                         }${" "}
-                            ${item?.property?.propertyCategory?.name} for${" "}
+                            ${item?.property?.propertyType ? item?.property?.propertyType?.name : item?.property?.propertyCategory?.name}${" "}for${" "}
                             ${
                               item?.property?.isSale && item?.property?.isRent
                                 ? "Sale or Rent"

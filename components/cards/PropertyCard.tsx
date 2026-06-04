@@ -43,10 +43,22 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
       setBreadcrumbs([
         { label: "Home", href: "/" },
         {
+          label: "Costa del Sol areas and Cities",
+          href: `${App_url.link.COSTA_DEL_SOL}`,
+        },
+        {
+          label: property?.locationCity,
+          href: `${App_url.link.COSTA_DEL_SOL}/${property?.locationCity}`,
+        },
+        {
           label: `${
             property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""
           }${" "}
-                            ${property?.propertyCategory?.name} for${" "}
+                            ${
+                              property?.propertyType
+                                ? property?.propertyType?.name
+                                : property?.propertyCategory?.name
+                            }${" "}for${" "}
                             ${
                               property?.isSale && property?.isRent
                                 ? "Sale or Rent"
@@ -310,7 +322,10 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
 
         <h3 className="text-[0.9rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
           {property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""}{" "}
-          {property?.propertyType ? property?.propertyType?.name : property?.propertyCategory?.name} for{" "}
+          {property?.propertyType
+            ? property?.propertyType?.name
+            : property?.propertyCategory?.name}{" "}
+          for{" "}
           {property?.isSale && property?.isRent
             ? "Sale or Rent"
             : property?.isSale

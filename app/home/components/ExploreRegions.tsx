@@ -1,14 +1,14 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+import { clearBreadcrumbs, setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
-type ListingType = "buy" | "rent" | "new";
+type ListingType = "all" | "buy" | "rent" | "new";
 
 const LIMIT = 10;
 
@@ -16,7 +16,7 @@ const LIMIT = 10;
 const REGIONS_PER_CARD = 2;
 
 export default function ExploreRegions() {
-  const [selectedButton, setSelectedButton] = useState<ListingType>("buy");
+  const [selectedButton, setSelectedButton] = useState<ListingType>("all");
 
   const { sendMessage } = useWebSocket();
 
@@ -38,6 +38,7 @@ export default function ExploreRegions() {
   const [totalCount, setTotalCount] = useState(0);
   const totalPages = Math.ceil(totalCount / LIMIT);
   const loadedPages = useRef<Record<ListingType, Set<number>>>({
+    all: new Set(),
     buy: new Set(),
     rent: new Set(),
     new: new Set(),
@@ -74,13 +75,10 @@ export default function ExploreRegions() {
     setPage(nextPage);
   };
 
-  // =========================
-  // TAB CHANGE
-  // =========================
-
   useEffect(() => {
     setPage(1);
     loadedPages.current = {
+      all: new Set(),
       buy: new Set(),
       rent: new Set(),
       new: new Set(),
@@ -93,10 +91,6 @@ export default function ExploreRegions() {
 
     fetchAreas(1);
   }, [selectedButton]);
-
-  // =========================
-  // API RESPONSE
-  // =========================
 
   useEffect(() => {
     const latestData = mainReducer?.search_by_area?.data || [];
@@ -118,12 +112,10 @@ export default function ExploreRegions() {
     setLoading(false);
   }, [mainReducer?.search_by_area?.data]);
 
-  // =========================
-  // GROUP CARDS (STRATIFIED PACKING)
-  // =========================
-
   const getCountKey = () => {
     switch (selectedButton) {
+      case "all":
+        return "all_count";
       case "buy":
         return "sale_count";
       case "rent":
@@ -156,8 +148,6 @@ export default function ExploreRegions() {
 
   const groupedCards = useMemo(() => {
     const cards: any[][] = [];
-
-    // 1. Separate cities based on whether they have exactly 5 areas
     const exactFiveAreaCities = filteredAreasData.filter(
       (region) => Math.min(region?.areas?.length || 0, 5) === 5,
     );
@@ -165,26 +155,19 @@ export default function ExploreRegions() {
       (region) => Math.min(region?.areas?.length || 0, 5) < 5,
     );
 
-    // 2. First Phase: Force exactly 5-area cities into cards of 2
     for (let i = 0; i < exactFiveAreaCities.length; i += 2) {
       const pair = exactFiveAreaCities.slice(i, i + 2);
       cards.push(pair);
     }
 
-    // 3. Second Phase: Run layout packing calculations on the remaining smaller cities
     let currentCard: any[] = [];
     let currentCardSlotCount = 0;
 
-    // Total virtual slots allowed for smaller cities per card
     const MAX_SLOTS_PER_CARD = 12;
 
     remainingCities.forEach((region) => {
       const activeAreasCount = Math.min(region?.areas?.length || 0, 5);
-
-      // Cost calculation: 2 slots for headers/spacing + area list length
       const regionSlotCost = 2 + activeAreasCount;
-
-      // If it overflows the card capacity, push current card container and reset
       if (
         currentCardSlotCount + regionSlotCost > MAX_SLOTS_PER_CARD &&
         currentCard.length > 0
@@ -197,8 +180,6 @@ export default function ExploreRegions() {
       currentCard.push(region);
       currentCardSlotCount += regionSlotCost;
     });
-
-    // Push any remaining small cities left over in the loop
     if (currentCard.length > 0) {
       cards.push(currentCard);
     }
@@ -206,9 +187,6 @@ export default function ExploreRegions() {
     return cards;
   }, [filteredAreasData]);
 
-  // =========================
-  // AUTO SCROLL
-  // =========================
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -249,10 +227,6 @@ export default function ExploreRegions() {
     return () => clearInterval(interval);
   }, [page, isHovered, selectedButton]);
 
-  // =========================
-  // MANUAL SCROLL
-  // =========================
-
   const handleScroll = () => {
     const container = scrollRef.current;
 
@@ -267,12 +241,15 @@ export default function ExploreRegions() {
     }
   };
 
-  // =========================
-  // NAVIGATION
-  // =========================
-
   const handleNavigate = (region: any) => {
+    if (!region) return;
     dispatch(clearBreadcrumbs());
+    dispatch(
+      setPropertyFilter({
+        propertyType: selectedButton,
+        search: region?.name,
+      }),
+    );
 
     dispatch(
       setBreadcrumbs([
@@ -295,6 +272,10 @@ export default function ExploreRegions() {
   };
 
   const TABS = [
+    {
+      label: "All",
+      value: "all",
+    },
     {
       label: "Buy",
       value: "buy",
