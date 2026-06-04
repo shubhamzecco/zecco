@@ -5,6 +5,7 @@ import {
   setBlogDetails,
   setBlogListWithLimit,
   setFavoriteList,
+  setFeatures,
   setLocationAreaList,
   setLocationListWithLimit,
   setLocationListWithoutLimit,
@@ -161,6 +162,13 @@ export const ws_response = (
               dispatch(setPropertyDetails(ws_onmessage?.data));
             } else {
               dispatch(setPropertyDetails(ws_onmessage?.data));
+            }
+          }
+          if (ws_onmessage?.request?.action === "features") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setFeatures(ws_onmessage?.data));
+            } else {
+              dispatch(setFeatures(ws_onmessage?.data));
             }
           }
           if (ws_onmessage?.request?.action === "propertyTypes") {

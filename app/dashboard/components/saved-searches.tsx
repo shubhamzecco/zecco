@@ -5,15 +5,10 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
-import {
-  citySlug,
-  featureMap,
-  propertyCategoryMap,
-  propertyTypeMap,
-} from "@/utils/common";
+import { citySlug } from "@/utils/common";
 import { Eye, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 
 type SavedSearchesProps = {
@@ -21,7 +16,7 @@ type SavedSearchesProps = {
 };
 
 const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
-  const { sendMessage, lastEvent } = useWebSocket();
+  const { sendMessage, lastEvent, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -36,12 +31,76 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
     });
   };
 
+  useEffect(() => {
+    if (!isConnected) return;
+    sendMessage("action", {
+      type: "propertyService",
+      action: "propertyTypes",
+      payload: {
+        is_subtype: true,
+      },
+    });
+
+    sendMessage("action", {
+      type: "propertyService",
+      action: "features",
+      payload: {},
+    });
+  }, [isConnected]);
+
+  const propertyCategoryMap = useMemo(() => {
+    if (!mainReducer?.property_type_list) return {} as Record<number, string>;
+
+    return mainReducer.property_type_list.reduce(
+      (acc, item) => {
+        if (!item.is_subtype) {
+          acc[item.id] = item.name;
+        }
+        return acc;
+      },
+      {} as Record<number, string>,
+    );
+  }, [mainReducer?.property_type_list]);
+
+  const propertyTypeMap = useMemo(() => {
+    if (!mainReducer?.property_subtype_list)
+      return {} as Record<number, string>;
+
+    return mainReducer.property_subtype_list.reduce(
+      (acc, item) => {
+        if (item.is_subtype) {
+          acc[item.id] = item.name;
+        }
+        return acc;
+      },
+      {} as Record<number, string>,
+    );
+  }, [mainReducer?.property_subtype_list]);
+
+  const featureMap = useMemo(() => {
+    if (!mainReducer?.property_features_list)
+      return {} as Record<number, string>;
+
+    return mainReducer?.property_features_list.reduce(
+      (acc, item) => {
+        acc[item.id] = item.name;
+
+        return acc;
+      },
+      {} as Record<number, string>,
+    );
+  }, [mainReducer?.property_features_list]);
+
   const handleApplySearch = (item: any) => {
     dispatch(
       setBreadcrumbs([
         ...mainReducer.breadcrumbs,
         {
           label: "Costa del Sol areas and Cities",
+          href: `${App_url.link.COSTA_DEL_SOL}`,
+        },
+        {
+          label: item?.cities,
           href: `${App_url.link.COSTA_DEL_SOL}/${item?.cities}`,
         },
       ]),
@@ -64,7 +123,10 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
 
     // Category
     if (item?.categories && item?.types?.filter(Boolean)?.length === 0) {
-      parts.push(propertyCategoryMap[item.categories]);
+      const categoryName = propertyCategoryMap[item.categories];
+      if (categoryName) {
+        parts.push(categoryName);
+      }
     }
 
     // Property Types
@@ -123,8 +185,7 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
       const features = item.features
         .filter(Boolean)
         .map((feature: number) => featureMap[feature])
-        .filter(Boolean)
-        .slice(0, 3);
+        .filter(Boolean);
 
       if (features.length > 0) {
         parts.push(`featuring ${features.join(" & ")}`);

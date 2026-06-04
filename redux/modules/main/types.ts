@@ -646,6 +646,7 @@ export interface IPropertyType {
   id: number;
   name: string;
   category: IPropertyCategory;
+  is_subtype?: boolean;
 }
 
 export interface IPropertyCategory {
@@ -742,6 +743,11 @@ export interface IFavoriteProperty {
   pagination: IPagination;
 }
 
+export interface IFeatures {
+  id: number;
+  name: string;
+}
+
 export interface IMainResponse {
   chat_messages: ChatMessagesResponse | null;
   breadcrumbs: BreadcrumbItem[];
@@ -771,4 +777,5 @@ export interface IMainResponse {
   stored_aiInsight: IStoredAiInsightResponse | null;
   location_area_list: any;
   all_location_list: any;
+  property_features_list: IFeatures[] | null;
 }

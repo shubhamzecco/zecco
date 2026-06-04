@@ -20,6 +20,7 @@ const HomePage = () => {
   useEffect(() => {
     dispatch(setBreadcrumbs([{ label: "Home", href: "/" }]));
   }, []);
+
   return (
     <>
       <main className={`w-full bg-white`}>

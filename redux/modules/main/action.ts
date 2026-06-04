@@ -6,226 +6,230 @@ import {
   IBlogsResponse,
   IChatMessage,
   IFavoriteProperty,
+  IFeatures,
   IPackageResponse,
   IPropertyResponse,
   ISavedSearches,
-  Property
+  Property,
 } from "./types";
-
 
 export const ActionTypes = {
   SET_CLEAR_REDUX: "SET_CLEAR_REDUX",
   SET_BREADCRUMBS: "SET_BREADCRUMBS",
   CLEAR_BREADCRUMBS: "CLEAR_BREADCRUMBS",
-  SET_PACKAGE_LIST_WITH_LIMIT: 'SET_PACKAGE_LIST_WITH_LIMIT',
-  SET_LOCATION_LIST_WITH_LIMIT: 'SET_LOCATION_LIST_WITH_LIMIT',
-  SET_BLOGS_LIST_WITH_LIMIT: 'SET_BLOGS_LIST_WITH_LIMIT',
-  SET_PROPERTY_LIST_WITH_LIMIT: 'SET_PROPERTY_LIST_WITH_LIMIT',
-  SET_PROPERTY_LIST_WITHOUT_LIMIT: 'SET_PROPERTY_LIST_WITHOUT_LIMIT',
-  SET_PROPERTY_DETAILS: 'SET_PROPERTY_DETAILS',
-  SET_AI_INSIGHT: 'SET_AI_INSIGHT',
-  AI_CHAT_BADGE_OPEN: 'AI_CHAT_BADGE_OPEN',
+  SET_PACKAGE_LIST_WITH_LIMIT: "SET_PACKAGE_LIST_WITH_LIMIT",
+  SET_LOCATION_LIST_WITH_LIMIT: "SET_LOCATION_LIST_WITH_LIMIT",
+  SET_BLOGS_LIST_WITH_LIMIT: "SET_BLOGS_LIST_WITH_LIMIT",
+  SET_PROPERTY_LIST_WITH_LIMIT: "SET_PROPERTY_LIST_WITH_LIMIT",
+  SET_PROPERTY_LIST_WITHOUT_LIMIT: "SET_PROPERTY_LIST_WITHOUT_LIMIT",
+  SET_PROPERTY_DETAILS: "SET_PROPERTY_DETAILS",
+  SET_AI_INSIGHT: "SET_AI_INSIGHT",
+  AI_CHAT_BADGE_OPEN: "AI_CHAT_BADGE_OPEN",
   AI_CHAT_ADD_MESSAGE: "AI_CHAT_ADD_MESSAGE",
   AI_CHAT_SET_LOADING: "AI_CHAT_SET_LOADING",
   AI_CHAT_CLEAR: "AI_CHAT_CLEAR",
-  SET_FAVORITE_PROPERTY_LIST: 'SET_FAVORITE_PROPERTY_LIST',
-  SET_ZEECO_FAVORITE_LIST: 'SET_ZEECO_FAVORITE_LIST',
-  SET_LOGIN_POPUP: 'SET_LOGIN_POPUP',
-  SET_USER_CHAT_LIST: 'SET_USER_CHAT_LIST',
-  SET_USER_CHAT_MESSAGES: 'SET_USER_CHAT_MESSAGES',
-  SET_USER_PACKAGE_LIST: 'SET_USER_PACKAGE_LIST',
-  SET_PROPERTY_TYPE_LIST: 'SET_PROPERTY_TYPE_LIST',
-  SET_PROPERTY_SUBTYPE_LIST: 'SET_PROPERTY_SUBTYPE_LIST',
-  SET_SAVED_SEARCHES_LIST: 'SET_SAVED_SEARCHES_LIST',
-  SET_SEARCH_BY_AREA_LIST: 'SET_SEARCH_BY_AREA_LIST',
-  SET_PROPERTY_FILTERS: 'SET_PROPERTY_FILTERS',
-  SET_BLOG_DETAILS: 'SET_BLOG_DETAILS',
-  SET_STORED_AI_INSIGHT_LIST: 'SET_STORED_AI_INSIGHT_LIST',
-  SET_LOCATION_LIST_WITHOUT_LIMIT : 'SET_LOCATION_LIST_WITHOUT_LIMIT',
-  SET_LOCATION_AREA_LIST: 'SET_LOCATION_AREA_LIST',
-  SET_ALL_LOCATION_LIST: 'SET_ALL_LOCATION_LIST'
+  SET_FAVORITE_PROPERTY_LIST: "SET_FAVORITE_PROPERTY_LIST",
+  SET_ZEECO_FAVORITE_LIST: "SET_ZEECO_FAVORITE_LIST",
+  SET_LOGIN_POPUP: "SET_LOGIN_POPUP",
+  SET_USER_CHAT_LIST: "SET_USER_CHAT_LIST",
+  SET_USER_CHAT_MESSAGES: "SET_USER_CHAT_MESSAGES",
+  SET_USER_PACKAGE_LIST: "SET_USER_PACKAGE_LIST",
+  SET_PROPERTY_TYPE_LIST: "SET_PROPERTY_TYPE_LIST",
+  SET_PROPERTY_SUBTYPE_LIST: "SET_PROPERTY_SUBTYPE_LIST",
+  SET_SAVED_SEARCHES_LIST: "SET_SAVED_SEARCHES_LIST",
+  SET_SEARCH_BY_AREA_LIST: "SET_SEARCH_BY_AREA_LIST",
+  SET_PROPERTY_FILTERS: "SET_PROPERTY_FILTERS",
+  SET_BLOG_DETAILS: "SET_BLOG_DETAILS",
+  SET_STORED_AI_INSIGHT_LIST: "SET_STORED_AI_INSIGHT_LIST",
+  SET_LOCATION_LIST_WITHOUT_LIMIT: "SET_LOCATION_LIST_WITHOUT_LIMIT",
+  SET_LOCATION_AREA_LIST: "SET_LOCATION_AREA_LIST",
+  SET_ALL_LOCATION_LIST: "SET_ALL_LOCATION_LIST",
+  SET_FEATURES: "SET_FEATURES",
 };
 
 export const setPropertyFilter = (payload: any) => {
   return {
     type: ActionTypes.SET_PROPERTY_FILTERS,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setBlogDetails = (payload: any) => {
   return {
     type: ActionTypes.SET_BLOG_DETAILS,
-    payload
-  }
-}
-
+    payload,
+  };
+};
 
 export const setLocationAreaList = (payload: any) => {
   return {
     type: ActionTypes.SET_LOCATION_AREA_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setAllLocationList = (payload: any) => {
   return {
     type: ActionTypes.SET_ALL_LOCATION_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setSearchByArea = (payload: any) => {
   return {
     type: ActionTypes.SET_SEARCH_BY_AREA_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setSavedSearchesList = (payload: ISavedSearches) => {
   return {
     type: ActionTypes.SET_SAVED_SEARCHES_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setStoredAiInsightList = (payload: any) => {
   return {
     type: ActionTypes.SET_STORED_AI_INSIGHT_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setPropertySubtypeList = (payload: any) => {
   return {
     type: ActionTypes.SET_PROPERTY_SUBTYPE_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setPropertyTypeList = (payload: any) => {
   return {
     type: ActionTypes.SET_PROPERTY_TYPE_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setUserPackageList = (payload: IPackageResponse) => {
   return {
     type: ActionTypes.SET_USER_PACKAGE_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setUserChatMessages = (payload: IChatMessage) => {
   return {
     type: ActionTypes.SET_USER_CHAT_MESSAGES,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setUserChatList = (payload: any) => {
   return {
     type: ActionTypes.SET_USER_CHAT_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setLoginPopup = (payload: boolean) => {
   return {
     type: ActionTypes.SET_LOGIN_POPUP,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setZeccoFavoriteList = (payload: IPropertyResponse) => {
   return {
     type: ActionTypes.SET_ZEECO_FAVORITE_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setFavoriteList = (payload: IFavoriteProperty) => {
   return {
     type: ActionTypes.SET_FAVORITE_PROPERTY_LIST,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setAiInsight = (payload: IPropertyResponse) => {
   return {
     type: ActionTypes.SET_AI_INSIGHT,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setPropertyDetails = (payload: Property | unknown) => {
   return {
     type: ActionTypes.SET_PROPERTY_DETAILS,
-    payload
-  }
-}
+    payload,
+  };
+};
 
+export const setFeatures = (payload: IFeatures) => {
+  return {
+    type: ActionTypes.SET_FEATURES,
+    payload,
+  };
+};
 
 export const setPropertyListWithLimit = (payload: IPropertyResponse) => {
   return {
     type: ActionTypes.SET_PROPERTY_LIST_WITH_LIMIT,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setPropertyListWithoutLimit = (payload: IPropertyResponse) => {
   return {
     type: ActionTypes.SET_PROPERTY_LIST_WITHOUT_LIMIT,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setBlogListWithLimit = (payload: IBlogsResponse) => {
   return {
     type: ActionTypes.SET_BLOGS_LIST_WITH_LIMIT,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setLocationListWithLimit = (payload: IPackageResponse) => {
   return {
     type: ActionTypes.SET_LOCATION_LIST_WITH_LIMIT,
-    payload
-  }
-}
-
+    payload,
+  };
+};
 
 export const setLocationListWithoutLimit = (payload: IPackageResponse) => {
   return {
     type: ActionTypes.SET_LOCATION_LIST_WITHOUT_LIMIT,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 // =========================== Package Management ====================================
 
 export const setPackageListWithLimit = (payload: IPackageResponse) => {
   return {
     type: ActionTypes.SET_PACKAGE_LIST_WITH_LIMIT,
-    payload
-  }
-}
+    payload,
+  };
+};
 
 export const setChatBadgeOpen = (payload: boolean) => ({
   type: ActionTypes.AI_CHAT_BADGE_OPEN,
-  payload
+  payload,
 });
 
 export const setBreadcrumbs = (payload: BreadcrumbItem[]) => ({
   type: ActionTypes.SET_BREADCRUMBS,
-  payload
+  payload,
 });
 
 export const clearBreadcrumbs = () => ({
   type: ActionTypes.CLEAR_BREADCRUMBS,
-})
-
+});
 
 export const setReduxClear = () => ({
   type: ActionTypes.SET_CLEAR_REDUX,

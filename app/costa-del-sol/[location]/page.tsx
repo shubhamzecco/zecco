@@ -3,21 +3,23 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import PropertyCard from "@/components/cards/PropertyCard";
 import MainLayout from "@/components/layouts/main-layout";
+import LoginPopup from "@/components/login-popup";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import {
   setAiInsight,
   setBreadcrumbs,
+  setLoginPopup,
   setPropertyDetails,
   setPropertyFilter,
 } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
+import { citySlug } from "@/utils/common";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import FilterPanel from "./components/filter-panel";
-import { citySlug } from "@/utils/common";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 
@@ -25,39 +27,23 @@ const LIMIT = 18;
 
 const Page = () => {
   const gridRef = useRef<HTMLDivElement>(null);
-
   const [gridHeight, setGridHeight] = useState<number>(0);
-
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
   const [propertyType, setPropertyType] = useState<PropertyType>("all");
-
   const [categories, setPropertyTypes] = useState("");
-
   const [page, setPage] = useState(1);
-
   const [loading, setLoading] = useState(false);
-
   const [hasMore, setHasMore] = useState(true);
-
   const [properties, setProperties] = useState<any[]>([]);
-
   const [filterData, setFilterData] = useState<any>({});
-
-  // SEARCH STATE
-  const { mainReducer } = usePosterReducers();
+  const { mainReducer, user_data } = usePosterReducers();
   const [search, setSearch] = useState(
     mainReducer?.propertyFilter?.search || "",
   );
-
   const fetchedPages = useRef<Set<string>>(new Set());
-
   const [filtersInitialized, setFiltersInitialized] = useState(false);
-
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
-
   const dispatch = useDispatch();
-
   const id = useParams();
   const router = useRouter();
 
@@ -215,10 +201,10 @@ const Page = () => {
       setProperties(newData);
     } else {
       setProperties((prev) => {
-        const existingIds = new Set(prev.map((item) => item.id));
+        const existingIds = new Set(prev.map((item) => item._id));
 
         const filtered = newData.filter(
-          (item: any) => !existingIds.has(item.id),
+          (item: any) => !existingIds.has(item._id),
         );
 
         return [...prev, ...filtered];
@@ -371,31 +357,36 @@ const Page = () => {
   }, []);
 
   const handleSavedSearches = () => {
-    sendMessage("action", {
-      type: "savedSearchService",
-      action: "add",
-      payload: {
-        ...filterData,
-        search,
-        categories: categories ?? filterData?.categories,
-        cities: id?.location,
-        ...(propertyType === "buy" && {
-          forSale: true,
-          sold: false,
-          forRent: false,
-        }),
-        ...(propertyType === "rent" && {
-          forRent: true,
-          rented: false,
-          forSale: false,
-        }),
-        ...(propertyType === "new" && {
-          isNewDev: true,
-          rented: false,
-          sold: false,
-        }),
-      },
-    });
+    if (!user_data?.access_token) {
+      dispatch(setLoginPopup(true));
+      return;
+    } else {
+      sendMessage("action", {
+        type: "savedSearchService",
+        action: "add",
+        payload: {
+          ...filterData,
+          search,
+          categories: categories ?? filterData?.categories,
+          cities: id?.location,
+          ...(propertyType === "buy" && {
+            forSale: true,
+            sold: false,
+            forRent: false,
+          }),
+          ...(propertyType === "rent" && {
+            forRent: true,
+            rented: false,
+            forSale: false,
+          }),
+          ...(propertyType === "new" && {
+            isNewDev: true,
+            rented: false,
+            sold: false,
+          }),
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -515,6 +506,7 @@ const Page = () => {
           <FilterPanel onFilterChange={handleFilterChange} />
         </div>
       </div>
+      <LoginPopup />
     </MainLayout>
   );
 };

@@ -10,7 +10,6 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { PropertyMap } from "./map";
-import { filterList } from "@/utils/common";
 
 interface FilterPanelProps {
   onFilterChange?: (filters: any) => void;
@@ -180,6 +179,14 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
     }
   };
 
+  useEffect(() => {
+    sendMessage("action", {
+      type: "propertyService",
+      action: "features",
+      payload: {},
+    });
+  }, []);
+
   const handleCheckboxChange = (
     category: CheckboxGroup,
     option: string | number,
@@ -266,7 +273,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
           </div>
         </div>
 
-        {(mainReducer?.property_subtype_list ?? [])?.length > 0 && (
+        {((mainReducer?.property_subtype_list ?? [])?.length > 0 && mainReducer?.propertyFilter?.categories) && (
           <div className="space-y-3">
             <Label className="text-md font-medium text-text_gray_color font-manrope  tracking-wide">
               Type of home
@@ -422,7 +429,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
           </Label>
 
           <div className="space-y-2.5 max-h-[300px] overflow-y-auto">
-            {filterList?.map((item: any) => (
+            {mainReducer?.property_features_list?.map((item: any) => (
               <div key={item.id} className="flex items-center space-x-3">
                 <Checkbox
                   id={item.name}
@@ -443,7 +450,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                   htmlFor={item.name}
                   className="text-sm font-manrope font-normal text-[#0F172A] cursor-pointer"
                 >
-                  {item.label}
+                  {item.name}
                 </Label>
               </div>
             ))}

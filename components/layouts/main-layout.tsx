@@ -190,7 +190,7 @@ const MainLayout = ({
               )}
             </div>
             <div className="flex max-md:flex-col lg:justify-between max-md:w-full gap-5">
-              {savedSearch && user_data?.access_token && (
+              {savedSearch && (
                 <button
                   onClick={savedSearches}
                   className={`px-4 py-1.5 max-md:py-2.5 font-manrope font-semibold  max-md:w-full uppercase text-xs rounded-md bg-blue_color text-white`}
