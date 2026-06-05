@@ -132,3 +132,5 @@ export const initialUserData = {
   access_token: "",
 };
 
+
+export const strapi_base_url = process.env.NEXT_PUBLIC_STRAPI_BASE_URL

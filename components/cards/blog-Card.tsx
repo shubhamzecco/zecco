@@ -1,21 +1,53 @@
 "use client";
 import { URL } from "@/api/rest/fetchData";
-import { App_url } from "@/constant/static";
+import { App_url, strapi_base_url } from "@/constant/static";
 import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 
-interface BlogItem {
-  _id: string;
+interface BlogImageFormat {
+  url: string;
+  width: number;
+  height: number;
+}
+
+interface BlogImage {
+  id: number;
   name: string;
-  description: string;
-  image: string;
+  url: string;
+  width: number;
+  height: number;
+  formats?: {
+    thumbnail?: BlogImageFormat;
+    small?: BlogImageFormat;
+    medium?: BlogImageFormat;
+    large?: BlogImageFormat;
+  };
+}
+
+export interface Blog {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  short_description: string;
+  locale: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+  category: {
+    id: number;
+    name: string;
+    slug: string;
+  } | null;
+  cover: BlogImage;
+  localizations: Blog[];
 }
 
 interface BlogCardsProps {
-  data: BlogItem[];
+  data: Blog[];
   className?: string;
 }
 
@@ -23,7 +55,7 @@ const BlogCards: React.FC<BlogCardsProps> = ({ data = [], className = "" }) => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const handleNavigate = (blog: BlogItem) => {
+  const handleNavigate = (blog: Blog) => {
     dispatch(clearBreadcrumbs());
     dispatch(
       setBreadcrumbs([
@@ -33,12 +65,12 @@ const BlogCards: React.FC<BlogCardsProps> = ({ data = [], className = "" }) => {
           href: App_url.link.BLOGS,
         },
         {
-          label: blog?.name,
-          href: `${App_url.link.BLOGS}/${blog._id}`,
+          label: blog?.title,
+          href: `${App_url.link.BLOGS}/${blog.slug}`,
         },
       ]),
     );
-    router.push(`${App_url.link.BLOGS}/${blog._id}`);
+    router.push(`${App_url.link.BLOGS}/${blog.slug}`);
   };
 
   return (
@@ -47,12 +79,12 @@ const BlogCards: React.FC<BlogCardsProps> = ({ data = [], className = "" }) => {
         <div
           onClick={() => handleNavigate(blog)}
           key={index}
-          className="group relative h-[440px] overflow-hidden shadow-sm"
+          className="group relative cursor-pointer h-[440px] overflow-hidden shadow-sm"
         >
           {/* IMAGE */}
           <Image
-            src={URL + blog.image}
-            alt={blog.name}
+            src={strapi_base_url +  blog.cover?.url}
+            alt={blog.cover?.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -66,10 +98,10 @@ const BlogCards: React.FC<BlogCardsProps> = ({ data = [], className = "" }) => {
           />
           <div className="absolute bottom-0 p-6 text-center w-full">
             <h3 className="text-lg font-manrope font-semibold text-white mb-2">
-              {blog.name}
+              {blog.title}
             </h3>
             <p className="text-sm text-center font-manrope font-normal max-w-[18rem] mx-auto text-white/60 leading-relaxed">
-              {blog.description}
+              {blog.short_description}
             </p>
           </div>
         </div>

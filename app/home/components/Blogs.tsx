@@ -1,13 +1,83 @@
 import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { strapiGet } from "@/app/blogs/strapi/strapiClient";
+import { STRAPI_ENDPOINTS } from "@/app/blogs/strapi/strapiConstant";
 import BlogCards from "@/components/cards/blog-Card";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+
+interface BlogImageFormat {
+  url: string;
+  width: number;
+  height: number;
+}
+
+interface BlogImage {
+  id: number;
+  name: string;
+  url: string;
+  width: number;
+  height: number;
+  formats?: {
+    thumbnail?: BlogImageFormat;
+    small?: BlogImageFormat;
+    medium?: BlogImageFormat;
+    large?: BlogImageFormat;
+  };
+}
+
+interface BlogContentChild {
+  text: string;
+  type: string;
+}
+
+interface BlogContent {
+  type: string;
+  children: BlogContentChild[];
+}
+
+export interface Blog {
+  id: number;
+  documentId: string;
+  title: string;
+  slug: string;
+  short_description: string;
+  locale: string;
+  createdAt: string;
+  updatedAt: string;
+  publishedAt: string;
+
+  content: BlogContent[];
+
+  cover: BlogImage;
+
+  content_image: BlogImage;
+
+  author: {
+    id: number;
+    name: string;
+    email?: string;
+    avatar?: BlogImage;
+  } | null;
+
+  category: {
+    id: number;
+    name: string;
+    slug: string;
+  } | null;
+
+  localizations: Blog[];
+}
+
+export interface BlogList {
+  blog: Blog;
+}
+
 
 const blogs = [
   {
@@ -32,19 +102,42 @@ export default function Blogs() {
   const { sendMessage, isConnected } = useWebSocket();
   const dispatch = useDispatch();
   const router = useRouter();
+  const [loading, setLoading] = useState(false)
+  const [blogList, setBlogList] = useState<Blog[]>()
+  const [pagination, setPagination] = useState()
 
+  // useEffect(() => {
+  //   sendMessage("action", {
+  //     type: "blogService",
+  //     action: "list",
+  //     payload: {
+  //       search: "",
+  //       limit: 3,
+  //       page: 1,
+  //       status: true,
+  //     },
+  //   });
+  // }, [isConnected]);
+
+  const fetchArticles = async (page: number = 1) => {
+    setLoading(true);
+    try {
+      const res = await strapiGet(
+        STRAPI_ENDPOINTS.GET_ARTICLES(1, 'en'),
+      );
+      setBlogList(res?.data || []);
+      setPagination(res?.meta?.pagination || null);
+    } catch (err) {
+      console.error('Failed to load articles:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Refetch when language changes
   useEffect(() => {
-    sendMessage("action", {
-      type: "blogService",
-      action: "list",
-      payload: {
-        search: "",
-        limit: 3,
-        page: 1,
-        status: true,
-      },
-    });
-  }, [isConnected]);
+    fetchArticles(1);
+  }, []);
 
   const handleNavigate = () => {
     dispatch(clearBreadcrumbs());
@@ -84,7 +177,7 @@ export default function Blogs() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <BlogCards
-            data={mainReducer?.blogs_list_with_limit?.data || []}
+             data={blogList?.slice(0, 3) || []}
           />
         </div>
       </div>
