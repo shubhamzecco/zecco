@@ -4,11 +4,16 @@ import PropertyCard from "@/components/cards/PropertyCard";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+import { IProperty } from "@/redux/modules/main/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
 
-export default function ZeccoFavorites() {
+interface PropertyInfoProps {
+  property: IProperty;
+}
+
+export default function ZeccoFavorites({ property }: PropertyInfoProps) {
   const dispatch = useDispatch();
   const router = useRouter();
   const { mainReducer } = usePosterReducers();
@@ -32,7 +37,7 @@ export default function ZeccoFavorites() {
       payload: {
         limit: 10,
         page: 1,
-        search: "",
+        search: property?.locationCity ? property?.locationCity : "",
         location_id: null,
         favorite: true,
       },
@@ -52,7 +57,7 @@ export default function ZeccoFavorites() {
         payload: {
           limit: 0,
           page: 1,
-          search: "",
+          search: property?.locationCity ? property?.locationCity : "",
           location_id: null,
           favorite: true,
         },
@@ -88,6 +93,13 @@ export default function ZeccoFavorites() {
             <PropertyCard key={property.id} {...property} property={property} />
           ))}
         </div>
+          {randomFavorites?.length === 0 && (
+            <div className="!bg-none text-center w-full mx-auto">
+              <h2 className="mt-5 text-lg font-bold text-gray-400">
+                No Favorite Properties
+              </h2>
+            </div>
+          )}
       </div>
     </section>
   );

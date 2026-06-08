@@ -297,7 +297,7 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           {property?.isSale && property?.isRent ? (
             <div className="text-md font-manrope font-bold text-[#727272] w-full">
               {property?.isSale && property?.isRent ? (
-                <div className="flex justify-between items-center w-full">
+                <div className="items-center w-full">
                   <p className="text-md font-manrope font-bold text-[#727272]">
                     Sale : {formatEuro(property?.salePrice ?? 0)}
                   </p>

@@ -157,7 +157,7 @@ const SavedSearches = () => {
     }
 
     // Location
-    if (item?.search) {
+    if (item?.search && (item?.search.toLowerCase() !== item.city.name.toLowerCase())) {
       parts.push(`in ${item.search}, ${item.city.name}, Spain`);
     } else if (item?.city?.name) {
       parts.push(`in ${item.city.name}, Spain`);
@@ -243,7 +243,7 @@ const SavedSearches = () => {
             </div>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-4 overflow-y-auto max-h-[95vh] scrollbar-hide">
             {mainReducer?.saved_searches?.data?.map((item: any) => {
               const title = generateSearchTitle(item);
 

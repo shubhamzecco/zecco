@@ -227,7 +227,8 @@ export const ws_response = (
           ) {
             if (ws_onmessage?.status === true) {
               toast.success(ws_onmessage?.msg);
-            }
+            } else {
+              toast.error(ws_onmessage?.msg);}
           }
           if (ws_onmessage?.request?.action === "list") {
             if (ws_onmessage?.status === true) {

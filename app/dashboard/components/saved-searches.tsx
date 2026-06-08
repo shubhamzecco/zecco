@@ -4,7 +4,10 @@ import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
+import {
+  setBreadcrumbs,
+  setPropertyFilter
+} from "@/redux/modules/main/action";
 import { citySlug, formatEuro } from "@/utils/common";
 import { Eye, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -154,7 +157,10 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
     }
 
     // Location
-    if (item?.search) {
+    if (
+      item?.search &&
+      item?.search.toLowerCase() !== item.city.name.toLowerCase()
+    ) {
       parts.push(`in ${item.search}, ${item.city.name}, Spain`);
     } else if (item?.city?.name) {
       parts.push(`in ${item.city.name}, Spain`);
@@ -212,12 +218,18 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
 
   return (
     <section className="mt-1">
-      <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
-        {" "}
-        Saved Searches
-      </h2>
-
-      <div className="space-y-5">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="font-bold text-lg font-inter text-[#111827]">
+          Saved Searches
+        </h2>
+        <button
+          onClick={() => router.push(`${App_url.link.SAVED_SEARCHES}`)}
+          className="rounded-full font-manrope bg-btn_color font-medium  px-3 lg:px-7   py-2 text-xs lg:text-sm shadow-sm  text-white "
+        >
+          View All
+        </button>
+      </div>
+      <div className="space-y-4">
         {mainReducer?.saved_searches?.data?.slice(0, 3)?.map((item: any) => {
           const title = generateSearchTitle(item);
 

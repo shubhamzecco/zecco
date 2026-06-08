@@ -52,8 +52,8 @@ const FavoritesPage = () => {
               </p>
             </div>
           </div>
-          <div className="bg-white/70 p-7  rounded-lg">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+          <div className="bg-white/70 p-7 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-scroll max-h-[130vh] scrollbar-hide">
               {mainReducer?.favorite_property_list?.data?.map((property) => (
                 <PropertyCard
                   property={property}

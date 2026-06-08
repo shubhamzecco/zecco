@@ -70,7 +70,7 @@ export default function PropertyInsights() {
                 <TrendingUp className="text-blue-500" />
               </div>
               <h3 className="font-bold font-manrope text-heading_text_color text-lg lg:text-xl">
-                Market Insights
+                Area Insights
               </h3>
             </div>
 

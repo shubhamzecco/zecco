@@ -14,7 +14,7 @@ import {
   IProperty,
   IPropertyDescription,
   IPropertyResponse,
-  PropertyAnalysis
+  PropertyAnalysis,
 } from "@/redux/modules/main/types";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -163,7 +163,11 @@ const Page = () => {
               mainReducer?.ai_insight?.infrastructure as Infrastructure
             }
           /> */}
-          <ZeccoFavorites />
+          {mainReducer?.property_details?.locationCity && (
+            <ZeccoFavorites
+              property={mainReducer?.property_details as IProperty}
+            />
+          )}
         </div>
       </div>
       <LoginPopup />

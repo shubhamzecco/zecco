@@ -214,33 +214,33 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
     onFilterChange?.(updated);
   };
 
-  useEffect(() => {
-    if (
-      lastEvent?.data?.status &&
-      lastEvent?.data?.request?.type === "savedSearchService" &&
-      lastEvent?.data?.request?.action === "add"
-    ) {
-      const emptyFilters: FiltersState = {
-        categories: null,
-        priceFrom: "",
-        priceTo: "",
-        buildFrom: "",
-        buildTo: "",
-        types: {},
-        propertyStatus: { bareOwnership: true },
-        bedroomsFrom: null,
-        bedroomsTo: null,
-        condition: {},
-        features: {},
-        floor: {},
-        multimedia: {},
-        publicationDate: {},
-      };
-      setFilters(emptyFilters);
-      dispatch(setPropertyFilter(emptyFilters));
-      onFilterChange?.(emptyFilters);
-    }
-  }, [lastEvent]);
+  // useEffect(() => {
+  //   if (
+  //     lastEvent?.data?.status &&
+  //     lastEvent?.data?.request?.type === "savedSearchService" &&
+  //     lastEvent?.data?.request?.action === "add"
+  //   ) {
+  //     const emptyFilters: FiltersState = {
+  //       categories: null,
+  //       priceFrom: "",
+  //       priceTo: "",
+  //       buildFrom: "",
+  //       buildTo: "",
+  //       types: {},
+  //       propertyStatus: { bareOwnership: true },
+  //       bedroomsFrom: null,
+  //       bedroomsTo: null,
+  //       condition: {},
+  //       features: {},
+  //       floor: {},
+  //       multimedia: {},
+  //       publicationDate: {},
+  //     };
+  //     setFilters(emptyFilters);
+  //     dispatch(setPropertyFilter(emptyFilters));
+  //     onFilterChange?.(emptyFilters);
+  //   }
+  // }, [lastEvent]);
 
   return (
     <div className="w-full bg-[#F8FAFC] rounded-lg h-full overflow-y-auto">

@@ -440,12 +440,14 @@ const Page = () => {
         <div className="flex items-start gap-4">
           {/* DESKTOP FILTER */}
           <div
-            className="sticky top-28 hidden min-w-[300px] lg:block"
-            style={{
-              height: gridHeight ? `${gridHeight}px` : "100%",
-              maxHeight: "calc(100vh - 120px)",
-              overflowY: "auto",
-            }}
+            className=" min-w-[300px] lg:block"
+            style={
+              {
+                // height: gridHeight ? `${gridHeight}px` : "100%",
+                // maxHeight: "calc(100vh - 120px)",
+                // overflowY: "auto",
+              }
+            }
           >
             <FilterPanel onFilterChange={handleFilterChange} />
           </div>
