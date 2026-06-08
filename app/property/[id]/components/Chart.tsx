@@ -1,6 +1,7 @@
 "use client";
 
 import { PricingTrajectory } from "@/redux/modules/main/types";
+import { formatEuro } from "@/utils/common";
 import dynamic from "next/dynamic";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
@@ -64,7 +65,7 @@ export default function PricingTrajectoryChart({ chart_data }: IChartProps) {
 
     yaxis: {
       labels: {
-        formatter: (val) => `€${val}`,
+        formatter: (val) => formatEuro(val),
         style: {
           colors: "#6B7280",
           fontSize: "12px",
@@ -95,7 +96,7 @@ export default function PricingTrajectoryChart({ chart_data }: IChartProps) {
     tooltip: {
       theme: "light",
       y: {
-        formatter: (val) => `€${val}`,
+        formatter: (val) => formatEuro(val),
       },
     },
   };

@@ -3,6 +3,7 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAiInsight, setBreadcrumbs } from "@/redux/modules/main/action";
+import { formatEuro } from "@/utils/common";
 import { Bath, BedSingle } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -112,9 +113,10 @@ const AiInsights = () => {
                     </h1>
                     <div className="flex gap-5 items-center pt-2 px-4 text-sm">
                       <div className="flex font-inter font-medium items-center gap-1 text-[#4B5563]">
-                        €
-                        {item?.property?.salePrice ||
-                          item?.property?.rentalPrice}
+                        {formatEuro(item?.property?.salePrice) ||
+                          formatEuro(item?.property?.rentalPrice) ||
+                          formatEuro(item?.property?.rentalPriceLong) ||
+                          formatEuro(item?.property?.rentalPriceShort)}
                       </div>
                       <div className="flex font-manrope font-normal items-center gap-1">
                         <BedSingle size={18} className="text-gray-400" />

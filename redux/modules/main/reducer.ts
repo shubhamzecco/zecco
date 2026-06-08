@@ -33,6 +33,8 @@ const initialState: IMainResponse = {
   location_area_list: null,
   all_location_list: null,
   property_features_list: null,
+  privacy_policy: null,
+  terms_conditions: null,
 };
 
 const mainReducer = (
@@ -92,7 +94,21 @@ const mainReducer = (
     case ActionTypes.SET_USER_PACKAGE_LIST: {
       return {
         ...state,
-        user_package_list: action.payload,
+        user_package_list: action.payload?.result,
+      };
+    }
+
+    case ActionTypes.SET_PRIVACY_POLICY: {
+      return {
+        ...state,
+        privacy_policy: action.payload,
+      };
+    }
+
+    case ActionTypes.SET_TERMS_CONDITIONS: {
+      return {
+        ...state,
+        terms_conditions: action.payload,
       };
     }
 

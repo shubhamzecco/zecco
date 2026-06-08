@@ -6,13 +6,13 @@ import {
   Mail,
   MapPin,
   Phone,
-  Twitter
+  Twitter,
 } from "lucide-react";
+import App from "next/app";
 import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
-
   return (
     <footer className="relative overflow-hidden bg-[#0B1220] text-slate-300">
       {/* GRADIENT */}
@@ -100,8 +100,14 @@ export default function Footer() {
               {[
                 { title: "Home", link: "/" },
                 { title: "About Us", link: App_url.link.ABOUT_ZECCO },
-                { title: "Privacy Policy", link: "#" },
-                { title: "Terms & Conditions", link: "#" },
+                {
+                  title: "Privacy Policy",
+                  link: App_url?.link?.PRIVACY_POLICY,
+                },
+                {
+                  title: "Terms & Conditions",
+                  link: App_url?.link?.TERMS_CONDITION,
+                },
               ].map((item, i) => (
                 <Link
                   key={i}

@@ -24,7 +24,7 @@ export default function PropertyStats({ property }: PropertyStats) {
             </div>
             <div>
               <p className="text-sm font-manrope font-bold text-[#111827]">
-                {property?.mtsBuild} /m²
+                {property?.mtsBuild} m²
               </p>
               <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
                 Built
@@ -92,7 +92,7 @@ export default function PropertyStats({ property }: PropertyStats) {
               </div>
               <div>
                 <p className="text-sm font-manrope font-bold text-[#111827]">
-                  {property?.mtsInterior} /m²
+                  {property?.mtsInterior} m²
                 </p>
                 <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
                   Interior area
@@ -109,7 +109,7 @@ export default function PropertyStats({ property }: PropertyStats) {
               </div>
               <div>
                 <p className="text-sm font-manrope font-bold text-[#111827]">
-                  {property?.mtsTerrace} /m²
+                  {property?.mtsTerrace} m²
                 </p>
                 <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
                   Terrace area
@@ -125,7 +125,7 @@ export default function PropertyStats({ property }: PropertyStats) {
             </div>
             <div>
               <p className="text-sm font-manrope font-bold text-[#111827]">
-                {property?.mtsPlot} /m²
+                {property?.mtsPlot} m²
               </p>
               <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
                 Plot area

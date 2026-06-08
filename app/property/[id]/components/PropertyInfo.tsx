@@ -1,4 +1,5 @@
 import { IProperty } from "@/redux/modules/main/types";
+import { formatEuro } from "@/utils/common";
 import { ShieldCheck, Sparkles } from "lucide-react";
 
 interface PropertyInfoProps {
@@ -37,7 +38,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
       </h1>
       <div className="flex items-baseline gap-3 mb-4">
         <span className="text-3xl font-manrope font-bold text-heading_text_color">
-          €{property?.salePrice}
+          {formatEuro(property?.salePrice ?? 0)}
         </span>
         {/* <span className="text-md text-[#9CA3AF] font-manrope  line-through">
           {property?.salePrice}

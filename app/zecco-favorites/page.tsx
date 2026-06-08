@@ -17,7 +17,7 @@ const ZeccoFavorites = () => {
       type: "propertyService",
       action: "list",
       payload: {
-        limit: 10,
+        limit: 0,
         page: 1,
         search: "",
         location_id: null,
@@ -56,7 +56,7 @@ const ZeccoFavorites = () => {
         type: "propertyService",
         action: "list",
         payload: {
-          limit: 10,
+          limit: 0,
           page: 1,
           search: "",
           location_id: null,
@@ -71,7 +71,7 @@ const ZeccoFavorites = () => {
       type: "propertyService",
       action: "list",
       payload: {
-        limit: 10,
+        limit: 0,
         page: 1,
         search: e.name,
         location_id: null,

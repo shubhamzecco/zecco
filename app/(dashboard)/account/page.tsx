@@ -2,7 +2,7 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { formatDateMonth } from "@/utils/common";
+import { formatDateMonth, formatEuro } from "@/utils/common";
 import { Check, Crown, ShieldCheck, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -56,8 +56,8 @@ const AccountPackagePage = () => {
                   </h1>
                   <p className="font-inter text-xs lg:text-sm font-medium leading-relaxed text-[#DBEAFE]">
                     Date Of Purchase{" "}
-                    {purchaseDate ? formatDateMonth(purchaseDate) : ""} • €
-                    {user_data?.user?.package?.price}
+                    {purchaseDate ? formatDateMonth(purchaseDate) : ""} • {" "}
+                    {formatEuro(user_data?.user?.package?.price || 0)}
                   </p>
                 </div>
               </div>
@@ -185,7 +185,7 @@ const AccountPackagePage = () => {
 
                             <td className="whitespace-nowrap px-4 md:px-6 py-3">
                               <span className="font-semibold text-sm md:text-base text-gray-900">
-                                €{item?.amount || item?.packageData?.price}
+                                {formatEuro(item?.amount) || formatEuro(item?.packageData?.price)}
                               </span>
                             </td>
 

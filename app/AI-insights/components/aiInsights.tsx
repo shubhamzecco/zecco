@@ -3,6 +3,7 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { IProperty } from "@/redux/modules/main/types";
+import { formatEuro } from "@/utils/common";
 import {
   ArrowRight,
   Bath,
@@ -160,14 +161,14 @@ const AiInsights = ({ onGetStarted, property }: AiInsightsProps) => {
                     {selectedProperty?.locationCountry}
                   </h1>
                   <h2 className="px-4 pt-1 font-manrope text-lg font-bold text-[#64748B]">
-                    €{selectedProperty?.salePrice}
+                    {formatEuro(selectedProperty?.salePrice ?? 0)}
                   </h2>
 
                   <div className="flex items-center gap-5 px-4 pt-2 text-sm">
                     <div className="flex items-center gap-1 font-manrope font-normal">
                       <Expand size={18} className="text-gray-400" />
 
-                      <span>{selectedProperty?.mtsBuild} /m²</span>
+                      <span>{selectedProperty?.mtsBuild} m²</span>
                     </div>
 
                     <div className="flex items-center gap-1 font-manrope font-normal">
@@ -283,14 +284,14 @@ const AiInsights = ({ onGetStarted, property }: AiInsightsProps) => {
                             </h1>
 
                             <h2 className="font-manrope text-sm font-bold text-[#64748B]">
-                              €{item?.salePrice}
+                              {formatEuro(item?.salePrice ?? 0)}
                             </h2>
 
                             <div className="flex items-center gap-3 pt-1 text-xs">
                               <div className="flex items-center gap-1">
                                 <Expand size={14} className="text-gray-400" />
 
-                                <span>{item?.mtsBuild} /m²</span>
+                                <span>{item?.mtsBuild} m²</span>
                               </div>
 
                               <div className="flex items-center gap-1">

@@ -626,6 +626,7 @@ export interface IProperty {
 
   clonedFromNetworkId: string | null;
   favorite: boolean;
+  rentalPriceShort: number | null;
 }
 
 export interface ILookup {
@@ -748,6 +749,15 @@ export interface IFeatures {
   name: string;
 }
 
+export interface IPrivacyPolicy {
+  _id: string;
+  title: string;
+  description: string;
+  status: boolean;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+}
+
 export interface IMainResponse {
   chat_messages: ChatMessagesResponse | null;
   breadcrumbs: BreadcrumbItem[];
@@ -778,4 +788,6 @@ export interface IMainResponse {
   location_area_list: any;
   all_location_list: any;
   property_features_list: IFeatures[] | null;
+  privacy_policy: IPrivacyPolicy | null;
+  terms_conditions: IPrivacyPolicy | null;
 }

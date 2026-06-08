@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
+import { formatEuro } from "@/utils/common";
 
 interface PropertyCardProps {
   featured?: boolean;
@@ -298,10 +299,10 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
               {property?.isSale && property?.isRent ? (
                 <div className="flex justify-between items-center w-full">
                   <p className="text-md font-manrope font-bold text-[#727272]">
-                    Sale : €{property?.salePrice}
+                    Sale : {formatEuro(property?.salePrice ?? 0)}
                   </p>
                   <p className="text-md font-manrope font-bold text-[#727272]">
-                    Rent : €{property?.rentalPrice ?? property?.rentalPriceLong}
+                    Rent : {formatEuro(property?.rentalPrice ?? property?.rentalPriceLong ?? property?.rentalPriceShort ?? 0)}
                   </p>
                 </div>
               ) : null}
@@ -309,8 +310,8 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           ) : (
             <p className="text-md font-manrope font-bold text-[#727272]">
               {property?.isRent
-                ? "€" + (property?.rentalPrice ?? property?.rentalPriceLong)
-                : "€" + property?.salePrice}
+                ? formatEuro(property?.rentalPrice ?? property?.rentalPriceLong ?? property?.rentalPriceShort ?? 0)
+                : formatEuro(property?.salePrice ?? 0)}
             </p>
           )}
           {aiInsights && (
@@ -342,7 +343,7 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           {property?.mtsBuild !== null && property?.mtsBuild !== undefined && (
             <div className="flex font-manrope font-normal items-center gap-1">
               <Expand size={18} className="text-gray-400" />
-              <span>{property?.mtsBuild} /m²</span>
+              <span>{property?.mtsBuild} m²</span>
             </div>
           )}
 

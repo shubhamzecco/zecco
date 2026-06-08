@@ -30,7 +30,7 @@ export default function PropertyListings() {
       type: "propertyService",
       action: "list",
       payload: {
-        limit: 0,
+        limit: 10,
         page: 1,
         search: "",
         location_id: null,
@@ -50,7 +50,7 @@ export default function PropertyListings() {
         type: "propertyService",
         action: "list",
         payload: {
-          limit: 0,
+          limit: 10,
           page: 1,
           search: "",
           location_id: null,

@@ -360,7 +360,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                   className="w-full  bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-manrope text-text_gray_color pointer-events-none">
-                  /m²
+                  m²
                 </span>
               </div>
             </div>
@@ -375,7 +375,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                   className="w-full  bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-manrope text-text_gray_color pointer-events-none">
-                  /m²
+                  m²
                 </span>
               </div>
             </div>

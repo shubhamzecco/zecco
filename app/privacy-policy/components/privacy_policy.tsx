@@ -1,0 +1,54 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import MainLayout from "@/components/layouts/main-layout";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+
+const PolicyPage = () => {
+  const { isConnected, sendMessage, lastEvent } = useWebSocket();
+  const { mainReducer } = usePosterReducers();
+
+  useEffect(() => {
+    if (isConnected) {
+      sendMessage("action", {
+        type: "privacyPolicyService",
+        action: "get",
+        payload: {},
+      });
+    }
+  }, [isConnected]);
+
+  return (
+    <MainLayout chatBotWidget={false}>
+      <section className="bg-white py-5 min-h-screen">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-black mb-4">
+              {mainReducer?.privacy_policy?.title || "Privacy Policy"}
+            </h1>
+
+            <div className="w-20 h-1 bg-[#136AED] rounded-full"></div>
+          </div>
+
+          <div
+            className="
+              prose
+              prose-lg
+              max-w-none
+              text-base
+              prose-headings:text-black
+              prose-p:text-gray-700
+              prose-li:text-gray-700
+            "
+            dangerouslySetInnerHTML={{
+              __html: mainReducer?.privacy_policy?.description || "",
+            }}
+          />
+        </div>
+      </section>
+    </MainLayout>
+  );
+};
+
+export default PolicyPage;

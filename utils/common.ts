@@ -127,3 +127,12 @@ export const camelCase = (text: string = "") => {
 export const citySlug = (city_name: any) => {
   return city_name?.trim().toLowerCase().replace(/\s+/g, "-");
 };
+
+export const formatEuro = (amount: number | string) => {
+  const formatted = new Intl.NumberFormat('es-ES', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number(amount) || 0);
+
+  return `€${" "}${formatted}`;
+};

@@ -6,7 +6,7 @@ import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
-import { citySlug } from "@/utils/common";
+import { citySlug, formatEuro } from "@/utils/common";
 import { Eye, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
@@ -97,9 +97,13 @@ const SavedSearches = () => {
   const handleApplySearch = (item: any) => {
     dispatch(
       setBreadcrumbs([
-        ...mainReducer.breadcrumbs,
+        { label: "Home", href: "/" },
         {
           label: "Costa del Sol areas and Cities",
+          href: `${App_url.link.COSTA_DEL_SOL}`,
+        },
+        {
+          label: item?.cities,
           href: `${App_url.link.COSTA_DEL_SOL}/${item?.cities}`,
         },
       ]),
@@ -162,21 +166,21 @@ const SavedSearches = () => {
     // Price
     if (item?.priceFrom && item?.priceTo) {
       parts.push(
-        `from €${item.priceFrom.toLocaleString()} to €${item.priceTo.toLocaleString()}`,
+        `from ${formatEuro(item.priceFrom)} to ${formatEuro(item.priceTo)}`,
       );
     } else if (item?.priceFrom) {
-      parts.push(`from €${item.priceFrom.toLocaleString()}`);
+      parts.push(`from ${formatEuro(item.priceFrom)}`);
     } else if (item?.priceTo) {
-      parts.push(`up to €${item.priceTo.toLocaleString()}`);
+      parts.push(`up to ${formatEuro(item.priceTo)}`);
     }
 
     // Build Size
     if (item?.buildFrom && item?.buildTo) {
-      parts.push(`with ${item.buildFrom}/m²–${item.buildTo}/m² Build Area`);
+      parts.push(`with ${item.buildFrom}m²–${item.buildTo}m² Build Area`);
     } else if (item?.buildFrom) {
-      parts.push(`with ${item.buildFrom}/m²+ Build Area`);
+      parts.push(`with ${item.buildFrom}m²+ Build Area`);
     } else if (item?.buildTo) {
-      parts.push(`with up to ${item.buildTo}/m² Build Area`);
+      parts.push(`with up to ${item.buildTo}m² Build Area`);
     }
 
     // Features

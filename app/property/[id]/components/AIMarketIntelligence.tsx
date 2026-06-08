@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import PricingChart from "./Chart";
 import NearByPlaces from "./near-by-palces";
+import { formatEuro } from "@/utils/common";
 
 export interface IAiInsightProps {
   ai_insight: PropertyAnalysis;
@@ -38,9 +39,9 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
             Sub-district avg
           </p>
           <p className="text-2xl font-bold text-heading_text_color flex items-center gap-1 mb-1">
-            €{ai_insight?.city_avg_price_sqm}{" "}
+            {formatEuro(ai_insight?.city_avg_price_sqm)}{" "}
             <span className="text-[15px] mt-[6px] text-[#9CA3AF] font-manrope font-bold">
-              /m²
+              m²
             </span>
           </p>
           <p className="font-manrope font-medium text-[#9CA3AF] text-xs">

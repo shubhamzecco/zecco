@@ -88,7 +88,7 @@ export function AgentCard({ user_data, agent_details }: AgentCardProps) {
                 ? agentAssign
                   ? `${user_data?.user?.agent?.agent?.first_name || ""} ${user_data?.user?.agent?.agent?.last_name || ""}`
                   : `${agent_details?.first_name || ""} ${agent_details?.last_name || ""}`
-                : " Agent"}
+                : " Agent Not Found"}
             </p>
           </div>
         </div>

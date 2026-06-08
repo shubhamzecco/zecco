@@ -55,7 +55,7 @@ export default function ChatbotWidget() {
                 height={25}
               />
               <div className="flex-1">
-                <h3 className="font-bold text-gray-900">Zecco AI</h3>
+                <h3 className="font-bold text-gray-900">Talk to Zecco AI</h3>
                 <p className="text-sm text-gray-600">
                   Hey, you can also chat & explore homes with me!
                 </p>

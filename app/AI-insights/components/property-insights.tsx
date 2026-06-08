@@ -1,4 +1,5 @@
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { formatEuro } from "@/utils/common";
 import { Check, TrendingUp } from "lucide-react";
 
 export default function PropertyInsights() {
@@ -76,10 +77,10 @@ export default function PropertyInsights() {
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-[#64748B] font-manrope font-semibold">
-                  Price per /m²:
+                  Price per m²:
                 </span>
                 <span className="font-bold text-heading_text_color font-manrope">
-                  €{mainReducer?.ai_insight?.price_per_sqm} /m²
+                  {formatEuro(mainReducer?.ai_insight?.price_per_sqm || 0)} m²
                 </span>
               </div>
 
@@ -88,7 +89,7 @@ export default function PropertyInsights() {
                   Area Average:
                 </span>
                 <span className="font-bold text-heading_text_color font-manrope">
-                  €{mainReducer?.ai_insight?.area_avg_price_sqm} /m²
+                  {formatEuro(mainReducer?.ai_insight?.area_avg_price_sqm || 0)} m²
                 </span>
               </div>
 
@@ -106,7 +107,7 @@ export default function PropertyInsights() {
                   Average Rent:
                 </span>
                 <span className="font-bold text-heading_text_color font-manrope">
-                  €{mainReducer?.ai_insight?.average_rent_monthly || 0}
+                 {formatEuro(mainReducer?.ai_insight?.average_rent_monthly || 0)}
                 </span>
               </div>
               <div className="flex justify-between">

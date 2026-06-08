@@ -49,6 +49,8 @@ export const App_url = {
     AI_INSIGHTS: "/AI-insights",
     CONTACT_US: "/contact-us",
     ABOUT_ZECCO: "/about-zecco",
+    PRIVACY_POLICY: "/privacy-policy",
+    TERMS_CONDITION: "/terms-and-conditions",
     PROFILE: "/profile",
     MESSAGE: "/messages",
     DRAW_AREA: "/draw-area",

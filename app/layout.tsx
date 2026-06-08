@@ -1,3 +1,4 @@
+"use client";
 import type { Metadata } from "next";
 import {
   Instrument_Sans,
@@ -9,6 +10,7 @@ import {
 import React from "react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
+import { URL } from "@/api/rest/fetchData";
 import { AppProviders } from "@/components/provider/provider";
 import { circular_std } from "@/lib/fonts";
 import "leaflet/dist/leaflet.css";
@@ -46,10 +48,77 @@ export const publicSans = Public_Sans({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Zecco.es",
+const metadata: Metadata = {
+  metadataBase: URL,
+  title: {
+    default: "Zecco Real Estate",
+    template: "%s | Zecco Real Estate",
+  },
   description:
-    "Discover luxury properties, expert local insights, and AI-powered property search",
+    "Discover premium properties for sale and rent across Spain. Browse apartments, villas, townhouses, commercial properties, and investment opportunities with Zecco Real Estate.",
+  keywords:
+    "real estate, properties for sale, properties for rent, apartments, villas, townhouses, commercial properties, Spain real estate, property investment, luxury homes, Zecco",
+
+  icons: {
+    icon: [
+      {
+        url: "/favicon.ico",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        url: "/favicon.ico",
+        sizes: "32x32",
+        type: "image/png",
+      },
+    ],
+    shortcut: "/favicon.ico",
+    other: [
+      {
+        rel: "web-app-manifest-192x192",
+        url: "/web-app-manifest-192x192.png",
+        sizes: "192x192",
+      },
+    ],
+  },
+
+  manifest: "/manifest.json",
+
+  openGraph: {
+    title: "Zecco Real Estate | Properties for Sale & Rent",
+    description:
+      "Explore apartments, villas, penthouses, townhouses, and commercial properties across Spain. Find your dream property with Zecco Real Estate.",
+    url: "https://zecco.es",
+    siteName: "Zecco Real Estate",
+
+    locale: "en_US",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Zecco Real Estate | Find Your Dream Property",
+    description:
+      "Browse premium properties for sale and rent. Discover apartments, villas, luxury homes, and investment opportunities across Spain.",
+    // images: ["/assets/ogimage.png"],
+    creator: "@zecco_es",
+  },
+
+  alternates: {
+    canonical: "https://zecco.es",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default function RootLayout({

@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CheckInboxModal from "./mail-send-modal";
+import { formatEuro } from "@/utils/common";
 
 export interface IFormValue {
   email: string;
@@ -214,7 +215,7 @@ function SelectablePackage({
             <p className="text-md uppercase font-circular_std tracking-wider font-medium text-gray-900">
               {title}{" "}
               <span className="ml-1">
-                {price?.toLocaleLowerCase() === "vip" ? "" : `€ ${price}`}
+                {price?.toLocaleLowerCase() === "vip" ? "" : formatEuro(price)}
               </span>
             </p>
             <p className="text-sm text-gray-600">{desc}</p>

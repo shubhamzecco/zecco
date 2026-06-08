@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
+import { formatEuro } from "@/utils/common";
 
 const icons = [
   <CircleUserRound className=" text-[#4A86E8]" size={20} />,
@@ -80,7 +81,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         <h3 className="font-manrope capitalize font-bold text-2xl text-[#000000]">
           {plan?.price?.toLocaleLowerCase() === "vip"
             ? plan?.price
-            : `€ ${plan?.price}`}
+            : formatEuro(plan?.price)}
         </h3>
         <p className="font-manrope capitalize font-semibold text-sm  text-[#64748B]">
           {plan?.tag_line}

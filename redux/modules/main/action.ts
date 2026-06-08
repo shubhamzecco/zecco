@@ -8,6 +8,7 @@ import {
   IFavoriteProperty,
   IFeatures,
   IPackageResponse,
+  IPrivacyPolicy,
   IPropertyResponse,
   ISavedSearches,
   Property,
@@ -45,6 +46,8 @@ export const ActionTypes = {
   SET_LOCATION_AREA_LIST: "SET_LOCATION_AREA_LIST",
   SET_ALL_LOCATION_LIST: "SET_ALL_LOCATION_LIST",
   SET_FEATURES: "SET_FEATURES",
+  SET_PRIVACY_POLICY: "SET_PRIVACY_POLICY",
+  SET_TERMS_CONDITIONS: "SET_TERMS_CONDITIONS",
 };
 
 export const setPropertyFilter = (payload: any) => {
@@ -92,6 +95,20 @@ export const setSavedSearchesList = (payload: ISavedSearches) => {
 export const setStoredAiInsightList = (payload: any) => {
   return {
     type: ActionTypes.SET_STORED_AI_INSIGHT_LIST,
+    payload,
+  };
+};
+
+export const setPrivacyPolicy = (payload: IPrivacyPolicy) => {
+  return {
+    type: ActionTypes.SET_PRIVACY_POLICY,
+    payload,
+  };
+};
+
+export const setTermsConditions = (payload: IPrivacyPolicy) => {
+  return {
+    type: ActionTypes.SET_TERMS_CONDITIONS,
     payload,
   };
 };

@@ -162,7 +162,7 @@ export default function ChatReplies({
             <span className="relative block w-4 h-4 rounded-full bg-gradient-to-br from-purple-500 to-cyan-400" />
           </div>
           <span className="text-[13px] text-muted-foreground">
-            Zecoo is thinking...
+            Zecco is typing...
           </span>
         </div>
       )}

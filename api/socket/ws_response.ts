@@ -10,6 +10,7 @@ import {
   setLocationListWithLimit,
   setLocationListWithoutLimit,
   setPackageListWithLimit,
+  setPrivacyPolicy,
   setPropertyDetails,
   setPropertyListWithLimit,
   setPropertySubtypeList,
@@ -17,6 +18,7 @@ import {
   setSavedSearchesList,
   setSearchByArea,
   setStoredAiInsightList,
+  setTermsConditions,
   setUserChatList,
   setUserChatMessages,
   setUserPackageList,
@@ -244,6 +246,30 @@ export const ws_response = (
               dispatch(setStoredAiInsightList(ws_onmessage?.data));
             } else {
               dispatch(setStoredAiInsightList(ws_onmessage?.data));
+            }
+          }
+        }
+        break;
+
+      case "privacyPolicyService":
+        {
+          if (ws_onmessage?.request?.action === "get") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setPrivacyPolicy(ws_onmessage?.data));
+            } else {
+              dispatch(setPrivacyPolicy(ws_onmessage?.data));
+            }
+          }
+        }
+        break;
+
+      case "termsConditionsService":
+        {
+          if (ws_onmessage?.request?.action === "get") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setTermsConditions(ws_onmessage?.data));
+            } else {
+              dispatch(setTermsConditions(ws_onmessage?.data));
             }
           }
         }
