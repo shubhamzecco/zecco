@@ -149,7 +149,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
         >
           <img
             src={images?.[0]?.url}
-            className="lg:w-[650px] lg:h-[460px] object-cover rounded-xl"
+            className="lg:w-[47vw] lg:h-[460px] object-cover rounded-xl"
           />
 
           <button

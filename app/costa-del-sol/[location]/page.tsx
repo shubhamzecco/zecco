@@ -14,7 +14,7 @@ import {
   setPropertyFilter,
 } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
-import { citySlug } from "@/utils/common";
+import { camelCase, citySlug } from "@/utils/common";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -273,7 +273,7 @@ const Page = () => {
   // SEARCH
   const handleSearch = (value: any) => {
     setSearch(value.name);
-    dispatch(setPropertyFilter({ search: value.name }));
+    dispatch(setPropertyFilter({ ...mainReducer?.propertyFilter, search: value.name }));
 
     setPage(1);
     setProperties([]);
@@ -291,7 +291,7 @@ const Page = () => {
             href: `${App_url.link.COSTA_DEL_SOL}`,
           },
           {
-            label: value?.city_name,
+            label: `${camelCase(value?.city_name)}${" "}${value?.area_name ? `-${" "}${camelCase(value?.area_name)}` : ""}`,
             href: `${App_url.link.COSTA_DEL_SOL}/${value?.city_name}`,
           },
         ]),

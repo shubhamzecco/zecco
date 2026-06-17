@@ -136,7 +136,7 @@ const PropertySearchBar = () => {
           href: `${App_url.link.COSTA_DEL_SOL}`,
         },
         {
-          label: `${camelCase(selectedLocation?.city_name)}`,
+          label: `${camelCase(selectedLocation?.city_name)}${" "}${selectedLocation?.area_name ? `-${" "}${camelCase(selectedLocation?.area_name)}` : ""}`,
           href: `${App_url.link.COSTA_DEL_SOL}/${selectedLocation?.city_name}`,
         },
       ]),
