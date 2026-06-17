@@ -4,13 +4,14 @@ import PropertyCard from "@/components/cards/PropertyCard";
 import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setBreadcrumbs } from "@/redux/modules/main/action";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const ZeccoFavorites = () => {
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const dispatch = useDispatch();
+  const [search , setSearch] = useState('')
 
   useEffect(() => {
     sendMessage("action", {
@@ -58,7 +59,7 @@ const ZeccoFavorites = () => {
         payload: {
           limit: 0,
           page: 1,
-          search: "",
+          search: search ?? '',
           location_id: null,
           favorite: true,
         },
@@ -67,6 +68,7 @@ const ZeccoFavorites = () => {
   }, [lastEvent]);
 
   const handleSearch = (e: any) => {
+    setSearch(e.name);
     sendMessage("action", {
       type: "propertyService",
       action: "list",
