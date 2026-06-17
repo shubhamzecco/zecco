@@ -7,20 +7,16 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import Operate from "./components/operate";
 import WhyChooseZecco from "./components/why-choose-zecco";
+import FilterPopup from "@/components/filterPopup";
+import { useState } from "react";
 
 const AboutZecco = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const [openPopup, setOpenPopup] = useState(false);
 
   const handleNavigate = () => {
-    dispatch(clearBreadcrumbs());
-    dispatch(
-      setBreadcrumbs([
-        { label: "Home", href: "/" },
-        { label: "Explore properties", href: App_url.link.COSTA_DEL_SOL },
-      ]),
-    );
-    router.push(`${App_url.link.COSTA_DEL_SOL}/explore-properties`);
+    setOpenPopup(true);
   };
 
   return (
@@ -108,6 +104,13 @@ const AboutZecco = () => {
       </section>
       <WhyChooseZecco />
       <Operate />
+      {openPopup && (
+        <FilterPopup
+          openPopup={openPopup}
+          onClose={() => setOpenPopup(false)}
+          propertyType="all"
+        />
+      )}
     </MainLayout>
   );
 };

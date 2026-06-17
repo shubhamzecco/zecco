@@ -8,7 +8,9 @@ import {
   IFavoriteProperty,
   IFeatures,
   IPackageResponse,
+  IPreferenceResponse,
   IPrivacyPolicy,
+  IProperty,
   IPropertyResponse,
   ISavedSearches,
   Property,
@@ -48,6 +50,7 @@ export const ActionTypes = {
   SET_FEATURES: "SET_FEATURES",
   SET_PRIVACY_POLICY: "SET_PRIVACY_POLICY",
   SET_TERMS_CONDITIONS: "SET_TERMS_CONDITIONS",
+  SET_PREFERENCE_PROPERTY_LIST: "SET_PREFERENCE_PROPERTY_LIST"
 };
 
 export const setPropertyFilter = (payload: any) => {
@@ -165,6 +168,13 @@ export const setZeccoFavoriteList = (payload: IPropertyResponse) => {
 export const setFavoriteList = (payload: IFavoriteProperty) => {
   return {
     type: ActionTypes.SET_FAVORITE_PROPERTY_LIST,
+    payload,
+  };
+};
+
+export const setPreferenceList = (payload: IPreferenceResponse) => {
+  return {
+    type: ActionTypes.SET_PREFERENCE_PROPERTY_LIST,
     payload,
   };
 };

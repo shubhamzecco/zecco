@@ -28,8 +28,13 @@ interface PropertyCardProps {
   isLiked?: boolean;
   property: IProperty;
   onLikeToggle?: () => void;
+  onNavigate?: (property: IProperty) => void;
 }
-const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
+const PropertyCard = ({
+  aiInsights = false,
+  property,
+  onNavigate,
+}: PropertyCardProps) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { mainReducer, user_data } = usePosterReducers();
@@ -120,7 +125,9 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
 
   const handleCardClick = () => {
     if (!isSwiping) {
-      handleNavigate(); // tap only
+      if (onNavigate) {
+        onNavigate(property);
+      } else handleNavigate(); // tap only
     }
   };
 
@@ -302,7 +309,13 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
                     Sale : {formatEuro(property?.salePrice ?? 0)}
                   </p>
                   <p className="text-md font-manrope font-bold text-[#727272]">
-                    Rent : {formatEuro(property?.rentalPrice ?? property?.rentalPriceLong ?? property?.rentalPriceShort ?? 0)}
+                    Rent :{" "}
+                    {formatEuro(
+                      property?.rentalPrice ??
+                        property?.rentalPriceLong ??
+                        property?.rentalPriceShort ??
+                        0,
+                    )}
                   </p>
                 </div>
               ) : null}
@@ -310,7 +323,12 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           ) : (
             <p className="text-md font-manrope font-bold text-[#727272]">
               {property?.isRent
-                ? formatEuro(property?.rentalPrice ?? property?.rentalPriceLong ?? property?.rentalPriceShort ?? 0)
+                ? formatEuro(
+                    property?.rentalPrice ??
+                      property?.rentalPriceLong ??
+                      property?.rentalPriceShort ??
+                      0,
+                  )
                 : formatEuro(property?.salePrice ?? 0)}
             </p>
           )}

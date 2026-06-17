@@ -56,6 +56,7 @@ export const App_url = {
     DRAW_AREA: "/draw-area",
     NEAR_BY_LOCATIONS: "/near-by-locations",
     SELECT_AREA: "/select-area",
+    PREFERENCES: "/preferences",
   },
   endpoint_url: {
     GET_AUTH_USER: "/api/user",
@@ -72,10 +73,11 @@ export const App_url = {
     AI_INSIGHT: "/api/ai-insight",
     CREATE_PAYMENT: "/api/payment/create-payment",
     PAYMENT_STATUS: "/api/payment/status",
+    EXPORT: "/api/payment/export",
   },
   chat_bot_url: "http://localhost:5678/webhook/zecco",
   chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco",
-};
+}
 
 export const initialState = {
   items: [],

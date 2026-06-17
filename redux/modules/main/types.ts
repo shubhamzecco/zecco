@@ -197,6 +197,17 @@ export interface AIChatMessage {
   text: string;
   sender: "user" | "bot";
   timestamp: Date;
+  viewMore?: {
+    location: string;
+    intent: string;
+    budgetMin: string;
+    budgetMax: string;
+    bedrooms: string | null;
+    propertyType: string | null;
+    locationCity: string;
+    category: string | null;
+  };
+  hasMore?: boolean;
 }
 
 // interfaces/breadcrumb.ts
@@ -739,6 +750,11 @@ export interface IPropertyResponse {
   pagination: IPagination | null;
 }
 
+export interface IPreferenceResponse {
+  data: IProperty[];
+  pagination: IPagination | null;
+}
+
 export interface IFavoriteProperty {
   data: IProperty[];
   pagination: IPagination;
@@ -790,4 +806,5 @@ export interface IMainResponse {
   property_features_list: IFeatures[] | null;
   privacy_policy: IPrivacyPolicy | null;
   terms_conditions: IPrivacyPolicy | null;
+  preference_property_list: IPreferenceResponse | null;
 }

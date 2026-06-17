@@ -1,19 +1,20 @@
 "use client";
 
 import CommonApiRequest from "@/api/rest/fetchData";
-import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAiInsight } from "@/redux/modules/main/action";
 import { IProperty, IPropertyResponse } from "@/redux/modules/main/types";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import AiInsights from "./components/aiInsights";
 import AIProcessingCard from "./components/analyzing-property-details";
 import PropertyInsights from "./components/property-insights";
+import { useRouter } from "next/navigation";
+import FavoritesPage from "./components/favorites";
+import SavedAiInsights from "./components/savedaiInsights";
 
 const AIInsights = () => {
   const [step, setStep] = useState("intro");
@@ -23,6 +24,7 @@ const AIInsights = () => {
   const [selectedProperty, setSelectedProperty] = useState<IProperty | null>(
     null,
   );
+  const route = useRouter();
 
   useEffect(() => {
     const firstProperty = mainReducer?.favorite_property_list?.data?.[0];
@@ -65,11 +67,10 @@ const AIInsights = () => {
         to-[#fafafa] to-[100%]"
       >
         {step === "intro" && (
-          <AiInsights
-            property={selectedProperty as IProperty}
-            onGetStarted={handleStarted}
-          />
+          <AiInsights onGetStarted={() => setStep("grid")} />
         )}
+
+        {step === "grid" && <FavoritesPage onGetStarted={handleStarted} />}
 
         {step === "processing" && (
           <AIProcessingCard
@@ -79,6 +80,7 @@ const AIInsights = () => {
         )}
 
         {step === "complete" && mainReducer?.ai_insight && <PropertyInsights />}
+        <SavedAiInsights />
       </div>
     </SidebarLayout>
   );

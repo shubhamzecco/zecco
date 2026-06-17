@@ -76,7 +76,7 @@ export default function AuthLayout({
 
             {bottomContent && <div className="mt-6">{bottomContent}</div>}
 
-            <div className="mt-4 flex justify-center">
+            <div className="mt-2 flex justify-center">
               <Link
                 href={App_url.link.INITIAL_URL}
                 className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-heading_text_color text-md"

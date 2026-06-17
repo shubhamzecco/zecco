@@ -15,7 +15,7 @@ import {
 } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
 import { citySlug } from "@/utils/common";
-import { SlidersHorizontal, X } from "lucide-react";
+import { SearchX, SlidersHorizontal, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -397,6 +397,8 @@ const Page = () => {
     });
   }, []);
 
+  console.log("mainReducer?.all_location_list",mainReducer?.all_location_list)
+
   return (
     <MainLayout
       isBreadcrumb
@@ -453,31 +455,58 @@ const Page = () => {
           </div>
 
           {/* PROPERTY GRID */}
-          <div
-            ref={gridRef}
-            className="grid w-full grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-          >
-            {properties?.map((property) => (
-              <PropertyCard
-                key={property._id}
-                property={property}
-                {...property}
-              />
-            ))}
+          <div className="w-full">
+            {properties?.length > 0 ? (
+              <div
+                ref={gridRef}
+                className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+              >
+                {properties.map((property) => (
+                  <PropertyCard
+                    key={property._id}
+                    property={property}
+                    {...property}
+                  />
+                ))}
+              </div>
+            ) : (
+              !loading && (
+                <div className="flex min-h-[500px] items-center justify-center">
+                  <div className="text-center">
+                    <div className="mb-4 flex justify-center">
+                      <div className="rounded-full bg-gray-100 p-5">
+                        <SearchX className="h-10 w-10 text-[#136AED]" />
+                      </div>
+                    </div>
+
+                    <h2 className="text-2xl font-bold text-gray-800">
+                      No Properties Found
+                    </h2>
+
+                    <p className="mt-2 text-gray-500">
+                      No properties match your current filters.
+                    </p>
+                  </div>
+                </div>
+              )
+            )}
           </div>
         </div>
 
         {/* LOADER */}
         {loading && (
-          <div className="py-10 text-center text-sm font-medium text-gray-500">
-            Loading...
-          </div>
-        )}
+          <div className="flex min-h-[300px] items-center justify-center">
+            <div className="text-center">
+              <div className="mx-auto mb-6 h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" />
 
-        {/* NO DATA */}
-        {!loading && properties?.length === 0 && (
-          <div className="text-center text-sm font-medium text-gray-500">
-            No Properties Found
+              <h2 className="text-2xl font-bold text-slate-800">
+                Loading Properties
+              </h2>
+
+              <p className="mt-2 text-slate-500">
+                Please wait while we fetch the latest properties...
+              </p>
+            </div>
           </div>
         )}
       </div>

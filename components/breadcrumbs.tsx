@@ -32,12 +32,12 @@ const Breadcrumb = () => {
             {!isLast && item.href ? (
               <button
                 onClick={() => handleClick(index, item.href)}
-                className="hover:text-black transition"
+                className="hover:text-black transition capitalize"
               >
                 {item.label}
               </button>
             ) : (
-              <span className="text-[#000000]">{item.label}</span>
+              <span className="text-[#000000] capitalize">{item.label}</span>
             )}
 
             {!isLast && (
