@@ -273,7 +273,9 @@ const Page = () => {
   // SEARCH
   const handleSearch = (value: any) => {
     setSearch(value.name);
-    dispatch(setPropertyFilter({ ...mainReducer?.propertyFilter, search: value.name }));
+    dispatch(
+      setPropertyFilter({ ...mainReducer?.propertyFilter, search: value.name }),
+    );
 
     setPage(1);
     setProperties([]);
@@ -291,13 +293,28 @@ const Page = () => {
             href: `${App_url.link.COSTA_DEL_SOL}`,
           },
           {
-            label: `${camelCase(value?.city_name)}${" "}${value?.area_name ? `-${" "}${camelCase(value?.area_name)}` : ""}`,
-            href: `${App_url.link.COSTA_DEL_SOL}/${value?.city_name}`,
+            // label: `${camelCase(value?.city_name)}${" "}${value?.area_name ? `-${" "}${camelCase(value?.area_name)}` : ""}`,
+            label: `${value?.name}`,
+            href: `${App_url.link.COSTA_DEL_SOL}/${value?.name}`,
           },
         ]),
       );
       router.replace(
         `${App_url.link.COSTA_DEL_SOL}/${citySlug(value?.city_name)}`,
+      );
+    } else {
+      dispatch(
+        setBreadcrumbs([
+          { label: "Home", href: "/" },
+          {
+            label: "Costa del Sol areas and Cities",
+            href: `${App_url.link.COSTA_DEL_SOL}`,
+          },
+          {
+            label: `${value?.name}`,
+            href: `${App_url.link.COSTA_DEL_SOL}/${value?.name}`,
+          },
+        ]),
       );
     }
   };

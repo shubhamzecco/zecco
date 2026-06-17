@@ -55,7 +55,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
       )?.then(async (response: any) => {
         if (response?.status === 200) {
           if (response.success) {
-            window.location.href = response.data.checkoutUrl;
+            // window.location.href = response.data.checkoutUrl;
           }
         } else {
         }

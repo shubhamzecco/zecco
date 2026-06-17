@@ -268,6 +268,7 @@ export function PaymentStatus({
                   const payload = {
                     package_id: package_id,
                     user_id: user_data?.user?._id,
+                    cancelURL: window.location.href,
                     // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
                   };
                   CommonApiRequest(

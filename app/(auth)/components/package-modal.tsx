@@ -60,6 +60,7 @@ export default function PackagesModal({
     const payload = {
       package_id: value,
       user_id: userId || user_data?.user?._id,
+      cancelURL: window.location.href,
       // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
     };
     CommonApiRequest(
