@@ -33,7 +33,6 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
   const dispatch = useDispatch();
   const { mainReducer } = usePosterReducers();
   const ai_chat_messages = mainReducer?.ai_chat_messages ?? [];
-
   const getSessionId = () => {
     const key = "zecco_session_id";
     let id = localStorage.getItem(key);
@@ -65,20 +64,21 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
     setIsLoading(true);
     try {
       const res = await sendChatMessage(text, getSessionId());
-
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
-          text: res?.reply ?? "No response from Zecco AI",
+          text: res?.reply || "No response from Zecco AI",
           sender: "bot",
           timestamp: new Date(),
+          hasMore: res?.hasMore,
+          viewMore: res?.viewMore,
         }),
       );
     } catch {
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
-          text: "Something went wrong. Please try again.",
+          text: "I’m temporarily handling a high volume of property searches. Please try again in a moment, and I’ll continue helping you discover properties that match your preferences.",
           sender: "bot",
           timestamp: new Date(),
         }),

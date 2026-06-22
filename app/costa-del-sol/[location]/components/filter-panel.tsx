@@ -126,7 +126,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
       dispatch(setPropertyFilter(defaultFilters));
       setFilters(defaultFilters);
     }
-  }, [mainReducer?.propertyFilter]);
+  }, []);
 
   useEffect(() => {
     if (mainReducer?.propertyFilter?.categories) {
