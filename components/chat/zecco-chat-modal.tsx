@@ -20,6 +20,18 @@ export type ChatMessage = {
   text: string;
   sender: "user" | "bot";
   timestamp: Date;
+  viewMore?: {
+    location: string;
+    intent: string;
+    budgetMin: string;
+    budgetMax: string;
+    bedrooms: string | null;
+    propertyType: string | null;
+    locationCity: string;
+    category: string | null;
+    features?: string[] | null;
+  };
+  hasMore?: boolean;
 };
 
 type Props = {
@@ -64,6 +76,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
     setIsLoading(true);
     try {
       const res = await sendChatMessage(text, getSessionId());
+      console.log("res",res)
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),

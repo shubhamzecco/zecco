@@ -1,8 +1,13 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { App_url } from "@/constant/static";
+import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
+import { camelCase, citySlug } from "@/utils/common";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { useDispatch } from "react-redux";
 import { ChatMessage } from "./zecco-chat-modal";
 
 const QUICK_ACTIONS = [
@@ -25,8 +30,48 @@ export default function ChatReplies({
   const containerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   /* ---------------- detect manual scroll ---------------- */
+
+  const handleShowProperties = (msg: ChatMessage) => {
+    if (!msg?.hasMore || !msg?.viewMore) return;
+    dispatch(setPropertyFilter({}));
+    const data = msg.viewMore;
+    dispatch(
+      setPropertyFilter({
+        categories: Number(data?.category) || null,
+        propertyType: data?.intent || "",
+        search: data?.location || "",
+        bedroomsFrom: Number(data?.bedrooms) || null,
+        bedroomsTo: Number(data?.bedrooms) || null,
+        priceFrom: data?.budgetMin || "",
+        priceTo: data?.budgetMax || "",
+        types: data?.propertyType ? [Number(data?.propertyType)] : [],
+        // features: data?.features ? [Number(data?.features)] : [],
+      }),
+    );
+
+    dispatch(
+      setBreadcrumbs([
+        {
+          label: "Home",
+          href: "/",
+        },
+        {
+          label: "Costa del Sol areas and Cities",
+          href: App_url.link.COSTA_DEL_SOL,
+        },
+        {
+          label: camelCase(data.locationCity),
+          href: `${App_url.link.COSTA_DEL_SOL}/${citySlug(data.locationCity)}`,
+        },
+      ]),
+    );
+
+    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(data.locationCity)}`);
+  };
 
   const handleScroll = () => {
     if (!containerRef.current) return;
@@ -50,9 +95,12 @@ export default function ChatReplies({
   /* ---------------- helpers ---------------- */
 
   const formatChatMessage = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    let formatted = text.replace(urlRegex, (url) => `[Click here](${url})`);
-    return formatted.replace(/\n{3,}/g, "\n\n");
+    return text
+      ?.replace(
+        /Details URL:\s*(\/property\/[a-zA-Z0-9]+)/g,
+        "Details URL: [Click here]($1)",
+      )
+      .replace(/\n{3,}/g, "\n\n");
   };
 
   const formatTime = (timestamp?: string | Date) =>
@@ -63,6 +111,7 @@ export default function ChatReplies({
           hour12: true,
         })
       : "";
+
   const getMarkdownComponents = (isUser: boolean, currentMsg: ChatMessage) => ({
     strong: ({ children }: any) => (
       <strong className="font-semibold text-[14px]">{children}</strong>
@@ -84,7 +133,7 @@ export default function ChatReplies({
           <div className="mb-3">
             {/* Context Text */}
             {before && (
-              <p className="text-[14px] leading-6 whitespace-pre-line mb-2 text-gray-800">
+              <p className="text-[14px] leading-6 whitespace-pre-line mb-2">
                 {before.trim()}
               </p>
             )}
@@ -107,7 +156,7 @@ export default function ChatReplies({
 
             {/* Next Follow-up Question */}
             {after && (
-              <p className="text-[14px] leading-6 whitespace-pre-line mt-3 font-medium text-gray-900">
+              <p className="text-[14px] leading-6 whitespace-pre-line mt-3">
                 {after.trim()}
               </p>
             )}
@@ -135,12 +184,11 @@ export default function ChatReplies({
         className="text-blue-600 hover:underline hover:text-blue-700"
       >
         {children}
-      </a>
+      </button>
     ),
   });
 
   /* ---------------- render ---------------- */
-
   return (
     <div
       ref={containerRef}
@@ -191,15 +239,6 @@ export default function ChatReplies({
               <ReactMarkdown components={getMarkdownComponents(isUser, msg)}>
                 {formatChatMessage(msg?.text)}
               </ReactMarkdown>
-              {/* {msg.hasMore && msg.viewMore && (
-                <button
-                  onClick={() => handleShowProperties(msg)}
-                  className="px-6 py-2.5 bg-white hover:bg-blue-50 text-blue-600 font-semibold flex items-center justify-center gap-2 rounded-lg text-sm"
-                >
-                  <span>View matching properties</span>
-                  <ArrowRight size={16} className={`transition-transform`} />
-                </button>
-              )} */}
               <div className="text-[11px] opacity-70 text-right">
                 {formatTime(msg?.timestamp)}
               </div>
