@@ -117,6 +117,7 @@ export default function Navbar() {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden max-md:flex justify-end items-center p-2 rounded-lg text-gray-700"
+              aria-label="close"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>

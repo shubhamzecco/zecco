@@ -93,6 +93,7 @@ const AiInsights = ({ onGetStarted, property }: AiInsightsProps) => {
               rounded-full  px-3 py-2 hover:bg-slate-100
               hover:shadow-md hover:transition hover:scale-105
             "
+            aria-label="down"
             >
               <ChevronDown
                 size={16}

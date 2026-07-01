@@ -40,7 +40,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
         <span className="text-3xl font-manrope font-bold text-heading_text_color">
           {formatEuro(property?.salePrice ?? 0)}
         </span>
-        {/* <span className="text-md text-[#9CA3AF] font-manrope  line-through">
+        {/* <span className="text-md text-[#4B5563] font-manrope  line-through">
           {property?.salePrice}
         </span>
         <span className="text-red-600 font-semibold text-lg">0%</span> */}

@@ -167,6 +167,7 @@ const UserMessage = ({
             <button
               onClick={onBack}
               className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition"
+              aria-label="close"
             >
               <ArrowLeft size={18} />
             </button>
@@ -207,6 +208,7 @@ const UserMessage = ({
                 }
               }}
               className="ml-auto bg-black text-white w-11 h-11 rounded-full flex items-center justify-center hover:scale-105 transition"
+              aria-label="close"
             >
               <Phone size={18} />
             </button>
@@ -275,6 +277,7 @@ const UserMessage = ({
                                           window.URL.revokeObjectURL(url);
                                         }}
                                         className="absolute bottom-2 right-2 bg-black/60 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition"
+                                        aria-label="download"
                                       >
                                         <Download className="w-5 h-5" />
                                       </button>
@@ -361,6 +364,7 @@ const UserMessage = ({
                                           window.URL.revokeObjectURL(url);
                                         }}
                                         className="absolute bottom-2 right-2 bg-black/60 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition"
+                                        aria-label="download"
                                       >
                                         <Download className="w-5 h-5" />
                                       </button>
@@ -422,6 +426,7 @@ const UserMessage = ({
             <button
               onClick={() => document.getElementById("fileUpload")?.click()}
               className="hover:bg-[#deffde] text-gray-500 rounded-lg"
+              aria-label="attach"
             >
               <Paperclip size={20} />
             </button>
@@ -442,6 +447,7 @@ const UserMessage = ({
             <button
               onClick={handleSend}
               className="bg-blue-600 text-white min-w-[44px] h-11 rounded-full flex items-center justify-center hover:scale-105 transition-all duration-200 shadow-md"
+              aria-label="send"
             >
               <Send size={18} className="rotate-45" />
             </button>

@@ -516,7 +516,7 @@ const Page = () => {
         <div className="flex items-center justify-between border-b bg-gray-50 p-4">
           <h2 className="font-manrope text-lg font-semibold">Filters</h2>
 
-          <button onClick={() => setIsFilterOpen(false)}>
+          <button onClick={() => setIsFilterOpen(false)} aria-label="close">
             <X size={20} />
           </button>
         </div>

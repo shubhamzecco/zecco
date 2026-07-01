@@ -52,34 +52,29 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           href: `${App_url.link.COSTA_DEL_SOL}/${property?.locationCity}`,
         },
         {
-          label: `${
-            property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""
-          }${" "}
-                            ${
-                              property?.propertyType
-                                ? property?.propertyType?.name
-                                : property?.propertyCategory?.name
-                            }${" "}for${" "}
-                            ${
-                              property?.isSale && property?.isRent
-                                ? "Sale or Rent"
-                                : property?.isSale
-                                  ? "Sale"
-                                  : property?.isRent
-                                    ? "Rent"
-                                    : ""
-                            }${" "}
+          label: `${property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""
+            }${" "}
+                            ${property?.propertyType
+              ? property?.propertyType?.name
+              : property?.propertyCategory?.name
+            }${" "}for${" "}
+                            ${property?.isSale && property?.isRent
+              ? "Sale or Rent"
+              : property?.isSale
+                ? "Sale"
+                : property?.isRent
+                  ? "Rent"
+                  : ""
+            }${" "}
                             in${" "}
-                            ${
-                              property?.locationSubarea
-                                ? `${property?.locationSubarea},`
-                                : ""
-                            }${" "}
-                            ${
-                              property?.locationArea
-                                ? `${property?.locationArea},`
-                                : ""
-                            }${" "}
+                            ${property?.locationSubarea
+              ? `${property?.locationSubarea},`
+              : ""
+            }${" "}
+                            ${property?.locationArea
+              ? `${property?.locationArea},`
+              : ""
+            }${" "}
                             ${property?.locationCity},${" "}
                             ${property?.locationCountry}`,
           href: `${App_url.link.PROPERTY_DETAILS}/${property?._id}`,
@@ -204,6 +199,7 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           <button
             onClick={prevSlide}
             className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 opacity-0 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:pointer-events-auto"
+            aria-label="up"
           >
             <ChevronLeft size={18} />
           </button>
@@ -213,6 +209,7 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           <button
             onClick={nextSlide}
             className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 opacity-0 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:pointer-events-auto"
+            aria-label="up"
           >
             <ChevronRight size={18} />
           </button>
@@ -237,13 +234,14 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
             handleFavoriteAdd?.();
           }}
           className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
+          aria-label="up"
         >
           {mainReducer?.property_list_with_limit?.favorite_property?.includes(
             String(property?._id),
           ) ||
-          mainReducer?.zecco_favorite?.favorite_property?.includes(
-            String(property?._id),
-          ) ? (
+            mainReducer?.zecco_favorite?.favorite_property?.includes(
+              String(property?._id),
+            ) ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
             <Heart size={20} className="text-white hover:text-red-500" />
@@ -265,9 +263,8 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
               {property?.propertyImages?.slice(0, 3).map((_, i) => (
                 <span
                   key={i}
-                  className={`h-2 rounded-full transition-all ${
-                    i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
-                  }`}
+                  className={`h-2 rounded-full transition-all ${i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
+                    }`}
                 />
               ))}
             </div>
@@ -277,20 +274,20 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           property?.zeccoSold ||
           property?.isRented ||
           property?.zeccoRented) && (
-          <>
-            <div className="absolute inset-0 bg-black/45 z-20" />
-            <div className="absolute inset-0 z-30 flex items-center justify-center">
-              <div className="relative w-full flex items-center justify-center">
-                <div className="absolute w-full h-[2px]" />
-                <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
-                  {property?.isSold || property?.zeccoSold
-                    ? "Sold Out"
-                    : "Rent Out"}
+            <>
+              <div className="absolute inset-0 bg-black/45 z-20" />
+              <div className="absolute inset-0 z-30 flex items-center justify-center">
+                <div className="relative w-full flex items-center justify-center">
+                  <div className="absolute w-full h-[2px]" />
+                  <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
+                    {property?.isSold || property?.zeccoSold
+                      ? "Sold Out"
+                      : "Rent Out"}
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
       </div>
       <div className="space-y-1 py-3">
         <div className="flex items-center justify-between">

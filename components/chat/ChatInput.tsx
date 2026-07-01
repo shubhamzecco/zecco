@@ -39,6 +39,7 @@ export default function ChatInput({ isLoading, onSend }: Props) {
           onClick={handleSend}
           disabled={isLoading}
           className="absolute right-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-lg bg-sky_blue_color text-white hover:bg-blue-700 disabled:opacity-50"
+          aria-label="close"
         >
           <ArrowUp size={16} />
         </button>

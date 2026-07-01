@@ -89,7 +89,7 @@ export default function ExploreByTypes() {
                 ))}
               </p>
 
-              <button onClick={() => handleNavigate(item?.navigation_title)} className="flex uppercase items-center gap-2 text-[0.7rem] font-manrope tracking-wider font-semibold text-white hover:text-[#38BDF8] transition">
+              <button onClick={() => handleNavigate(item?.navigation_title)} className="flex uppercase items-center gap-2 text-[0.7rem] font-manrope tracking-wider font-semibold text-white hover:text-[#38BDF8] transition" aria-label="up">
                 {item.action}
                 <ArrowUpRight size={16} />
               </button>

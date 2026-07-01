@@ -274,6 +274,7 @@ const SavedSearches = () => {
                         <button
                           onClick={() => handleApplySearch(item)}
                           className="rounded-2xl border border-blue-200 p-2 text-blue-600 transition-all hover:bg-blue-50"
+                          aria-label="view"
                         >
                           <Eye size={15} />
                         </button>
@@ -281,6 +282,7 @@ const SavedSearches = () => {
                         <button
                           onClick={() => handleDelete(item?._id)}
                           className="rounded-2xl border border-red-200 p-2 text-red-600 transition-all hover:bg-red-50"
+                          aria-label="delete"
                         >
                           <Trash2 size={15} />
                         </button>

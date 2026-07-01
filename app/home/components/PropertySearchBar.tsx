@@ -281,7 +281,7 @@ const PropertySearchBar = () => {
               whitespace-nowrap
               flex items-center justify-center gap-2
               rounded-full
-              bg-sky_blue_color
+              bg-[#0a6fd1]
               px-9 py-4
               text-sm font-semibold text-white
               hover:opacity-90 transition

@@ -176,6 +176,7 @@ export default function UploadPreviewModal({
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-[#135D7B] hover:bg-red-600 flex items-center justify-center text-white transition-colors"
+            aria-label="close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -201,6 +202,7 @@ export default function UploadPreviewModal({
                 <button
                   onClick={() => removeFile(index)}
                   className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 z-10"
+                  aria-label="close"
                 >
                   <X size={14} />
                 </button>
