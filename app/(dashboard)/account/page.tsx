@@ -1,4 +1,5 @@
 "use client";
+import Head from "next/head";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
@@ -24,6 +25,9 @@ const AccountPackagePage = () => {
 
   return (
     <SidebarLayout>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <div
         className="lg:px-12 px-5  py-8 h-full
                             bg-gradient-to-r

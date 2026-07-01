@@ -1,6 +1,7 @@
 "use client";
 
 import { URL } from "@/api/rest/fetchData";
+import Head from "next/head";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
@@ -216,6 +217,9 @@ const SavedSearches = () => {
 
   return (
     <SidebarLayout>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <div
         className="lg:px-12 px-5 py-8 h-full
                             bg-gradient-to-r

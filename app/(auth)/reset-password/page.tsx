@@ -1,6 +1,7 @@
 "use client";
 
 import { postData } from "@/api/rest/fetchData";
+import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -74,7 +75,11 @@ const ResetPassword = () => {
   };
 
   return (
-    <AuthLayout
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <AuthLayout
       heading="Welcome Back to Zecco!"
       description="Sign in to Your Account"
     >
@@ -157,6 +162,7 @@ const ResetPassword = () => {
         </div>
       </Form>
     </AuthLayout>
+    </>
   );
 };
 

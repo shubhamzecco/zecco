@@ -2,6 +2,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -76,6 +77,9 @@ const SignUpPage = () => {
 
   return (
     <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <AuthLayout heading="Create Your Zecco Account" description="">
         <Form {...form}>
           <form

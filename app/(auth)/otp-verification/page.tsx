@@ -1,6 +1,7 @@
 "use client";
 
 import { postData } from "@/api/rest/fetchData";
+import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -183,7 +184,11 @@ const OtpVerification = () => {
   /* -------------------- UI -------------------- */
 
   return (
-    <AuthLayout
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <AuthLayout
       heading="Welcome Back to Zecco!"
       description="Sign in to Your Account"
     >
@@ -282,6 +287,7 @@ const OtpVerification = () => {
         />
       )}
     </AuthLayout>
+    </>
   );
 };
 export default OtpVerification;

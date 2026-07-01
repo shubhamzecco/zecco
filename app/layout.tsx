@@ -11,6 +11,7 @@ import React from "react";
 // @ts-ignore
 import { AppProviders } from "@/components/provider/provider";
 import { circular_std } from "@/lib/fonts";
+import { OrganizationJsonLd } from "@/components/seo/organization-jsonld";
 import "leaflet/dist/leaflet.css";
 import "../styles/globals.css";
 
@@ -130,6 +131,7 @@ export default function RootLayout({
       className={`${inter.variable} ${manrope.variable} ${instrumentSans.variable} ${poppins?.variable} ${circular_std?.variable} ${publicSans.variable} scrollbar-hide`}
     >
       <body className="bg-white text-gray-900 antialiased font-sans scrollbar-hide">
+        <OrganizationJsonLd />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

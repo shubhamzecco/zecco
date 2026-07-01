@@ -1,4 +1,5 @@
 "use client";
+import Head from "next/head";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAiInsight } from "@/redux/modules/main/action";
@@ -50,6 +51,9 @@ const DashboardPage = () => {
 
   return (
     <SidebarLayout>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <div
         className="px-5 lg:px-12  pt-12 pb-4 mb-10
                             bg-gradient-to-r
