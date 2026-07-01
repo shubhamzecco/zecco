@@ -127,14 +127,14 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
   const nextSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === property?.propertyImages.length - 1 ? 0 : prev + 1,
+      prev === property?.propertyImages?.length - 1 ? 0 : prev + 1,
     );
   };
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === 0 ? property?.propertyImages.length - 1 : prev - 1,
+      prev === 0 ? property?.propertyImages?.length - 1 : prev - 1,
     );
   };
 

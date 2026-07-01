@@ -61,7 +61,7 @@ const Page = () => {
         type: "propertyService",
         action: "get",
         payload: {
-          id: params.id,
+          id: params?.id,
         },
       });
     }
@@ -70,7 +70,7 @@ const Page = () => {
   useEffect(() => {
     if (
       mainReducer?.ai_insight &&
-      Object.keys(mainReducer.ai_insight).length > 0
+      Object.keys(mainReducer?.ai_insight).length > 0
     ) {
       setStep("complete");
       setIsCompleted(true);
@@ -82,7 +82,7 @@ const Page = () => {
     setIsCompleted(false);
     CommonApiRequest(
       "GET",
-      `${App_url.endpoint_url?.AI_INSIGHT}/${params.id}/${user_data?.user?._id}`,
+      `${App_url.endpoint_url?.AI_INSIGHT}/${params?.id}/${user_data?.user?._id}`,
       {},
       {},
       // true,

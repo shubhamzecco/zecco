@@ -32,6 +32,7 @@ const FavoritesPage = () => {
       });
     }
   }, [lastEvent]);
+
   return (
     <SidebarLayout>
       <div
@@ -57,7 +58,7 @@ const FavoritesPage = () => {
               {mainReducer?.favorite_property_list?.data?.map((property) => (
                 <PropertyCard
                   property={property}
-                  key={property.id}
+                  key={property?.id}
                   {...property}
                 />
               ))}

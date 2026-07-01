@@ -41,8 +41,8 @@ const ResetPassword = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     postData(App_url?.endpoint_url?.RESET_PASSWORD, {
-      password: values.password,
-      confirm_password: values.confirm_password,
+      password: values?.password,
+      confirm_password: values?.confirm_password,
       email: sessionStorage.getItem("otp_email"),
       otp: String(sessionStorage.getItem("otp") || 0),
     })

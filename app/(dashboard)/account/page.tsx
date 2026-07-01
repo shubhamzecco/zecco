@@ -10,7 +10,7 @@ const AccountPackagePage = () => {
   const { user_data, mainReducer } = usePosterReducers();
   const { sendMessage, isConnected } = useWebSocket();
   const purchaseDate = user_data?.user?.package?.purchasedAt
-    ? new Date(user_data.user.package.purchasedAt)
+    ? new Date(user_data?.user?.package?.purchasedAt)
     : undefined;
   const [showPackageInfo, setShowPackageInfo] = useState(false);
 
@@ -157,7 +157,7 @@ const AccountPackagePage = () => {
                         const previousPackage = array[index - 1];
 
                         const expiryDate = previousPackage?.paidAt
-                          ? formatDateMonth(new Date(previousPackage.paidAt))
+                          ? formatDateMonth(new Date(previousPackage?.paidAt))
                           : "Active";
 
                         return (

@@ -1,13 +1,11 @@
 "use client";
 
 import CommonApiRequest from "@/api/rest/fetchData";
-import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAiInsight } from "@/redux/modules/main/action";
 import { IProperty, IPropertyResponse } from "@/redux/modules/main/types";
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -38,7 +36,7 @@ const AIInsights = () => {
     setIsCompleted(false);
     CommonApiRequest(
       "GET",
-      `${App_url.endpoint_url?.AI_INSIGHT}/${property._id}/${user_data?.user?._id}`,
+      `${App_url.endpoint_url.AI_INSIGHT}/${property?._id}/${user_data?.user?._id}`,
       {},
       {},
       //   true,

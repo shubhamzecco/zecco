@@ -40,7 +40,7 @@ const UserMessage = ({
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
   const findParticipant = user?.participants?.find(
-    (p: any) => p._id !== user_data?.user?._id,
+    (p: any) => p?._id !== user_data?.user?._id,
   );
 
   const getIcon = (type: string) => {
@@ -238,11 +238,11 @@ const UserMessage = ({
                         )}
                         {msg?.attachment?.length > 0 && (
                           <div className="flex flex-wrap gap-3 max-w-xs">
-                            {msg.attachment.map((file: any, index: number) => {
-                              const fileUrl = URL + file.fileUrl;
+                            {msg?.attachment?.map((file: any, index: number) => {
+                              const fileUrl = URL + file?.fileUrl;
                               const isImage =
-                                file.fileType?.startsWith("image");
-                              const fileName = file.originalName || "file";
+                                file?.fileType?.startsWith("image");
+                              const fileName = file?.originalName || "file";
 
                               return (
                                 <div key={index} className="relative">
@@ -324,11 +324,11 @@ const UserMessage = ({
                         )}
                         {msg?.attachment?.length > 0 && (
                           <div className="flex flex-wrap gap-3 max-w-xs">
-                            {msg.attachment.map((file: any, index: number) => {
-                              const fileUrl = URL + file.fileUrl;
+                            {msg?.attachment?.map((file: any, index: number) => {
+                              const fileUrl = URL + file?.fileUrl;
                               const isImage =
-                                file.fileType?.startsWith("image");
-                              const fileName = file.originalName || "file";
+                                file?.fileType?.startsWith("image");
+                              const fileName = file?.originalName || "file";
 
                               return (
                                 <div key={index} className="relative">
@@ -451,7 +451,7 @@ const UserMessage = ({
       {showUploadModal && (
         <UploadPreviewModal
           files={selectedFiles}
-          token={user_data.access_token}
+          token={user_data?.access_token}
           onClose={() => {
             setShowUploadModal(false);
             setSelectedFiles([]);

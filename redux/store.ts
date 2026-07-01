@@ -10,8 +10,23 @@ const combinedReducer = combineReducers({
   user_data: userDataReducers,
   usePosterReducers: posterReducer,
   uiReducer: uiReducer,
-  mainReducer : mainReducer
+  mainReducer: mainReducer
 });
+
+const BUILD_ID =
+  process.env.NEXT_PUBLIC_BUILD_ID ||
+  process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ||
+  process.env.VERCEL_GIT_COMMIT_SHA ||
+  'dev';
+const BUILD_KEY = 'zecco_build_id';
+
+if (typeof window !== 'undefined') {
+  const lastBuild = window.localStorage.getItem(BUILD_KEY);
+  if (lastBuild !== BUILD_ID) {
+    window.localStorage.setItem(BUILD_KEY, BUILD_ID);
+    window.localStorage.removeItem(`persist:chathub-store`);
+  }
+}
 
 const rootReducer = combineReducers({
   combinedReducer: persistReducer(

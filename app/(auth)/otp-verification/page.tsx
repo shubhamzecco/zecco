@@ -15,7 +15,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as z from "zod";
 import PackagesModal from "../components/package-modal";
@@ -151,13 +150,13 @@ const OtpVerification = () => {
         ? App_url?.endpoint_url?.FORGET_PASSWORD_VERIFY_OTP
         : App_url?.endpoint_url?.VERIFY_ACCOUNT,
       {
-        otp: String(values.otp),
+        otp: String(values?.otp),
         email,
       },
     ).then((response) => {
       if (response?.status === 200) {
         sessionStorage.setItem("otp_email", email || "");
-        sessionStorage.setItem("otp", values.otp);
+        sessionStorage.setItem("otp", values?.otp);
         toast.success(response?.data?.message);
         if (forgetPassword === "forget-password") {
           router.push(App_url?.link?.RESET_PASSWORD);

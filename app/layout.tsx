@@ -1,4 +1,3 @@
-"use client";
 import type { Metadata } from "next";
 import {
   Instrument_Sans,
@@ -10,7 +9,6 @@ import {
 import React from "react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { URL } from "@/api/rest/fetchData";
 import { AppProviders } from "@/components/provider/provider";
 import { circular_std } from "@/lib/fonts";
 import "leaflet/dist/leaflet.css";
@@ -48,8 +46,8 @@ export const publicSans = Public_Sans({
   display: "swap",
 });
 
-const metadata: Metadata = {
-  metadataBase: URL,
+export const metadata: Metadata = {
+  metadataBase: new URL("https://zecco.es"),
   title: {
     default: "Zecco Real Estate",
     template: "%s | Zecco Real Estate",
@@ -105,7 +103,7 @@ const metadata: Metadata = {
   },
 
   alternates: {
-    canonical: "https://zecco.es",
+    canonical: "/",
   },
 
   robots: {

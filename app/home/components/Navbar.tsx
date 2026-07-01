@@ -33,10 +33,10 @@ export default function Navbar() {
 
   const handleNavClick = (item: any) => {
     dispatch(clearBreadcrumbs());
-    if (item.breadcrumbs) {
-      dispatch(setBreadcrumbs(item.breadcrumbs));
+    if (item?.breadcrumbs) {
+      dispatch(setBreadcrumbs(item?.breadcrumbs));
     }
-    router.push(item.href);
+    router.push(item?.href);
   };
 
   return (
@@ -57,14 +57,14 @@ export default function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              {NAV_ITEMS.map((item) => (
+              {NAV_ITEMS?.map((item) => (
                 <button
-                  key={item.label}
+                  key={item?.label}
                   onClick={() => handleNavClick(item)}
-                  className={`relative ${isActive(item.href) ? "text-[#1466EC]" : "text-[#0B5394]"} font-inter text-sm font-medium`}
+                  className={`relative ${isActive(item?.href) ? "text-[#1466EC]" : "text-[#0B5394]"} font-inter text-sm font-medium`}
                 >
-                  {item.label}
-                  {isActive(item.href) && (
+                  {item?.label}
+                  {isActive(item?.href) && (
                     <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#1466EC] rounded-full" />
                   )}
                 </button>
@@ -130,16 +130,16 @@ export default function Navbar() {
           isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        {NAV_ITEMS.map((item) => (
+        {NAV_ITEMS?.map((item) => (
           <button
-            key={item.label}
+            key={item?.label}
             onClick={() => {
               handleNavClick(item);
               setIsOpen(false);
             }}
-            className={`block relative w-full text-left px-5 py-3 space-y-2 ${isActive(item.href) ? "text-[#0B5394]" : "text-gray-800"}  font-inter text-sm font-medium`}
+            className={`block relative w-full text-left px-5 py-3 space-y-2 ${isActive(item?.href) ? "text-[#0B5394]" : "text-gray-800"}  font-inter text-sm font-medium`}
           >
-            {item.label}
+            {item?.label}
           </button>
         ))}
 

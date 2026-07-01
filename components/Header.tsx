@@ -63,7 +63,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8 w-full">
-              {NAV_ITEMS.map((item) => (
+              {NAV_ITEMS?.map((item) => (
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item)}

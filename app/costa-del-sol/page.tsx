@@ -14,17 +14,13 @@ const CostadelSol = () => {
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const dispatch = useDispatch();
-
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-
-  // ✅ store all previous pages
   const [allAreas, setAllAreas] = useState<any[]>([]);
-
-  // ✅ avoid duplicate api call
   const fetchedPages = useRef<Set<string>>(new Set());
+  
   const fetchAreas = (
     currentPage: number,
     searchValue: string,
@@ -66,30 +62,31 @@ const CostadelSol = () => {
       setAllAreas(newData);
     } else {
       setAllAreas((prev) => {
-        const existingIds = new Set(prev.map((item) => item._id));
+        const existingIds = new Set(prev?.map((item) => item?._id));
 
-        const filtered = newData.filter(
-          (item: any) => !existingIds.has(item._id),
+        const filtered = newData?.filter(
+          (item: any) => !existingIds?.has(item?._id),
         );
 
         return [...prev, ...filtered];
       });
     }
 
-    setHasMore(newData.length >= LIMIT);
+    setHasMore(newData?.length >= LIMIT);
 
     setLoading(false);
   }, [mainReducer?.location_list_with_limit]);
 
   const handleSearch = (value: any) => {
-    setSearch(value.name);
+    setSearch(value?.name);
     setPage(1);
     setHasMore(true);
     setAllAreas([]);
     fetchedPages.current.clear();
 
-    fetchAreas(1, value.name, true);
+    fetchAreas(1, value?.name, true);
   };
+
   useEffect(() => {
     const handleScroll = () => {
       if (loading || !hasMore) return;
@@ -150,7 +147,7 @@ const CostadelSol = () => {
       <div className="px-4 sm:px-6 lg:mx-7 lg:px-8 lg:pb-10">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {allAreas?.map((area) => (
-            <div key={area._id} className="w-full flex-shrink-0">
+            <div key={area?._id} className="w-full flex-shrink-0">
               <AreaCard {...area} />
             </div>
           ))}

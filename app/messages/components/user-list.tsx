@@ -72,12 +72,12 @@ const UserList: React.FC<UserListProps> = ({
       </div>
 
       {userList?.map((user: any) => {
-        const findParticipant = user.participants.find(
-          (p: any) => p._id !== user_data?.user?._id,
+        const findParticipant = user?.participants?.find(
+          (p: any) => p?._id !== user_data?.user?._id,
         );
         return (
           <div
-            key={user._id}
+            key={user?._id}
             onClick={() => {
               onSelect?.(user);
               sendMessage("action", {
@@ -88,12 +88,12 @@ const UserList: React.FC<UserListProps> = ({
                 },
               });
             }}
-            className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer ${selectedUser?._id === user._id ? "bg-white hover:bg-blue-100" : "hover:bg-white"} hover:bg-white transition mt-3`}
+            className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer ${selectedUser?._id === user?._id ? "bg-white hover:bg-blue-100" : "hover:bg-white"} hover:bg-white transition mt-3`}
           >
             <div className="relative w-12 h-12">
               {findParticipant?.profile_image ? (
                 <Image
-                  src={URL + findParticipant.profile_image}
+                  src={URL + findParticipant?.profile_image}
                   alt={findParticipant?.first_name}
                   width={48}
                   height={48}
@@ -115,9 +115,9 @@ const UserList: React.FC<UserListProps> = ({
               <p className="text-xs text-gray-400">{user?.message}</p>
             </div>
 
-            {user.unread_count > 0 && (
+            {user?.unread_count > 0 && (
               <span className="ml-auto bg-[#111827] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">
-                {user.unread_count}
+                {user?.unread_count}
               </span>
             )}
           </div>

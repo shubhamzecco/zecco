@@ -14,7 +14,7 @@ import {
   setPropertyFilter,
 } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
-import { camelCase, citySlug } from "@/utils/common";
+import { citySlug } from "@/utils/common";
 import { SlidersHorizontal, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -119,32 +119,32 @@ const Page = () => {
       return;
     }
 
-    const filter = mainReducer.propertyFilter;
+    const filter = mainReducer?.propertyFilter;
     const selectedKeys = Array.isArray(filter?.types)
-      ? filter.types
+      ? filter?.types
       : Object.entries(filter?.types || {})
           .filter(([_, value]) => value)
           .map(([key]) => Number(key));
 
     const selectedFeatures = Array.isArray(filter?.features)
-      ? filter.features
+      ? filter?.features
       : Object.entries(filter?.features || {})
           .filter(([_, value]) => value)
           .map(([key]) => Number(key));
 
     const payload = {
-      categories: filter.categories ?? null,
+      categories: filter?.categories ?? null,
       types: selectedKeys ?? null,
       features: selectedFeatures,
 
-      bedroomsFrom: filter.bedroomsFrom ?? null,
-      bedroomsTo: filter.bedroomsTo ?? null,
+      bedroomsFrom: filter?.bedroomsFrom ?? null,
+      bedroomsTo: filter?.bedroomsTo ?? null,
 
-      priceFrom: filter.priceFrom ?? null,
-      priceTo: filter.priceTo ?? null,
+      priceFrom: filter?.priceFrom ?? null,
+      priceTo: filter?.priceTo ?? null,
 
-      buildFrom: filter.buildFrom ?? null,
-      buildTo: filter.buildTo ?? null,
+      buildFrom: filter?.buildFrom ?? null,
+      buildTo: filter?.buildTo ?? null,
     };
 
     const cleanPayload = Object.fromEntries(
@@ -168,8 +168,8 @@ const Page = () => {
         setPropertyType(propertyType);
       }
     }
-    setPropertyTypes(filter.categories ? String(filter.categories) : "");
-    // setSearch(search ? search : filter.search);
+    setPropertyTypes(filter?.categories ? String(filter?.categories) : "");
+    // setSearch(search ? search : filter?.search);
     setFiltersInitialized(true);
   }, [mainReducer?.propertyFilter]);
 
@@ -203,7 +203,7 @@ const Page = () => {
       setProperties((prev) => {
         const existingIds = new Set(prev.map((item) => item._id));
 
-        const filtered = newData.filter(
+        const filtered = newData?.filter(
           (item: any) => !existingIds.has(item._id),
         );
 
@@ -211,7 +211,7 @@ const Page = () => {
       });
     }
 
-    setHasMore(newData.length >= LIMIT);
+    setHasMore(newData?.length >= LIMIT);
 
     setLoading(false);
   }, [mainReducer?.property_list_with_limit]);
@@ -272,9 +272,9 @@ const Page = () => {
 
   // SEARCH
   const handleSearch = (value: any) => {
-    setSearch(value.name);
+    setSearch(value?.name);
     dispatch(
-      setPropertyFilter({ ...mainReducer?.propertyFilter, search: value.name }),
+      setPropertyFilter({ ...mainReducer?.propertyFilter, search: value?.name }),
     );
 
     setPage(1);
@@ -283,8 +283,8 @@ const Page = () => {
 
     fetchedPages.current.clear();
 
-    fetchProperties(1, filterData, true, value.name);
-    if (value.city_name !== id?.location) {
+    fetchProperties(1, filterData, true, value?.name);
+    if (value?.city_name !== id?.location) {
       dispatch(
         setBreadcrumbs([
           { label: "Home", href: "/" },

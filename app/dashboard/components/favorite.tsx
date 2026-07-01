@@ -45,7 +45,7 @@ const Favorite = () => {
             ?.map((property) => (
               <PropertyCard
                 property={property}
-                key={property.id}
+                key={property?.id}
                 {...property}
               />
             ))}

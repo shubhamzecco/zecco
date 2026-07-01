@@ -93,7 +93,7 @@ const ZeccoFavorites = () => {
       <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {mainReducer?.zecco_favorite?.data?.map((property) => (
-            <PropertyCard property={property} key={property.id} {...property} />
+            <PropertyCard property={property} key={property?.id} {...property} />
           ))}
         </div>
         {mainReducer?.zecco_favorite?.data?.length === 0 && (

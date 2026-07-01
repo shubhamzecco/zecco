@@ -38,7 +38,7 @@ export default function ChatReplies({
   const handleShowProperties = (msg: ChatMessage) => {
     if (!msg?.hasMore || !msg?.viewMore) return;
     dispatch(setPropertyFilter({}));
-    const data = msg.viewMore;
+    const data = msg?.viewMore;
     dispatch(
       setPropertyFilter({
         categories: Number(data?.category) || null,

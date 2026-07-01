@@ -44,10 +44,10 @@ const SavedSearches = () => {
   const propertyCategoryMap = useMemo(() => {
     if (!mainReducer?.property_type_list) return {} as Record<number, string>;
 
-    return mainReducer.property_type_list.reduce(
+    return mainReducer?.property_type_list?.reduce(
       (acc, item) => {
-        if (!item.is_subtype) {
-          acc[item.id] = item.name;
+        if (!item?.is_subtype) {
+          acc[item?.id] = item?.name;
         }
         return acc;
       },
@@ -59,10 +59,10 @@ const SavedSearches = () => {
     if (!mainReducer?.property_subtype_list)
       return {} as Record<number, string>;
 
-    return mainReducer.property_subtype_list.reduce(
+    return mainReducer?.property_subtype_list?.reduce(
       (acc, item) => {
-        if (item.is_subtype) {
-          acc[item.id] = item.name;
+        if (item?.is_subtype) {
+          acc[item?.id] = item?.name;
         }
         return acc;
       },
@@ -76,7 +76,7 @@ const SavedSearches = () => {
 
     return mainReducer?.property_features_list.reduce(
       (acc, item) => {
-        acc[item.id] = item.name;
+        acc[item?.id] = item?.name;
 
         return acc;
       },
@@ -117,16 +117,16 @@ const SavedSearches = () => {
 
     // Bedrooms
     if (item?.bedroomsFrom && item?.bedroomsTo) {
-      parts.push(`${item.bedroomsFrom}–${item.bedroomsTo} Bedroom`);
+      parts.push(`${item?.bedroomsFrom}–${item?.bedroomsTo} Bedroom`);
     } else if (item?.bedroomsFrom) {
-      parts.push(`${item.bedroomsFrom}+ Bedroom`);
+      parts.push(`${item?.bedroomsFrom}+ Bedroom`);
     } else if (item?.bedroomsTo) {
-      parts.push(`Up to ${item.bedroomsTo} Bedroom`);
+      parts.push(`Up to ${item?.bedroomsTo} Bedroom`);
     }
 
     // Category
     if (item?.categories && item?.types?.filter(Boolean)?.length === 0) {
-      const categoryName = propertyCategoryMap[item.categories];
+      const categoryName = propertyCategoryMap[item?.categories];
       if (categoryName) {
         parts.push(categoryName);
       }
@@ -134,7 +134,7 @@ const SavedSearches = () => {
 
     // Property Types
     if (item?.types?.filter(Boolean)?.length > 0) {
-      const types = item.types
+      const types = (item?.types || [])
         .filter(Boolean)
         .map((type: number) => propertyTypeMap[type])
         .filter(Boolean);
@@ -157,46 +157,46 @@ const SavedSearches = () => {
     }
 
     // Location
-    if (item?.search && (item?.search.toLowerCase() !== item.city.name.toLowerCase())) {
-      parts.push(`in ${item.search}, ${item.city.name}, Spain`);
+    if (item?.search && (item?.search.toLowerCase() !== item?.city?.name?.toLowerCase())) {
+      parts.push(`in ${item?.search}, ${item?.city?.name}, Spain`);
     } else if (item?.city?.name) {
-      parts.push(`in ${item.city.name}, Spain`);
+      parts.push(`in ${item?.city?.name}, Spain`);
     }
 
     // Price
     if (item?.priceFrom && item?.priceTo) {
       parts.push(
-        `from ${formatEuro(item.priceFrom)} to ${formatEuro(item.priceTo)}`,
+        `from ${formatEuro(item?.priceFrom)} to ${formatEuro(item?.priceTo)}`,
       );
     } else if (item?.priceFrom) {
-      parts.push(`from ${formatEuro(item.priceFrom)}`);
+      parts.push(`from ${formatEuro(item?.priceFrom)}`);
     } else if (item?.priceTo) {
-      parts.push(`up to ${formatEuro(item.priceTo)}`);
+      parts.push(`up to ${formatEuro(item?.priceTo)}`);
     }
 
     // Build Size
     if (item?.buildFrom && item?.buildTo) {
-      parts.push(`with ${item.buildFrom}m²–${item.buildTo}m² Build Area`);
+      parts.push(`with ${item?.buildFrom}m²–${item?.buildTo}m² Build Area`);
     } else if (item?.buildFrom) {
-      parts.push(`with ${item.buildFrom}m²+ Build Area`);
+      parts.push(`with ${item?.buildFrom}m²+ Build Area`);
     } else if (item?.buildTo) {
-      parts.push(`with up to ${item.buildTo}m² Build Area`);
+      parts.push(`with up to ${item?.buildTo}m² Build Area`);
     }
 
     // Features
     if (item?.features?.filter(Boolean)?.length > 0) {
-      const features = item.features
+      const features = (item?.features || [])
         .filter(Boolean)
         .map((feature: number) => featureMap[feature])
         .filter(Boolean)
         .slice(0, 3);
 
-      if (features.length > 0) {
-        parts.push(`featuring ${features.join(" & ")}`);
+      if (features?.length > 0) {
+        parts.push(`featuring ${features?.join(" & ")}`);
       }
     }
 
-    return parts.join(" ");
+    return parts?.join(" ");
   };
 
   useEffect(() => {

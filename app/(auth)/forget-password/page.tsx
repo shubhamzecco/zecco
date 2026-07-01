@@ -39,7 +39,7 @@ const ForgetPassword = () => {
         try {
           if (response?.data?.success) {
             toast.success(response?.data?.message);
-            sessionStorage.setItem("otp_email", values.email);
+            sessionStorage.setItem("otp_email", values?.email);
             sessionStorage?.setItem("forget_password", "forget-password");
             router.push(App_url?.link?.OTP_VERIFICATION);
           } else {

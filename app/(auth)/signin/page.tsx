@@ -56,10 +56,10 @@ const Signin = () => {
         if (response?.success) {
           const payload = {
             ...response?.data,
-            user: response.data.user,
-            access_token: response.data.accessToken,
+            user: response?.data?.user,
+            access_token: response?.data?.accessToken,
           };
-          localStorage.setItem("access_token", response.data.accessToken);
+          localStorage.setItem("access_token", response?.data?.accessToken);
           dispatch(setLogin(true));
           dispatch(setAuthData(payload));
           const redirectUrl = localStorage.getItem("redirect_after_login");

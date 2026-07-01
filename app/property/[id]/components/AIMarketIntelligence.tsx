@@ -150,10 +150,10 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
         </ul>
       </div>
       {mainReducer?.ai_insight?.infrastructure &&
-        Object.keys(mainReducer.ai_insight.infrastructure).length > 0 && (
+        Object.keys(mainReducer?.ai_insight?.infrastructure).length > 0 && (
           <NearByPlaces
             near_places={
-              mainReducer.ai_insight.infrastructure as Infrastructure
+              mainReducer?.ai_insight?.infrastructure as Infrastructure
             }
           />
         )}

@@ -97,23 +97,23 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
         bedroomsTo: mainReducer?.propertyFilter?.bedroomsTo || null,
 
         types: Array.isArray(mainReducer?.propertyFilter?.types)
-          ? mainReducer.propertyFilter.types.reduce(
-              (acc: Record<number, boolean>, item: number) => {
-                acc[item] = true;
-                return acc;
-              },
-              {},
-            )
+          ? mainReducer?.propertyFilter?.types.reduce(
+            (acc: Record<number, boolean>, item: number) => {
+              acc[item] = true;
+              return acc;
+            },
+            {},
+          )
           : {},
 
         features: Array.isArray(mainReducer?.propertyFilter?.features)
-          ? mainReducer.propertyFilter.features.reduce(
-              (acc: Record<number, boolean>, item: number) => {
-                acc[item] = true;
-                return acc;
-              },
-              {},
-            )
+          ? mainReducer?.propertyFilter?.features.reduce(
+            (acc: Record<number, boolean>, item: number) => {
+              acc[item] = true;
+              return acc;
+            },
+            {},
+          )
           : {},
 
         propertyStatus: { bareOwnership: true },
@@ -254,7 +254,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
           </Label>
           <div className="relative">
             <select
-              value={filters.categories ?? ""}
+              value={filters?.categories ?? ""}
               onChange={(e) => {
                 handleInputChange("categories", e.target.value);
               }}
@@ -263,8 +263,8 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <option value="">All Property Types</option>
               {mainReducer?.property_type_list?.map((type) => {
                 return (
-                  <option key={type.id} value={type?.id}>
-                    {type.name}
+                  <option key={type?.id} value={type?.id}>
+                    {type?.name}
                   </option>
                 );
               })}
@@ -280,21 +280,21 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
             </Label>
             <div className="space-y-2.5">
               {mainReducer?.property_subtype_list?.map((item) => (
-                <div key={item.id} className="flex items-center space-x-3">
+                <div key={item?.id} className="flex items-center space-x-3">
                   <Checkbox
-                    id={String(item.id)}
-                    // checked={filters.types[item.id] || false}
-                    checked={!!filters?.types?.[item.id]}
+                    id={String(item?.id)}
+                    // checked={filters?.types[item.id] || false}
+                    checked={!!filters?.types?.[item?.id]}
                     onCheckedChange={(checked) =>
-                      handleCheckboxChange("types", item.id, checked as boolean)
+                      handleCheckboxChange("types", item?.id, checked as boolean)
                     }
                     className="rounded"
                   />
                   <Label
-                    htmlFor={String(item.id)}
+                    htmlFor={String(item?.id)}
                     className="text-sm font-manrope font-normal text-[#0F172A] cursor-pointer"
                   >
-                    {item.name}
+                    {item?.name}
                   </Label>
                 </div>
               ))}
@@ -312,7 +312,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="Min"
-                  value={filters.priceFrom}
+                  value={filters?.priceFrom}
                   onChange={(e) =>
                     handleInputChange("priceFrom", e.target.value)
                   }
@@ -329,7 +329,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="Max"
-                  value={filters.priceTo}
+                  value={filters?.priceTo}
                   onChange={(e) => handleInputChange("priceTo", e.target.value)}
                   onKeyDown={handleEnterPress}
                   className="w-full  bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -352,7 +352,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="Min"
-                  value={filters.buildFrom}
+                  value={filters?.buildFrom}
                   onChange={(e) =>
                     handleInputChange("buildFrom", e.target.value)
                   }
@@ -369,7 +369,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="Max"
-                  value={filters.buildTo}
+                  value={filters?.buildTo}
                   onChange={(e) => handleInputChange("buildTo", e.target.value)}
                   onKeyDown={handleEnterPress}
                   className="w-full  bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -391,7 +391,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="From"
-                  value={filters.bedroomsFrom ?? ""}
+                  value={filters?.bedroomsFrom ?? ""}
                   onChange={(e) =>
                     handleInputChange("bedroomsFrom", e.target.value)
                   }
@@ -408,7 +408,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="To"
-                  value={filters.bedroomsTo ?? ""}
+                  value={filters?.bedroomsTo ?? ""}
                   onChange={(e) =>
                     handleInputChange("bedroomsTo", e.target.value)
                   }
@@ -430,11 +430,11 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
 
           <div className="space-y-2.5 max-h-[300px] overflow-y-auto">
             {mainReducer?.property_features_list?.map((item: any) => (
-              <div key={item.id} className="flex items-center space-x-3">
+              <div key={item?.id} className="flex items-center space-x-3">
                 <Checkbox
-                  id={item.name}
-                  // checked={filters.moreFilters?.[item.id]}
-                  checked={!!filters?.features?.[item.id]}
+                  id={item?.name}
+                  // checked={filters?.moreFilters?.[item.id]}
+                  checked={!!filters?.features?.[item?.id]}
                   onCheckedChange={(checked) =>
                     handleCheckboxChange(
                       "features",
@@ -447,96 +447,15 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                 />
 
                 <Label
-                  htmlFor={item.name}
+                  htmlFor={item?.name}
                   className="text-sm font-manrope font-normal text-[#0F172A] cursor-pointer"
                 >
-                  {item.name}
+                  {item?.name}
                 </Label>
               </div>
             ))}
           </div>
         </div>
-
-        {/* <div className="space-y-3">
-                    <Label className="text-md font-medium text-text_gray_color font-manrope  tracking-wide">
-                        Floor
-                    </Label>
-                    <div className="space-y-2.5">
-                        {[
-                            { id: 'top', label: 'Top floor' },
-                            { id: 'middle', label: 'Middle floors' },
-                            { id: 'ground', label: 'Ground floor' },
-                        ].map((item) => (
-                            <div key={item.id} className="flex items-center space-x-3">
-                                <Checkbox
-                                    id={item.id}
-                                    checked={filters.floor[item.id as keyof typeof filters.floor] || false}
-                                    onCheckedChange={(checked) =>
-                                        handleCheckboxChange('floor', item.id, checked as boolean)
-                                    }
-                                    className="rounded"
-                                />
-                                <Label htmlFor={item.id} className="text-sm font-manrope font-normal text-[#0F172A] cursor-pointer">
-                                    {item.label}
-                                </Label>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="space-y-3">
-                    <Label className="text-md font-medium text-text_gray_color font-manrope  tracking-wide">
-                        Multimedia
-                    </Label>
-                    <div className="space-y-2.5">
-                        {[
-                            { id: 'floorplan', label: 'With floor plan' },
-                            { id: 'virtualtour', label: 'With a virtual tour' },
-                        ].map((item) => (
-                            <div key={item.id} className="flex items-center space-x-3">
-                                <Checkbox
-                                    id={item.id}
-                                    checked={filters.multimedia[item.id as keyof typeof filters.multimedia] || false}
-                                    onCheckedChange={(checked) =>
-                                        handleCheckboxChange('multimedia', item.id, checked as boolean)
-                                    }
-                                    className="rounded"
-                                />
-                                <Label htmlFor={item.id} className="text-sm font-manrope font-normal text-[#0F172A] cursor-pointer">
-                                    {item.label}
-                                </Label>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                <div className="space-y-3">
-                    <Label className="text-md font-medium text-text_gray_color font-manrope  tracking-wide">
-                        Publication date
-                    </Label>
-                    <div className="space-y-2.5">
-                        {[
-                            { id: 'indifferent', label: 'Indifferent' },
-                            { id: 'last48', label: 'Last 48 hours' },
-                            { id: 'lastweek', label: 'Last week' },
-                            { id: 'lastmonth', label: 'Last month' },
-                        ].map((item) => (
-                            <div key={item.id} className="flex items-center space-x-3">
-                                <Checkbox
-                                    id={item.id}
-                                    checked={filters.publicationDate[item.id as keyof typeof filters.publicationDate] || false}
-                                    onCheckedChange={(checked) =>
-                                        handleCheckboxChange('publicationDate', item.id, checked as boolean)
-                                    }
-                                    className="rounded"
-                                />
-                                <Label htmlFor={item.id} className="text-sm font-manrope font-normal text-[#0F172A] cursor-pointer">
-                                    {item.label}
-                                </Label>
-                            </div>
-                        ))}
-                    </div>
-                </div> */}
       </div>
     </div>
   );

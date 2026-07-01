@@ -21,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { App_url } from "@/constant/static";
 import { setPropertyFilter } from "@/redux/modules/main/action";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import AuthLayout from "../layout/page";
 
@@ -61,8 +61,8 @@ const SignUpPage = () => {
     })
       ?.then((response: any) => {
         if (response?.status === 200) {
-          toast.success(response.data.message);
-          sessionStorage.setItem("otp_email", values.email);
+          toast.success(response?.data?.message);
+          sessionStorage.setItem("otp_email", values?.email);
           router.push(App_url?.link?.OTP_VERIFICATION);
         } else {
           toast.error(response?.data?.message);
