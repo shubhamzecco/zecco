@@ -34,7 +34,6 @@ export default function MapSearchClient() {
   const markersRef = useRef<any[]>([]);
   const circleRef = useRef<any>(null);
   const userMarkerRef = useRef<any>(null);
-
   const [leaflet, setLeaflet] = useState<any>(null);
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [geoStatus, setGeoStatus] = useState<"unknown" | "granted" | "prompt" | "denied">("unknown");
@@ -47,6 +46,7 @@ export default function MapSearchClient() {
   );
 
   const areas = useMemo(() => mainReducer?.all_location_list || [], [mainReducer?.all_location_list]);
+  console.log("areas", areas);
 
   useEffect(() => {
     if (!isConnected) return;
@@ -177,11 +177,37 @@ export default function MapSearchClient() {
     [areas],
   );
 
+  const getAreaPoint = (area: any) => {
+    const coordinates = area?.point?.coordinates;
+    if (!Array.isArray(coordinates) || coordinates.length < 2) return null;
+
+    const [lng, lat] = coordinates;
+    if (typeof lat !== "number" || typeof lng !== "number") return null;
+
+    return { lat, lng };
+  };
+
+  const getAreaRadius = (area: any) => {
+    const type = String(area?.type || "").toLowerCase();
+
+    switch (type) {
+      case "city":
+        return 5000; // 5 km
+      case "area":
+        return 3000; // 3 km
+      case "subarea":
+        return 1500; // 1.5 km
+      default:
+        return 2500; // 2.5 km
+    }
+  };
+
   const clearMapSelection = () => {
     drawnLayerRef.current?.clearLayers?.();
     markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
     circleRef.current?.remove?.();
+    circleRef.current = null;
     setSelectedArea(null);
   };
 
@@ -191,8 +217,23 @@ export default function MapSearchClient() {
     clearMapSelection();
     const area = areas.find((item: any) => item?.name === areaName);
     setSelectedArea(area || { name: areaName });
-    const center = currentLocation ?? DEFAULT_CENTER;
-    mapRef.current.setView(center, currentLocation ? 13 : 10);
+    const point = getAreaPoint(area);
+    const center = point || currentLocation || DEFAULT_CENTER;
+
+    if (point) {
+      circleRef.current = leaflet.circle([point.lat, point.lng], {
+        radius: getAreaRadius(area),
+        color: "#111827",
+        weight: 2,
+        fillColor: "#D9F99D",
+        fillOpacity: 0.35,
+      }).addTo(mapRef.current);
+      mapRef.current.fitBounds(circleRef.current.getBounds(), {
+        padding: [24, 24],
+      });
+    } else {
+      mapRef.current.setView(center, currentLocation ? 13 : 10);
+    }
     setMessage(`Selected ${areaName}. Apply to continue.`);
   };
 
@@ -315,13 +356,16 @@ export default function MapSearchClient() {
               <h2 className="font-semibold text-slate-900">Select Area</h2>
             </div>
             <div className="flex max-h-[360px] flex-col gap-2 overflow-auto pr-1">
-              {areaOptions?.map((name) => (
+              {areaOptions?.map((name: any) => (
                 <button
                   key={name}
                   onClick={() => centerOnArea(name)}
                   className={`rounded-2xl border px-4 py-3 text-left text-sm ${selectedArea?.name === name ? "border-sky-500 bg-sky-50 text-sky-900" : "hover:bg-slate-50"}`}
                 >
-                  {name}
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-medium">{name}</span>
+                    {selectedArea?.name === name && <Check size={14} className="text-sky-600" />}
+                  </div>
                 </button>
               ))}
             </div>
@@ -331,9 +375,11 @@ export default function MapSearchClient() {
         <section className="overflow-hidden rounded-3xl border bg-white shadow-sm">
           <div ref={mapContainerRef} className="h-[72vh] w-full" />
           <div className="border-t px-4 py-3 text-sm text-slate-600">
-            {currentLocation
-              ? `Current location available at ${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}`
-              : "You can keep using the map without granting location access."}
+            {mode === "select"
+              ? "Pick an area on the left to highlight it on the map."
+              : currentLocation
+                ? `Current location available at ${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}`
+                : "You can keep using the map without granting location access."}
           </div>
         </section>
       </div>
