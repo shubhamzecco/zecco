@@ -12,7 +12,7 @@ import React, {
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 
-import { ChevronDown, Search, SearchIcon } from "lucide-react";
+import { ChevronDown, MapPlus, Search, SearchIcon } from "lucide-react";
 
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
@@ -150,6 +150,14 @@ const PropertySearchBar = () => {
     setSearchDropdown(false);
   }, []);
 
+  const openMapSearch = useCallback(
+    (mode: "draw" | "select" = "draw") => {
+      setSearchDropdown(false);
+      router.push(`/map-search?mode=${mode}`);
+    },
+    [router],
+  );
+
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchText(e.target.value);
@@ -178,22 +186,20 @@ const PropertySearchBar = () => {
           <div className="flex items-center rounded-full bg-[#D6E0EC] p-1 gap-2 w-full sm:w-auto">
             <button
               onClick={() => setButtonActivate("buy")}
-              className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 ${
-                buttonActivate === "buy"
-                  ? "bg-sky_blue_color text-white"
-                  : "text-[#0F172A]"
-              }`}
+              className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 ${buttonActivate === "buy"
+                ? "bg-sky_blue_color text-white"
+                : "text-[#0F172A]"
+                }`}
             >
               Buy
             </button>
 
             <button
               onClick={() => setButtonActivate("rent")}
-              className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 ${
-                buttonActivate === "rent"
-                  ? "bg-sky_blue_color text-white"
-                  : "text-[#0F172A]"
-              }`}
+              className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 ${buttonActivate === "rent"
+                ? "bg-sky_blue_color text-white"
+                : "text-[#0F172A]"
+                }`}
             >
               Rent
             </button>
@@ -210,9 +216,8 @@ const PropertySearchBar = () => {
 
                 <ChevronDown
                   size={14}
-                  className={`transition-transform duration-200 ${
-                    open ? "rotate-180" : ""
-                  }`}
+                  className={`transition-transform duration-200 ${open ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -226,11 +231,10 @@ const PropertySearchBar = () => {
                             setSelected(item);
                             setOpen(false);
                           }}
-                          className={`w-full px-4 py-2 text-left transition ${
-                            selected?.id === item?.id
-                              ? "bg-slate-100 font-semibold"
-                              : "hover:bg-slate-100"
-                          }`}
+                          className={`w-full px-4 py-2 text-left transition ${selected?.id === item?.id
+                            ? "bg-slate-100 font-semibold"
+                            : "hover:bg-slate-100"
+                            }`}
                         >
                           {item?.name}
                         </button>
@@ -261,26 +265,53 @@ const PropertySearchBar = () => {
             />
           </div>
 
-          {searchDropdown && searchText && (
+          {searchDropdown && (
             <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[300px] overflow-y-auto">
-              {filteredLocations.length > 0 ? (
-                <ul className="py-1 text-sm text-slate-700">
-                  {filteredLocations.map((item: any) => (
-                    <li key={item?.id}>
+              <ul className="py-1 text-sm text-slate-700">
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      openMapSearch("draw");
+                    }}
+                    className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-slate-100 transition font-medium"
+                  >
+                    <MapPlus size={18} className="shrink-0" />
+                    <span>Draw your area</span>
+                  </button>
+                </li>
+
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => openMapSearch("select")}
+                    className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-slate-100 transition font-medium"
+                  >
+                    <MapPlus size={18} className="shrink-0" />
+                    <span>Select area</span>
+                  </button>
+                </li>
+
+                {searchText &&
+                  filteredLocations.map((item: any) => (
+                    <li key={item.id}>
                       <button
+                        type="button"
                         onClick={() => handleLocationSelect(item)}
                         className="w-full px-4 py-3 text-left hover:bg-slate-100 transition"
                       >
-                        {item?.name}
+                        {item.name}
                       </button>
                     </li>
                   ))}
-                </ul>
-              ) : (
-                <div className="px-4 py-3 text-sm text-gray-500">
-                  No locations found
-                </div>
-              )}
+
+                {/* No results only when user has typed */}
+                {searchText && filteredLocations.length === 0 && (
+                  <li className="px-4 py-3 text-sm text-gray-500">
+                    No locations found
+                  </li>
+                )}
+              </ul>
             </div>
           )}
 
