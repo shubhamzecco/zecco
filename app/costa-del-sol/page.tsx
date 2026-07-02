@@ -86,7 +86,7 @@ const CostadelSol = () => {
 
     fetchAreas(1, value?.name, true);
   };
-
+  
   useEffect(() => {
     const handleScroll = () => {
       if (loading || !hasMore) return;

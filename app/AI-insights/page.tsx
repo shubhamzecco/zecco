@@ -13,6 +13,9 @@ import { toast } from "react-toastify";
 import AiInsights from "./components/aiInsights";
 import AIProcessingCard from "./components/analyzing-property-details";
 import PropertyInsights from "./components/property-insights";
+import { useRouter } from "next/navigation";
+import FavoritesPage from "./components/favorites";
+import SavedAiInsights from "./components/savedaiInsights";
 
 const AIInsights = () => {
   const [step, setStep] = useState("intro");
@@ -22,6 +25,7 @@ const AIInsights = () => {
   const [selectedProperty, setSelectedProperty] = useState<IProperty | null>(
     null,
   );
+  const route = useRouter();
 
   useEffect(() => {
     const firstProperty = mainReducer?.favorite_property_list?.data?.[0];
@@ -67,11 +71,10 @@ const AIInsights = () => {
         to-[#fafafa] to-[100%]"
       >
         {step === "intro" && (
-          <AiInsights
-            property={selectedProperty as IProperty}
-            onGetStarted={handleStarted}
-          />
+          <AiInsights onGetStarted={() => setStep("grid")} />
         )}
+
+        {step === "grid" && <FavoritesPage onGetStarted={handleStarted} />}
 
         {step === "processing" && (
           <AIProcessingCard
@@ -81,6 +84,7 @@ const AIInsights = () => {
         )}
 
         {step === "complete" && mainReducer?.ai_insight && <PropertyInsights />}
+        <SavedAiInsights />
       </div>
     </SidebarLayout>
   );

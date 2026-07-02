@@ -1,11 +1,15 @@
 "use client";
 import Head from "next/head";
+import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
+import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { formatDateMonth, formatEuro } from "@/utils/common";
-import { Check, Crown, ShieldCheck, Zap } from "lucide-react";
+import axios from "axios";
+import { Check, CloudUpload, Crown, ShieldCheck, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const AccountPackagePage = () => {
   const { user_data, mainReducer } = usePosterReducers();
@@ -14,6 +18,7 @@ const AccountPackagePage = () => {
     ? new Date(user_data?.user?.package?.purchasedAt)
     : undefined;
   const [showPackageInfo, setShowPackageInfo] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
 
   useEffect(() => {
     sendMessage("action", {
@@ -22,6 +27,38 @@ const AccountPackagePage = () => {
       payload: {},
     });
   }, [isConnected]);
+
+  const handleExport = async () => {
+    try {
+      setExportLoading(true);
+
+      const response = await axios.get(
+        `${URL}${App_url.endpoint_url.EXPORT}?userId=${user_data?.user?._id}`,
+        {
+          responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${user_data?.access_token}`,
+          },
+        },
+      );
+
+      const url = window.URL.createObjectURL(response.data);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Packages-Payment-History.xlsx";
+
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      toast.error("Failed to export payment history");
+    } finally {
+      setExportLoading(false);
+    }
+  };
 
   return (
     <SidebarLayout>
@@ -40,6 +77,19 @@ const AccountPackagePage = () => {
             <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
               Account Protocol
             </h2>
+            <button
+              type="button"
+              onClick={handleExport}
+              className={`w-fit px-8 border border-[#1466EC] hover:bg-[#1466EC] hover:text-white text-[#1466EC] text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold`}
+            >
+              <div className="flex items-center">
+                <CloudUpload size={18} className="mr-2 inline" />
+                Export
+                {exportLoading && (
+                  <div className="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                )}
+              </div>
+            </button>
           </div>
           <div className="mb-8 w-full rounded-2xl bg-gradient-to-r from-[#1466EC] from-[20%] to-[#02B8F9] p-4 lg:p-8">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between w-full">
@@ -60,7 +110,7 @@ const AccountPackagePage = () => {
                   </h1>
                   <p className="font-inter text-xs lg:text-sm font-medium leading-relaxed text-[#DBEAFE]">
                     Date Of Purchase{" "}
-                    {purchaseDate ? formatDateMonth(purchaseDate) : ""} • {" "}
+                    {purchaseDate ? formatDateMonth(purchaseDate) : ""} •{" "}
                     {formatEuro(user_data?.user?.package?.price || 0)}
                   </p>
                 </div>
@@ -93,7 +143,7 @@ const AccountPackagePage = () => {
 
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {(user_data?.user?.package?.packagePermissions ?? [])?.length >
-                0 ? (
+                  0 ? (
                   (user_data?.user?.package?.packagePermissions ?? [])?.map(
                     (permission: any, index: number) => (
                       <div
@@ -151,18 +201,42 @@ const AccountPackagePage = () => {
 
                 <tbody className="divide-y divide-gray-100 bg-white">
                   {(mainReducer?.user_package_list?.length ?? 0) > 0 ? (
-                    [...(mainReducer?.user_package_list ?? [])]
-                      .sort(
-                        (a: any, b: any) =>
-                          new Date(b.paidAt).getTime() -
-                          new Date(a.paidAt).getTime(),
-                      )
-                      .map((item: any, index: number, array: any[]) => {
-                        const previousPackage = array[index - 1];
+                    (() => {
+                      const sortedPackages = [
+                        ...(mainReducer?.user_package_list ?? []),
+                      ].sort((a: any, b: any) => {
+                        const dateA = a?.paidAt
+                          ? new Date(a.paidAt).getTime()
+                          : new Date(a.failedAt).getTime();
 
-                        const expiryDate = previousPackage?.paidAt
-                          ? formatDateMonth(new Date(previousPackage?.paidAt))
-                          : "Active";
+                        const dateB = b?.paidAt
+                          ? new Date(b.paidAt).getTime()
+                          : new Date(b.failedAt).getTime();
+
+                        return dateB - dateA;
+                      });
+
+                      const paidPackages = sortedPackages.filter(
+                        (item: any) => item?.status === "paid",
+                      );
+
+                      return sortedPackages.map((item: any, index: number) => {
+                        let expiryDate = "-";
+
+                        if (item?.status === "paid") {
+                          const paidIndex = paidPackages.findIndex(
+                            (p: any) => p?._id === item?._id,
+                          );
+
+                          const previousPaidPackage =
+                            paidIndex > -1 ? paidPackages[paidIndex - 1] : null;
+
+                          expiryDate = previousPaidPackage?.paidAt
+                            ? formatDateMonth(
+                                new Date(previousPaidPackage.paidAt),
+                              )
+                            : "Active";
+                        }
 
                         return (
                           <tr
@@ -189,14 +263,17 @@ const AccountPackagePage = () => {
 
                             <td className="whitespace-nowrap px-4 md:px-6 py-3">
                               <span className="font-semibold text-sm md:text-base text-gray-900">
-                                {formatEuro(item?.amount) || formatEuro(item?.packageData?.price)}
+                                {formatEuro(item?.amount) ||
+                                  formatEuro(item?.packageData?.price)}
                               </span>
                             </td>
 
                             <td className="whitespace-nowrap px-4 md:px-6 py-3 text-sm md:text-base text-gray-700">
                               {item?.paidAt
                                 ? formatDateMonth(new Date(item?.paidAt))
-                                : "-"}
+                                : item?.failedAt
+                                  ? formatDateMonth(new Date(item?.failedAt))
+                                  : "-"}
                             </td>
 
                             <td className="whitespace-nowrap px-4 md:px-6 py-3 text-sm md:text-base text-gray-700">
@@ -206,20 +283,20 @@ const AccountPackagePage = () => {
                             <td className="whitespace-nowrap px-4 md:px-6 py-3">
                               <span
                                 className={`inline-flex items-center rounded-full px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold uppercase tracking-wide
-                      ${
-                        item?.status === "paid"
-                          ? "bg-green-100 text-green-700"
-                          : item?.status === "failed"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-yellow-100 text-yellow-700"
-                      }`}
+                      ${item?.status === "paid"
+                                    ? "bg-green-100 text-green-700"
+                                    : item?.status === "failed"
+                                      ? "bg-red-100 text-red-700"
+                                      : "bg-yellow-100 text-yellow-700"
+                                  }`}
                               >
                                 {item?.status}
                               </span>
                             </td>
                           </tr>
                         );
-                      })
+                      });
+                    })()
                   ) : (
                     <tr>
                       <td

@@ -1,14 +1,15 @@
 "use client";
 
-import { App_url } from "@/constant/static";
-import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
-import { camelCase, citySlug } from "@/utils/common";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
 import { ChatMessage } from "./zecco-chat-modal";
+import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
+import { App_url } from "@/constant/static";
+import { camelCase, citySlug } from "@/utils/common";
+import { useRouter } from "next/navigation";
+import { number } from "zod";
 
 const QUICK_ACTIONS = [
   "Find properties for buy in Costa del Sol, Spain.",
@@ -38,7 +39,8 @@ export default function ChatReplies({
   const handleShowProperties = (msg: ChatMessage) => {
     if (!msg?.hasMore || !msg?.viewMore) return;
     dispatch(setPropertyFilter({}));
-    const data = msg?.viewMore;
+    const data = msg.viewMore;
+
     dispatch(
       setPropertyFilter({
         categories: Number(data?.category) || null,
@@ -49,7 +51,6 @@ export default function ChatReplies({
         priceFrom: data?.budgetMin || "",
         priceTo: data?.budgetMax || "",
         types: data?.propertyType ? [Number(data?.propertyType)] : [],
-        // features: data?.features ? [Number(data?.features)] : [],
       }),
     );
 
@@ -180,7 +181,11 @@ export default function ChatReplies({
     ),
     a: ({ href, children }: any) => (
       <button
-        onClick={() => href && router.push(href)}
+        onClick={() => {
+          if (href) {
+            router.push(href);
+          }
+        }}
         className="text-blue-600 hover:underline hover:text-blue-700"
       >
         {children}
@@ -239,6 +244,15 @@ export default function ChatReplies({
               <ReactMarkdown components={getMarkdownComponents(isUser, msg)}>
                 {formatChatMessage(msg?.text)}
               </ReactMarkdown>
+              {msg.hasMore && msg.viewMore && (
+                <button
+                  onClick={() => handleShowProperties(msg)}
+                  className="px-6 py-2.5 bg-white hover:bg-blue-50 text-blue-600 font-semibold flex items-center justify-center gap-2 rounded-lg text-sm"
+                >
+                  <span>Show more properties</span>
+                  <ArrowRight size={16} className={`transition-transform`} />
+                </button>
+              )}
               <div className="text-[11px] opacity-70 text-right">
                 {formatTime(msg?.timestamp)}
               </div>

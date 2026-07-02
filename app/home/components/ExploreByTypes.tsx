@@ -1,31 +1,32 @@
-import { App_url } from '@/constant/static'
-import { clearBreadcrumbs, setBreadcrumbs } from '@/redux/modules/main/action'
-import { ArrowUpRight } from 'lucide-react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { useDispatch } from 'react-redux'
+import FilterPopup from "@/components/filterPopup";
+import { App_url } from "@/constant/static";
+import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 export default function ExploreByTypes() {
-
-  const dispatch = useDispatch()
-  const router = useRouter()
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [openPopup, setOpenPopup] = useState(false);
+  const [type, setType] = useState("all");
 
   const handleNavigate = (region: string) => {
-    const slug = region
-      .toLowerCase()
-      .replace(/\s+/g, "-");
-    dispatch(clearBreadcrumbs())
-    dispatch(setBreadcrumbs([
-      { label: "Home", href: "/" },
-      { label: "Costa del Sol areas and Cities", href: App_url.link.COSTA_DEL_SOL },
-      { label: region, href: `${App_url.link.COSTA_DEL_SOL}/${slug}` },
-    ]))
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${slug}`)
-  }
+    setOpenPopup(true);
+    const slug = region.toLowerCase().replace(/\s+/g, "-");
+    if (slug === "under-construction") {
+      setType("buy");
+    } else if (slug === "new-properties") {
+      setType("new");
+    } else if (slug === "commercial-properties") {
+      setType("rent");
+    } else setType("all");
+  };
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-r from-[#0F172A] via-[#111C3A] to-[#16213E] py-10">
-
       {/* BACKGROUND BUILDING IMAGE */}
       <div className="absolute inset-0 lg:-top-52 lg:-left-72 w-full">
         <Image
@@ -38,7 +39,6 @@ export default function ExploreByTypes() {
 
       {/* CONTENT */}
       <div className="relative lg:mx-10 px-6">
-
         {/* HEADER */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
           <h2 className="text-3xl font-manrope font-semibold text-white">
@@ -46,7 +46,8 @@ export default function ExploreByTypes() {
           </h2>
 
           <p className="text-white/50 font-manrope text-lg max-w-[35rem] mt-4 md:mt-0">
-            Discover properties tailored to your lifestyle, business needs, and investment goals across Spain.
+            Discover properties tailored to your lifestyle, business needs, and
+            investment goals across Spain.
           </p>
         </div>
 
@@ -57,19 +58,19 @@ export default function ExploreByTypes() {
               title: "Existing Build",
               desc: "Apartments, villas, and <br/> townhouses for everyday living.",
               action: "Browse Existing Build",
-              navigation_title: 'Under Construction'
+              navigation_title: "Under Construction",
             },
             {
               title: "Newly Build Projects",
               desc: "Offices, retail spaces, and business-ready properties.",
               action: "Browse Newly Build projects",
-              navigation_title: 'New Properties'
+              navigation_title: "New Properties",
             },
             {
               title: "Investment",
               desc: "High-yield properties with strong rental and appreciation potential.",
               action: "Browse Investment",
-              navigation_title: 'Commercial Properties'
+              navigation_title: "Commercial Properties",
             },
           ].map((item, index) => (
             <div
@@ -89,7 +90,10 @@ export default function ExploreByTypes() {
                 ))}
               </p>
 
-              <button onClick={() => handleNavigate(item?.navigation_title)} className="flex uppercase items-center gap-2 text-[0.7rem] font-manrope tracking-wider font-semibold text-white hover:text-[#38BDF8] transition" aria-label="up">
+              <button
+                onClick={() => handleNavigate(item?.navigation_title)}
+                className="flex uppercase items-center gap-2 text-[0.7rem] font-manrope tracking-wider font-semibold text-white hover:text-[#38BDF8] transition"
+              >
                 {item.action}
                 <ArrowUpRight size={16} />
               </button>
@@ -97,6 +101,13 @@ export default function ExploreByTypes() {
           ))}
         </div>
       </div>
+      {openPopup && (
+        <FilterPopup
+          openPopup={openPopup}
+          onClose={() => setOpenPopup(false)}
+          propertyType={type}
+        />
+      )}
     </section>
-  )
+  );
 }

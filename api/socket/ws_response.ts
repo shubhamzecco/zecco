@@ -10,6 +10,7 @@ import {
   setLocationListWithLimit,
   setLocationListWithoutLimit,
   setPackageListWithLimit,
+  setPreferenceList,
   setPrivacyPolicy,
   setPropertyDetails,
   setPropertyListWithLimit,
@@ -74,6 +75,13 @@ export const ws_response = (
           }
         }
 
+        if (ws_onmessage?.request?.action === "getPreferenceProperties") {
+          if (ws_onmessage?.status === true) {
+            dispatch(setPreferenceList(ws_onmessage?.data));
+          } else {
+            dispatch(setPreferenceList(ws_onmessage?.data));
+          }
+        }
         break;
 
       case "packageService":

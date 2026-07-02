@@ -79,7 +79,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
 
             {/* Desktop Buttons */}
             {user_data?.user ? (
-              <div className="hidden md:flex justify-end items-center gap-2">
+              <div className="hidden md:flex justify-end items-center gap-2 -mr-4">
                 <ImageDropdown
                   name={user_data?.user?.first_name}
                   avatar={App_url.image.image_1}

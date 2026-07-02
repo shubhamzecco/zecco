@@ -7,6 +7,7 @@ import {
   Archive,
   Heart,
   LayoutGrid,
+  Logs,
   MessagesSquare,
   Search,
   Sparkles
@@ -18,6 +19,7 @@ import ProfileAvatar from "./profile";
 
 const menuItems = [
   { name: "Dashboard", href: App_url.link.DASHBOARD, icon: LayoutGrid },
+  { name: "Preferences", href: App_url.link.PREFERENCES, icon: Logs },
   { name: "Favorites", href: App_url.link.FAVORITES, icon: Heart },
   {
     name: "Account / Package",

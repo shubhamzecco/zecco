@@ -35,6 +35,7 @@ const initialState: IMainResponse = {
   property_features_list: null,
   privacy_policy: null,
   terms_conditions: null,
+  preference_property_list: null,
 };
 
 const mainReducer = (
@@ -53,6 +54,16 @@ const mainReducer = (
       return {
         ...state,
         search_by_area: action.payload,
+      };
+    }
+
+    case ActionTypes.SET_PREFERENCE_PROPERTY_LIST: {
+      return {
+        ...state,
+        preference_property_list: {
+          data: action?.payload?.data,
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 

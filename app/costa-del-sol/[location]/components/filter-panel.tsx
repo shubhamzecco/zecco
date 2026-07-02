@@ -81,6 +81,8 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
 
   useEffect(() => {
     if (mainReducer?.propertyFilter) {
+      console.log("mainReducer?.propertyFilter", mainReducer?.propertyFilter);
+
       setFilters({
         categories: mainReducer?.propertyFilter?.categories || "",
 
@@ -126,7 +128,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
       dispatch(setPropertyFilter(defaultFilters));
       setFilters(defaultFilters);
     }
-  }, []);
+  }, [mainReducer?.propertyFilter]);
 
   useEffect(() => {
     if (mainReducer?.propertyFilter?.categories) {
@@ -214,6 +216,8 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
     onFilterChange?.(updated);
   };
 
+  console.log("filters", filters);
+
   // useEffect(() => {
   //   if (
   //     lastEvent?.data?.status &&
@@ -273,34 +277,39 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
           </div>
         </div>
 
-        {((mainReducer?.property_subtype_list ?? [])?.length > 0 && mainReducer?.propertyFilter?.categories) && (
-          <div className="space-y-3">
-            <Label className="text-md font-medium text-text_gray_color font-manrope  tracking-wide">
-              Type of home
-            </Label>
-            <div className="space-y-2.5">
-              {mainReducer?.property_subtype_list?.map((item) => (
-                <div key={item?.id} className="flex items-center space-x-3">
-                  <Checkbox
-                    id={String(item?.id)}
-                    // checked={filters?.types[item.id] || false}
-                    checked={!!filters?.types?.[item?.id]}
-                    onCheckedChange={(checked) =>
-                      handleCheckboxChange("types", item?.id, checked as boolean)
-                    }
-                    className="rounded"
-                  />
-                  <Label
-                    htmlFor={String(item?.id)}
-                    className="text-sm font-manrope font-normal text-[#0F172A] cursor-pointer"
-                  >
-                    {item?.name}
-                  </Label>
-                </div>
-              ))}
+        {(mainReducer?.property_subtype_list ?? [])?.length > 0 &&
+          mainReducer?.propertyFilter?.categories && (
+            <div className="space-y-3">
+              <Label className="text-md font-medium text-text_gray_color font-manrope  tracking-wide">
+                Type of home
+              </Label>
+              <div className="space-y-2.5">
+                {mainReducer?.property_subtype_list?.map((item) => (
+                  <div key={item.id} className="flex items-center space-x-3">
+                    <Checkbox
+                      id={String(item.id)}
+                      // checked={filters.types[item.id] || false}
+                      checked={!!filters?.types?.[item.id]}
+                      onCheckedChange={(checked) =>
+                        handleCheckboxChange(
+                          "types",
+                          item.id,
+                          checked as boolean,
+                        )
+                      }
+                      className="rounded"
+                    />
+                    <Label
+                      htmlFor={String(item.id)}
+                      className="text-sm font-manrope font-normal text-[#0F172A] cursor-pointer"
+                    >
+                      {item.name}
+                    </Label>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Price */}
         <div className="space-y-3">
@@ -312,7 +321,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="Min"
-                  value={filters?.priceFrom}
+                  value={filters.priceFrom ?? ""}
                   onChange={(e) =>
                     handleInputChange("priceFrom", e.target.value)
                   }
@@ -329,7 +338,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="Max"
-                  value={filters?.priceTo}
+                  value={filters.priceTo ?? ""}
                   onChange={(e) => handleInputChange("priceTo", e.target.value)}
                   onKeyDown={handleEnterPress}
                   className="w-full  bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -352,7 +361,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="Min"
-                  value={filters?.buildFrom}
+                  value={filters.buildFrom ?? ""}
                   onChange={(e) =>
                     handleInputChange("buildFrom", e.target.value)
                   }
@@ -369,7 +378,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
               <div className="relative">
                 <Input
                   placeholder="Max"
-                  value={filters?.buildTo}
+                  value={filters.buildTo ?? ""}
                   onChange={(e) => handleInputChange("buildTo", e.target.value)}
                   onKeyDown={handleEnterPress}
                   className="w-full  bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"

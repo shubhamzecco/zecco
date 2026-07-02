@@ -29,7 +29,6 @@ export type ChatMessage = {
     propertyType: string | null;
     locationCity: string;
     category: string | null;
-    features?: string[] | null;
   };
   hasMore?: boolean;
 };
@@ -45,6 +44,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
   const dispatch = useDispatch();
   const { mainReducer } = usePosterReducers();
   const ai_chat_messages = mainReducer?.ai_chat_messages ?? [];
+  console.log("ai_chat_messages", ai_chat_messages);
   const getSessionId = () => {
     const key = "zecco_session_id";
     let id = localStorage.getItem(key);
@@ -76,15 +76,14 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
     setIsLoading(true);
     try {
       const res = await sendChatMessage(text, getSessionId());
-      console.log("res",res)
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
-          text: res?.reply || "No response from Zecco AI",
+          text: res?.reply?.reply ?? "No response from Zecco AI",
           sender: "bot",
           timestamp: new Date(),
-          hasMore: res?.hasMore,
-          viewMore: res?.viewMore,
+          hasMore: res?.reply?.hasMore,
+          viewMore: res?.reply?.viewMore,
         }),
       );
     } catch {
@@ -160,7 +159,10 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
             <div ref={messagesEndRef} />
 
             {/* INPUT */}
-            <ChatInput isLoading={isLoading} onSend={handleSend} />
+            <ChatInput
+              isLoading={isLoading}
+              onSend={handleSend}
+            />
           </div>
         </motion.div>
       )}

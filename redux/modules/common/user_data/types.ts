@@ -26,7 +26,7 @@ export interface IPackage {
   createdAt: string;
   updatedAt: string;
   packagePermissions: IPackagePermission[];
-  purchasedAt:string
+  purchasedAt: string;
 }
 
 interface Agent {
@@ -57,8 +57,19 @@ interface AssignedAgent {
   updatedAt: string;
 }
 
+interface IPreferences {
+  bedrooms?: string;
+  budget?: string;
+  category?: number;
+  investmentType?: string;
+  locationArea?: string;
+  locationCity?: string;
+  locationSubarea?: string;
+  types?: string;
+}
+
 export interface IUserTypes {
-  agent : AssignedAgent;
+  agent: AssignedAgent;
   contact_no: string;
   last_name: string;
   first_name: string;
@@ -68,7 +79,7 @@ export interface IUserTypes {
   roleName: string;
   impersonate: boolean;
   organization: any;
-  proficiency?: string
+  proficiency?: string;
   id: string;
   _id: string;
   email: string;
@@ -88,9 +99,15 @@ export interface IUserTypes {
   profile_image: string;
   phone?: string;
   dob?: string;
-  designation: "project_manager" | "team_lead" | "quality_assurance" | "detailer" | "director";
+  designation:
+    | "project_manager"
+    | "team_lead"
+    | "quality_assurance"
+    | "detailer"
+    | "director";
   package?: IPackage;
-  chatId?:string
+  chatId?: string;
+  preferences?: IPreferences;
 }
 export interface IChangePasswordTypes {
   old_password: string;
@@ -109,5 +126,11 @@ export interface IUserRes {
   access_token: string;
   status?: any;
   user?: IUserTypes;
-  designation?: 'director' | 'project_manager' | 'team_lead' | 'quality_assurance' | 'detailer' | ''
+  designation?:
+    | "director"
+    | "project_manager"
+    | "team_lead"
+    | "quality_assurance"
+    | "detailer"
+    | "";
 }

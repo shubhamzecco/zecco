@@ -753,6 +753,11 @@ export interface IPropertyResponse {
   pagination: IPagination | null;
 }
 
+export interface IPreferenceResponse {
+  data: IProperty[];
+  pagination: IPagination | null;
+}
+
 export interface IFavoriteProperty {
   data: IProperty[];
   pagination: IPagination;
@@ -804,4 +809,5 @@ export interface IMainResponse {
   property_features_list: IFeatures[] | null;
   privacy_policy: IPrivacyPolicy | null;
   terms_conditions: IPrivacyPolicy | null;
+  preference_property_list: IPreferenceResponse | null;
 }
