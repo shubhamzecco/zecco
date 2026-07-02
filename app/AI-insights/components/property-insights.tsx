@@ -129,10 +129,10 @@ export default function PropertyInsights() {
               </div>
             </div>
 
-            <p className="text-md font-manrope font-medium text-[#64748B] mt-6 leading-relaxed">
+            {/* <p className="text-md font-manrope font-medium text-[#64748B] mt-6 leading-relaxed">
               This property is positioned competitively in the Manhattan market
               with strong growth potential.
-            </p>
+            </p> */}
           </div>
         </div>
 
