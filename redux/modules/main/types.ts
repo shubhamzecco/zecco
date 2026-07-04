@@ -638,6 +638,8 @@ export interface IProperty {
   clonedFromNetworkId: string | null;
   favorite: boolean;
   rentalPriceShort: number | null;
+  property_tags?: any[];
+  location?: any
 }
 
 export interface ILookup {

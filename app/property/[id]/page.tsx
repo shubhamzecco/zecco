@@ -153,6 +153,7 @@ const Page = () => {
           <div className="lg:col-span-1">
             <AgentCard
               agent_details={mainReducer?.property_details?.agent_assigned}
+              property={mainReducer?.property_details}
               user_data={user_data}
             />
           </div>

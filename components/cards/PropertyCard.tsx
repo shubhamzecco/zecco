@@ -14,6 +14,7 @@ import {
   Heart,
   ShieldCheck,
   Sparkles,
+  Tag,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -57,34 +58,29 @@ const PropertyCard = ({
           href: `${App_url.link.COSTA_DEL_SOL}/${property?.locationCity}`,
         },
         {
-          label: `${
-            property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""
-          }${" "}
-                            ${
-                              property?.propertyType
-                                ? property?.propertyType?.name
-                                : property?.propertyCategory?.name
-                            }${" "}for${" "}
-                            ${
-                              property?.isSale && property?.isRent
-                                ? "Sale or Rent"
-                                : property?.isSale
-                                  ? "Sale"
-                                  : property?.isRent
-                                    ? "Rent"
-                                    : ""
-                            }${" "}
+          label: `${property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""
+            }${" "}
+                            ${property?.propertyType
+              ? property?.propertyType?.name
+              : property?.propertyCategory?.name
+            }${" "}for${" "}
+                            ${property?.isSale && property?.isRent
+              ? "Sale or Rent"
+              : property?.isSale
+                ? "Sale"
+                : property?.isRent
+                  ? "Rent"
+                  : ""
+            }${" "}
                             in${" "}
-                            ${
-                              property?.locationSubarea
-                                ? `${property?.locationSubarea},`
-                                : ""
-                            }${" "}
-                            ${
-                              property?.locationArea
-                                ? `${property?.locationArea},`
-                                : ""
-                            }${" "}
+                            ${property?.locationSubarea
+              ? `${property?.locationSubarea},`
+              : ""
+            }${" "}
+                            ${property?.locationArea
+              ? `${property?.locationArea},`
+              : ""
+            }${" "}
                             ${property?.locationCity},${" "}
                             ${property?.locationCountry}`,
           href: `${App_url.link.PROPERTY_DETAILS}/${property?._id}`,
@@ -225,16 +221,36 @@ const PropertyCard = ({
           </button>
         )}
 
-        <div className="absolute top-4 left-4 flex gap-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#1466EC] text-white text-[11px] font-manrope">
-            <Sparkles size={12} />
-            AI Verified
-          </div>
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          {property?.property_tags?.map((tag: any) => {
+            const tagName = tag?.name?.trim() || "";
+            const normalizedTag = tagName?.toLowerCase();
 
-          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#5BA55A] text-white text-[11px] font-manrope">
-            <ShieldCheck size={12} />
-            Verified Seller
-          </div>
+            let Icon = null;
+            let className =
+              "inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-white text-[11px] font-manrope";
+
+            if (["ai verified"].includes(normalizedTag)) {
+              Icon = Sparkles;
+              className += " bg-[#1466EC]";
+            } else if (["verified seller"].includes(normalizedTag)) {
+              Icon = ShieldCheck;
+              className += " bg-[#5BA55A]";
+            } else if (["zecco favourite"].includes(normalizedTag)) {
+              Icon = Heart;
+              className += " bg-[#F59E0B]";
+            } else {
+              Icon = Tag;
+              className += " bg-gray-500";
+            }
+
+            return (
+              <div key={tag?._id} className={className}>
+                <Icon size={12} />
+                <span>{tagName}</span>
+              </div>
+            );
+          })}
         </div>
 
         <button
@@ -248,9 +264,9 @@ const PropertyCard = ({
           {mainReducer?.property_list_with_limit?.favorite_property?.includes(
             String(property?._id),
           ) ||
-          mainReducer?.zecco_favorite?.favorite_property?.includes(
-            String(property?._id),
-          ) ? (
+            mainReducer?.zecco_favorite?.favorite_property?.includes(
+              String(property?._id),
+            ) ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
             <Heart size={20} className="text-white hover:text-red-500" />
@@ -272,9 +288,8 @@ const PropertyCard = ({
               {property?.propertyImages?.slice(0, 3).map((_, i) => (
                 <span
                   key={i}
-                  className={`h-2 rounded-full transition-all ${
-                    i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
-                  }`}
+                  className={`h-2 rounded-full transition-all ${i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
+                    }`}
                 />
               ))}
             </div>
@@ -284,20 +299,20 @@ const PropertyCard = ({
           property?.zeccoSold ||
           property?.isRented ||
           property?.zeccoRented) && (
-          <>
-            <div className="absolute inset-0 bg-black/45 z-20" />
-            <div className="absolute inset-0 z-30 flex items-center justify-center">
-              <div className="relative w-full flex items-center justify-center">
-                <div className="absolute w-full h-[2px]" />
-                <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
-                  {property?.isSold || property?.zeccoSold
-                    ? "Sold Out"
-                    : "Rent Out"}
+            <>
+              <div className="absolute inset-0 bg-black/45 z-20" />
+              <div className="absolute inset-0 z-30 flex items-center justify-center">
+                <div className="relative w-full flex items-center justify-center">
+                  <div className="absolute w-full h-[2px]" />
+                  <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
+                    {property?.isSold || property?.zeccoSold
+                      ? "Sold Out"
+                      : "Rent Out"}
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
       </div>
       <div className="space-y-1 py-3">
         <div className="flex items-center justify-between">
@@ -312,9 +327,9 @@ const PropertyCard = ({
                     Rent :{" "}
                     {formatEuro(
                       property?.rentalPrice ??
-                        property?.rentalPriceLong ??
-                        property?.rentalPriceShort ??
-                        0,
+                      property?.rentalPriceLong ??
+                      property?.rentalPriceShort ??
+                      0,
                     )}
                   </p>
                 </div>
@@ -324,11 +339,11 @@ const PropertyCard = ({
             <p className="text-md font-manrope font-bold text-[#727272]">
               {property?.isRent
                 ? formatEuro(
-                    property?.rentalPrice ??
-                      property?.rentalPriceLong ??
-                      property?.rentalPriceShort ??
-                      0,
-                  )
+                  property?.rentalPrice ??
+                  property?.rentalPriceLong ??
+                  property?.rentalPriceShort ??
+                  0,
+                )
                 : formatEuro(property?.salePrice ?? 0)}
             </p>
           )}
