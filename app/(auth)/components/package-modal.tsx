@@ -60,6 +60,7 @@ export default function PackagesModal({
     const payload = {
       package_id: value,
       user_id: userId || user_data?.user?._id,
+      cancelURL: window.location.href,
       // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
     };
     CommonApiRequest(
@@ -70,7 +71,7 @@ export default function PackagesModal({
       // true,
     )?.then(async (response: any) => {
       if (response?.status === 200) {
-        if (response.success) {
+        if (response?.success) {
           if (typeof window !== "undefined") {
             window.location.href = response.data.checkoutUrl;
           }
@@ -124,19 +125,19 @@ export default function PackagesModal({
             ?.map((plan: IPlan, index) => {
               return (
                 <SelectablePackage
-                  key={plan._id}
+                  key={plan?._id}
                   selected={selectedPackage === plan?._id}
                   onClick={() => {
                     if (plan?.price === "VIP") {
                       setSelectedPackage("VIP");
                     } else {
-                      setSelectedPackage(plan._id);
+                      setSelectedPackage(plan?._id);
                     }
                   }}
                   icon={icons[index]}
-                  title={plan.name}
-                  price={plan.price}
-                  desc={plan.description}
+                  title={plan?.name}
+                  price={plan?.price}
+                  desc={plan?.description}
                 />
               );
             })}

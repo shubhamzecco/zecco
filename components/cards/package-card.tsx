@@ -43,6 +43,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
       const payload = {
         package_id: value?._id,
         user_id: user_data?.user?._id,
+        cancelURL: window.location.href,
         // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
       };
       CommonApiRequest(
@@ -78,12 +79,12 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         </div>
       </div>
       <div className="flex items-end gap-2 mb-5">
-        <h3 className="font-manrope capitalize font-bold text-2xl text-[#000000]">
+        <h3 className="font-manrope whitespace-nowrap capitalize font-bold text-2xl text-[#000000]">
           {plan?.price?.toLocaleLowerCase() === "vip"
             ? plan?.price
             : formatEuro(plan?.price)}
         </h3>
-        <p className="font-manrope capitalize font-semibold text-sm  text-[#64748B]">
+        <p className="font-manrope whitespace-nowrap capitalize font-semibold text-sm  text-[#64748B]">
           {plan?.tag_line}
         </p>
       </div>

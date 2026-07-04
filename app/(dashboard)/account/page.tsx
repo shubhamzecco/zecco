@@ -1,4 +1,5 @@
 "use client";
+import Head from "next/head";
 import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
@@ -14,7 +15,7 @@ const AccountPackagePage = () => {
   const { user_data, mainReducer } = usePosterReducers();
   const { sendMessage, isConnected } = useWebSocket();
   const purchaseDate = user_data?.user?.package?.purchasedAt
-    ? new Date(user_data.user.package.purchasedAt)
+    ? new Date(user_data?.user?.package?.purchasedAt)
     : undefined;
   const [showPackageInfo, setShowPackageInfo] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
@@ -61,6 +62,9 @@ const AccountPackagePage = () => {
 
   return (
     <SidebarLayout>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <div
         className="lg:px-12 px-5  py-8 h-full
                             bg-gradient-to-r
@@ -139,7 +143,7 @@ const AccountPackagePage = () => {
 
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {(user_data?.user?.package?.packagePermissions ?? [])?.length >
-                0 ? (
+                  0 ? (
                   (user_data?.user?.package?.packagePermissions ?? [])?.map(
                     (permission: any, index: number) => (
                       <div
@@ -279,13 +283,12 @@ const AccountPackagePage = () => {
                             <td className="whitespace-nowrap px-4 md:px-6 py-3">
                               <span
                                 className={`inline-flex items-center rounded-full px-2 md:px-3 py-1.5 md:py-2 text-[10px] md:text-xs font-semibold uppercase tracking-wide
-                      ${
-                        item?.status === "paid"
-                          ? "bg-green-100 text-green-700"
-                          : item?.status === "failed"
-                            ? "bg-red-100 text-red-700"
-                            : "bg-yellow-100 text-yellow-700"
-                      }`}
+                      ${item?.status === "paid"
+                                    ? "bg-green-100 text-green-700"
+                                    : item?.status === "failed"
+                                      ? "bg-red-100 text-red-700"
+                                      : "bg-yellow-100 text-yellow-700"
+                                  }`}
                               >
                                 {item?.status}
                               </span>

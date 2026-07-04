@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthReq } from "@/api/rest/fetchData";
+import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -56,10 +57,10 @@ const Signin = () => {
         if (response?.success) {
           const payload = {
             ...response?.data,
-            user: response.data.user,
-            access_token: response.data.accessToken,
+            user: response?.data?.user,
+            access_token: response?.data?.accessToken,
           };
-          localStorage.setItem("access_token", response.data.accessToken);
+          localStorage.setItem("access_token", response?.data?.accessToken);
           dispatch(setLogin(true));
           dispatch(setAuthData(payload));
           const redirectUrl = localStorage.getItem("redirect_after_login");
@@ -85,6 +86,9 @@ const Signin = () => {
 
   return (
     <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <AuthLayout
         heading="Welcome Back to Zecco!"
         description=" Sign in to Your Account"

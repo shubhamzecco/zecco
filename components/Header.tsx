@@ -63,7 +63,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8 w-full">
-              {NAV_ITEMS.map((item) => (
+              {NAV_ITEMS?.map((item) => (
                 <button
                   key={item.label}
                   onClick={() => handleNavClick(item)}
@@ -122,6 +122,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="md:hidden max-md:flex justify-end items-center p-2 rounded-lg text-gray-700"
+                aria-label="menu"
               >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -132,6 +133,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
               <button
                 onClick={onProfileClick}
                 className="md:hidden w-10 h-10 rounded-full overflow-hidden border"
+                aria-label="profile"
               >
                 <Image
                   src={App_url.image.profile}

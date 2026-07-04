@@ -99,8 +99,8 @@ export default function ExploreRegions() {
       setAreasData((prev) => {
         const existingIds = new Set(prev.map((item: any) => item?.name));
 
-        const newItems = latestData.filter(
-          (item: any) => !existingIds.has(item?.name),
+        const newItems = latestData?.filter(
+          (item: any) => !existingIds?.has(item?.name),
         );
 
         return [...prev, ...newItems];
@@ -130,32 +130,30 @@ export default function ExploreRegions() {
   const filteredAreasData = useMemo(() => {
     const countKey = getCountKey();
 
-    return areasData
-      .map((city: any) => ({
-        ...city,
-        property_count: city[countKey] || 0,
+    return areasData?.map((city: any) => ({
+      ...city,
+      property_count: city[countKey] || 0,
 
-        areas:
-          city.areas
-            ?.filter((area: any) => (area[countKey] || 0) > 0)
-            ?.map((area: any) => ({
-              ...area,
-              property_count: area[countKey] || 0,
-            })) || [],
-      }))
-      .filter((city: any) => city.property_count > 0 && city.areas?.length > 0);
+      areas:
+        city?.areas
+          ?.filter((area: any) => (area[countKey] || 0) > 0)
+          ?.map((area: any) => ({
+            ...area,
+            property_count: area[countKey] || 0,
+          })) || [],
+    }))?.filter((city: any) => city?.property_count > 0 && city?.areas?.length > 0);
   }, [areasData, selectedButton]);
 
   const groupedCards = useMemo(() => {
     const cards: any[][] = [];
-    const exactFiveAreaCities = filteredAreasData.filter(
+    const exactFiveAreaCities = filteredAreasData?.filter(
       (region) => Math.min(region?.areas?.length || 0, 5) === 5,
     );
-    const remainingCities = filteredAreasData.filter(
+    const remainingCities = filteredAreasData?.filter(
       (region) => Math.min(region?.areas?.length || 0, 5) < 5,
     );
 
-    for (let i = 0; i < exactFiveAreaCities.length; i += 2) {
+    for (let i = 0; i < exactFiveAreaCities?.length; i += 2) {
       const pair = exactFiveAreaCities.slice(i, i + 2);
       cards.push(pair);
     }
@@ -165,7 +163,7 @@ export default function ExploreRegions() {
 
     const MAX_SLOTS_PER_CARD = 12;
 
-    remainingCities.forEach((region) => {
+    remainingCities?.forEach((region) => {
       const activeAreasCount = Math.min(region?.areas?.length || 0, 5);
       const regionSlotCost = 2 + activeAreasCount;
       if (
@@ -313,11 +311,10 @@ export default function ExploreRegions() {
             <button
               key={i}
               onClick={() => setSelectedButton(tab?.value)}
-              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md transition-all duration-300 ${
-                tab?.value === selectedButton
+              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md transition-all duration-300 ${tab?.value === selectedButton
                   ? "bg-[#0F172A] text-white"
                   : "text-slate-500 hover:bg-slate-100"
-              }`}
+                }`}
             >
               {tab?.label}
             </button>
@@ -354,7 +351,7 @@ export default function ExploreRegions() {
             >
               {/* Changed gap-6 to justify-between or smaller gap to maximize space */}
               <div className="flex flex-col h-full gap-4 justify-start">
-                {card.map((region: any, regionIndex: number) => (
+                {card?.map((region: any, regionIndex: number) => (
                   <div
                     key={regionIndex}
                     className="
@@ -365,12 +362,12 @@ export default function ExploreRegions() {
             "
                   >
                     <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-1">
-                      {region.name}
+                      {region?.name}
                     </h3>
 
                     <div className="flex justify-between items-center gap-2 my-2">
                       <h2 className="inline-block text-xs font-medium text-[#64748B] tracking-wider uppercase bg-[#F3F4F6] px-3 py-1 rounded-md">
-                        {region.property_count} PROPERTIES
+                        {region?.property_count} PROPERTIES
                       </h2>
                       <button
                         onClick={() => handleNavigate(region)}

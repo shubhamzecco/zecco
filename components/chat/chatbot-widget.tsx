@@ -60,7 +60,9 @@ export default function ChatbotWidget() {
                   Hey, you can also chat & explore homes with me!
                 </p>
               </div>
-              <button onClick={() => setShowNotification(false)}>
+              <button onClick={() => setShowNotification(false)}
+                aria-label="close"
+              >
                 <X className="w-5 h-5 text-gray-400" />
               </button>
             </div>

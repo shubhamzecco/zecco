@@ -148,7 +148,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* Menu */}
           <div className="p-6 flex flex-col h-full">
             <nav className="space-y-1">
-              {menuItems.map((item) => {
+              {menuItems?.map((item) => {
                 const isActive = pathname === item.href;
                 const Icon = item.icon;
 

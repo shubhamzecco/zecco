@@ -127,7 +127,6 @@ const ContactUs = () => {
                         )}
                       />
                     </div>
-
                     <FormField
                       control={form.control}
                       name="contact_no"
@@ -147,7 +146,6 @@ const ContactUs = () => {
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="email"
@@ -167,7 +165,6 @@ const ContactUs = () => {
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="consultation"
@@ -187,7 +184,6 @@ const ContactUs = () => {
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="project_information"
@@ -217,7 +213,6 @@ const ContactUs = () => {
                 </form>
               </Form>
             </div>
-
             <div className="grid grid-cols-1 gap-2">
               <div className="p-8 bg-[#F2F3F6] rounded-lg">
                 <div className="space-y-4 text-sm flex gap-4 items-center">
@@ -234,7 +229,6 @@ const ContactUs = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className="space-y-4 text-sm flex gap-4 items-center">
                   <div className="">
                     <Mail size={25} className="text-[#0B5394] mt-0.5" />
@@ -248,7 +242,6 @@ const ContactUs = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className="space-y-4 text-sm flex gap-4 items-center">
                   <div className="">
                     <Phone size={25} className="text-[#0B5394] mt-0.5" />

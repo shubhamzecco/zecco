@@ -192,22 +192,25 @@ export interface ChatMessagesResponse {
   messages: Message[];
 }
 
+export interface ViewMore {
+  location: string;
+  intent: string;
+  budgetMin: string;
+  budgetMax: string;
+  bedrooms: string | null;
+  propertyType: string | null;
+  locationCity: string;
+  category: string | null;
+  features?: string[] | null;
+}
+
 export interface AIChatMessage {
   id: string;
   text: string;
   sender: "user" | "bot";
   timestamp: Date;
-  viewMore?: {
-    location: string;
-    intent: string;
-    budgetMin: string;
-    budgetMax: string;
-    bedrooms: string | null;
-    propertyType: string | null;
-    locationCity: string;
-    category: string | null;
-  };
   hasMore?: boolean;
+  viewMore?: ViewMore;
 }
 
 // interfaces/breadcrumb.ts

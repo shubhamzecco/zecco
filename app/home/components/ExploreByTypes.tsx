@@ -82,7 +82,7 @@ export default function ExploreByTypes() {
               </h3>
 
               <p className="text-md font-manrope font-medium text-slate_gray max-w-[19rem] mb-8">
-                {item?.desc?.split("<br/>").map((line, i) => (
+                {item?.desc?.split("<br/>")?.map((line, i) => (
                   <span key={i}>
                     {line}
                     <br />

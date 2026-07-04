@@ -1,6 +1,7 @@
 "use client";
 
 import { postData } from "@/api/rest/fetchData";
+import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -41,8 +42,8 @@ const ResetPassword = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     postData(App_url?.endpoint_url?.RESET_PASSWORD, {
-      password: values.password,
-      confirm_password: values.confirm_password,
+      password: values?.password,
+      confirm_password: values?.confirm_password,
       email: sessionStorage.getItem("otp_email"),
       otp: String(sessionStorage.getItem("otp") || 0),
     })
@@ -74,7 +75,11 @@ const ResetPassword = () => {
   };
 
   return (
-    <AuthLayout
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <AuthLayout
       heading="Welcome Back to Zecco!"
       description="Sign in to Your Account"
     >
@@ -157,6 +162,7 @@ const ResetPassword = () => {
         </div>
       </Form>
     </AuthLayout>
+    </>
   );
 };
 

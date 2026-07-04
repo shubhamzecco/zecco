@@ -1,12 +1,14 @@
 "use client";
 
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import Head from "next/head";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useEffect, useState } from "react";
 import UserList from "./components/user-list";
 import UserMessage from "./components/user-message";
+import Image from "next/image";
 
 const MessagePage = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -65,6 +67,9 @@ const MessagePage = () => {
 
   return (
     <SidebarLayout>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <div
         className="lg:px-12 px-5  py-8 h-full
                             bg-gradient-to-r
@@ -94,11 +99,14 @@ const MessagePage = () => {
                   <div className="relative z-10 flex flex-col items-center text-center px-6">
                     <div className="relative mb-6">
                       <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center animate-pulse">
-                        <img
+                        <Image
                           src={App_url.image.image_6}
                           alt="chat"
+                          width={56}
+                          height={56}
                           className="w-14 h-14 object-contain opacity-80"
                         />
+
                       </div>
                       {/* <span className="absolute inset-0 rounded-full border-4 border-blue-300 animate-ping" /> */}
                     </div>

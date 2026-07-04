@@ -1,5 +1,4 @@
 "use client";
-import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAiInsight, setBreadcrumbs } from "@/redux/modules/main/action";
@@ -22,8 +21,7 @@ const AiInsights = () => {
       <div className="flex flex-col gap-6">
         {(mainReducer?.stored_aiInsight?.data?.length ?? 0) > 0 ? (
           mainReducer?.stored_aiInsight?.data
-            ?.slice(0, 3)
-            .map((item: any, index: number) => (
+            ?.slice(0, 3)?.map((item: any, index: number) => (
               <div
                 onClick={() => {
                   (router.push(
@@ -37,32 +35,28 @@ const AiInsights = () => {
                         href: `${App_url.link.DASHBOARD}`,
                       },
                       {
-                        label: `${
-                          item?.property?.bedrooms
+                        label: `${item?.property?.bedrooms
                             ? `${item?.property?.bedrooms} Bedroom `
                             : ""
-                        }${" "}
+                          }${" "}
                             ${item?.property?.propertyType ? item?.property?.propertyType?.name : item?.property?.propertyCategory?.name}${" "}for${" "}
-                            ${
-                              item?.property?.isSale && item?.property?.isRent
-                                ? "Sale or Rent"
-                                : item?.property?.isSale
-                                  ? "Sale"
-                                  : item?.property?.isRent
-                                    ? "Rent"
-                                    : ""
-                            }${" "}
+                            ${item?.property?.isSale && item?.property?.isRent
+                            ? "Sale or Rent"
+                            : item?.property?.isSale
+                              ? "Sale"
+                              : item?.property?.isRent
+                                ? "Rent"
+                                : ""
+                          }${" "}
                             in${" "}
-                            ${
-                              item?.property?.locationSubarea
-                                ? `${item?.property?.locationSubarea},`
-                                : ""
-                            }${" "}
-                            ${
-                              item?.property?.locationArea
-                                ? `${item?.property?.locationArea},`
-                                : ""
-                            }${" "}
+                            ${item?.property?.locationSubarea
+                            ? `${item?.property?.locationSubarea},`
+                            : ""
+                          }${" "}
+                            ${item?.property?.locationArea
+                            ? `${item?.property?.locationArea},`
+                            : ""
+                          }${" "}
                             ${item?.property?.locationCity},${" "}
                             ${item?.property?.locationCountry}`,
                         href: `${App_url.link.PROPERTY_DETAILS}/${item?.property?._id}`,
@@ -78,7 +72,7 @@ const AiInsights = () => {
                     <Image
                       src={
                         item?.property?.propertyImages?.[0]?.url
-                          ? item.property.propertyImages[0]?.url
+                          ? item?.property.propertyImages[0]?.url
                           : ""
                       }
                       alt="AI Insights"

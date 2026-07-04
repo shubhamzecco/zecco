@@ -1,4 +1,5 @@
 "use client";
+import Head from "next/head";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import PropertyCard from "@/components/cards/PropertyCard";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
@@ -32,8 +33,12 @@ const FavoritesPage = () => {
       });
     }
   }, [lastEvent]);
+
   return (
     <SidebarLayout>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <div
         className="lg:px-12 px-5  py-8 h-full
                             bg-gradient-to-r
@@ -57,7 +62,7 @@ const FavoritesPage = () => {
               {mainReducer?.favorite_property_list?.data?.map((property) => (
                 <PropertyCard
                   property={property}
-                  key={property._id}
+                  key={property?._id}
                   {...property}
                 />
               ))}

@@ -78,7 +78,9 @@ const AreaCard = ({
           <h3 className="text-xl sm:text-2xl  mb-1 font-manrope font-semibold">
             {name}
           </h3>
-          <button className="text-white backdrop-blur-md bg-white/20 rounded-full p-2">
+          <button className="text-white backdrop-blur-md bg-white/20 rounded-full p-2"
+            aria-label="up"
+          >
             <ArrowUpRight size={20} />
           </button>
         </div>

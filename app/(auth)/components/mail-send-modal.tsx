@@ -19,6 +19,7 @@ export default function CheckInboxModal({
           <button
             onClick={onClose}
             className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-500 shadow hover:bg-gray-100"
+            aria-label="close"
           >
             <X size={16} />
           </button>

@@ -230,11 +230,11 @@ const UserForm = () => {
       action: "update",
       payload: {
         id: user_data?.user?._id,
-        email: data.email,
-        first_name: data.first_name,
-        last_name: data.last_name,
+        email: data?.email,
+        first_name: data?.first_name,
+        last_name: data?.last_name,
         status: true,
-        contact_no: data.contact_no,
+        contact_no: data?.contact_no,
       },
     };
     sendMessage("action", payload);
@@ -327,7 +327,7 @@ const UserForm = () => {
       response = await postData(
         endpoint,
         formData,
-        user_data.access_token,
+        user_data?.access_token,
         "multipart/form-data",
       );
       if (response?.data?.success) {

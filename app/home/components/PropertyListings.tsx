@@ -79,7 +79,7 @@ export default function PropertyListings() {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {mainReducer?.zecco_favorite?.data?.slice(0, 8)?.map((property) => (
-            <PropertyCard key={property._id} {...property} property={property} />
+            <PropertyCard key={property?._id} {...property} property={property} />
           ))}
         </div>
       </div>

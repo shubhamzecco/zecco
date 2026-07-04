@@ -10,6 +10,7 @@ import {
 } from "@/redux/modules/main/action";
 import { citySlug, formatEuro } from "@/utils/common";
 import { Eye, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useDispatch } from "react-redux";
@@ -56,8 +57,8 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
 
     return mainReducer.property_type_list.reduce(
       (acc, item) => {
-        if (!item.is_subtype) {
-          acc[item.id] = item.name;
+        if (!item?.is_subtype) {
+          acc[item?.id] = item?.name;
         }
         return acc;
       },
@@ -71,8 +72,8 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
 
     return mainReducer.property_subtype_list.reduce(
       (acc, item) => {
-        if (item.is_subtype) {
-          acc[item.id] = item.name;
+        if (item?.is_subtype) {
+          acc[item?.id] = item?.name;
         }
         return acc;
       },
@@ -86,7 +87,7 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
 
     return mainReducer?.property_features_list.reduce(
       (acc, item) => {
-        acc[item.id] = item.name;
+        acc[item?.id] = item?.name;
 
         return acc;
       },
@@ -117,16 +118,16 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
 
     // Bedrooms
     if (item?.bedroomsFrom && item?.bedroomsTo) {
-      parts.push(`${item.bedroomsFrom}–${item.bedroomsTo} Bedroom`);
+      parts.push(`${item?.bedroomsFrom}–${item?.bedroomsTo} Bedroom`);
     } else if (item?.bedroomsFrom) {
-      parts.push(`${item.bedroomsFrom}+ Bedroom`);
+      parts.push(`${item?.bedroomsFrom}+ Bedroom`);
     } else if (item?.bedroomsTo) {
-      parts.push(`Up to ${item.bedroomsTo} Bedroom`);
+      parts.push(`Up to ${item?.bedroomsTo} Bedroom`);
     }
 
     // Category
     if (item?.categories && item?.types?.filter(Boolean)?.length === 0) {
-      const categoryName = propertyCategoryMap[item.categories];
+      const categoryName = propertyCategoryMap[item?.categories];
       if (categoryName) {
         parts.push(categoryName);
       }
@@ -134,12 +135,12 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
 
     // Property Types
     if (item?.types?.filter(Boolean)?.length > 0) {
-      const types = item.types
+      const types = (item?.types || [])
         .filter(Boolean)
         .map((type: number) => propertyTypeMap[type])
         .filter(Boolean);
 
-      if (types.length > 0) {
+      if (types?.length > 0) {
         parts.push(types.join(" & "));
       }
     }
@@ -159,41 +160,41 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
     // Location
     if (
       item?.search &&
-      item?.search.toLowerCase() !== item.city.name.toLowerCase()
+      item?.search.toLowerCase() !== item?.city?.name?.toLowerCase()
     ) {
-      parts.push(`in ${item.search}, ${item.city.name}, Spain`);
+      parts.push(`in ${item?.search}, ${item?.city?.name}, Spain`);
     } else if (item?.city?.name) {
-      parts.push(`in ${item.city.name}, Spain`);
+      parts.push(`in ${item?.city.name}, Spain`);
     }
 
     // Price
     if (item?.priceFrom && item?.priceTo) {
       parts.push(
-        `from ${formatEuro(item.priceFrom)} to ${formatEuro(item.priceTo)}`,
+        `from ${formatEuro(item?.priceFrom)} to ${formatEuro(item?.priceTo)}`,
       );
     } else if (item?.priceFrom) {
-      parts.push(`from ${formatEuro(item.priceFrom)}`);
+      parts.push(`from ${formatEuro(item?.priceFrom)}`);
     } else if (item?.priceTo) {
-      parts.push(`up to ${formatEuro(item.priceTo)}`);
+      parts.push(`up to ${formatEuro(item?.priceTo)}`);
     }
 
     // Build Size
     if (item?.buildFrom && item?.buildTo) {
-      parts.push(`with ${item.buildFrom}m²–${item.buildTo}m² Build Area`);
+      parts.push(`with ${item?.buildFrom}m²–${item?.buildTo}m² Build Area`);
     } else if (item?.buildFrom) {
-      parts.push(`with ${item.buildFrom}m²+ Build Area`);
+      parts.push(`with ${item?.buildFrom}m²+ Build Area`);
     } else if (item?.buildTo) {
-      parts.push(`with up to ${item.buildTo}m² Build Area`);
+      parts.push(`with up to ${item?.buildTo}m² Build Area`);
     }
 
     // Features
     if (item?.features?.filter(Boolean)?.length > 0) {
-      const features = item.features
+      const features = (item?.features || [])
         .filter(Boolean)
         .map((feature: number) => featureMap[feature])
         .filter(Boolean);
 
-      if (features.length > 0) {
+      if (features?.length > 0) {
         parts.push(`featuring ${features.join(" & ")}`);
       }
     }
@@ -240,9 +241,11 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
             >
               {item?.city && (
                 <div className="shrink-0">
-                  <img
+                  <Image
                     src={`${URL}${item?.city?.image}`}
-                    alt={item?.city?.name}
+                    alt={item?.city?.name || "City"}
+                    width={64}
+                    height={64}
                     className="h-16 w-16 rounded-2xl object-cover border border-gray-200"
                   />
                 </div>
@@ -256,6 +259,7 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
                     <button
                       onClick={() => handleApplySearch(item)}
                       className="rounded-2xl border border-blue-200 p-2 text-blue-600 transition-all hover:bg-blue-50"
+                      aria-label="view"
                     >
                       <Eye size={15} />
                     </button>
@@ -263,6 +267,7 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
                     <button
                       onClick={() => handleDelete(item?._id)}
                       className="rounded-2xl border border-red-200 p-2 text-red-600 transition-all hover:bg-red-50"
+                      aria-label="delete"
                     >
                       <Trash2 size={15} />
                     </button>

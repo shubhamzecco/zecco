@@ -18,34 +18,23 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
-import { camelCase, citySlug } from "@/utils/common";
+import { citySlug } from "@/utils/common";
 
 const PropertySearchBar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-
   const { sendMessage, isConnected } = useWebSocket();
-
   const { mainReducer } = usePosterReducers();
-
   const propertyTypes = mainReducer?.property_type_list || [];
-
   const locations = mainReducer?.all_location_list || [];
-
   const [buttonActivate, setButtonActivate] = useState<"buy" | "rent">("buy");
-
   const [open, setOpen] = useState(false);
-
   const [searchDropdown, setSearchDropdown] = useState(false);
-
   const [searchText, setSearchText] = useState("");
-
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
-
   const [selected, setSelected] = useState<any>(propertyTypes?.[0] || null);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-
   const searchRef = useRef<HTMLDivElement>(null);
 
   // =========================
@@ -130,14 +119,15 @@ const PropertySearchBar = () => {
 
     dispatch(
       setBreadcrumbs([
-        ...mainReducer.breadcrumbs,
+        ...mainReducer?.breadcrumbs,
         {
           label: "Costa del Sol areas and Cities",
           href: `${App_url.link.COSTA_DEL_SOL}`,
         },
         {
-          label: `${camelCase(selectedLocation?.city_name)}`,
-          href: `${App_url.link.COSTA_DEL_SOL}/${selectedLocation?.city_name}`,
+          // label: `${camelCase(selectedLocation?.city_name)}${" "}${selectedLocation?.area_name ? `-${" "}${camelCase(selectedLocation?.area_name)}` : ""}`,
+          label: selectedLocation?.name,
+          href: `${App_url.link.COSTA_DEL_SOL}/${selectedLocation?.name}`,
         },
       ]),
     );
@@ -224,7 +214,7 @@ const PropertySearchBar = () => {
               {open && (
                 <div className="absolute left-0 mt-2 w-44 rounded-xl bg-white shadow-lg border border-slate-200 z-50">
                   <ul className="py-1 text-sm text-slate-700">
-                    {propertyTypes.map((item: any) => (
+                    {propertyTypes?.map((item: any) => (
                       <li key={item?.id}>
                         <button
                           onClick={() => {
@@ -293,20 +283,20 @@ const PropertySearchBar = () => {
                 </li>
 
                 {searchText &&
-                  filteredLocations.map((item: any) => (
-                    <li key={item.id}>
+                  filteredLocations?.map((item: any) => (
+                    <li key={item?.id}>
                       <button
                         type="button"
                         onClick={() => handleLocationSelect(item)}
                         className="w-full px-4 py-3 text-left hover:bg-slate-100 transition"
                       >
-                        {item.name}
+                        {item?.name}
                       </button>
                     </li>
                   ))}
 
                 {/* No results only when user has typed */}
-                {searchText && filteredLocations.length === 0 && (
+                {searchText && filteredLocations?.length === 0 && (
                   <li className="px-4 py-3 text-sm text-gray-500">
                     No locations found
                   </li>
@@ -322,7 +312,7 @@ const PropertySearchBar = () => {
               whitespace-nowrap
               flex items-center justify-center gap-2
               rounded-full
-              bg-sky_blue_color
+              bg-[#0a6fd1]
               px-9 py-4
               text-sm font-semibold text-white
               hover:opacity-90 transition

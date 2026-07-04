@@ -1,21 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Send, X, Plus } from "lucide-react";
-import { createPortal } from "react-dom";
 import CommonApiRequest, { URL } from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
 import {
-  FileText,
-  FileSpreadsheet,
-  FileArchive,
-  FileImage,
-  FileVideo,
-  FileAudio,
-  FileCode,
-  File,
+  File, FileArchive, FileAudio,
+  FileCode, FileSpreadsheet, FileText, FileVideo, Plus, Send, X
 } from "lucide-react";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 export default function UploadPreviewModal({
   files,
@@ -30,11 +22,10 @@ export default function UploadPreviewModal({
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
   const [uploading, setUploading] = useState(false);
   const [localFiles, setLocalFiles] = useState<File[]>(
-    files
-      .filter((file: File) => file.size <= MAX_FILE_SIZE)
-      .slice(0, MAX_FILES),
+    files?.filter((file: File) => file?.size <= MAX_FILE_SIZE)?.slice(0, MAX_FILES),
   );
   const [uploadedIndexes, setUploadedIndexes] = useState<number[]>([]);
+
   if (typeof window === "undefined") return null;
 
   const getIcon = (type: string) => {
@@ -82,7 +73,7 @@ export default function UploadPreviewModal({
   };
 
   useEffect(() => {
-    if (localFiles.length > 0) {
+    if (localFiles?.length > 0) {
       uploadFiles(localFiles);
     }
   }, [localFiles]);
@@ -96,22 +87,22 @@ export default function UploadPreviewModal({
 
     const selectedFiles = Array.from(e.target.files);
 
-    const validFiles = selectedFiles.filter(
+    const validFiles = selectedFiles?.filter(
       (file) => file.size <= MAX_FILE_SIZE,
     );
 
-    const oversizedFiles = selectedFiles.filter(
-      (file) => file.size > MAX_FILE_SIZE,
+    const oversizedFiles = selectedFiles?.filter(
+      (file) => file?.size > MAX_FILE_SIZE,
     );
 
-    if (oversizedFiles.length > 0) {
+    if (oversizedFiles?.length > 0) {
       alert("Each file must be less than or equal to 3 MB.");
     }
 
     setLocalFiles((prev) => {
       const updatedFiles = [...prev, ...validFiles];
 
-      if (updatedFiles.length > MAX_FILES) {
+      if (updatedFiles?.length > MAX_FILES) {
         alert("You can upload a maximum of 3 files.");
       }
 
@@ -128,7 +119,7 @@ export default function UploadPreviewModal({
     const results = [...uploadedFiles];
     const newUploadedIndexes = [...uploadedIndexes];
 
-    for (let i = 0; i < filesToUpload.length; i++) {
+    for (let i = 0; i < filesToUpload?.length; i++) {
       if (newUploadedIndexes.includes(i)) continue;
 
       const formData = new FormData();
@@ -172,18 +163,20 @@ export default function UploadPreviewModal({
 
     onClose();
   };
-  const isUploadingDone = uploadedIndexes.length === localFiles.length;
+  const isUploadingDone = uploadedIndexes?.length === localFiles?.length;
+
   return createPortal(
     <div className="fixed inset-0 bg-black/60 z-[9999] flex items-center justify-center">
       <div className="bg-white w-[90%] max-w-2xl rounded-2xl shadow-xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center p-4 border-b">
           <span className="font-semibold text-gray-800">
-            {localFiles.length} files selected
+            {localFiles?.length} files selected
           </span>
           <button
             onClick={onClose}
             className="w-8 h-8 rounded-full bg-[#135D7B] hover:bg-red-600 flex items-center justify-center text-white transition-colors"
+            aria-label="close"
           >
             <X className="w-5 h-5" />
           </button>
@@ -192,12 +185,12 @@ export default function UploadPreviewModal({
         {/* Preview */}
         <div className="flex-1 flex flex-wrap gap-4 p-5 overflow-auto bg-gray-100">
           {/* Files */}
-          {localFiles.map((file: File, index: number) => {
-            const fileExt = file.name.split(".").pop()?.toLowerCase() || "";
-            const isImage = file.type.startsWith("image");
+          {localFiles?.map((file: File, index: number) => {
+            const fileExt = file?.name?.split(".").pop()?.toLowerCase() || "";
+            const isImage = file?.type?.startsWith("image");
             const uploaded = uploadedFiles[index];
             const url = uploaded
-              ? URL + uploaded.fileUrl
+              ? URL + uploaded?.fileUrl
               : globalThis.URL.createObjectURL(file);
 
             return (
@@ -209,6 +202,7 @@ export default function UploadPreviewModal({
                 <button
                   onClick={() => removeFile(index)}
                   className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 z-10"
+                  aria-label="close"
                 >
                   <X size={14} />
                 </button>
@@ -221,7 +215,7 @@ export default function UploadPreviewModal({
                     {getIcon(fileExt)}
 
                     <span className="text-[10px] break-all line-clamp-2">
-                      {uploaded?.original_name || file.name}
+                      {uploaded?.original_name || file?.name}
                     </span>
                   </div>
                 )}
@@ -239,7 +233,7 @@ export default function UploadPreviewModal({
           })}
 
           {/* ➕ Add More Button */}
-          {localFiles.length < MAX_FILES && (
+          {localFiles?.length < MAX_FILES && (
             <label className="w-32 h-32 flex items-center justify-center border-2 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-50">
               <Plus className="text-gray-500" />
               <input
@@ -257,11 +251,10 @@ export default function UploadPreviewModal({
           <button
             disabled={!isUploadingDone}
             onClick={handleSend}
-            className={`px-4 py-2 rounded-lg text-white flex items-center gap-2 ${
-              isUploadingDone
+            className={`px-4 py-2 rounded-lg text-white flex items-center gap-2 ${isUploadingDone
                 ? "bg-green-500"
                 : "bg-gray-400 cursor-not-allowed"
-            }`}
+              }`}
           >
             Send <Send className="w-4" />
           </button>

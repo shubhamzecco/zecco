@@ -75,9 +75,9 @@ export const App_url = {
     PAYMENT_STATUS: "/api/payment/status",
     EXPORT: "/api/payment/export",
   },
-  chat_bot_url: "http://localhost:5678/webhook/zecco",
-  chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco",
-}
+  chat_bot_url: "https://n8n.appristine.co.in/webhook/zecco/AI-Chatbot",
+  chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco/AI-Chatbot",
+};
 
 export const initialState = {
   items: [],

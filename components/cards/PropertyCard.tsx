@@ -130,14 +130,14 @@ const PropertyCard = ({
   const nextSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === property?.propertyImages.length - 1 ? 0 : prev + 1,
+      prev === property?.propertyImages?.length - 1 ? 0 : prev + 1,
     );
   };
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === 0 ? property?.propertyImages.length - 1 : prev - 1,
+      prev === 0 ? property?.propertyImages?.length - 1 : prev - 1,
     );
   };
 
@@ -207,6 +207,7 @@ const PropertyCard = ({
           <button
             onClick={prevSlide}
             className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 opacity-0 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:pointer-events-auto"
+            aria-label="up"
           >
             <ChevronLeft size={18} />
           </button>
@@ -216,6 +217,7 @@ const PropertyCard = ({
           <button
             onClick={nextSlide}
             className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 opacity-0 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:pointer-events-auto"
+            aria-label="up"
           >
             <ChevronRight size={18} />
           </button>
@@ -260,6 +262,7 @@ const PropertyCard = ({
             handleFavoriteAdd?.();
           }}
           className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
+          aria-label="up"
         >
           {mainReducer?.property_list_with_limit?.favorite_property?.includes(
             String(property?._id),

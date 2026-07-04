@@ -1,5 +1,5 @@
 "use client";
-import { setBreadcrumbs } from "@/redux/modules/main/action";
+import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import Footer from "../../components/Footer";
@@ -19,6 +19,7 @@ const HomePage = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setBreadcrumbs([{ label: "Home", href: "/" }]));
+    dispatch(setPropertyFilter({}));
   }, []);
 
   return (

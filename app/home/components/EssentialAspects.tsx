@@ -35,7 +35,7 @@ export default function EssentialAspects() {
             </h2>
 
             <div className="space-y-10">
-              {features.map((feature, index) => (
+              {features?.map((feature, index) => (
                 <div key={index} className="flex gap-4">
                   <div className="flex-shrink-0 bg-[#4A86E8] w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
                     <Image

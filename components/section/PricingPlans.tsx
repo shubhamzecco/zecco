@@ -64,7 +64,7 @@ export default function PricingPlans({ heading, description }: IPricePlans) {
               return 0;
             })
             ?.map((plan, index) => (
-              <PackageCard key={plan._id || index} plan={plan} index={index} />
+              <PackageCard key={plan?._id || index} plan={plan} index={index} />
             ))}
         </div>
       </div>

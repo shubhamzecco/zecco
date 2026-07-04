@@ -110,6 +110,16 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     singletonSocket.on("connect_error", (err) => {
       console.error("🚨 Socket.IO connection error:", err);
       setIsConnected(false);
+      if (
+        err.message === "Unauthorized token" ||
+        err.message?.toLowerCase().includes("unauthorized")
+      ) {
+        dispatch(setLogout());
+        localStorage.clear();
+        dispatch(setAuthData({} as any));
+        dispatch(setReduxClear());
+        router.replace(App_url.link.INITIAL_URL);
+      }
     });
 
     singletonSocket.onAny((event, data) => {

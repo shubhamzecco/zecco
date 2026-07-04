@@ -76,7 +76,6 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
     setIsLoading(true);
     try {
       const res = await sendChatMessage(text, getSessionId());
-      console.log("res", res);
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
@@ -91,7 +90,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
-          text: "Something went wrong. Please try again.",
+          text: "I’m temporarily handling a high volume of property searches. Please try again in a moment, and I’ll continue helping you discover properties that match your preferences.",
           sender: "bot",
           timestamp: new Date(),
         }),
@@ -120,6 +119,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
               <button
                 onClick={onClose}
                 className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow hover:bg-gray-100"
+                aria-label="close"
               >
                 <X size={16} />
               </button>

@@ -3,18 +3,18 @@
 import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { useDispatch } from "react-redux";
 import { ChatMessage } from "./zecco-chat-modal";
 import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
 import { App_url } from "@/constant/static";
 import { camelCase, citySlug } from "@/utils/common";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
 import { number } from "zod";
 
 const QUICK_ACTIONS = [
-  "Find properties for buy in Spain.",
-  "Explore apartments and villas in Barcelona.",
-  "Search budget-friendly homes across Spain",
+  "Find properties for buy in Costa del Sol, Spain.",
+  "Explore apartments and villas in Marbella.",
+  "Search budget-friendly homes across Costa del Sol, Spain",
 ];
 
 type Props = {
@@ -112,19 +112,67 @@ export default function ChatReplies({
           hour12: true,
         })
       : "";
-  const getMarkdownComponents = (isUser: boolean) => ({
+
+  const getMarkdownComponents = (isUser: boolean, currentMsg: ChatMessage) => ({
     strong: ({ children }: any) => (
       <strong className="font-semibold text-[14px]">{children}</strong>
     ),
-    p: ({ children }: any) => (
-      <p
-        className={`text-[14px] leading-6 whitespace-pre-line ${
-          isUser ? "mb-1" : "mb-3"
-        }`}
-      >
-        {children}
-      </p>
-    ),
+    p: ({ children }: any) => {
+      // Safely join children into a cohesive string check to catch parsing fragmentation
+      const rawText = Array.isArray(children)
+        ? children
+            .map((c) => (typeof c === "string" ? c : c?.props?.children || ""))
+            .join("")
+        : typeof children === "string"
+          ? children
+          : "";
+
+      if (rawText.includes("[SHOW_BUTTON]")) {
+        const [before, after] = rawText.split("[SHOW_BUTTON]");
+
+        return (
+          <div className="mb-3">
+            {/* Context Text */}
+            {before && (
+              <p className="text-[14px] leading-6 whitespace-pre-line mb-2">
+                {before.trim()}
+              </p>
+            )}
+
+            {/* Interactive Button Section */}
+            {currentMsg?.hasMore && currentMsg?.viewMore && (
+              <div className="my-2 pt-1 pb-1">
+                <p className="text-xs text-gray-500 mb-1.5 font-medium">
+                  Click below to view your results:
+                </p>
+                <button
+                  onClick={() => handleShowProperties(currentMsg)}
+                  className="w-full sm:w-auto px-6 py-2.5 bg-white border border-gray-200 hover:bg-blue-50 text-blue-600 font-semibold flex items-center justify-center gap-2 rounded-lg text-sm shadow-sm transition-all"
+                >
+                  <span>View matching properties</span>
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            )}
+
+            {/* Next Follow-up Question */}
+            {after && (
+              <p className="text-[14px] leading-6 whitespace-pre-line mt-3">
+                {after.trim()}
+              </p>
+            )}
+          </div>
+        );
+      }
+
+      return (
+        <p
+          className={`text-[14px] leading-6 whitespace-pre-line ${isUser ? "mb-1" : "mb-3"}`}
+        >
+          {children}
+        </p>
+      );
+    },
     ul: ({ children }: any) => (
       <ul className="ml-4 mb-3 list-disc space-y-1">{children}</ul>
     ),
@@ -193,7 +241,7 @@ export default function ChatReplies({
             className={`flex ${isUser ? "justify-end" : "justify-start"}`}
           >
             <div className={`chat-bubble ${isUser ? "sent" : "received"}`}>
-              <ReactMarkdown components={getMarkdownComponents(isUser)}>
+              <ReactMarkdown components={getMarkdownComponents(isUser, msg)}>
                 {formatChatMessage(msg?.text)}
               </ReactMarkdown>
               {msg.hasMore && msg.viewMore && (

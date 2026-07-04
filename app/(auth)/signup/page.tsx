@@ -2,6 +2,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -179,12 +180,15 @@ const SignUpPage = () => {
 
   const searchedLocations = searchValue.trim()
     ? mainReducer?.all_location_list?.filter((item: any) =>
-        item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
-      )
+      item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
+    )
     : [];
 
   return (
     <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <AuthLayout
         heading={`${!nextPage ? "Create Your Zecco Account" : "Set Your Property Preferences"}`}
         description=""
@@ -524,11 +528,10 @@ const SignUpPage = () => {
                                   onClick={() => field.onChange(item.value)}
                                   className={`
                   h-11 rounded-full border text-sm font-medium transition-all
-                  ${
-                    isSelected
-                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                  }
+                  ${isSelected
+                                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
+                                    }
                 `}
                                 >
                                   {item.label}
@@ -562,11 +565,10 @@ const SignUpPage = () => {
                                   onClick={() => field.onChange(item.value)}
                                   className={`
                   h-11 rounded-full border text-sm font-medium transition-all
-                  ${
-                    isSelected
-                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                  }
+                  ${isSelected
+                                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
+                                    }
                 `}
                                 >
                                   {item.label}

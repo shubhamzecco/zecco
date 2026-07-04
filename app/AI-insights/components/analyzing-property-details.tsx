@@ -97,7 +97,7 @@ export default function AIProcessingCard({
           </p>
 
           <div className="space-y-4">
-            {steps.map((step, index) => {
+            {steps?.map((step, index) => {
               const isDone = index < activeStep;
               const isActive = index === activeStep;
 

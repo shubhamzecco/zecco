@@ -1,6 +1,7 @@
 "use client";
 
 import { postData } from "@/api/rest/fetchData";
+import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -39,7 +40,7 @@ const ForgetPassword = () => {
         try {
           if (response?.data?.success) {
             toast.success(response?.data?.message);
-            sessionStorage.setItem("otp_email", values.email);
+            sessionStorage.setItem("otp_email", values?.email);
             sessionStorage?.setItem("forget_password", "forget-password");
             router.push(App_url?.link?.OTP_VERIFICATION);
           } else {
@@ -61,6 +62,10 @@ const ForgetPassword = () => {
   };
 
   return (
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
     <AuthLayout heading="Forget Password" description="Verify your email">
       <Form {...form}>
         <form
@@ -116,6 +121,7 @@ const ForgetPassword = () => {
         </div>
       </Form>
     </AuthLayout>
+    </>
   );
 };
 
