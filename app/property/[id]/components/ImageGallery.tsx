@@ -18,8 +18,10 @@ interface PropertyStats {
 }
 
 export default function PropertyGallery({ property }: PropertyStats) {
+  // Avoid non-deterministic ordering (Math.random) during the initial render/hydration.
+  // We keep the incoming order for SSR/first client render.
   const shuffleArray = (array: IImage[] = []) => {
-    return [...array].sort(() => Math.random() - 0.5);
+    return [...array];
   };
 
   const [images, setImages] = useState<IImage[]>([]);

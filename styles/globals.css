@@ -282,3 +282,13 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #64748b; /* slate-500 */
 }
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+  width: 0;
+  height: 0;
+}

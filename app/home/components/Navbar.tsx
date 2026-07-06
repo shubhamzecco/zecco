@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, User, UserPlus, X } from "lucide-react";
 import Image from "next/image";
@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -30,6 +31,10 @@ export default function Navbar() {
     if (href === "#") return false;
     return pathname === href || pathname.startsWith(`${href}/`);
   };
+
+  useEffect(() => {
+    setMounted(true);
+  }, [])
 
   const handleNavClick = (item: any) => {
     dispatch(clearBreadcrumbs());
@@ -72,44 +77,50 @@ export default function Navbar() {
             </div>
 
             {/* Desktop Buttons */}
-            {user_data?.user ? (
-              <div className="hidden md:flex justify-end items-center gap-2">
-                <ImageDropdown
-                  name={user_data?.user?.first_name}
-                  avatar={App_url.image.image_1}
-                  onNavigate={(path) => router.push(path)}
-                  items={[
-                    { label: "Profile", path: App_url?.link.PROFILE },
-                    { label: "Dashboard", path: App_url.link.DASHBOARD },
-                    {
-                      label: "Logout",
-                      onClick: () => {
-                        dispatch(setLogout());
-                        localStorage.clear();
-                        dispatch(setAuthData({} as any));
-                        dispatch(setReduxClear());
-                        router.push(App_url.link.INITIAL_URL);
-                        toast.success("Logout successfully");
+            {mounted ? (
+              user_data?.user ? (
+                <div className="hidden md:flex justify-end items-center gap-2">
+                  <ImageDropdown
+                    name={user_data?.user?.first_name}
+                    avatar={App_url.image.image_1}
+                    onNavigate={(path) => router.push(path)}
+                    items={[
+                      { label: "Profile", path: App_url?.link.PROFILE },
+                      { label: "Dashboard", path: App_url.link.DASHBOARD },
+                      {
+                        label: "Logout",
+                        onClick: () => {
+                          dispatch(setLogout());
+                          localStorage.clear();
+                          dispatch(setAuthData({} as any));
+                          dispatch(setReduxClear());
+                          router.push(App_url.link.INITIAL_URL);
+                          toast.success("Logout successfully");
+                        },
                       },
-                    },
-                  ]}
-                />
-              </div>
+                    ]}
+                  />
+                </div>
+              ) : (
+                <div className="hidden md:flex justify-end items-center gap-2">
+                  <Link
+                    href={App_url.link.SIGN_IN}
+                    className="px-5 py-2 text-sm flex items-center gap-2"
+                  >
+                    <User className="w-5 h-5" /> Login
+                  </Link>
+
+                  <Link
+                    href={App_url.link.SIGN_UP}
+                    className="px-5 py-2 text-sm text-white bg-[#136AED] rounded-full flex items-center gap-2"
+                  >
+                    <UserPlus className="w-5 h-5" /> Registration
+                  </Link>
+                </div>
+              )
             ) : (
               <div className="hidden md:flex justify-end items-center gap-2">
-                <Link
-                  href={App_url.link.SIGN_IN}
-                  className="px-5 py-2 text-sm flex items-center gap-2"
-                >
-                  <User className="w-5 h-5" /> Login
-                </Link>
-
-                <Link
-                  href={App_url.link.SIGN_UP}
-                  className="px-5 py-2 text-sm text-white bg-[#136AED] rounded-full flex items-center gap-2"
-                >
-                  <UserPlus className="w-5 h-5" /> Registration
-                </Link>
+                {/* keep markup stable until client mounts */}
               </div>
             )}
 
