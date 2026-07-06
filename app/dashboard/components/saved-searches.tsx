@@ -252,7 +252,7 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
               )}
 
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-sm text-black leading-7 break-words">
+                <div className="font-semibold text-sm text-black leading-7 break-words">
                   {title}
 
                   <div className="flex justify-end items-center gap-3 ml-auto shrink-0">
@@ -272,7 +272,7 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
                       <Trash2 size={15} />
                     </button>
                   </div>
-                </p>
+                </div>
               </div>
             </div>
           );

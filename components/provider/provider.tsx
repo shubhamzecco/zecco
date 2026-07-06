@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { WebSocketProvider } from "@/api/socket/WebSocketContext";
+import RouteGuard from "@/components/auth/route-guard";
 import "react-toastify/dist/ReactToastify.css";
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
@@ -20,7 +21,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
       <WebSocketProvider>
-        <Suspense>{children}</Suspense>
+        <RouteGuard>
+          <Suspense>{children}</Suspense>
+        </RouteGuard>
         {mounted && (
           <ToastContainer
             position="top-right"
