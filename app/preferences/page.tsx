@@ -571,7 +571,7 @@ const PreferenceForm = () => {
   return (
     <SidebarLayout>
       <div
-        className="lg:px-12 px-5 py-8 h-full
+        className="lg:px-12 px-5 py-2 h-full
                             bg-gradient-to-r
                         from-[#60A5FA]/10
                         via-[#fafafa] via-[70%]

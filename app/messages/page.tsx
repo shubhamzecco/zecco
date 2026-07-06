@@ -77,7 +77,7 @@ const MessagePage = () => {
                         via-[#fafafa] via-[70%]
                         to-[#fafafa] to-[100%]"
       >
-        <section className="mt-5 mb-6">
+        <section className="mt-3 mb-6">
           <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
             Messages
           </h2>

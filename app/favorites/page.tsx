@@ -46,7 +46,7 @@ const FavoritesPage = () => {
                         via-[#fafafa] via-[70%]
                         to-[#fafafa] to-[100%]"
       >
-        <section className="mt-5 mb-6">
+        <section className="mt-2 mb-6">
           <div className="flex justify-between items-center mb-1">
             <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
               Favorites

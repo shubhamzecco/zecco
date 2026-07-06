@@ -227,7 +227,7 @@ const SavedSearches = () => {
                         via-[#fafafa] via-[70%]
                         to-[#fafafa] to-[100%]"
       >
-        <section className="mt-5">
+        <section className="mt-3">
           <div className="flex justify-between items-center mb-8 gap-10">
             <div>
               <h2 className="font-bold text-lg font-inter text-[#111827]">
