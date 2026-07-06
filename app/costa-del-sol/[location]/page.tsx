@@ -414,7 +414,6 @@ const Page = () => {
     });
   }, []);
 
-  console.log("mainReducer?.all_location_list",mainReducer?.all_location_list)
 
   return (
     <MainLayout

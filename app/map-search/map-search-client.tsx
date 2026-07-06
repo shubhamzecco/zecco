@@ -1,16 +1,17 @@
 "use client";
 
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import MainLayout from "@/components/layouts/main-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 import {
-  ArrowLeft,
-  MapPin,
-  PenTool,
-  LocateFixed,
+  ArrowRight,
   Check,
+  LocateFixed,
+  MapPin,
+  PenTool
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -19,6 +20,17 @@ import { useDispatch } from "react-redux";
 type Mode = "draw" | "select";
 
 const DEFAULT_CENTER: [number, number] = [36.5116, -4.8848];
+
+// Costa del Sol approx bounds (lat/lng) to keep the map focused.
+const COSTA_DEL_SOL_BOUNDS: [[number, number], [number, number]] = [
+  [36.28, -5.35], // south-west
+  [36.85, -3.85], // north-east
+];
+
+// For initial load we want the whole region visible.
+// fitBounds will set an appropriate zoom, but we cap it for UX.
+const MIN_ZOOM = 7;
+const MAX_ZOOM = 18;
 
 export default function MapSearchClient() {
   const router = useRouter();
@@ -79,10 +91,26 @@ export default function MapSearchClient() {
 
     mapRef.current = leaflet.map(mapContainerRef.current, {
       attributionControl: false,
-    }).setView(DEFAULT_CENTER, 9);
+      // Constrain panning/zooming so the user stays focused on Costa del Sol
+      maxBounds: COSTA_DEL_SOL_BOUNDS,
+      maxBoundsViscosity: 1.0,
+      minZoom: MIN_ZOOM,
+      maxZoom: MAX_ZOOM,
+      // Avoid odd overscroll bounce on some devices
+      worldCopyJump: false,
+    });
+
+    // Initial view: fit entire Costa del Sol with a clean centered map.
+    mapRef.current.fitBounds(COSTA_DEL_SOL_BOUNDS, {
+      padding: [16, 16],
+      animate: false,
+    });
+
+    // Enforce bounds explicitly (some Leaflet versions rely on this in addition to options)
+    mapRef.current.setMaxBounds(COSTA_DEL_SOL_BOUNDS);
 
     leaflet.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
+      maxZoom: MAX_ZOOM,
     }).addTo(mapRef.current);
 
     const drawnItems = new leaflet.FeatureGroup();
@@ -159,9 +187,12 @@ export default function MapSearchClient() {
     if (!leaflet || !mapRef.current) return;
 
     if (currentLocation) {
-      mapRef.current.setView([currentLocation.lat, currentLocation.lng], 13);
+      // Keep view within Costa del Sol bounds even if user grants a distant location.
+      const { lat, lng } = clampToCostaDelSolBounds(currentLocation.lat, currentLocation.lng);
+
+      mapRef.current.setView([lat, lng], 13);
       userMarkerRef.current?.remove?.();
-      userMarkerRef.current = leaflet.marker([currentLocation.lat, currentLocation.lng])
+      userMarkerRef.current = leaflet.marker([lat, lng])
         .addTo(mapRef.current)
         .bindPopup("Your current location");
       setMessage("Location ready. You can draw an area or use nearby search.");
@@ -176,6 +207,31 @@ export default function MapSearchClient() {
         .slice(0, 24),
     [areas],
   );
+
+  const findNearestArea = (lat: number, lng: number) => {
+    let nearest = null;
+    let minDistance = Infinity;
+
+    for (const area of areas) {
+      const coords = area?.point?.coordinates;
+
+      if (!coords) continue;
+
+      const [areaLng, areaLat] = coords;
+
+      const distance = Math.sqrt(
+        Math.pow(areaLat - lat, 2) +
+        Math.pow(areaLng - lng, 2)
+      );
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearest = area;
+      }
+    }
+
+    return nearest;
+  };
 
   const getAreaPoint = (area: any) => {
     const coordinates = area?.point?.coordinates;
@@ -211,6 +267,12 @@ export default function MapSearchClient() {
     setSelectedArea(null);
   };
 
+  const clampToCostaDelSolBounds = (lat: number, lng: number) => {
+    const clampedLat = Math.min(COSTA_DEL_SOL_BOUNDS[1][0], Math.max(COSTA_DEL_SOL_BOUNDS[0][0], lat));
+    const clampedLng = Math.min(COSTA_DEL_SOL_BOUNDS[1][1], Math.max(COSTA_DEL_SOL_BOUNDS[0][1], lng));
+    return { lat: clampedLat, lng: clampedLng };
+  };
+
   const centerOnArea = async (areaName: string) => {
     if (!leaflet || !mapRef.current) return;
 
@@ -219,6 +281,16 @@ export default function MapSearchClient() {
     setSelectedArea(area || { name: areaName });
     const point = getAreaPoint(area);
     const center = point || currentLocation || DEFAULT_CENTER;
+    const centerLat = Array.isArray(center)
+      ? center[0]
+      : typeof center === "object" && center
+        ? (center as any).lat
+        : DEFAULT_CENTER[0];
+    const centerLng = Array.isArray(center)
+      ? center[1]
+      : typeof center === "object" && center
+        ? (center as any).lng
+        : DEFAULT_CENTER[1];
 
     if (point) {
       circleRef.current = leaflet.circle([point.lat, point.lng], {
@@ -228,11 +300,27 @@ export default function MapSearchClient() {
         fillColor: "#D9F99D",
         fillOpacity: 0.35,
       }).addTo(mapRef.current);
-      mapRef.current.fitBounds(circleRef.current.getBounds(), {
-        padding: [24, 24],
-      });
+
+      // Keep fitBounds within Costa del Sol for a consistent UX.
+      const bounds = circleRef.current.getBounds();
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+      const clampedSW = clampToCostaDelSolBounds(sw.lat, sw.lng);
+      const clampedNE = clampToCostaDelSolBounds(ne.lat, ne.lng);
+
+      mapRef.current.fitBounds(
+        leaflet.latLngBounds(
+          [clampedSW.lat, clampedSW.lng],
+          [clampedNE.lat, clampedNE.lng],
+        ),
+        {
+          padding: [24, 24],
+          animate: false,
+        },
+      );
     } else {
-      mapRef.current.setView(center, currentLocation ? 13 : 10);
+      const { lat, lng } = clampToCostaDelSolBounds(centerLat, centerLng);
+      mapRef.current.setView([lat, lng], currentLocation ? 13 : 10);
     }
     setMessage(`Selected ${areaName}. Apply to continue.`);
   };
@@ -267,25 +355,29 @@ export default function MapSearchClient() {
     };
 
     if (selectedArea?.name) {
+      console.log("selectedArea?.name::", selectedArea?.name)
       payload.search = selectedArea.name;
       payload.mapSelection = {
         type: "area",
         name: selectedArea.name,
       };
-      dispatch(setPropertyFilter(payload));
-      router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(selectedArea?.city_name || selectedArea.name)}`);
+      // dispatch(setPropertyFilter(payload));
+      // router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(selectedArea?.city_name || selectedArea.name)}`);
       return;
     }
 
     if (drawn && drawn.getLatLngs) {
       const latLngs = drawn.getLatLngs?.()[0]?.map((point: any) => [point.lat, point.lng]) || [];
+      const center = drawn.getBounds().getCenter();
+      const nearestArea = findNearestArea(center.lat, center.lng);
       payload.mapSelection = {
         type: "polygon",
         coordinates: latLngs,
+        name: nearestArea?.name,
       };
-      payload.search = "Drawn area";
+      payload.search = nearestArea?.name || "marbella";
       dispatch(setPropertyFilter(payload));
-      router.push(`${App_url.link.COSTA_DEL_SOL}`);
+      router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(nearestArea?.name)}`);
       return;
     }
 
@@ -295,8 +387,9 @@ export default function MapSearchClient() {
         type: "location",
         coordinates: currentLocation,
       };
-      dispatch(setPropertyFilter(payload));
-      router.push(`${App_url.link.COSTA_DEL_SOL}`);
+      console.log("payload2::", payload)
+      // dispatch(setPropertyFilter(payload));
+      // router.push(`${App_url.link.COSTA_DEL_SOL}`);
     }
   };
 
@@ -308,81 +401,78 @@ export default function MapSearchClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F7FB]">
-      <div className="border-b bg-white/90 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4">
-          <button onClick={() => router.back()} className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold text-slate-700">
-            <ArrowLeft size={16} />
-            Back
-          </button>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-slate-500">Search by Map</p>
-            <h1 className="text-xl font-bold text-slate-900">Draw on Map or Select Area</h1>
-          </div>
-          <button onClick={applySelection} className="rounded-full bg-sky_blue_color px-5 py-2.5 text-sm font-semibold text-white">
-            Apply Search
-          </button>
+    <MainLayout>
+      <div className="min-h-screen bg-[#F3F7FB] mt-[-30px]">
+        <div className="mx-auto grid max-w-7xl gap-4 px-4 py-4 lg:grid-cols-[320px_1fr]">
+          <aside className="space-y-4 rounded-3xl border bg-white p-4 shadow-sm">
+            <div className="rounded-2xl bg-slate-50 p-4">
+              <p className="text-sm font-semibold text-slate-500">Status</p>
+              <p className="mt-1 text-sm text-slate-700">{message}</p>
+            </div>
+
+            <div className="space-y-2">
+              <button onClick={drawYourArea} className="flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left hover:bg-slate-50">
+                <span className="flex items-center gap-2 font-semibold text-slate-800">
+                  <PenTool size={16} />
+                  Draw Your Area
+                </span>
+                {drawModeActive && <Check size={16} className="text-emerald-600" />}
+              </button>
+
+              <button onClick={requestLocation} className="flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left hover:bg-slate-50">
+                <span className="flex items-center gap-2 font-semibold text-slate-800">
+                  <LocateFixed size={16} />
+                  Use My Location
+                </span>
+                <span className="text-xs text-slate-500">{geoStatus === "granted" ? "Allowed" : geoStatus === "denied" ? "Denied" : "Optional"}</span>
+              </button>
+            </div>
+
+            <div>
+              <div className="mb-3 flex items-center gap-2">
+                <MapPin size={16} className="text-slate-600" />
+                <h2 className="font-semibold text-slate-900">Select Area</h2>
+              </div>
+              <div className="flex max-h-[360px] flex-col gap-2 overflow-auto pr-1">
+                {areas.length > 0 && areaOptions?.map((name: any) => (
+                  <button
+                    key={name}
+                    onClick={() => centerOnArea(name)}
+                    className={`rounded-2xl border px-4 py-3 text-left text-sm ${selectedArea?.name === name ? "border-sky-500 bg-sky-50 text-sky-900" : "hover:bg-slate-50"}`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-medium">{name}</span>
+                      {selectedArea?.name === name && <Check size={14} className="text-sky-600" />}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
+
+          <section className="overflow-hidden rounded-3xl border bg-white shadow-sm">
+            <div ref={mapContainerRef} className="h-[75vh] w-full" />
+
+            <div className="flex items-center justify-between border-t px-4 py-3">
+              <p className="text-sm text-slate-600">
+                {mode === "select"
+                  ? "Pick an area on the left to highlight it on the map."
+                  : currentLocation
+                    ? `Current location available at ${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}`
+                    : "You can keep using the map without granting location access."}
+              </p>
+
+              <button
+                onClick={applySelection}
+                className="ml-4 inline-flex items-center gap-2 rounded-full bg-sky_blue_color px-5 py-2.5 text-sm font-semibold text-white whitespace-nowrap transition-all hover:opacity-90"
+              >
+                Apply Search
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </section>
         </div>
       </div>
-
-      <div className="mx-auto grid max-w-7xl gap-4 px-4 py-4 lg:grid-cols-[320px_1fr]">
-        <aside className="space-y-4 rounded-3xl border bg-white p-4 shadow-sm">
-          <div className="rounded-2xl bg-slate-50 p-4">
-            <p className="text-sm font-semibold text-slate-500">Status</p>
-            <p className="mt-1 text-sm text-slate-700">{message}</p>
-          </div>
-
-          <div className="space-y-2">
-            <button onClick={drawYourArea} className="flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left hover:bg-slate-50">
-              <span className="flex items-center gap-2 font-semibold text-slate-800">
-                <PenTool size={16} />
-                Draw Your Area
-              </span>
-              {drawModeActive && <Check size={16} className="text-emerald-600" />}
-            </button>
-
-            <button onClick={requestLocation} className="flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left hover:bg-slate-50">
-              <span className="flex items-center gap-2 font-semibold text-slate-800">
-                <LocateFixed size={16} />
-                Use My Location
-              </span>
-              <span className="text-xs text-slate-500">{geoStatus === "granted" ? "Allowed" : geoStatus === "denied" ? "Denied" : "Optional"}</span>
-            </button>
-          </div>
-
-          <div>
-            <div className="mb-3 flex items-center gap-2">
-              <MapPin size={16} className="text-slate-600" />
-              <h2 className="font-semibold text-slate-900">Select Area</h2>
-            </div>
-            <div className="flex max-h-[360px] flex-col gap-2 overflow-auto pr-1">
-              {areaOptions?.map((name: any) => (
-                <button
-                  key={name}
-                  onClick={() => centerOnArea(name)}
-                  className={`rounded-2xl border px-4 py-3 text-left text-sm ${selectedArea?.name === name ? "border-sky-500 bg-sky-50 text-sky-900" : "hover:bg-slate-50"}`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium">{name}</span>
-                    {selectedArea?.name === name && <Check size={14} className="text-sky-600" />}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </aside>
-
-        <section className="overflow-hidden rounded-3xl border bg-white shadow-sm">
-          <div ref={mapContainerRef} className="h-[72vh] w-full" />
-          <div className="border-t px-4 py-3 text-sm text-slate-600">
-            {mode === "select"
-              ? "Pick an area on the left to highlight it on the map."
-              : currentLocation
-                ? `Current location available at ${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)}`
-                : "You can keep using the map without granting location access."}
-          </div>
-        </section>
-      </div>
-    </div>
+    </MainLayout>
   );
 }

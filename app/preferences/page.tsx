@@ -30,7 +30,7 @@ const preferenceSchema = z.object({
   types: z.string().nullable().optional(),
 });
 
-const PreferenceForm = () => {
+export const PreferenceSection = () => {
   const { user_data, mainReducer } = usePosterReducers();
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -238,31 +238,20 @@ const PreferenceForm = () => {
   }, [user_data]);
 
   return (
-    <SidebarLayout>
-      <div
-        className="lg:px-12 px-5 py-8 h-full
-                            bg-gradient-to-r
-                        from-[#60A5FA]/10
-                        via-[#fafafa] via-[70%]
-                        to-[#fafafa] to-[100%]"
-      >
-        <section className="mt-5 mb-6">
-          <div className="flex justify-between items-center mb-1">
-            <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
-              Update Preferences
-            </h2>
-          </div>
+    <section className="mt-8 mb-6">
+      <div className="flex justify-between items-center mb-1">
+        <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
+          Update Preferences
+        </h2>
+      </div>
 
-          <div className="bg-white/70 p-7 rounded-lg">
-            <div className="p-8 bg-[#F2F3F6] rounded-lg">
-              <Form {...preferenceForm}>
-                <form
-                  className=""
-                  onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}
-                >
-                  <div className="grid grid-cols-1 gap-5">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                      <FormField
+      <div className="bg-white/70 p-7 rounded-lg">
+        <div className="p-8 bg-[#F2F3F6] rounded-lg">
+          <Form {...preferenceForm}>
+            <form className="" onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}>
+              <div className="grid grid-cols-1 gap-5">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                  <FormField
                         control={preferenceForm.control}
                         name="selectedLocation"
                         render={({ field }) => (
@@ -559,22 +548,36 @@ const PreferenceForm = () => {
                             </FormControl>
                           </FormItem>
                         )}
-                      />
-                    </div>
-                  </div>
-                </form>
-              </Form>
-            </div>
+                  />
+                </div>
+              </div>
+            </form>
+          </Form>
+        </div>
 
-            <button
-              onClick={preferenceForm.handleSubmit(onPreferenceSubmit)}
-              type="submit"
-              className="w-fit px-10 tracking-wider shadow-md mt-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2"
-            >
-              Update Preferences
-            </button>
-          </div>
-        </section>
+        <button
+          onClick={preferenceForm.handleSubmit(onPreferenceSubmit)}
+          type="submit"
+          className="w-fit px-10 tracking-wider shadow-md mt-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2"
+        >
+          Update Preferences
+        </button>
+      </div>
+    </section>
+  );
+};
+
+const PreferenceForm = () => {
+  return (
+    <SidebarLayout>
+      <div
+        className="lg:px-12 px-5 py-8 h-full
+                            bg-gradient-to-r
+                        from-[#60A5FA]/10
+                        via-[#fafafa] via-[70%]
+                        to-[#fafafa] to-[100%]"
+      >
+        <PreferenceSection />
       </div>
     </SidebarLayout>
   );

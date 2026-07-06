@@ -81,7 +81,6 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
 
   useEffect(() => {
     if (mainReducer?.propertyFilter) {
-      console.log("mainReducer?.propertyFilter", mainReducer?.propertyFilter);
 
       setFilters({
         categories: mainReducer?.propertyFilter?.categories || "",
@@ -216,7 +215,6 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
     onFilterChange?.(updated);
   };
 
-  console.log("filters", filters);
 
   // useEffect(() => {
   //   if (

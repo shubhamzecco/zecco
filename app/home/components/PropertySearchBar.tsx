@@ -271,17 +271,6 @@ const PropertySearchBar = () => {
                   </button>
                 </li>
 
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => openMapSearch("select")}
-                    className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-slate-100 transition font-medium"
-                  >
-                    <MapPlus size={18} className="shrink-0" />
-                    <span>Select area</span>
-                  </button>
-                </li>
-
                 {searchText &&
                   filteredLocations?.map((item: any) => (
                     <li key={item?.id}>

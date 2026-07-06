@@ -11,6 +11,7 @@ export function PropertyMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const highlightRef = useRef<any>(null);
   const [selectedLocation] = useState("Marbella");
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -37,6 +38,8 @@ export function PropertyMap() {
       // Clear existing markers
       markersRef.current.forEach((marker: any) => marker.remove());
       markersRef.current = [];
+      highlightRef.current?.remove?.();
+      highlightRef.current = null;
 
       // Get properties for selected location
       const locationProps = getPropertiesByLocation(selectedLocation);
@@ -46,8 +49,16 @@ export function PropertyMap() {
       if (map?.current) {
         map?.current.setView(
           [center.lat, center.lng],
-          selectedLocation === "Marbella" ? 10 : 11,
+          selectedLocation === "Marbella" ? 12 : 13,
         );
+
+        highlightRef.current = L.circle([center.lat, center.lng], {
+          radius: 2500,
+          color: "#111827",
+          weight: 2,
+          fillColor: "#D9F99D",
+          fillOpacity: 0.18,
+        }).addTo(map.current);
       }
 
       // Add property markers

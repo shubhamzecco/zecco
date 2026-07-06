@@ -67,7 +67,11 @@ export default function ZeccoFavorites({ property }: PropertyInfoProps) {
 
   const randomFavorites = useMemo(() => {
     return [...(mainReducer?.zecco_favorite?.data || [])]
-      .sort(() => Math.random() - 0.5)
+      .sort((a: any, b: any) => {
+        const aKey = String(a?._id || a?.id || "");
+        const bKey = String(b?._id || b?.id || "");
+        return aKey.localeCompare(bKey);
+      })
       .slice(0, 4);
   }, [mainReducer?.zecco_favorite?.data]);
 
