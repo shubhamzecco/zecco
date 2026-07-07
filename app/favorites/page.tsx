@@ -13,6 +13,17 @@ const FavoritesPage = () => {
   useEffect(() => {
     if (isConnected) {
       sendMessage("action", {
+        type: "propertyService",
+        action: "list",
+        payload: {
+          limit: 1000,
+          page: 1,
+          search: "",
+          location_id: null,
+          favorite: true,
+        },
+      })
+      sendMessage("action", {
         type: "userService",
         action: "favoritePropertyList",
         payload: {},

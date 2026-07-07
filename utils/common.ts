@@ -206,6 +206,6 @@ export const bedroomRanges = [
   },
   {
     label: "5+",
-    value: "5+",
+    value: "5",
   },
 ];

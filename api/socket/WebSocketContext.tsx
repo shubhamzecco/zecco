@@ -66,7 +66,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
   const sendMessage = useCallback((event: string, data?: any) => {
     if (singletonSocket && singletonSocket.connected) {
-      // console.log('📤 Sending message:', event, data);
+      // console.log('Send:', event, data);
       singletonSocket.emit(event, data);
     } else {
       console.log("⚠️ Socket not connected. Cannot send:", event, data);

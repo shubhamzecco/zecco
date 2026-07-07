@@ -88,7 +88,7 @@ export const PreferenceSection = () => {
               ? [Number(data?.category)]
               : null,
           budget: data.budget || null,
-          bedrooms: data.bedrooms || null,
+          bedrooms: data.bedrooms?.map((bedroom) => Number(bedroom.replace("+", ""))) || null,
           investmentType: data.investmentType || null,
           types: data.types || null,
         },

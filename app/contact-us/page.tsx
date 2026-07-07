@@ -2,12 +2,12 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import MainLayout from "@/components/layouts/main-layout";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,7 +23,10 @@ import * as z from "zod";
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  contact_no: z.string().min(1, "Mobile number is required"),
+  contact_no: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\d+$/, "Invalid phone number"),
   email: z.string().email("Invalid email address"),
   consultation: z.string().optional(),
   project_information: z.string().optional(),
@@ -40,6 +43,7 @@ const ContactUs = () => {
       consultation: "",
       project_information: "",
     },
+    mode: "onChange",
   });
   const { sendMessage, lastEvent } = useWebSocket();
 

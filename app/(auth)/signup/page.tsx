@@ -35,7 +35,10 @@ import { MultiSelectButtonGroup } from "@/components/ui/MultiselectButton";
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  contact_no: z.string().min(1, "Mobile number is required"),
+  contact_no: z
+    .string()
+    .min(1, "Mobile number is required")
+    .regex(/^\d+$/, "Invalid mobile number"),
   password: z.string().min(1, "Password  is required"),
   confirm_password: z.string().min(1, "Confirm password is required"),
   email: z.string().email("Invalid email address"),

@@ -23,7 +23,10 @@ import * as z from "zod";
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  contact_no: z.string().min(1, "Mobile number is required"),
+  contact_no: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\d+$/, "Invalid phone number"),
   email: z.string().email("Invalid email address"),
   consultation: z.string().optional(),
   project_information: z.string().optional(),
@@ -98,8 +101,8 @@ const UserForm = () => {
 
   const searchedLocations = searchValue.trim()
     ? mainReducer?.all_location_list?.filter((item: any) =>
-        item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
-      )
+      item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
+    )
     : [];
 
   const priceRanges = [
@@ -182,6 +185,7 @@ const UserForm = () => {
       contact_no: "",
       email: "",
     },
+    mode: "onChange"
   });
 
   const passwordForm = useForm<z.infer<typeof passwordSchema>>({
@@ -311,9 +315,9 @@ const UserForm = () => {
     }
     setSearchValue(
       user_data?.user?.preferences?.locationSubarea ||
-        user_data?.user?.preferences?.locationArea ||
-        user_data?.user?.preferences?.locationCity ||
-        "",
+      user_data?.user?.preferences?.locationArea ||
+      user_data?.user?.preferences?.locationCity ||
+      "",
     );
   }, [user_data]);
 
@@ -761,11 +765,10 @@ const UserForm = () => {
                                     onClick={() => field.onChange(item.value)}
                                     className={`
                   h-12 rounded-[10px] border text-sm font-medium transition-all
-                  ${
-                    isSelected
-                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                  }
+                  ${isSelected
+                                        ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                        : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
+                                      }
                 `}
                                   >
                                     {item.label}
@@ -799,11 +802,10 @@ const UserForm = () => {
                                     onClick={() => field.onChange(item.value)}
                                     className={`
                   h-12 rounded-[10px] border text-sm font-medium transition-all
-                  ${
-                    isSelected
-                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                  }
+                  ${isSelected
+                                        ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                        : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
+                                      }
                 `}
                                   >
                                     {item.label}
@@ -836,11 +838,10 @@ const UserForm = () => {
                                     onClick={() => field.onChange(item.value)}
                                     className={`
                   h-12 rounded-[10px] border text-sm font-medium transition-all
-                  ${
-                    isSelected
-                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                  }
+                  ${isSelected
+                                        ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                        : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
+                                      }
                 `}
                                   >
                                     {item.label}
@@ -873,11 +874,10 @@ const UserForm = () => {
                                     onClick={() => field.onChange(item.value)}
                                     className={`
                   h-12 rounded-[10px] border text-sm font-medium transition-all
-                  ${
-                    isSelected
-                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                  }
+                  ${isSelected
+                                        ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                        : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
+                                      }
                 `}
                                   >
                                     {item.label}
