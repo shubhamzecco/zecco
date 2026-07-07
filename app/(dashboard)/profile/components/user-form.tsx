@@ -419,7 +419,7 @@ const UserForm = () => {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter first name"
+                              placeholder="First name"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -438,7 +438,7 @@ const UserForm = () => {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter last name"
+                              placeholder="Last name"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -458,7 +458,7 @@ const UserForm = () => {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter your phone"
+                              placeholder="Phone number"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -478,7 +478,7 @@ const UserForm = () => {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter email"
+                              placeholder="Email address"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -518,7 +518,7 @@ const UserForm = () => {
                         <FormControl>
                           <Input
                             type="password"
-                            placeholder="Enter current password"
+                            placeholder="Current password"
                             className="rounded-[10px] h-12 bg-white border-[#D1D5DB]"
                             {...field}
                           />
@@ -540,7 +540,7 @@ const UserForm = () => {
                           <FormControl>
                             <Input
                               type="password"
-                              placeholder="Enter new password"
+                              placeholder="New password"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB]"
                               {...field}
                             />

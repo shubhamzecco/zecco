@@ -98,7 +98,7 @@ const ContactUs = () => {
                             </FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter first name"
+                                placeholder="First name"
                                 className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                                 {...field}
                               />
@@ -117,7 +117,7 @@ const ContactUs = () => {
                             </FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter last name"
+                                placeholder="Last name"
                                 className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                                 {...field}
                               />
@@ -137,7 +137,7 @@ const ContactUs = () => {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter your phone"
+                              placeholder="Phone number"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -156,7 +156,7 @@ const ContactUs = () => {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter email"
+                              placeholder="Email address"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />

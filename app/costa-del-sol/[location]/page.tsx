@@ -20,6 +20,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import FilterPanel from "./components/filter-panel";
+import PropertyCardSkeleton from "./components/PropertyCardSkeleton";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 
@@ -123,14 +124,14 @@ const Page = () => {
     const selectedKeys = Array.isArray(filter?.types)
       ? filter?.types
       : Object.entries(filter?.types || {})
-          .filter(([_, value]) => value)
-          .map(([key]) => Number(key));
+        .filter(([_, value]) => value)
+        .map(([key]) => Number(key));
 
     const selectedFeatures = Array.isArray(filter?.features)
       ? filter?.features
       : Object.entries(filter?.features || {})
-          .filter(([_, value]) => value)
-          .map(([key]) => Number(key));
+        .filter(([_, value]) => value)
+        .map(([key]) => Number(key));
 
     const payload = {
       categories: filter?.categories ?? null,
@@ -472,7 +473,16 @@ const Page = () => {
 
           {/* PROPERTY GRID */}
           <div className="w-full">
-            {properties?.length > 0 ? (
+            {loading ? (
+              <div
+                ref={gridRef}
+                className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+              >
+                {Array.from({ length: 9 }).map((_, index) => (
+                  <PropertyCardSkeleton key={index} />
+                ))}
+              </div>
+            ) : properties?.length > 0 ? (
               <div
                 ref={gridRef}
                 className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
@@ -486,25 +496,23 @@ const Page = () => {
                 ))}
               </div>
             ) : (
-              !loading && (
-                <div className="flex min-h-[500px] items-center justify-center">
-                  <div className="text-center">
-                    <div className="mb-4 flex justify-center">
-                      <div className="rounded-full bg-gray-100 p-5">
-                        <SearchX className="h-10 w-10 text-[#136AED]" />
-                      </div>
+              <div className="flex min-h-[500px] items-center justify-center">
+                <div className="text-center">
+                  <div className="mb-4 flex justify-center">
+                    <div className="rounded-full bg-gray-100 p-5">
+                      <SearchX className="h-10 w-10 text-[#136AED]" />
                     </div>
-
-                    <h2 className="text-2xl font-bold text-gray-800">
-                      No Properties Found
-                    </h2>
-
-                    <p className="mt-2 text-gray-500">
-                      No properties match your current filters.
-                    </p>
                   </div>
+
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    No Properties Found
+                  </h2>
+
+                  <p className="mt-2 text-gray-500">
+                    No properties match your current filters.
+                  </p>
                 </div>
-              )
+              </div>
             )}
           </div>
         </div>
@@ -529,17 +537,15 @@ const Page = () => {
 
       {/* OVERLAY */}
       <div
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${
-          isFilterOpen ? "visible opacity-100" : "invisible opacity-0"
-        }`}
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 lg:hidden ${isFilterOpen ? "visible opacity-100" : "invisible opacity-0"
+          }`}
         onClick={() => setIsFilterOpen(false)}
       />
 
       {/* MOBILE FILTER DRAWER */}
       <div
-        className={`fixed left-0 top-0 z-50 mt-[4.7rem] h-full w-[85%] max-w-sm transform bg-white transition-transform duration-300 ease-in-out lg:hidden ${
-          isFilterOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed left-0 top-0 z-50 mt-[4.7rem] h-full w-[85%] max-w-sm transform bg-white transition-transform duration-300 ease-in-out lg:hidden ${isFilterOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between border-b bg-gray-50 p-4">
           <h2 className="font-manrope text-lg font-semibold">Filters</h2>

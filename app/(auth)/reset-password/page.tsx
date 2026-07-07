@@ -103,7 +103,7 @@ const ResetPassword = () => {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter new password"
+                      placeholder="New password"
                       className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                       {...field}
                     />
@@ -127,7 +127,7 @@ const ResetPassword = () => {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter confirm password"
+                      placeholder="Confirm password"
                       className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                       {...field}
                     />

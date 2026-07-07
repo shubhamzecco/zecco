@@ -28,6 +28,9 @@ import AuthLayout from "../layout/page";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { bedroomRanges, priceRanges } from "@/utils/common";
+import DropdownSelect from "@/components/ui/DropSelect";
+import { MultiSelectButtonGroup } from "@/components/ui/MultiselectButton";
 
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
@@ -37,9 +40,10 @@ const formSchema = z.object({
   confirm_password: z.string().min(1, "Confirm password is required"),
   email: z.string().email("Invalid email address"),
   selectedLocation: z.any().optional(),
-  category: z.number().optional(),
+  location: z.any().optional(),
+  category: z.array(z.number()).default([]),
   budget: z.string().optional(),
-  bedrooms: z.string().optional(),
+  bedrooms: z.array(z.string()).default([]),
 });
 
 const SignUpPage = () => {
@@ -83,66 +87,32 @@ const SignUpPage = () => {
       selectedLocation: "",
       category: undefined,
       budget: "",
-      bedrooms: "",
+      bedrooms: [],
     },
   });
 
-  const priceRanges = [
-    {
-      label: "Under €1M",
-      value: "0-1000000",
-    },
-    {
-      label: "€1M - €2M",
-      value: "1000000-2000000",
-    },
-    {
-      label: "€2M - €3.5M",
-      value: "2000000-3500000",
-    },
-    {
-      label: "€3.5M+",
-      value: "3500000+",
-    },
-  ];
+  console.log("Form Errors:", form.formState.errors);
 
-  const bedroomRanges = [
-    {
-      label: "1",
-      value: "1",
-    },
-    {
-      label: "2",
-      value: "2",
-    },
-    {
-      label: "3",
-      value: "3",
-    },
-    {
-      label: "4",
-      value: "4",
-    },
-    {
-      label: "5+",
-      value: "5+",
-    },
-  ];
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!nextPage && values) {
       setNextPage(true);
     }
     if (nextPage && values) {
-      const location = values.selectedLocation;
+      const location = mainReducer?.all_location_list?.find(
+        (item: any) => item.id === values.location
+      )
       const payload = {
         ...values,
         user_type: "client",
         locationCity: location?.city_name ? location?.city_name : null,
         locationArea: location?.area_name ? location?.area_name : null,
         locationSubarea: location?.subarea_name ? location?.subarea_name : null,
+        locationId: values.location,
       };
+      console.log("payload::", payload)
       delete payload.selectedLocation;
+      delete payload.location;
       postData(App_url.endpoint_url.USER_LOGIN, payload)
         ?.then((response: any) => {
           if (response?.status === 200) {
@@ -178,11 +148,19 @@ const SignUpPage = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const searchedLocations = searchValue.trim()
-    ? mainReducer?.all_location_list?.filter((item: any) =>
-      item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
-    )
-    : [];
+  const propertyTypeOptions =
+    mainReducer?.property_type_list?.map((item: any) => ({
+      value: item?.id,
+      label: item?.name,
+      key: item?.id,
+    })) || [];
+
+  const locationOptions =
+    mainReducer?.all_location_list?.map((item: any) => ({
+      value: item?.id,
+      label: item?.name,
+      key: item?.id,
+    })) || [];
 
   return (
     <>
@@ -364,147 +342,24 @@ const SignUpPage = () => {
                   </p>
                 </div>{" "}
                 <div className="grid grid-cols-1 gap-4">
-                  <FormField
+                  <DropdownSelect
+                    label="Preferred Location"
+                    defaultValue="Preferred Location"
+                    options={locationOptions}
                     control={form.control}
-                    name="selectedLocation"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold font-inter text-[#101828]">
-                          Preferred Location
-                        </FormLabel>
-
-                        <FormControl>
-                          <div ref={dropdownRef} className="relative">
-                            <input
-                              type="text"
-                              value={searchValue}
-                              placeholder="Search location"
-                              className="w-full h-12 pl-4 pr-4 rounded-full border border-[#D1D5DB] bg-white text-black focus:outline-none"
-                              onChange={(e) => {
-                                const value = e.target.value;
-
-                                setSearchValue(value);
-                                field.onChange(value);
-
-                                setSearchDropdown(value.trim().length > 0);
-                              }}
-                              onFocus={() => setSearchDropdown(true)}
-                            />
-
-                            {searchDropdown && searchValue && (
-                              <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[250px] overflow-y-auto scrollbar-hide">
-                                {searchedLocations.filter((item: any) =>
-                                  item.name
-                                    .toLowerCase()
-                                    .includes(searchValue.toLowerCase()),
-                                ).length ? (
-                                  <ul>
-                                    {searchedLocations
-                                      .filter((item: any) =>
-                                        item.name
-                                          .toLowerCase()
-                                          .includes(searchValue.toLowerCase()),
-                                      )
-                                      .map((item: any) => (
-                                        <li key={item.id}>
-                                          <button
-                                            type="button"
-                                            className="w-full text-left px-4 py-3 hover:bg-slate-100"
-                                            onMouseDown={(e) => {
-                                              e.preventDefault();
-                                              setSearchValue(item.name);
-                                              field.onChange(item);
-                                              setSearchDropdown(false);
-                                            }}
-                                          >
-                                            {item.name}
-                                          </button>
-                                        </li>
-                                      ))}
-                                  </ul>
-                                ) : (
-                                  <div className="px-4 py-3 text-sm text-gray-500">
-                                    No locations found
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
+                    name="location"
+                    labelClassName="font-bold"
+                    isRounded
                   />
-                  <FormField
+                  <DropdownSelect
+                    label="Property Type"
+                    defaultValue="Property Type"
+                    options={propertyTypeOptions}
                     control={form.control}
                     name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold font-inter text-[#101828]">
-                          Property Type
-                        </FormLabel>
-
-                        <FormControl>
-                          <div ref={dropdownRef} className="relative">
-                            <input
-                              type="text"
-                              value={propertyTypeSearch}
-                              placeholder="Search property type"
-                              className="w-full h-12 pl-4 pr-4 rounded-full border border-[#D1D5DB] bg-white text-black focus:outline-none"
-                              onChange={(e) => {
-                                const value = e.target.value;
-
-                                setPropertyTypeSearch(value);
-                                setPropertyTypeDropdown(true);
-                              }}
-                              onFocus={() => setPropertyTypeDropdown(true)}
-                            />
-
-                            {propertyTypeDropdown && (
-                              <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[250px] overflow-y-auto scrollbar-hide">
-                                {mainReducer?.property_type_list?.filter(
-                                  (item: any) =>
-                                    item.name
-                                      .toLowerCase()
-                                      .includes(
-                                        propertyTypeSearch.toLowerCase(),
-                                      ),
-                                ).length ? (
-                                  <ul>
-                                    {mainReducer?.property_type_list
-                                      ?.filter((item: any) =>
-                                        item.name
-                                          .toLowerCase()
-                                          .includes(
-                                            propertyTypeSearch.toLowerCase(),
-                                          ),
-                                      )
-                                      .map((item: any) => (
-                                        <li key={item.id}>
-                                          <button
-                                            type="button"
-                                            className="w-full text-left px-4 py-3 hover:bg-slate-100"
-                                            onClick={() => {
-                                              setPropertyTypeSearch(item.name);
-                                              field.onChange(item.id);
-                                              setPropertyTypeDropdown(false);
-                                            }}
-                                          >
-                                            {item.name}
-                                          </button>
-                                        </li>
-                                      ))}
-                                  </ul>
-                                ) : (
-                                  <div className="px-4 py-3 text-sm text-gray-500">
-                                    No property types found
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
+                    labelClassName="font-bold"
+                    multiselect
+                    isRounded
                   />
 
                   <FormField
@@ -544,41 +399,12 @@ const SignUpPage = () => {
                     )}
                   />
 
-                  <FormField
+                  <MultiSelectButtonGroup
                     control={form.control}
                     name="bedrooms"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-semibold font-inter text-[#101828]">
-                          Bedrooms
-                        </FormLabel>
-
-                        <FormControl>
-                          <div className="grid grid-cols-5 gap-2">
-                            {bedroomRanges?.map((item) => {
-                              const isSelected = field.value === item.value;
-
-                              return (
-                                <button
-                                  key={item.value}
-                                  type="button"
-                                  onClick={() => field.onChange(item.value)}
-                                  className={`
-                  h-11 rounded-full border text-sm font-medium transition-all
-                  ${isSelected
-                                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                                    }
-                `}
-                                >
-                                  {item.label}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
+                    label="Bedrooms"
+                    options={bedroomRanges}
+                    columns={5}
                   />
                 </div>
                 <div className="flex items-center mt-2 gap-5">

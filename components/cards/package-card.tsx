@@ -9,10 +9,11 @@ import {
   CircleStar,
   CircleUserRound,
   Crown,
-  Gem
+  Gem,
+  Loader2
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
 import { formatEuro } from "@/utils/common";
@@ -35,6 +36,8 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
   const isLoggedIn = !!user_data?.access_token;
   const dispatch = useDispatch();
   const router = useRouter();
+  const [loadingPlanId, setLoadingPlanId] = useState(null);
+
 
   const createPayment = async (value: any) => {
     if (value?.price == "VIP") {
@@ -60,6 +63,24 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         } else {
         }
       });
+    }
+  };
+
+  const handlePlanClick = async (plan: any) => {
+    if (!isLoggedIn) {
+      if (plan?.price === "VIP") {
+        router.push(App_url.link.CONTACT_US);
+      } else {
+        dispatch(setLoginPopup(true));
+      }
+      return;
+    }
+
+    try {
+      setLoadingPlanId(plan._id);
+      await createPayment(plan);
+    } finally {
+      setLoadingPlanId(null);
     }
   };
 
@@ -108,18 +129,13 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         ))}
       </ul>
       <button
-        onClick={() =>
-          isLoggedIn
-            ? createPayment(plan)
-            : plan?.price === "VIP"
-              ? router.push(App_url.link.CONTACT_US)
-              : dispatch(setLoginPopup(true))
-        }
+        onClick={() => handlePlanClick(plan)}
         className={`${user_data?.user?.package?._id === plan?._id ? "bg-green-500 text-white cursor-not-allowed pointer-events-none border-none" : "text-[#000000]"} w-full  text-sm  py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition`}
       >
         {user_data?.user?.package?._id === plan?._id
           ? "Active"
-          : plan?.button_title}
+          : plan?.button_title} {loadingPlanId == plan._id && <Loader2 className="h-5 w-5 animate-spin" />
+        }
       </button>
       <LoginPopup />
     </div>

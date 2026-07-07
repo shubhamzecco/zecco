@@ -18,23 +18,29 @@ import { setPropertyFilter } from "@/redux/modules/main/action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as z from "zod";
 import AuthLayout from "../layout/page";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z
-    .string({ required_error: "Password is required" })
-    .min(6, { message: "Password must be at least 6 characters" }),
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d\W]).+$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number or special character."
+    ),
 });
 
 const Signin = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,39 +55,51 @@ const Signin = () => {
   }, []);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    AuthReq(App_url.endpoint_url.USER_SIGN_IN, {
-      ...values,
-      user_type: "client",
-    })
-      .then((response) => {
-        if (response?.success) {
-          const payload = {
-            ...response?.data,
-            user: response?.data?.user,
-            access_token: response?.data?.accessToken,
-          };
-          localStorage.setItem("access_token", response?.data?.accessToken);
-          dispatch(setLogin(true));
-          dispatch(setAuthData(payload));
-          const redirectUrl = localStorage.getItem("redirect_after_login");
-          toast.success(response?.message);
-          if (redirectUrl) {
-            router.push(redirectUrl);
-            localStorage.removeItem("redirect_after_login");
-          } else {
-            router.push(App_url.link.INITIAL_URL);
-          }
-        } else {
-          toast.error(response?.message || "Login failed.");
-        }
+    setLoading(true);
+    try {
+
+      AuthReq(App_url.endpoint_url.USER_SIGN_IN, {
+        ...values,
+        user_type: "client",
       })
-      .catch((error) => {
-        toast.error(
-          error?.response?.data?.error ||
+        .then((response) => {
+          if (response?.success) {
+            const payload = {
+              ...response?.data,
+              user: response?.data?.user,
+              access_token: response?.data?.accessToken,
+            };
+            localStorage.setItem("access_token", response?.data?.accessToken);
+            dispatch(setLogin(true));
+            dispatch(setAuthData(payload));
+            const redirectUrl = localStorage.getItem("redirect_after_login");
+            toast.success(response?.message);
+            if (redirectUrl) {
+              router.push(redirectUrl);
+              localStorage.removeItem("redirect_after_login");
+            } else {
+              router.push(App_url.link.INITIAL_URL);
+            }
+          } else {
+            toast.error(response?.message || "Login failed.");
+          }
+        })
+        .catch((error) => {
+          toast.error(
+            error?.response?.data?.error ||
             error?.message ||
             "An unexpected error occurred.",
-        );
-      });
+          );
+        });
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.error ||
+        error?.message ||
+        "An unexpected error occurred."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -104,11 +122,11 @@ const Signin = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel required className="font-semibold text-[#101828]">
-                    Your Email
+                    Email Address
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter email"
+                      placeholder="Email address"
                       className="h-12 rounded-full bg-white border-[#D1D5DB]"
                       {...field}
                     />
@@ -129,7 +147,7 @@ const Signin = () => {
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter password"
+                      placeholder="Password"
                       className="h-12 bg-white rounded-full border-[#D1D5DB]"
                       {...field}
                     />
@@ -170,7 +188,8 @@ const Signin = () => {
               type="submit"
               className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md"
             >
-              Login
+              Login  {loading && <Loader2 className="h-5 w-5 animate-spin" />
+              }
             </Button>
           </form>
         </Form>

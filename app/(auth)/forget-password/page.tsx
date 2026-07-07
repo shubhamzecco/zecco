@@ -82,11 +82,11 @@ const ForgetPassword = () => {
                     required
                     className="font-semibold font-inter text-[#101828]"
                   >
-                    Your Email
+                    Email Address
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter email"
+                      placeholder="Email address"
                       className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                       {...field}
                     />

@@ -67,7 +67,7 @@ export const App_url = {
     FORGET_PASSWORD_VERIFY_OTP: "/api/auth/verify-otp",
     VERIFY_OTP: "/api/auth/verify-otp",
     VERIFY_ACCOUNT: "/api/auth/verify-account",
-    RESEND_OTP: "/resend-otp",
+    RESEND_OTP: "/api/auth/resend-otp",
     LOGOUT: "/api/auth/logout",
     UPLOAD_FILE: "/api/upload",
     AI_INSIGHT: "/api/ai-insight",

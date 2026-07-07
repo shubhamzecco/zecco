@@ -136,3 +136,76 @@ export const formatEuro = (amount: number | string) => {
 
   return `€${" "}${formatted}`;
 };
+
+
+export const priceRanges = [
+  {
+    label: "Under €1M",
+    value: "0-1000000",
+  },
+  {
+    label: "€1M - €2M",
+    value: "1000000-2000000",
+  },
+  {
+    label: "€2M - €3.5M",
+    value: "2000000-3500000",
+  },
+  {
+    label: "€3.5M+",
+    value: "3500000+",
+  },
+];
+
+export const investmentType = [
+  {
+    label: "Wealth Preservation",
+    value: "wealth_preservation",
+  },
+  {
+    label: "Return",
+    value: "return",
+  },
+  {
+    label: "Growth",
+    value: "growth",
+  },
+];
+
+export const propertyTypes = [
+  {
+    label: "New Property",
+    value: "new_property",
+  },
+  {
+    label: "Existing Property",
+    value: "existing_property",
+  },
+  {
+    label: "Rental Property",
+    value: "rental_property",
+  },
+];
+
+export const bedroomRanges = [
+  {
+    label: "1",
+    value: "1",
+  },
+  {
+    label: "2",
+    value: "2",
+  },
+  {
+    label: "3",
+    value: "3",
+  },
+  {
+    label: "4",
+    value: "4",
+  },
+  {
+    label: "5+",
+    value: "5+",
+  },
+];

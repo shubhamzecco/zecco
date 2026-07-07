@@ -39,7 +39,7 @@ const formSchema = z.object({
 
 /* -------------------- CONSTANTS -------------------- */
 
-const OTP_TIME = 300; // 5 minutes
+const OTP_TIME = 10; // 5 minutes
 
 /* -------------------- COMPONENT -------------------- */
 
@@ -173,12 +173,20 @@ const OtpVerification = () => {
   /* -------------------- RESEND -------------------- */
 
   const handleResendOtp = () => {
-    postData(App_url?.endpoint_url?.RESEND_OTP, { email }).then(() => {
-      setTimeLeft(OTP_TIME);
-      setCanResend(false);
-      form.setValue("otp", "");
-      inputsRef.current[0]?.focus();
-    });
+    postData(App_url?.endpoint_url?.RESEND_OTP, { email })
+      .then((res) => {
+        toast.success(res?.message || "OTP resent successfully");
+
+        setTimeLeft(OTP_TIME);
+        setCanResend(false);
+        form.setValue("otp", "");
+        inputsRef.current[0]?.focus();
+      })
+      .catch((err) => {
+        toast.error(
+          err?.response?.data?.message || "Failed to resend OTP"
+        );
+      });
   };
 
   /* -------------------- UI -------------------- */
@@ -189,104 +197,107 @@ const OtpVerification = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <AuthLayout
-      heading="Welcome Back to Zecco!"
-      description="Sign in to Your Account"
-    >
-      <Form {...form}>
-        <form
-          className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <FormField
-            control={form.control}
-            name="otp"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <>
-                    {/* TIMER / RESEND */}
-                    <div className="text-center my-7">
-                      {!canResend ? (
-                        <p className="text-black/60 flex flex-col items-center justify-center">
-                          Resend OTP in{" "}
-                          <span className="font-semibold text-brand-orange text-2xl ">
-                            {formatTime(timeLeft)}
-                          </span>
-                        </p>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={handleResendOtp}
-                          className="text-primary font-semibold hover:underline"
-                        >
-                          Resend OTP
-                        </button>
-                      )}
-                    </div>
+        heading="Welcome Back to Zecco!"
+        description="Sign in to Your Account"
+      >
+        <Form {...form}>
+          <form
+            className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="otp"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <>
+                      {/* TIMER / RESEND */}
+                      <div className="text-center my-7">
+                        {!canResend ? (
+                          <p className="text-black/60 flex flex-col items-center justify-center">
+                            Resend OTP in{" "}
+                            <span className="font-semibold text-brand-orange text-2xl ">
+                              {formatTime(timeLeft)}
+                            </span>
+                          </p>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={handleResendOtp}
+                            className="text-primary font-semibold hover:underline"
+                          >
+                            Resend OTP
+                          </button>
+                        )}
+                      </div>
 
-                    {/* OTP INPUTS */}
-                    <div className="flex justify-center gap-3">
-                      {Array.from({ length: 6 }).map((_, index) => (
-                        <input
-                          key={index}
-                          ref={(el) => {
-                            inputsRef.current[index] = el;
-                          }}
-                          type="text"
-                          inputMode="numeric"
-                          maxLength={1}
-                          value={field.value[index] || ""}
-                          onChange={(e) =>
-                            handleChange(e, index, field.value, field.onChange)
-                          }
-                          onKeyDown={(e) =>
-                            handleKeyDown(e, index, field.value, field.onChange)
-                          }
-                          onPaste={(e) => handlePaste(e, field.onChange)}
-                          className="w-12 h-12 text-center text-xl rounded-[10px]
+                      {/* OTP INPUTS */}
+                      <div className="flex justify-center gap-3">
+                        {Array.from({ length: 6 }).map((_, index) => (
+                          <input
+                            key={index}
+                            ref={(el) => {
+                              inputsRef.current[index] = el;
+                            }}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={field.value[index] || ""}
+                            onChange={(e) =>
+                              handleChange(e, index, field.value, field.onChange)
+                            }
+                            onKeyDown={(e) =>
+                              handleKeyDown(e, index, field.value, field.onChange)
+                            }
+                            onPaste={(e) => handlePaste(e, field.onChange)}
+                            className="w-12 h-12 text-center text-xl rounded-[10px]
                               border border-indigo-50 shadow-lg bg-indigo-50 text-black
                               focus:outline-none focus:ring-2"
-                        />
-                      ))}
-                    </div>
-                  </>
-                </FormControl>
-                <FormMessage className="text-center mt-3" />
-              </FormItem>
-            )}
-          />
-          <div className="flex justify-center items-center mt-4 mb-5 gap-5">
-            <Button
-              type="submit"
-              className="w-[80%] capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md"
+                          />
+                        ))}
+                      </div>
+                    </>
+                  </FormControl>
+                  <FormMessage className="text-center mt-3" />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-center items-center mt-4 mb-5 gap-5">
+              <Button
+                type="submit"
+                className="w-[80%] capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md"
+              >
+                Verify OTP
+              </Button>
+            </div>
+          </form>
+
+          <div className="flex items-center px-8 mt-1 mb-5">
+            <Link
+              href={App_url?.link?.SIGN_UP}
+              className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
             >
-              Verify OTP
-            </Button>
+              Don't have an account?
+              <span className="text-[#3B82F6] font-bold font-inter text-base">
+                {" "}
+                Register
+              </span>
+            </Link>
           </div>
-        </form>
+        </Form>
 
-        <div className="flex items-center px-8 mt-1 mb-5">
-          <Link
-            href={App_url?.link?.SIGN_UP}
-            className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
-          >
-            Don't have an account?
-            <span className="text-[#3B82F6] font-bold font-inter text-base">
-              {" "}
-              Register
-            </span>
-          </Link>
-        </div>
-      </Form>
-
-      {packageModal && (
-        <PackagesModal
-          userId={userId}
-          // formValue={formValue ?? ({} as IFormValue)}
-          onClose={() => setPackageModal(false)}
-        />
-      )}
-    </AuthLayout>
+        {packageModal && (
+          <PackagesModal
+            userId={userId}
+            // formValue={formValue ?? ({} as IFormValue)}
+            onClose={() => {
+              setPackageModal(false);
+              router.push("/signin");
+            }}
+          />
+        )}
+      </AuthLayout>
     </>
   );
 };

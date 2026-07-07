@@ -65,6 +65,7 @@ interface IPreferences {
   locationArea?: string;
   locationCity?: string;
   locationSubarea?: string;
+  locationId?: string;
   types?: string;
 }
 
