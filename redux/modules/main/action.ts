@@ -50,7 +50,8 @@ export const ActionTypes = {
   SET_FEATURES: "SET_FEATURES",
   SET_PRIVACY_POLICY: "SET_PRIVACY_POLICY",
   SET_TERMS_CONDITIONS: "SET_TERMS_CONDITIONS",
-  SET_PREFERENCE_PROPERTY_LIST: "SET_PREFERENCE_PROPERTY_LIST"
+  SET_PREFERENCE_PROPERTY_LIST: "SET_PREFERENCE_PROPERTY_LIST",
+  SET_UPDATE_FAVIOURATE_LIKE: "SET_UPDATE_FAVIOURATE_LIKE"
 };
 
 export const setPropertyFilter = (payload: any) => {
@@ -176,6 +177,19 @@ export const setPreferenceList = (payload: IPreferenceResponse) => {
   return {
     type: ActionTypes.SET_PREFERENCE_PROPERTY_LIST,
     payload,
+  };
+};
+export const setUpdatePropertyLike = (payload: {
+  property_id?: string | number;
+  _id?: string | number;
+  isFavorite?: boolean;
+}) => {
+  return {
+    type: ActionTypes.SET_UPDATE_FAVIOURATE_LIKE,
+    payload: {
+      property_id: payload.property_id ?? payload._id,
+      isFavorite: payload.isFavorite,
+    },
   };
 };
 

@@ -3,7 +3,11 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs, setLoginPopup } from "@/redux/modules/main/action";
+import {
+  setBreadcrumbs,
+  setLoginPopup,
+  setUpdatePropertyLike,
+} from "@/redux/modules/main/action";
 import { IProperty } from "@/redux/modules/main/types";
 import {
   Bath,
@@ -18,7 +22,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
 import { formatEuro } from "@/utils/common";
@@ -44,6 +48,30 @@ const PropertyCard = ({
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [isSwiping, setIsSwiping] = useState(false);
+
+  const getIsFavoriteFromStore = () =>
+    mainReducer?.property_list_with_limit?.favorite_property?.includes(
+      String(property?._id),
+    ) ||
+    mainReducer?.zecco_favorite?.favorite_property?.includes(
+      String(property?._id),
+    ) ||
+    mainReducer?.favorite_property_list?.data?.some(
+      (item) => String(item._id) === String(property?._id),
+    ) ||
+    Boolean(property?.favorite);
+
+  const [isFavorite, setIsFavorite] = useState(getIsFavoriteFromStore);
+
+  useEffect(() => {
+    setIsFavorite(getIsFavoriteFromStore());
+  }, [
+    mainReducer?.property_list_with_limit?.favorite_property,
+    mainReducer?.zecco_favorite?.favorite_property,
+    mainReducer?.favorite_property_list?.data,
+    property?._id,
+    property?.favorite,
+  ]);
 
   const handleNavigate = () => {
     dispatch(
@@ -145,32 +173,24 @@ const PropertyCard = ({
     if (!user_data?.access_token) {
       dispatch(setLoginPopup(true));
       return;
-    } else {
-      if (
-        mainReducer?.property_list_with_limit?.favorite_property?.includes(
-          String(property?._id),
-        ) ||
-        mainReducer?.zecco_favorite?.favorite_property?.includes(
-          String(property?._id),
-        )
-      ) {
-        sendMessage("action", {
-          type: "userService",
-          action: "removeFavorite",
-          payload: {
-            property_id: property?._id,
-          },
-        });
-      } else {
-        sendMessage("action", {
-          type: "userService",
-          action: "addFavorite",
-          payload: {
-            property_id: property?._id,
-          },
-        });
-      }
     }
+
+    const nextFavorite = !isFavorite;
+    setIsFavorite(nextFavorite);
+    dispatch(
+      setUpdatePropertyLike({
+        property_id: property?._id,
+        isFavorite: nextFavorite,
+      }),
+    );
+
+    sendMessage("action", {
+      type: "userService",
+      action: nextFavorite ? "addFavorite" : "removeFavorite",
+      payload: {
+        property_id: property?._id,
+      },
+    });
   };
 
   return (
@@ -264,12 +284,7 @@ const PropertyCard = ({
           className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
           aria-label="up"
         >
-          {mainReducer?.property_list_with_limit?.favorite_property?.includes(
-            String(property?._id),
-          ) ||
-            mainReducer?.zecco_favorite?.favorite_property?.includes(
-              String(property?._id),
-            ) ? (
+          {isFavorite ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
             <Heart size={20} className="text-white hover:text-red-500" />

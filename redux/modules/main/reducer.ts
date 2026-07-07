@@ -206,6 +206,66 @@ const mainReducer = (
         },
       };
     }
+    case ActionTypes.SET_UPDATE_FAVIOURATE_LIKE: {
+      const propertyId = String(action.payload.property_id);
+
+      const resolveFavoriteState = (currentlyFavorite: boolean) =>
+        action.payload.isFavorite !== undefined
+          ? action.payload.isFavorite
+          : !currentlyFavorite;
+
+      const updateFavoriteList = (list: any) => {
+        if (!list) return list;
+
+        const favoriteProperty = list.favorite_property ?? [];
+        const currentlyFavorite = favoriteProperty.includes(propertyId);
+        const isFavorite = resolveFavoriteState(currentlyFavorite);
+
+        return {
+          ...list,
+          favorite_property: isFavorite
+            ? [...new Set([...favoriteProperty, propertyId])]
+            : favoriteProperty.filter((id: string) => id !== propertyId),
+
+          data: list.data?.map((item: any) =>
+            String(item._id) === propertyId
+              ? {
+                ...item,
+                favorite: isFavorite,
+              }
+              : item
+          ),
+        };
+      };
+
+      const updateFavoritePropertyList = () => {
+        const list = state.favorite_property_list;
+        if (!list) return list;
+
+        const currentlyFavorite = list.data.some(
+          (item) => String(item._id) === propertyId,
+        );
+        const isFavorite = resolveFavoriteState(currentlyFavorite);
+
+        if (isFavorite) {
+          return list;
+        }
+
+        return {
+          ...list,
+          data: list.data.filter((item) => String(item._id) !== propertyId),
+        };
+      };
+
+      return {
+        ...state,
+        property_list_with_limit: updateFavoriteList(
+          state.property_list_with_limit
+        ),
+        zecco_favorite: updateFavoriteList(state.zecco_favorite),
+        favorite_property_list: updateFavoritePropertyList(),
+      };
+    }
 
     case ActionTypes.SET_BLOGS_LIST_WITH_LIMIT: {
       return {

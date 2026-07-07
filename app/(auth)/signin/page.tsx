@@ -54,43 +54,40 @@ const Signin = () => {
     dispatch(setPropertyFilter({}));
   }, []);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
-    try {
 
-      AuthReq(App_url.endpoint_url.USER_SIGN_IN, {
+    try {
+      const response = await AuthReq(App_url.endpoint_url.USER_SIGN_IN, {
         ...values,
         user_type: "client",
-      })
-        .then((response) => {
-          if (response?.success) {
-            const payload = {
-              ...response?.data,
-              user: response?.data?.user,
-              access_token: response?.data?.accessToken,
-            };
-            localStorage.setItem("access_token", response?.data?.accessToken);
-            dispatch(setLogin(true));
-            dispatch(setAuthData(payload));
-            const redirectUrl = localStorage.getItem("redirect_after_login");
-            toast.success(response?.message);
-            if (redirectUrl) {
-              router.push(redirectUrl);
-              localStorage.removeItem("redirect_after_login");
-            } else {
-              router.push(App_url.link.INITIAL_URL);
-            }
-          } else {
-            toast.error(response?.message || "Login failed.");
-          }
-        })
-        .catch((error) => {
-          toast.error(
-            error?.response?.data?.error ||
-            error?.message ||
-            "An unexpected error occurred.",
-          );
-        });
+      });
+
+      if (response?.success) {
+        const payload = {
+          ...response.data,
+          user: response.data.user,
+          access_token: response.data.accessToken,
+        };
+
+        localStorage.setItem("access_token", response.data.accessToken);
+
+        dispatch(setLogin(true));
+        dispatch(setAuthData(payload));
+
+        const redirectUrl = localStorage.getItem("redirect_after_login");
+
+        toast.success(response.message);
+
+        if (redirectUrl) {
+          localStorage.removeItem("redirect_after_login");
+          router.push(redirectUrl);
+        } else {
+          router.push(App_url.link.INITIAL_URL);
+        }
+      } else {
+        toast.error(response?.message || "Login failed.");
+      }
     } catch (error: any) {
       toast.error(
         error?.response?.data?.error ||
