@@ -20,7 +20,7 @@ import * as z from "zod";
 
 
 export const PreferenceSection = () => {
-  const { user_data, mainReducer } = usePosterReducers();
+  const { user_data, mainReducer, socketResponse } = usePosterReducers();
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
 
   const preferenceForm = useForm<z.infer<typeof preferenceSchema>>({

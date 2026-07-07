@@ -1,5 +1,6 @@
 "use client";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import PropertyCardSkeleton from "@/app/costa-del-sol/[location]/components/PropertyCardSkeleton";
 import PropertyCard from "@/components/cards/PropertyCard";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useRouter } from "next/navigation";
@@ -92,6 +93,24 @@ const PreferenceProperty = () => {
     };
   }, [page, loading, hasMore]);
 
+  useEffect(() => {
+    if (
+      lastEvent?.data?.status &&
+      lastEvent?.data?.request?.type === "userService" &&
+      lastEvent?.data?.request?.action === "update"
+    ) {
+      sendMessage("action", {
+        type: "userService",
+        action: "getPreferenceProperties",
+        payload: {
+          limit: LIMIT,
+          page: 1,
+          status: true,
+        },
+      });
+    }
+  }, [lastEvent]);
+
   return (
     <section className="mt-1">
       <div className="flex justify-between items-center mb-4">
@@ -107,8 +126,12 @@ const PreferenceProperty = () => {
         </div>
 
         {loading && (
-          <div className="py-10 text-center text-sm font-medium text-gray-500">
-            Loading...
+          <div
+            className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+          >
+            {Array.from({ length: 3 }).map((_, index) => (
+              <PropertyCardSkeleton key={index} />
+            ))}
           </div>
         )}
 
