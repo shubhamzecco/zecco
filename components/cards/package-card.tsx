@@ -42,27 +42,29 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
   const createPayment = async (value: any) => {
     if (value?.price == "VIP") {
       router.push(App_url.link.CONTACT_US);
-    } else {
-      const payload = {
-        package_id: value?._id,
-        user_id: user_data?.user?._id,
-        cancelURL: window.location.href,
-        // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
-      };
-      CommonApiRequest(
+      return;
+    }
+
+    const payload = {
+      package_id: value?._id,
+      user_id: user_data?.user?._id,
+      cancelURL: window.location.href,
+    };
+
+    try {
+      const response: any = await CommonApiRequest(
         "POST",
         `${App_url.endpoint_url?.CREATE_PAYMENT}`,
         payload,
         {},
-        // true,
-      )?.then(async (response: any) => {
-        if (response?.status === 200) {
-          if (response.success) {
-            window.location.href = response.data.checkoutUrl;
-          }
-        } else {
-        }
-      });
+      );
+
+      if (response?.status === 200 && response?.success) {
+        window.location.href = response.data.checkoutUrl;
+      }
+    } catch (error) {
+      // handle/log error so loading state still clears cleanly
+      console.error(error);
     }
   };
 
