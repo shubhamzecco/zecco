@@ -39,10 +39,10 @@ export default function Navbar() {
   return (
     <nav className="absolute top-7 left-0 w-full z-50">
       {/* Top Bar */}
-      <div className="lg:mx-10 px-4 sm:px-6 lg:px-8">
+      <div className="sm:mx-5 px-4 sm:px-6 lg:px-8">
         {/* <div className="bg-white/20 border border-white/70 rounded-full"> */}
           <div className="bg-[#e3dfdf5c] border border-[#b8dbf7] rounded-full">
-          <div className="grid grid-cols-2 lg:grid-cols-[1fr_auto_1fr] items-center w-full h-[3.2rem] px-4">
+          <div className="max-sm:grid grid-cols-2 lg:grid sm:flex justify-between lg:grid-cols-[1fr_auto_1fr] items-center w-full h-[3.2rem] px-4">
             <Link href="/" className="flex items-center gap-2 w-[25%]">
               <Image
                 src={App_url.image.chat_logo}
@@ -53,7 +53,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-8">
               {NAV_ITEMS?.map((item) => (
                 <button
                   key={item?.label}
@@ -71,7 +71,7 @@ export default function Navbar() {
             {/* Desktop Buttons */}
             {mounted ? (
               user_data?.user ? (
-                <div className="hidden md:flex justify-end items-center gap-2">
+                <div className="hidden lg:flex justify-end items-center gap-2">
                   <ImageDropdown
                     name={user_data?.user?.first_name}
                     avatar={App_url.image.image_1}
@@ -94,7 +94,7 @@ export default function Navbar() {
                   />
                 </div>
               ) : (
-                <div className="hidden md:flex justify-end items-center gap-2">
+                <div className="hidden lg:flex justify-end items-center gap-2">
                   <Link
                     href={App_url.link.SIGN_IN}
                     className="px-5 py-2 text-sm flex items-center gap-2"
@@ -119,7 +119,7 @@ export default function Navbar() {
             {/* Mobile Button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden max-md:flex justify-end items-center p-2 rounded-lg text-gray-700"
+              className="lg:hidden max-md:flex justify-end items-center p-2 rounded-lg text-gray-700"
               aria-label="close"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -130,7 +130,7 @@ export default function Navbar() {
 
       {/* ✅ Mobile Menu (OUTSIDE rounded container) */}
       <div
-        className={`md:hidden mx-4 mt-3 bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ${
+        className={`lg:hidden mx-4 mt-3 bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ${
           isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >

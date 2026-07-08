@@ -151,13 +151,13 @@ const PropertySearchBar = () => {
           sm:items-center
           gap-3 sm:gap-2
           rounded-full
-          lg:border border-border-gray
-          lg:bg-white
+          sm:border border-border-gray
+          sm:bg-white
           px-2 py-3 sm:py-1.5
           shadow-sm
         "
       >
-        <div className="flex gap-5 max-md:bg-white max-md:rounded-full max-md:p-1">
+        <div className="flex max-sm:gap-1 gap-5 max-md:bg-white max-md:rounded-full max-md:p-1">
           {/* BUY / RENT */}
           <div className="flex items-center rounded-full bg-[#D6E0EC] p-1 gap-2 w-full sm:w-auto">
             <button
@@ -181,7 +181,6 @@ const PropertySearchBar = () => {
             </button>
           </div>
 
-          {/* PROPERTY TYPE */}
           <div className="flex items-center rounded-full bg-[#D6E0EC] p-2 w-full sm:w-auto">
             <div ref={dropdownRef} className="relative">
               <button
@@ -226,7 +225,7 @@ const PropertySearchBar = () => {
         {/* SEARCH */}
         <div
           ref={searchRef}
-          className="flex max-md:bg-white max-md:rounded-full max-md:p-[2px] lg:w-full relative"
+          className="flex max-md:bg-white max-md:rounded-full max-md:p-[2px] sm:w-full relative"
         >
           <div className="flex max-md:flex-1 items-center gap-2 px-3 max-md:my-3 w-full">
             <Search size={18} className="text-slate-gray shrink-0" />
@@ -283,7 +282,7 @@ const PropertySearchBar = () => {
           <button
             onClick={handleSearch}
             className="
-              lg:w-[30%]
+              sm:w-[30%]
               whitespace-nowrap
               flex items-center justify-center gap-2
               rounded-full

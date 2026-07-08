@@ -423,7 +423,7 @@ const Page = () => {
         <div className="flex items-start gap-4">
           {/* DESKTOP FILTER */}
           <div
-            className=" min-w-[300px] lg:block"
+            className=" min-w-[300px] hidden lg:block"
             style={
               {
                 // height: gridHeight ? `${gridHeight}px` : "100%",

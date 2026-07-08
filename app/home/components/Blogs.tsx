@@ -45,15 +45,21 @@ export default function Blogs() {
             </p>
             <button
               onClick={handleNavigate}
-              className="rounded-full font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white "
+              className="rounded-full whitespace-nowrap font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white "
             >
               View All Blogs
             </button>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           <BlogCards data={mainReducer?.blogs_list_with_limit?.data || []} />
         </div>
+        <button
+          onClick={handleNavigate}
+          className="rounded-full sm:hidden mt-5 justify-center items-center flex mx-auto whitespace-nowrap font-manrope bg-btn_color font-medium  px-7  py-2 text-sm shadow-sm  text-white "
+        >
+          View All Blogs
+        </button>
       </div>
     </section>
   );

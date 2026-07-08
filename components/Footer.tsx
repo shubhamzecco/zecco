@@ -38,7 +38,7 @@ export default function Footer() {
       </div>
 
       <div className="relative lg:mx-10 px-6 pt-12 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* BRAND */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -120,7 +120,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* HELP */}
+          
           <div>
             <div className="mb-3 ml-2">
               <h4 className="text-white font-instrument_sans text-md font-medium ">

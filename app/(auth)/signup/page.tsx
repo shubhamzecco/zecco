@@ -188,7 +188,7 @@ const SignUpPage = () => {
             {!nextPage ? (
               <>
                 <div className="grid grid-cols-1 gap-4">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="first_name"

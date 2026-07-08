@@ -19,7 +19,7 @@ const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
           <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </aside>
 
-        <section className="lg:flex-1">{children}</section>
+        <section className="lg:flex-1 w-full">{children}</section>
       </div>
 
       <Footer />

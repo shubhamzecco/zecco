@@ -4,13 +4,13 @@ import PropertySearchBar from "./PropertySearchBar";
 
 export default function HeroSection() {
   return (
-    <div className="relative  h-[100vh] w-full  bg-gradient-to-b from-sky-600/20  via-white to-white">
+    <div className="relative h-[80vh] sm:h-[60vh]   lg:h-[100vh] w-full  bg-gradient-to-b from-sky-600/20  via-white to-white">
       {/* Background Image */}
       <Image
         src={App_url.image.home}
         alt="Luxury villa in Spain"
         fill
-        className="lg:object-fill max-md:object-none mx-auto"
+        className="lg:object-fill max-md:object-cover mx-auto"
         priority
       />
       <div className="absolute top-[23%] lg:top-[23%] left-0 right-0 flex flex-col items-center text-center px-4 -translate-y-1/2">

@@ -79,7 +79,7 @@ export default function SmarterSearch() {
           </div>
 
           {/* FLOATING CARD */}
-          <div className="absolute max-md:-bottom-16 lg:bottom-0 lg:-left-6 bg-white rounded-2xl shadow-xl p-5 w-[290px]">
+          <div className="absolute max-sm:-bottom-16 sm:bottom-0 lg:bottom-0 lg:-left-6 bg-white rounded-2xl shadow-xl p-5 w-[290px]">
             <div className="flex items-start gap-3">
               <div className="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
                 <Zap size={18} className="text-[#D97706]" />
