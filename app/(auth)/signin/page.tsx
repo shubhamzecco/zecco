@@ -121,7 +121,7 @@ const Signin = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel required className="font-semibold text-[#101828]">
-                    Email 
+                    Email Address
                   </FormLabel>
                   <FormControl>
                     <Input
