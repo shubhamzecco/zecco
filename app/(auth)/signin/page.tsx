@@ -119,7 +119,7 @@ const Signin = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel required className="font-semibold text-[#101828]">
-                    Email Address
+                    Email 
                   </FormLabel>
                   <FormControl>
                     <Input

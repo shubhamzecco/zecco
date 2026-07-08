@@ -9,7 +9,6 @@ export const privateRoutes = [
   App_url.link.PROFILE,
   App_url.link.MESSAGE,
   App_url.link.PREFERENCES,
-  App_url.link.ZECCO_FAVORITES,
 ];
 
 export const publicRoutes = [

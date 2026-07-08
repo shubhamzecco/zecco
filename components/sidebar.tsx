@@ -7,6 +7,7 @@ import {
   Archive,
   Heart,
   LayoutGrid,
+  LogOut,
   Logs,
   MessagesSquare,
   Search,
@@ -16,6 +17,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import ProfileAvatar from "./profile";
+import { useDispatch } from "react-redux";
+import { setLogout } from "@/redux/actions/action";
+import { setAuthData } from "@/redux/modules/common/user_data/action";
+import { setReduxClear } from "@/redux/modules/main/action";
 
 const menuItems = [
   { name: "Dashboard", href: App_url.link.DASHBOARD, icon: LayoutGrid },
@@ -38,9 +43,11 @@ type SidebarProps = {
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { user_data } = usePosterReducers();
+  const dispatch = useDispatch()
+  const router = useRouter()
   return (
     <>
-      <aside className="hidden md:flex w-full max-md:h-[calc(100vh-50px)] bg-white pl-14 px-10 py-6 flex-col overflow-y-scroll hide-scrollbar">
+      <aside className="hidden lg:flex w-full max-md:h-[calc(100vh-50px)] bg-white pl-14 px-10 py-6 flex-col overflow-y-scroll hide-scrollbar">
         <div className="flex items-center gap-3 border-b border-[#E2E9E0] pb-5 mt-1 mb-5">
           {user_data?.user?.profile_image ? (
             <Image
@@ -79,10 +86,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 key={item.name}
                 href={item.href}
                 className={`flex font-manrope text-[0.9rem] font-semibold items-center gap-3 px-4 py-2.5 rounded-full transition
-                  ${
-                    isActive
-                      ? "bg-[#2563EB] text-white"
-                      : "text-[#111827] hover:bg-[#F3F4F6]"
+                  ${isActive
+                    ? "bg-[#2563EB] text-white"
+                    : "text-[#111827] hover:bg-[#F3F4F6]"
                   }`}
               >
                 <Icon size={23} />
@@ -99,19 +105,17 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       </aside>
 
       <div
-        className={`md:hidden fixed inset-0 z-40 mb-28  transition ${
-          isOpen ? "visible" : "invisible"
-        }`}
+        className={`lg:hidden fixed inset-0 z-40 mb-28  transition ${isOpen ? "visible" : "invisible"
+          }`}
       >
         <div
           onClick={onClose}
-          className={`absolute inset-0  transition-opacity ${
-            isOpen ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0  transition-opacity ${isOpen ? "opacity-100" : "opacity-0"
+            }`}
         />
         <div
           onClick={(e) => e.stopPropagation()}
-          className={`absolute right-0 bottom-0 top-[4.4rem] w-[85%] mb-28 min-h-[100vh] overflow-y-scroll max-w-sm bg-white shadow-xl transition-transform duration-300
+          className={`absolute right-0 bottom-0 top-[4.4rem] w-[85%] mb-28  min-h-[100vh] overflow-y-scroll max-w-sm bg-white shadow-xl transition-transform duration-300
             ${isOpen ? "translate-x-0" : "translate-x-full"}`}
         >
           <div className="flex items-center justify-between p-4 border-b">
@@ -151,17 +155,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               {menuItems?.map((item) => {
                 const isActive = pathname === item.href;
                 const Icon = item.icon;
-
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
                     onClick={onClose}
                     className={`flex font-manrope text-[0.9rem] font-semibold items-center gap-3 px-4 py-2.5 rounded-full transition
-                      ${
-                        isActive
-                          ? "bg-[#2563EB] text-white"
-                          : "text-[#111827] hover:bg-[#F3F4F6]"
+                      ${isActive
+                        ? "bg-[#2563EB] text-white"
+                        : "text-[#111827] hover:bg-[#F3F4F6]"
                       }`}
                   >
                     <Icon size={23} />
@@ -170,9 +172,24 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 );
               })}
             </nav>
-
-            {/* Agent Card */}
-            <div className="mt-auto pt-8">
+            <div className="p-4 max-lg:py-0  hidden max-lg:block">
+              <button
+                onClick={() => {
+                  dispatch(setLogout());
+                  localStorage.clear();
+                  dispatch(setAuthData({} as any));
+                  dispatch(setReduxClear());
+                  router.push(App_url.link.INITIAL_URL);
+                }}
+                className="group w-full flex items-center gap-3  py-2 rounded transition-colors hover:bg-red-50"
+              >
+                <LogOut className="w-5 h-5 text-red-500 group-hover:text-red-600" />
+                <span className="text-sm font-medium text-red-500 group-hover:text-red-600">
+                  Logout
+                </span>
+              </button>
+            </div>
+            <div className="lg:mt-auto pt-8 max-sm:pb-36">
               {user_data?.user?.agent?.agent && <AgentCard />}
             </div>
           </div>

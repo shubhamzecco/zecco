@@ -239,7 +239,7 @@ const SavedSearches = () => {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-gray-100 bg-white px-4 py-2 shadow-sm">
+            <div className="rounded-2xl whitespace-nowrap border border-gray-100 bg-white px-4 py-2 shadow-sm">
               <span className="font-semibold text-[#2563EB]">
                 {mainReducer?.saved_searches?.data?.length || 0}
               </span>{" "}

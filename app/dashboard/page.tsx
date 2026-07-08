@@ -16,7 +16,7 @@ const DashboardPage = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <div
-        className="px-5 lg:px-12  pt-2 pb-4 mb-10
+        className="sm:px-5 lg:px-12  pt-2 pb-4 mb-10 p-3
                             bg-gradient-to-r
                         from-[#60A5FA]/10
                         via-[#fafafa] via-[70%]
@@ -26,7 +26,7 @@ const DashboardPage = () => {
         <PreferenceProperty />
       </div>
     </SidebarLayout>
-  );
+  ); 
 };
 
 export default DashboardPage;

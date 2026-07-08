@@ -111,9 +111,9 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 40, scale: 0.98 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed bottom-1  max-md:px-3 lg:right-6 z-50 bg-ai-glow-blue"
+          className="fixed bottom-1 sm:bottom-24 sm:left-40  max-md:px-3 lg:right-6 z-50 bg-ai-glow-blue"
         >
-          <div className="lg:w-[480px] max-md:w-full max-h-[75vh] min-h-[75vh]  lg:max-h-[95vh] lg:min-h-[95vh] rounded-3xl bg-[#F3F8FF] shadow-2xl border border-blue-100 overflow-hidden flex flex-col">
+          <div className="lg:w-[480px] sm:w-[95%] max-md:w-full max-h-[75vh] min-h-[75vh]  lg:max-h-[95vh] lg:min-h-[95vh] rounded-3xl bg-[#F3F8FF] shadow-2xl border border-blue-100 overflow-hidden flex flex-col">
             {/* HEADER */}
             <div className="relative shrink-0 flex flex-col items-center px-6 pt-6 pb-4 bg-[#F3F8FF] z-10">
               <button

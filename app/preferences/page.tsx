@@ -162,8 +162,8 @@ export const PreferenceSection = () => {
         </h2>
       </div>
 
-      <div className="bg-white/70 p-7 rounded-lg">
-        <div className="p-8 bg-[#F2F3F6] rounded-lg">
+      <div className="bg-white/70 p-3 sm:p-7 rounded-lg">
+        <div className="sm:p-8 p-3 bg-[#F2F3F6] rounded-lg">
           <Form {...preferenceForm}>
             <form className="" onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}>
               <div className="grid grid-cols-1 gap-5">
@@ -196,7 +196,7 @@ export const PreferenceSection = () => {
                         </FormLabel>
 
                         <FormControl>
-                          <div className="grid grid-cols-4 gap-2">
+                          <div className="grid max-sm:grid-cols-2 grid-cols-4 gap-2">
                             {priceRanges?.map((item) => {
                               const isSelected = field.value === item.value;
 
@@ -266,7 +266,7 @@ const PreferenceForm = () => {
   return (
     <SidebarLayout>
       <div
-        className="lg:px-12 px-5 py-2 h-full
+        className="lg:px-12 px-3 sm:px-5 py-2 h-full
                             bg-gradient-to-r
                         from-[#60A5FA]/10
                         via-[#fafafa] via-[70%]

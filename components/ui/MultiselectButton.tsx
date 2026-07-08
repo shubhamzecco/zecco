@@ -74,7 +74,7 @@ export function MultiSelectButtonGroup({
                                             key={item.value}
                                             type="button"
                                             onClick={() => toggleSelection(item.value)}
-                                            className={`h-11 rounded-[10px] border text-sm font-medium transition-all duration-200
+                                            className={`h-11 rounded-[10px] border text-sm white max-sm:text-xs font-medium transition-all duration-200
                         ${isSelected
                                                     ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
                                                     : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED] hover:bg-[#F8FAFF]"
