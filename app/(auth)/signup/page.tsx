@@ -39,7 +39,14 @@ const formSchema = z.object({
     .string()
     .min(1, "Mobile number is required")
     .regex(/^\d+$/, "Invalid mobile number"),
-  password: z.string().min(1, "Password  is required"),
+  password: z
+    .string()
+    .min(1, "Password is required.")
+    .min(6, "Password must be at least 6 characters long.")
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d).+$/,
+      "Password must contain both letters and numbers."
+    ),
   confirm_password: z.string().min(1, "Confirm password is required"),
   email: z.string().email("Invalid email address"),
   selectedLocation: z.any().optional(),
@@ -92,6 +99,7 @@ const SignUpPage = () => {
       budget: "",
       bedrooms: [],
     },
+    mode: "onChange"
   });
 
 
@@ -259,7 +267,7 @@ const SignUpPage = () => {
                           required
                           className="font-semibold font-inter text-[#101828]"
                         >
-                          Email
+                          Email Address
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -336,7 +344,7 @@ const SignUpPage = () => {
                 <div className="-mt-3 mb-3">
                   <p
                     onClick={() => setNextPage(false)}
-                    className="w-full mx-auto flex justify-start items-center gap-2 font-inter font-medium text-[#136AED] text-sm"
+                    className="w-full mx-auto flex justify-start items-center cursor-pointer gap-2 font-inter font-medium text-[#136AED] text-sm"
                   >
                     <ArrowLeft size={16} />
                     Back

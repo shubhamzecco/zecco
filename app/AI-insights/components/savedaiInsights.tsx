@@ -2,12 +2,12 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setAiInsight, setBreadcrumbs } from "@/redux/modules/main/action";
+import { setAiInsight } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
 import { formatEuro } from "@/utils/common";
 import { Bath, BedSingle } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 
@@ -16,6 +16,7 @@ const SavedAiInsights = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const { sendMessage, isConnected } = useWebSocket();
+  const pathname = usePathname()
 
   useEffect(() => {
     dispatch(setAiInsight({} as IPropertyResponse));
@@ -33,6 +34,21 @@ const SavedAiInsights = () => {
     });
   }, [isConnected]);
 
+  const handlePropertyNavigation = (property: any, aiData?: any) => {
+    if (aiData) {
+      dispatch(setAiInsight(aiData));
+    }
+
+    const identifier = property?.slug || property?._id;
+
+    if (!identifier) return;
+
+    const propertyIdentifier = property?.slug || property?._id;
+    const propertyDetailUrl = `${pathname.replace(/\/$/, "")}/${propertyIdentifier}`;
+
+    router.push(propertyDetailUrl);
+  };
+
   return (
     <section className="mt-10 mb-6">
       <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
@@ -43,51 +59,7 @@ const SavedAiInsights = () => {
           mainReducer?.stored_aiInsight?.data.map(
             (item: any, index: number) => (
               <div
-                onClick={() => {
-                  (router.push(
-                    `${App_url.link.PROPERTY_DETAILS}/${item?.property?._id}`,
-                  ),
-                    dispatch(setAiInsight(item?.data)));
-                  dispatch(
-                    setBreadcrumbs([
-                      {
-                        label: `Dashboard`,
-                        href: `${App_url.link.DASHBOARD}`,
-                      },
-                      {
-                        label: `${
-                          item?.property?.bedrooms
-                            ? `${item?.property?.bedrooms} Bedroom `
-                            : ""
-                        }${" "}
-                            ${item?.property?.propertyType ? item?.property?.propertyType?.name : item?.property?.propertyCategory?.name}${" "}for${" "}
-                            ${
-                              item?.property?.isSale && item?.property?.isRent
-                                ? "Sale or Rent"
-                                : item?.property?.isSale
-                                  ? "Sale"
-                                  : item?.property?.isRent
-                                    ? "Rent"
-                                    : ""
-                            }${" "}
-                            in${" "}
-                            ${
-                              item?.property?.locationSubarea
-                                ? `${item?.property?.locationSubarea},`
-                                : ""
-                            }${" "}
-                            ${
-                              item?.property?.locationArea
-                                ? `${item?.property?.locationArea},`
-                                : ""
-                            }${" "}
-                            ${item?.property?.locationCity},${" "}
-                            ${item?.property?.locationCountry}`,
-                        href: `${App_url.link.PROPERTY_DETAILS}/${item?.property?._id}`,
-                      },
-                    ]),
-                  );
-                }}
+                onClick={() => handlePropertyNavigation(item?.property, item?.data)}
                 key={item?._id || index}
                 className="bg-white/70 rounded-2xl relative"
               >

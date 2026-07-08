@@ -4,10 +4,7 @@ import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import {
-  setBreadcrumbs,
-  setPropertyFilter
-} from "@/redux/modules/main/action";
+import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug, formatEuro } from "@/utils/common";
 import { Eye, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -96,19 +93,6 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
   }, [mainReducer?.property_features_list]);
 
   const handleApplySearch = (item: any) => {
-    dispatch(
-      setBreadcrumbs([
-        { label: "Home", href: "/" },
-        {
-          label: "Costa del Sol areas and Cities",
-          href: `${App_url.link.COSTA_DEL_SOL}`,
-        },
-        {
-          label: item?.cities,
-          href: `${App_url.link.COSTA_DEL_SOL}/${item?.cities}`,
-        },
-      ]),
-    );
     router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(item?.cities)}`);
     dispatch(setPropertyFilter(item));
   };

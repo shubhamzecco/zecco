@@ -5,9 +5,7 @@ import { setLogout } from "@/redux/actions/action";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAuthData } from "@/redux/modules/common/user_data/action";
 import {
-  clearBreadcrumbs,
   setAiInsight,
-  setBreadcrumbs,
   setPropertyFilter,
   setReduxClear,
 } from "@/redux/modules/main/action";
@@ -38,10 +36,8 @@ export default function Header({ onProfileClick }: HeaderProps) {
   };
 
   const handleNavClick = (item: any) => {
-    dispatch(clearBreadcrumbs());
     dispatch(setPropertyFilter({}));
     dispatch(setAiInsight({} as IPropertyResponse));
-    if (item.breadcrumbs) dispatch(setBreadcrumbs(item.breadcrumbs));
     router.push(item.href);
     setIsOpen(false); // ✅ close menu on click
   };

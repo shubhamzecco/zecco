@@ -1,24 +1,46 @@
-import { App_url } from "@/constant/static";
 import { BreadcrumbItem } from "@/redux/modules/main/types";
 
 const breadcrumbMap: Record<string, string> = {
   "costa-del-sol": "Costa del Sol areas and Cities",
   areas: "Costa del Sol areas and Cities",
-  property: "Property Detail",
+  property: "Property Details",
+  "zecco-favorites": "Zecco's Favorites",
+  "about-zecco": "About Zecco.es",
+  blogs: "Blogs & Insights",
+  packages: "Packages",
+  "saved-searches": "Saved Searches",
+  "AI-insights": "AI Insights",
+  favorites: "Favorites",
+  "map-search": "Map Search",
+  messages: "Messages",
+  preferences: "Preferences",
+  "contact-us": "Contact Us",
+  "privacy-policy": "Privacy Policy",
+  "terms-and-conditions": "Terms & Conditions",
 };
 
-export const generateBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
+const isPropertyId = (s: string) => /^[a-f0-9]{24}$/i.test(s);
+
+export const generateBreadcrumbs = (pathname: string, propertyDetails?: any): BreadcrumbItem[] => {
   const segments = pathname.split("/").filter(Boolean);
 
   let path = "";
-  const crumbs: BreadcrumbItem[] = segments.map((segment) => {
+  const crumbs: BreadcrumbItem[] = segments.map((segment, index) => {
     path += `/${segment}`;
+    const isLast = index === segments.length - 1;
+
+    let label: string;
+    if (isPropertyId(segment)) {
+      label = "Property Details";
+    } else if (breadcrumbMap[segment]) {
+      label = breadcrumbMap[segment];
+    } else {
+      label = segment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    }
 
     return {
-      label:
-        breadcrumbMap[segment] ||
-        segment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-      href: path,
+      label,
+      href: isLast ? null : path,
     };
   });
 
@@ -32,16 +54,16 @@ export const getCostaDelSolLocationBreadcrumbs = (
   locationSlug: string,
   locationLabel?: string,
 ): BreadcrumbItem[] => [
-  { label: "Home", href: "/" },
-  {
-    label: "Costa del Sol areas and Cities",
-    href: App_url.link.COSTA_DEL_SOL,
-  },
-  {
-    label: locationLabel || slugToLabel(locationSlug),
-    href: `${App_url.link.COSTA_DEL_SOL}/${locationSlug}`,
-  },
-];
+    { label: "Home", href: "/" },
+    {
+      label: "Costa del Sol areas and Cities",
+      href: "/costa-del-sol",
+    },
+    {
+      label: locationLabel || slugToLabel(locationSlug),
+      href: `/costa-del-sol/${locationSlug}`,
+    },
+  ];
 
 export const savedSearchesData = [];
 
@@ -49,57 +71,33 @@ export const NAV_ITEMS = [
   {
     label: "Find Property",
     href: "/",
-    breadcrumbs: [{ label: "Home", href: "/" }],
   },
   {
     label: "Costa del Sol",
-    href: App_url.link.COSTA_DEL_SOL,
-    breadcrumbs: [
-      { label: "Home", href: "/" },
-      {
-        label: "Costa del Sol areas and Cities",
-        href: App_url.link.COSTA_DEL_SOL,
-      },
-    ],
+    href: "/costa-del-sol",
   },
   {
     label: "Zecco's Favorites",
-    href: App_url.link.ZECCO_FAVORITES,
-    breadcrumbs: [
-      { label: "Home", href: "/" },
-      { label: "Zecco's Favorites", href: App_url.link.ZECCO_FAVORITES },
-    ],
+    href: "/zecco-favorites",
   },
   {
     label: "About Zecco.es",
-    href: App_url.link.ABOUT_ZECCO,
-    breadcrumbs: [
-      { label: "Home", href: "/" },
-      { label: "About Zecco.es", href: App_url.link.ABOUT_ZECCO },
-    ],
+    href: "/about-zecco",
   },
   {
     label: "Packages",
-    href: App_url.link.PACKAGE,
-    breadcrumbs: [
-      { label: "Home", href: "/" },
-      { label: "Packages", href: App_url.link.PACKAGE },
-    ],
+    href: "/packages",
   },
   {
     label: "Blogs & Insights",
-    href: App_url.link.BLOGS,
-    breadcrumbs: [
-      { label: "Home", href: "/" },
-      { label: "Blogs & Insights", href: App_url.link.BLOGS },
-    ],
+    href: "/blogs",
   },
 ];
 
 export const handleProtectedRoute = (
   isLoggedIn: boolean,
   router: any,
-  redirectUrl: string = App_url.link.SIGN_IN,
+  redirectUrl: string = "/signin",
 ) => {
   if (!isLoggedIn) {
     localStorage.setItem(

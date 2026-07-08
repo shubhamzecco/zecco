@@ -30,10 +30,11 @@ const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
+    .min(1, "Password is required.")
+    .min(6, "Password must be at least 6 characters long.")
     .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d\W]).+$/,
-      "Password must contain at least one uppercase letter, one lowercase letter, and one number or special character."
+      /^(?=.*[A-Za-z])(?=.*\d).+$/,
+      "Password must contain both letters and numbers."
     ),
 });
 
@@ -48,6 +49,7 @@ const Signin = () => {
       email: "",
       password: "",
     },
+    mode: "onChange"
   });
 
   useEffect(() => {

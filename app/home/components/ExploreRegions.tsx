@@ -1,7 +1,7 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { clearBreadcrumbs, setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
+import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -241,29 +241,11 @@ export default function ExploreRegions() {
 
   const handleNavigate = (region: any) => {
     if (!region) return;
-    dispatch(clearBreadcrumbs());
     dispatch(
       setPropertyFilter({
         propertyType: selectedButton,
         search: region?.name,
       }),
-    );
-
-    dispatch(
-      setBreadcrumbs([
-        {
-          label: "Home",
-          href: "/",
-        },
-        {
-          label: "Costa del Sol areas and Cities",
-          href: App_url.link.COSTA_DEL_SOL,
-        },
-        {
-          label: region?.name,
-          href: `${App_url.link.COSTA_DEL_SOL}/${region?.name}`,
-        },
-      ]),
     );
 
     router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(region?.name)}`);

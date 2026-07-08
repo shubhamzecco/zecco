@@ -8,7 +8,6 @@ import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import {
   setAiInsight,
-  setBreadcrumbs,
   setLoginPopup,
   setPropertyDetails,
   setPropertyFilter,
@@ -286,36 +285,8 @@ const Page = () => {
 
     fetchProperties(1, filterData, true, value?.name);
     if (value?.city_name !== id?.location) {
-      dispatch(
-        setBreadcrumbs([
-          { label: "Home", href: "/" },
-          {
-            label: "Costa del Sol areas and Cities",
-            href: `${App_url.link.COSTA_DEL_SOL}`,
-          },
-          {
-            // label: `${camelCase(value?.city_name)}${" "}${value?.area_name ? `-${" "}${camelCase(value?.area_name)}` : ""}`,
-            label: `${value?.name}`,
-            href: `${App_url.link.COSTA_DEL_SOL}/${value?.name}`,
-          },
-        ]),
-      );
       router.replace(
         `${App_url.link.COSTA_DEL_SOL}/${citySlug(value?.city_name)}`,
-      );
-    } else {
-      dispatch(
-        setBreadcrumbs([
-          { label: "Home", href: "/" },
-          {
-            label: "Costa del Sol areas and Cities",
-            href: `${App_url.link.COSTA_DEL_SOL}`,
-          },
-          {
-            label: `${value?.name}`,
-            href: `${App_url.link.COSTA_DEL_SOL}/${value?.name}`,
-          },
-        ]),
       );
     }
   };
@@ -362,13 +333,6 @@ const Page = () => {
   }, [lastEvent]);
 
   useEffect(() => {
-    if (mainReducer?.breadcrumbs?.length === 4) {
-      const breadcrumbsWithoutLast =
-        mainReducer.breadcrumbs?.slice(0, -1) || [];
-
-      dispatch(setBreadcrumbs(breadcrumbsWithoutLast));
-    }
-
     dispatch(setPropertyDetails(null));
 
     dispatch(setAiInsight({} as IPropertyResponse));

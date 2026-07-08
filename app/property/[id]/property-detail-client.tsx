@@ -34,21 +34,22 @@ export default function PropertyDetailClient() {
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const { mainReducer, user_data } = usePosterReducers();
   const params = useParams();
+  const propertyId = params.id || params.propertyId;
   const dispatch = useDispatch();
   const [step, setStep] = useState("intro");
   const [isCompleted, setIsCompleted] = useState(false);
   const isLoggedIn = !!user_data?.access_token;
 
   useEffect(() => {
-    if (!isConnected || !params?.id) return;
+    if (!isConnected || !propertyId) return;
     sendMessage("action", {
       type: "propertyService",
       action: "get",
       payload: {
-        id: params.id,
+        id: propertyId,
       },
     });
-  }, [isConnected, params?.id]);
+  }, [isConnected, propertyId]);
 
   useEffect(() => {
     if (
@@ -61,7 +62,7 @@ export default function PropertyDetailClient() {
         type: "propertyService",
         action: "get",
         payload: {
-          id: params?.id,
+          id: propertyId,
         },
       });
     }
@@ -82,7 +83,7 @@ export default function PropertyDetailClient() {
     setIsCompleted(false);
     CommonApiRequest(
       "GET",
-      `${App_url.endpoint_url?.AI_INSIGHT}/${params?.id}/${user_data?.user?._id}`,
+      `${App_url.endpoint_url?.AI_INSIGHT}/${propertyId}/${user_data?.user?._id}`,
       {},
       {},
     )?.then((response: any) => {
@@ -102,30 +103,30 @@ export default function PropertyDetailClient() {
 
   const jsonLd = property
     ? {
-        "@context": "https://schema.org",
-        "@type": "Residence",
-        name:
-          (property as any)?.title ||
-          (property as any)?.name ||
-          "Property in Costa del Sol",
-        description:
-          (property as any)?.description ||
-          (property as any)?.propertyDescriptions?.[0]?.description,
-        url: `https://zecco.es/property/${params?.id}`,
-        image: (property as any)?.propertyImages?.map((image: any) => image?.image),
-        address: {
-          "@type": "PostalAddress",
-          addressLocality: (property as any)?.locationCity || "Costa del Sol",
-          addressCountry: "ES",
-        },
-        offers: (property as any)?.price
-          ? {
-              "@type": "Offer",
-              price: (property as any)?.price,
-              priceCurrency: "EUR",
-            }
-          : undefined,
-      }
+      "@context": "https://schema.org",
+      "@type": "Residence",
+      name:
+        (property as any)?.title ||
+        (property as any)?.name ||
+        "Property in Costa del Sol",
+      description:
+        (property as any)?.description ||
+        (property as any)?.propertyDescriptions?.[0]?.description,
+      url: `https://zecco.es/property/${propertyId}`,
+      image: (property as any)?.propertyImages?.map((image: any) => image?.image),
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: (property as any)?.locationCity || "Costa del Sol",
+        addressCountry: "ES",
+      },
+      offers: (property as any)?.price
+        ? {
+          "@type": "Offer",
+          price: (property as any)?.price,
+          priceCurrency: "EUR",
+        }
+        : undefined,
+    }
     : null;
 
   return (

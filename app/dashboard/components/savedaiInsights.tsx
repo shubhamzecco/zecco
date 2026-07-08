@@ -1,7 +1,7 @@
 "use client";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setAiInsight, setBreadcrumbs } from "@/redux/modules/main/action";
+import { setAiInsight } from "@/redux/modules/main/action";
 import { formatEuro } from "@/utils/common";
 import { Bath, BedSingle } from "lucide-react";
 import Image from "next/image";
@@ -28,41 +28,7 @@ const AiInsights = () => {
                     `${App_url.link.PROPERTY_DETAILS}/${item?.property?._id}`,
                   ),
                     dispatch(setAiInsight(item?.data)));
-                  dispatch(
-                    setBreadcrumbs([
-                      {
-                        label: `Dashboard`,
-                        href: `${App_url.link.DASHBOARD}`,
-                      },
-                      {
-                        label: `${item?.property?.bedrooms
-                            ? `${item?.property?.bedrooms} Bedroom `
-                            : ""
-                          }${" "}
-                            ${item?.property?.propertyType ? item?.property?.propertyType?.name : item?.property?.propertyCategory?.name}${" "}for${" "}
-                            ${item?.property?.isSale && item?.property?.isRent
-                            ? "Sale or Rent"
-                            : item?.property?.isSale
-                              ? "Sale"
-                              : item?.property?.isRent
-                                ? "Rent"
-                                : ""
-                          }${" "}
-                            in${" "}
-                            ${item?.property?.locationSubarea
-                            ? `${item?.property?.locationSubarea},`
-                            : ""
-                          }${" "}
-                            ${item?.property?.locationArea
-                            ? `${item?.property?.locationArea},`
-                            : ""
-                          }${" "}
-                            ${item?.property?.locationCity},${" "}
-                            ${item?.property?.locationCountry}`,
-                        href: `${App_url.link.PROPERTY_DETAILS}/${item?.property?._id}`,
-                      },
-                    ]),
-                  );
+
                 }}
                 key={item?._id || index}
                 className="bg-white/70 rounded-2xl relative"

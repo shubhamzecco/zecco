@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
 import { ChatMessage } from "./zecco-chat-modal";
-import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
+import { setPropertyFilter } from "@/redux/modules/main/action";
 import { App_url } from "@/constant/static";
 import { camelCase, citySlug } from "@/utils/common";
 import { useRouter } from "next/navigation";
@@ -52,23 +52,6 @@ export default function ChatReplies({
         priceTo: data?.budgetMax || "",
         types: data?.propertyType ? [Number(data?.propertyType)] : [],
       }),
-    );
-
-    dispatch(
-      setBreadcrumbs([
-        {
-          label: "Home",
-          href: "/",
-        },
-        {
-          label: "Costa del Sol areas and Cities",
-          href: App_url.link.COSTA_DEL_SOL,
-        },
-        {
-          label: camelCase(data.locationCity),
-          href: `${App_url.link.COSTA_DEL_SOL}/${citySlug(data.locationCity)}`,
-        },
-      ]),
     );
 
     router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(data.locationCity)}`);

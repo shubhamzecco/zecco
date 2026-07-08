@@ -137,11 +137,11 @@ const ContactUs = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="font-medium font-inter text-[#101828]">
-                            Phone
+                            Mobile Number
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Phone number"
+                              placeholder="Mobile number"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -156,7 +156,7 @@ const ContactUs = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="font-medium font-inter text-[#101828]">
-                            Email
+                            Email Address
                           </FormLabel>
                           <FormControl>
                             <Input
@@ -239,7 +239,7 @@ const ContactUs = () => {
                   </div>
                   <div className="">
                     <h1 className="font-manrope font-bold text-[#000000] text-lg">
-                      Email
+                      Email Address
                     </h1>
                     <span className="font-manrope text-[#475569] font-normal">
                       info@zecco.es
@@ -252,7 +252,7 @@ const ContactUs = () => {
                   </div>
                   <div className="">
                     <h1 className="font-manrope font-bold text-[#000000] text-lg">
-                      Phone
+                      Mobile Number
                     </h1>
                     <span className="font-manrope text-[#475569] font-normal">
                       <span className="font-semibold"> Mobile :</span> +34 600

@@ -25,9 +25,14 @@ const formSchema = z.object({
   confirm_password: z.string({
     required_error: "Confirm password is required",
   }),
-  password: z.string({
-    required_error: "Password is required",
-  }),
+  password: z
+    .string()
+    .min(1, "Password is required.")
+    .min(6, "Password must be at least 6 characters long.")
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d).+$/,
+      "Password must contain both letters and numbers."
+    ),
 });
 
 const ResetPassword = () => {
@@ -80,88 +85,88 @@ const ResetPassword = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <AuthLayout
-      heading="Welcome Back to Zecco!"
-      description="Sign in to Your Account"
-    >
-      <Form {...form}>
-        <form
-          className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <div className="grid grid-cols-1 gap-5">
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    required
-                    className="font-semibold font-inter text-[#101828]"
-                  >
-                    New Password
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="New password"
-                      className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="confirm_password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel
-                    required
-                    className="font-semibold font-inter text-[#101828]"
-                  >
-                    Confirm Password
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Confirm password"
-                      className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="flex items-center mt-4 mb-5 gap-5">
-            <Button
-              type="submit"
-              className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md"
-            >
-              Save Password
-            </Button>
-          </div>
-        </form>
-
-        <div className="flex items-center px-8 mt-1 mb-5">
-          <Link
-            href={App_url?.link?.SIGN_UP}
-            className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
+        heading="Welcome Back to Zecco!"
+        description="Sign in to Your Account"
+      >
+        <Form {...form}>
+          <form
+            className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
+            onSubmit={form.handleSubmit(onSubmit)}
           >
-            Don't have an account?
-            <span className="text-[#3B82F6] font-bold font-inter text-base">
-              {" "}
-              Register
-            </span>
-          </Link>
-        </div>
-      </Form>
-    </AuthLayout>
+            <div className="grid grid-cols-1 gap-5">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel
+                      required
+                      className="font-semibold font-inter text-[#101828]"
+                    >
+                      New Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="New password"
+                        className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="confirm_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel
+                      required
+                      className="font-semibold font-inter text-[#101828]"
+                    >
+                      Confirm Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Confirm password"
+                        className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex items-center mt-4 mb-5 gap-5">
+              <Button
+                type="submit"
+                className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md"
+              >
+                Save Password
+              </Button>
+            </div>
+          </form>
+
+          <div className="flex items-center px-8 mt-1 mb-5">
+            <Link
+              href={App_url?.link?.SIGN_UP}
+              className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
+            >
+              Don't have an account?
+              <span className="text-[#3B82F6] font-bold font-inter text-base">
+                {" "}
+                Register
+              </span>
+            </Link>
+          </div>
+        </Form>
+      </AuthLayout>
     </>
   );
 };

@@ -2,11 +2,7 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import {
-  clearBreadcrumbs,
-  setBreadcrumbs,
-  setPropertyFilter,
-} from "@/redux/modules/main/action";
+import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -152,20 +148,6 @@ const FilterPopup = ({
           data.selectedLocation?.subarea_name ??
           null,
       }),
-    );
-    dispatch(clearBreadcrumbs());
-    dispatch(
-      setBreadcrumbs([
-        { label: "Home", href: "/" },
-        {
-          label: "Costa del Sol areas and Cities",
-          href: App_url.link.COSTA_DEL_SOL,
-        },
-        {
-          label: data.selectedLocation?.city_name,
-          href: `${App_url.link.COSTA_DEL_SOL}/${data.selectedLocation?.city_name}`,
-        },
-      ]),
     );
     onClose?.();
     router.replace(

@@ -1,14 +1,11 @@
 "use client";
 import { URL } from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useDispatch } from "react-redux";
 
 interface AreaCardProps {
   id?: string;
@@ -28,18 +25,10 @@ const AreaCard = ({
   onNavigate,
 }: AreaCardProps) => {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const { mainReducer } = usePosterReducers();
   const handleClick = () => {
     if (onNavigate) {
       onNavigate();
     } else {
-      dispatch(
-        setBreadcrumbs([
-          ...mainReducer.breadcrumbs,
-          { label: name, href: `${App_url.link.COSTA_DEL_SOL}/${name_slug}` },
-        ]),
-      );
       router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(name_slug)}`);
     }
   };

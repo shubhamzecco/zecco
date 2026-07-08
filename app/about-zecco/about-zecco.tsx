@@ -1,17 +1,15 @@
 "use client";
 import MainLayout from "@/components/layouts/main-layout";
 import { App_url } from "@/constant/static";
-import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
 import Operate from "./components/operate";
 import WhyChooseZecco from "./components/why-choose-zecco";
 import { useState } from "react";
 import FilterPopup from "@/components/filterPopup";
 
 const AboutZecco = () => {
-  const dispatch = useDispatch();
   const router = useRouter();
   const [openPopup, setOpenPopup] = useState(false);
 

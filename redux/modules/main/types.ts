@@ -643,6 +643,7 @@ export interface IProperty {
   rentalPriceShort: number | null;
   property_tags?: any[];
   location?: any
+  slug?: string
 }
 
 export interface ILookup {
@@ -781,7 +782,6 @@ export interface IPrivacyPolicy {
 
 export interface IMainResponse {
   chat_messages: ChatMessagesResponse | null;
-  breadcrumbs: BreadcrumbItem[];
   package_list_with_limit: IPackageResponse | null;
   ai_chat_messages: AIChatMessage[];
   ai_chat_loading: boolean;

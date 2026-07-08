@@ -8,7 +8,6 @@ const initialState: IMainResponse = {
   package_list_with_limit: null,
   ai_chat_messages: [],
   ai_chat_loading: false,
-  breadcrumbs: [],
   ai_chat_badge_open: false,
   location_list_with_limit: null,
   location_list_without_limit: null,
@@ -328,15 +327,6 @@ const mainReducer = (
         ai_chat_loading: false,
       };
     }
-
-    case ActionTypes.SET_BREADCRUMBS: {
-      return { ...state, breadcrumbs: action.payload };
-    }
-    case ActionTypes.CLEAR_BREADCRUMBS:
-      return {
-        ...state,
-        breadcrumbs: [],
-      };
 
     case ActionTypes.AI_CHAT_BADGE_OPEN: {
       return { ...state, ai_chat_badge_open: action.payload };

@@ -106,7 +106,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
             },
             {},
           )
-          : {},
+          : mainReducer?.propertyFilter?.types || {},
 
         features: Array.isArray(mainReducer?.propertyFilter?.features)
           ? mainReducer?.propertyFilter?.features.reduce(
@@ -116,7 +116,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
             },
             {},
           )
-          : {},
+          : mainReducer?.propertyFilter?.features || {},
 
         propertyStatus: { bareOwnership: true },
         condition: {},

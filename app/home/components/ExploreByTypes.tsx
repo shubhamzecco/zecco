@@ -1,14 +1,12 @@
 import FilterPopup from "@/components/filterPopup";
 import { App_url } from "@/constant/static";
-import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 
 export default function ExploreByTypes() {
-  const dispatch = useDispatch();
   const router = useRouter();
   const [openPopup, setOpenPopup] = useState(false);
   const [type, setType] = useState("all");

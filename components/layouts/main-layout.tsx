@@ -58,15 +58,16 @@ const MainLayout = ({
 }: MainLayoutProps) => {
   const pathname = usePathname();
   const { sendMessage, isConnected } = useWebSocket();
-  const { user_data } = usePosterReducers();
+  const { user_data, mainReducer } = usePosterReducers();
   const [searchValue, setSearchValue] = useState(searchValueProp || "");
   const [searchDropdown, setSearchDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const propertyDetails = mainReducer?.property_details ?? {}
 
   const searchedLocations = searchValue.trim()
     ? filteredLocations?.filter((item: any) =>
-        item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
-      )
+      item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
+    )
     : [];
 
   useEffect(() => {
@@ -208,11 +209,10 @@ const MainLayout = ({
                       }}
                       key={i}
                       className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md
-                                        ${
-                                          tab?.value === propertyType
-                                            ? "bg-white text-black"
-                                            : "text-[#6B7280] hover:bg-slate-100"
-                                        }`}
+                                        ${tab?.value === propertyType
+                          ? "bg-white text-black"
+                          : "text-[#6B7280] hover:bg-slate-100"
+                        }`}
                     >
                       {tab?.value}
                     </button>

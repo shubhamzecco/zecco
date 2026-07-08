@@ -52,14 +52,16 @@ export default function AuthLayout({
           <div className="absolute inset-0 bg-black/10 md:hidden max-md:rounded-xl" />
 
           <div className="relative z-10 w-full h-full px-10 flex flex-col max-md:justify-center">
-            <div className="flex justify-center">
-              <Image
-                src={App_url.image.logo}
-                alt="logo"
-                width={170}
-                height={170}
-                unoptimized
-              />
+            <div className="flex justify-center cursor-pointer">
+              <Link href="/">
+                <Image
+                  src={App_url.image.logo}
+                  alt="logo"
+                  width={170}
+                  height={170}
+                  unoptimized
+                />
+              </Link>
             </div>
             <div className="mt-4 my-3 flex flex-col gap-2 text-center mb-4">
               <h1 className="capitalize font-inter font-bold text-[#101828] text-xl max-md:text-center lg:text-2xl">

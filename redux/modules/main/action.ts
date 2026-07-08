@@ -2,7 +2,6 @@
 
 import {
   AIChatMessage,
-  BreadcrumbItem,
   IBlogsResponse,
   IChatMessage,
   IFavoriteProperty,
@@ -18,8 +17,6 @@ import {
 
 export const ActionTypes = {
   SET_CLEAR_REDUX: "SET_CLEAR_REDUX",
-  SET_BREADCRUMBS: "SET_BREADCRUMBS",
-  CLEAR_BREADCRUMBS: "CLEAR_BREADCRUMBS",
   SET_PACKAGE_LIST_WITH_LIMIT: "SET_PACKAGE_LIST_WITH_LIMIT",
   SET_LOCATION_LIST_WITH_LIMIT: "SET_LOCATION_LIST_WITH_LIMIT",
   SET_BLOGS_LIST_WITH_LIMIT: "SET_BLOGS_LIST_WITH_LIMIT",
@@ -261,15 +258,6 @@ export const setPackageListWithLimit = (payload: IPackageResponse) => {
 export const setChatBadgeOpen = (payload: boolean) => ({
   type: ActionTypes.AI_CHAT_BADGE_OPEN,
   payload,
-});
-
-export const setBreadcrumbs = (payload: BreadcrumbItem[]) => ({
-  type: ActionTypes.SET_BREADCRUMBS,
-  payload,
-});
-
-export const clearBreadcrumbs = () => ({
-  type: ActionTypes.CLEAR_BREADCRUMBS,
 });
 
 export const setReduxClear = () => ({

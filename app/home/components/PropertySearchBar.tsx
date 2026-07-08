@@ -17,7 +17,7 @@ import { ChevronDown, MapPlus, Search, SearchIcon } from "lucide-react";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
+import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 
 const PropertySearchBar = () => {
@@ -117,22 +117,8 @@ const PropertySearchBar = () => {
       }),
     );
 
-    dispatch(
-      setBreadcrumbs([
-        ...mainReducer?.breadcrumbs,
-        {
-          label: "Costa del Sol areas and Cities",
-          href: `${App_url.link.COSTA_DEL_SOL}`,
-        },
-        {
-          // label: `${camelCase(selectedLocation?.city_name)}${" "}${selectedLocation?.area_name ? `-${" "}${camelCase(selectedLocation?.area_name)}` : ""}`,
-          label: selectedLocation?.name,
-          href: `${App_url.link.COSTA_DEL_SOL}/${selectedLocation?.name}`,
-        },
-      ]),
-    );
     router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(selectedLocation?.city_name)}`);
-  }, [dispatch, mainReducer?.breadcrumbs, router, selected, selectedLocation]);
+  }, [dispatch, router, selected, selectedLocation]);
 
   const handleLocationSelect = useCallback((item: any) => {
     setSelectedLocation(item);

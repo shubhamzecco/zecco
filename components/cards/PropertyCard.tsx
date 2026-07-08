@@ -4,7 +4,6 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import {
-  setBreadcrumbs,
   setLoginPopup,
   setUpdatePropertyLike,
 } from "@/redux/modules/main/action";
@@ -21,11 +20,11 @@ import {
   Tag,
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
-import { formatEuro } from "@/utils/common";
+import { citySlug, formatEuro } from "@/utils/common";
 
 interface PropertyCardProps {
   featured?: boolean;
@@ -41,6 +40,7 @@ const PropertyCard = ({
   onNavigate,
 }: PropertyCardProps) => {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useDispatch();
   const { mainReducer, user_data } = usePosterReducers();
   const { sendMessage, lastEvent } = useWebSocket();
@@ -73,49 +73,11 @@ const PropertyCard = ({
     property?.favorite,
   ]);
 
+  const propertyIdentifier = property?.slug || property?._id;
+  const propertyDetailUrl = `${pathname.replace(/\/$/, "")}/${propertyIdentifier}`;
+
   const handleNavigate = () => {
-    dispatch(
-      setBreadcrumbs([
-        { label: "Home", href: "/" },
-        {
-          label: "Costa del Sol areas and Cities",
-          href: `${App_url.link.COSTA_DEL_SOL}`,
-        },
-        {
-          label: property?.locationCity,
-          href: `${App_url.link.COSTA_DEL_SOL}/${property?.locationCity}`,
-        },
-        {
-          label: `${property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""
-            }${" "}
-                            ${property?.propertyType
-              ? property?.propertyType?.name
-              : property?.propertyCategory?.name
-            }${" "}for${" "}
-                            ${property?.isSale && property?.isRent
-              ? "Sale or Rent"
-              : property?.isSale
-                ? "Sale"
-                : property?.isRent
-                  ? "Rent"
-                  : ""
-            }${" "}
-                            in${" "}
-                            ${property?.locationSubarea
-              ? `${property?.locationSubarea},`
-              : ""
-            }${" "}
-                            ${property?.locationArea
-              ? `${property?.locationArea},`
-              : ""
-            }${" "}
-                            ${property?.locationCity},${" "}
-                            ${property?.locationCountry}`,
-          href: `${App_url.link.PROPERTY_DETAILS}/${property?._id}`,
-        },
-      ]),
-    );
-    router.push(`${App_url.link.PROPERTY_DETAILS}/${property?._id}`);
+    router.push(propertyDetailUrl);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {

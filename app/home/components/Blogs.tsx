@@ -2,16 +2,14 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import BlogCards from "@/components/cards/blog-Card";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 
 
 export default function Blogs() {
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected } = useWebSocket();
-  const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {
@@ -28,17 +26,7 @@ export default function Blogs() {
   }, [isConnected]);
 
   const handleNavigate = () => {
-    dispatch(clearBreadcrumbs());
-    dispatch(
-      setBreadcrumbs([
-        { label: "Home", href: "/" },
-        {
-          label: "Blogs & Insights",
-          href: App_url.link.BLOGS,
-        },
-      ]),
-    );
-    router.push(`${App_url.link.BLOGS}`);
+    router.push(App_url.link.BLOGS);
   };
 
   return (

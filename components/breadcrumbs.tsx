@@ -1,23 +1,16 @@
 "use client";
 
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs } from "@/redux/modules/main/action";
+import { generateBreadcrumbs } from "@/utils/common";
 import { ChevronsRight } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { usePathname, useRouter } from "next/navigation";
 
 const Breadcrumb = () => {
-  const { mainReducer } = usePosterReducers();
-  const dispatch = useDispatch();
+  const { mainReducer } = usePosterReducers()
+  const pathname = usePathname();
   const router = useRouter();
-
-  const breadcrumbs = mainReducer?.breadcrumbs || [];
-
-  const handleClick = (index: number, href?: string | null) => {
-    const updatedBreadcrumbs = breadcrumbs?.slice(0, index + 1);
-    dispatch(setBreadcrumbs(updatedBreadcrumbs));
-    if (href) router.push(href);
-  };
+  const propertyDetails = mainReducer?.property_details ?? {}
+  const breadcrumbs = generateBreadcrumbs(pathname, propertyDetails);
 
   return (
     <nav
@@ -31,7 +24,7 @@ const Breadcrumb = () => {
           <span key={index} className="flex items-center gap-1">
             {!isLast && item.href ? (
               <button
-                onClick={() => handleClick(index, item.href)}
+                onClick={() => item.href && router.push(item.href)}
                 className="hover:text-black transition capitalize"
               >
                 {item.label}

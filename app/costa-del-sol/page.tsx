@@ -4,7 +4,7 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import AreaCard from "@/components/cards/AreaCard";
 import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs, setPropertyFilter } from "@/redux/modules/main/action";
+import { setPropertyFilter } from "@/redux/modules/main/action";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 
@@ -113,12 +113,6 @@ const CostadelSol = () => {
   }, [page, loading, hasMore, search]);
 
   useEffect(() => {
-    if (mainReducer?.breadcrumbs?.length === 3) {
-      const breadcrumbsWithoutLast =
-        mainReducer.breadcrumbs?.slice(0, -1) || [];
-
-      dispatch(setBreadcrumbs(breadcrumbsWithoutLast));
-    }
     dispatch(setPropertyFilter({}));
   }, []);
 

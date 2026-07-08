@@ -3,30 +3,18 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import AreaCard from "../../../components/cards/AreaCard";
 
 
 export default function AreasOfInterest() {
-  const dispatch = useDispatch();
   const router = useRouter();
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
 
   const handleNavigate = () => {
-    dispatch(clearBreadcrumbs());
-    dispatch(
-      setBreadcrumbs([
-        { label: "Home", href: "/" },
-        {
-          label: "Costa del Sol areas and Cities",
-          href: App_url.link.COSTA_DEL_SOL,
-        },
-      ]),
-    );
     router.push(`${App_url.link.COSTA_DEL_SOL}`);
   };
 

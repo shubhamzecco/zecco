@@ -16,6 +16,16 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { formatEuro } from "@/utils/common";
 
 const icons = [
@@ -32,11 +42,18 @@ interface IPackageProps {
 
 const PackageCard = ({ index, plan }: IPackageProps) => {
   const features = plan?.packagePermissions || [];
-  const { user_data } = usePosterReducers();
+  const { mainReducer, user_data } = usePosterReducers();
   const isLoggedIn = !!user_data?.access_token;
   const dispatch = useDispatch();
   const router = useRouter();
   const [loadingPlanId, setLoadingPlanId] = useState(null);
+  const [downgradeTarget, setDowngradeTarget] = useState<any>(null);
+
+  const isCurrentPackage = user_data?.user?.package?._id === plan?._id;
+
+  const currentPlan = mainReducer?.package_list_with_limit?.data?.find(
+    (p: any) => p._id === user_data?.user?.package?._id,
+  );
 
 
   const createPayment = async (value: any) => {
@@ -78,6 +95,18 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
       return;
     }
 
+    const currentPrice = Number(currentPlan?.price);
+    const newPrice = Number(plan?.price);
+
+    if (currentPlan && newPrice < currentPrice) {
+      setDowngradeTarget(plan);
+      return;
+    }
+
+    proceedPayment(plan);
+  };
+
+  const proceedPayment = async (plan: any) => {
     try {
       setLoadingPlanId(plan._id);
       await createPayment(plan);
@@ -132,13 +161,31 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
       </ul>
       <button
         onClick={() => handlePlanClick(plan)}
-        className={`${user_data?.user?.package?._id === plan?._id ? "bg-green-500 text-white cursor-not-allowed pointer-events-none border-none" : "text-[#000000]"} w-full  text-sm  py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition`}
+        className={`${isCurrentPackage ? "bg-green-500 text-white cursor-not-allowed pointer-events-none border-none" : "text-[#000000]"} w-full  text-sm  py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition`}
       >
-        {user_data?.user?.package?._id === plan?._id
+        {isCurrentPackage
           ? "Active"
           : plan?.button_title} {loadingPlanId == plan._id && <Loader2 className="h-5 w-5 animate-spin" />
         }
       </button>
+      <AlertDialog open={!!downgradeTarget} onOpenChange={(open) => !open && setDowngradeTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Downgrade Package</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are currently subscribed to the <strong>{currentPlan?.name}</strong> package. Are you sure you want to downgrade to the <strong>{downgradeTarget?.name}</strong> package?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDowngradeTarget(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => { proceedPayment(downgradeTarget); setDowngradeTarget(null); }} className="text-white">
+              Yes, Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <LoginPopup />
     </div>
   );

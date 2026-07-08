@@ -8,11 +8,7 @@ import { App_url } from "@/constant/static";
 import { usePathname, useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/utils/common";
 import { useDispatch } from "react-redux";
-import {
-  clearBreadcrumbs,
-  setBreadcrumbs,
-  setReduxClear,
-} from "@/redux/modules/main/action";
+import { setReduxClear } from "@/redux/modules/main/action";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import ImageDropdown from "@/components/ui/image-dropdown";
 import { setAuthData } from "@/redux/modules/common/user_data/action";
@@ -37,10 +33,6 @@ export default function Navbar() {
   }, [])
 
   const handleNavClick = (item: any) => {
-    dispatch(clearBreadcrumbs());
-    if (item?.breadcrumbs) {
-      dispatch(setBreadcrumbs(item?.breadcrumbs));
-    }
     router.push(item?.href);
   };
 

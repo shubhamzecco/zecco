@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 
-export const PreferenceSection = () => {
+export const PreferenceSection = (props?: any) => {
   const { user_data, mainReducer, socketResponse } = usePosterReducers();
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
 
@@ -34,6 +34,7 @@ export const PreferenceSection = () => {
       investmentType: [],
       types: [],
     },
+    mode: "onChange"
   });
 
   useEffect(() => {
@@ -155,14 +156,14 @@ export const PreferenceSection = () => {
     })) || [];
 
   return (
-    <section className="mt-8 mb-6">
-      <div className="flex justify-between items-center mb-1">
+    <section className={`mt-8 mb-6 ${props?.classname}`}>
+      {!props?.hideTitle && <div className="flex justify-between items-center mb-1">
         <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
           Update Preferences
         </h2>
-      </div>
+      </div>}
 
-      <div className="bg-white/70 p-7 rounded-lg">
+      <div className={`bg-white/70 p-7 rounded-lg ${props?.innerClassname}`}>
         <div className="p-8 bg-[#F2F3F6] rounded-lg">
           <Form {...preferenceForm}>
             <form className="" onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}>

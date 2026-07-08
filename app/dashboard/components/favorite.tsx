@@ -1,6 +1,7 @@
 "use client";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import PropertyCard from "@/components/cards/PropertyCard";
+import PropertyCardSkeleton from "@/app/costa-del-sol/[location]/components/PropertyCardSkeleton";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useRouter } from "next/navigation";
@@ -39,23 +40,27 @@ const Favorite = () => {
         </button>
       </div>
       <div className="bg-white/70 p-7  rounded-lg">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
-          {mainReducer?.favorite_property_list?.data
-            ?.slice(0, 3)
-            ?.map((property) => (
-              <PropertyCard
-                property={property}
-                key={property?._id}
-                {...property}
-              />
-            ))}
-        </div>
-        {mainReducer?.favorite_property_list?.data?.length === 0 && (
+        {!mainReducer?.favorite_property_list ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 3 }).map((_, i) => <PropertyCardSkeleton key={i} />)}
+          </div>
+        ) : mainReducer?.favorite_property_list?.data?.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {mainReducer?.favorite_property_list?.data
+              ?.slice(0, 3)
+              ?.map((property) => (
+                <PropertyCard
+                  property={property}
+                  key={property?._id}
+                  {...property}
+                />
+              ))}
+          </div>
+        ) : (
           <div className="!bg-none flex flex-col items-center justify-center">
             <h2 className="mt-5 text-xl font-bold text-gray-800">
               No Favorite Properties
             </h2>
-
             <p className="mt-2 text-center text-sm text-gray-500">
               Properties you save as favorites will appear here for quick
               access.
