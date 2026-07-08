@@ -51,12 +51,12 @@ const AboutZecco = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1  sm:grid-cols-2 lg:grid-cols-[0.4fr_1fr] gap-6 mb-7">
+          <div className="grid grid-cols-1  sm:grid-cols-[0.4fr_1fr] gap-6 mb-7">
             <div className="">
               <Image
                 src={App_url.image.about_us_1}
                 alt="About Us"
-                className="rounded-[10px] object-cover w-full h-[91vh]"
+                className="rounded-[10px] object-cover w-full lg:h-[91vh] h-full"
                 width={400}
                 height={180}
               />
