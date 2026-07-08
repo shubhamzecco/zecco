@@ -28,8 +28,8 @@ const formSchema = z.object({
     .min(1, "Phone number is required")
     .regex(/^\d+$/, "Invalid phone number"),
   email: z.string().email("Invalid email address"),
-  consultation: z.string().optional(),
-  project_information: z.string().optional(),
+  consultation: z.string().min(1, "Consultation is required"),
+  project_information: z.string().min(1, "Project information is required"),
 });
 
 const ContactUs = () => {

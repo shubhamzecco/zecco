@@ -41,6 +41,7 @@ const PropertyCard = ({
 }: PropertyCardProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const isZeccoFaviourite = pathname === "/zecco-favorites"
   const dispatch = useDispatch();
   const { mainReducer, user_data } = usePosterReducers();
   const { sendMessage, lastEvent } = useWebSocket();
@@ -220,7 +221,7 @@ const PropertyCard = ({
             } else if (["verified seller"].includes(normalizedTag)) {
               Icon = ShieldCheck;
               className += " bg-[#5BA55A]";
-            } else if (["zecco favourite"].includes(normalizedTag)) {
+            } else if (["zecco favourites"].includes(normalizedTag)) {
               Icon = Heart;
               className += " bg-[#F59E0B]";
             } else {
@@ -240,6 +241,7 @@ const PropertyCard = ({
         <button
           onClick={(e) => {
             e.stopPropagation(); // prevent navigation
+            if (isZeccoFaviourite) return
             // onLikeToggle?.();
             handleFavoriteAdd?.();
           }}
