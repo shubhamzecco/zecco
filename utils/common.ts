@@ -2,6 +2,7 @@ import { App_url } from "@/constant/static";
 import { BreadcrumbItem } from "@/redux/modules/main/types";
 
 const breadcrumbMap: Record<string, string> = {
+  "costa-del-sol": "Costa del Sol areas and Cities",
   areas: "Costa del Sol areas and Cities",
   property: "Property Detail",
 };
@@ -23,6 +24,24 @@ export const generateBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
 
   return [{ label: "Home", href: "/" }, ...crumbs];
 };
+
+export const slugToLabel = (slug: string) =>
+  slug.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+
+export const getCostaDelSolLocationBreadcrumbs = (
+  locationSlug: string,
+  locationLabel?: string,
+): BreadcrumbItem[] => [
+  { label: "Home", href: "/" },
+  {
+    label: "Costa del Sol areas and Cities",
+    href: App_url.link.COSTA_DEL_SOL,
+  },
+  {
+    label: locationLabel || slugToLabel(locationSlug),
+    href: `${App_url.link.COSTA_DEL_SOL}/${locationSlug}`,
+  },
+];
 
 export const savedSearchesData = [];
 
@@ -209,3 +228,37 @@ export const bedroomRanges = [
     value: "5",
   },
 ];
+
+export const parsePrice = (value: string): number | "" => {
+  if (!value) return "";
+
+  // Remove spaces
+  let formatted = value.trim().replace(/\s/g, "");
+
+  const hasComma = formatted.includes(",");
+  const hasDot = formatted.includes(".");
+
+  if (hasComma && hasDot) {
+    // European: 1.320.000,00
+    if (formatted.lastIndexOf(",") > formatted.lastIndexOf(".")) {
+      formatted = formatted.replace(/\./g, "").replace(",", ".");
+    }
+    // US: 1,320,000.00
+    else {
+      formatted = formatted.replace(/,/g, "");
+    }
+  } else if (hasComma) {
+    // 1320000,00
+    formatted = formatted.replace(",", ".");
+  } else {
+    // 1.320.000 -> remove thousand separators if multiple dots
+    const dotCount = (formatted.match(/\./g) || []).length;
+    if (dotCount > 1) {
+      formatted = formatted.replace(/\./g, "");
+    }
+  }
+
+  const number = Number(formatted);
+
+  return isNaN(number) ? "" : number;
+};

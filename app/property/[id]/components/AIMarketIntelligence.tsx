@@ -46,7 +46,9 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
           </p>
           <p className="font-manrope font-medium text-[#9CA3AF] text-xs">
             Based on {ai_insight?.comparables_used} recent sales in{" "}
-            {ai_insight?.city}
+            {ai_insight?.city
+              ?.toLowerCase()
+              .replace(/\b\w/g, (char) => char?.toUpperCase())}
           </p>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-md border border-[#F3F4F6]">
@@ -60,7 +62,9 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
             {ai_insight?.investment_grade}
           </p>
           <p className="font-manrope font-medium text-[#9CA3AF] text-xs">
-            {ai_insight?.investment_opportunity} in {ai_insight?.city}
+            {ai_insight?.investment_opportunity} in  {ai_insight?.city
+              ?.toLowerCase()
+              .replace(/\b\w/g, (char) => char?.toUpperCase())}
           </p>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-md border border-[#F3F4F6]">

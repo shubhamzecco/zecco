@@ -10,6 +10,7 @@ import { ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { PropertyMap } from "./map";
+import { parsePrice } from "@/utils/common";
 
 interface FilterPanelProps {
   onFilterChange?: (filters: any) => void;
@@ -321,7 +322,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
                   placeholder="Min"
                   value={filters.priceFrom ?? ""}
                   onChange={(e) =>
-                    handleInputChange("priceFrom", e.target.value)
+                    handleInputChange("priceFrom", parsePrice(e.target.value))
                   }
                   onKeyDown={handleEnterPress}
                   className="w-full  bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"

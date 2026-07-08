@@ -94,7 +94,6 @@ const SignUpPage = () => {
     },
   });
 
-  console.log("Form Errors:", form.formState.errors);
 
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -103,7 +102,7 @@ const SignUpPage = () => {
     }
     if (nextPage && values) {
       const location = mainReducer?.all_location_list?.find(
-        (item: any) => item.id === values.location
+        (item: any) => item?.id === values?.location
       )
       const payload = {
         ...values,
@@ -113,13 +112,12 @@ const SignUpPage = () => {
         locationSubarea: location?.subarea_name ? location?.subarea_name : null,
         locationId: values.location,
       };
-      console.log("payload::", payload)
-      delete payload.selectedLocation;
-      delete payload.location;
+      delete payload?.selectedLocation;
+      delete payload?.location;
       postData(App_url.endpoint_url.USER_LOGIN, payload)
         ?.then((response: any) => {
           if (response?.status === 200) {
-            toast.success(response.data.message);
+            toast.success(response?.data?.message);
             sessionStorage.setItem("otp_email", values.email);
             router.push(App_url?.link?.OTP_VERIFICATION);
           } else {
@@ -196,7 +194,7 @@ const SignUpPage = () => {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter first name"
+                              placeholder="First name"
                               className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -218,7 +216,7 @@ const SignUpPage = () => {
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter last name"
+                              placeholder="Last name"
                               className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -242,7 +240,7 @@ const SignUpPage = () => {
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter mobile number"
+                            placeholder="Mobile number"
                             className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                             {...field}
                           />
@@ -265,7 +263,7 @@ const SignUpPage = () => {
                         </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Enter email"
+                            placeholder="Email address"
                             className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                             {...field}
                           />
@@ -290,7 +288,7 @@ const SignUpPage = () => {
                           <FormControl>
                             <Input
                               type="password"
-                              placeholder="Enter password"
+                              placeholder="Password"
                               className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -313,7 +311,7 @@ const SignUpPage = () => {
                           <FormControl>
                             <Input
                               type="password"
-                              placeholder="Enter confirm pass..."
+                              placeholder="Confirm password"
                               className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
