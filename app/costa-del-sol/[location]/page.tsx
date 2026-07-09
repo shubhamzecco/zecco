@@ -51,8 +51,6 @@ const Page = () => {
   const lastPath = path.split("/").filter(Boolean).pop();
   const search_by_area = mainReducer?.search_by_area
   const filtersArea = search_by_area?.data?.filter((i: any) => i.name?.toLowerCase() === lastPath?.toLowerCase())
-  console.log("search_by_area::", search_by_area)
-  console.log("filtersArea::", filtersArea)
 
   const fetchProperties = (
     currentPage: number,
@@ -363,6 +361,24 @@ const Page = () => {
     };
   }, [page, loading, hasMore, filterData, search]);
 
+  const onAreaClick = (area: any) => {
+    const searchValue = area?.name || "";
+
+    setSearch(searchValue);
+    dispatch(
+      setPropertyFilter({
+        ...mainReducer?.propertyFilter,
+        search: searchValue,
+      }),
+    );
+
+    if (area?.city_name && area.city_name !== id?.location) {
+      router.replace(
+        `${App_url.link.COSTA_DEL_SOL}/${citySlug(area.city_name)}`,
+      );
+    }
+  };
+
   // FAVORITE / SAVE SEARCH
   useEffect(() => {
     if (
@@ -488,7 +504,7 @@ const Page = () => {
               }
             }
           >
-            <FilterPanel onFilterChange={handleFilterChange} />
+            <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} onAreaClick={onAreaClick} />
           </div>
 
           {/* PROPERTY GRID */}
@@ -576,7 +592,7 @@ const Page = () => {
         </div>
 
         <div className="h-[calc(100%-180px)] overflow-y-auto">
-          <FilterPanel onFilterChange={handleFilterChange} />
+          <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} onAreaClick={onAreaClick} />
         </div>
       </div>
       <LoginPopup />

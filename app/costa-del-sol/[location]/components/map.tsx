@@ -1,104 +1,121 @@
 "use client";
 
-import {
-    getLocationCenter,
-    getPropertiesByLocation,
-    type Property,
-} from "@/lib/property-data";
-import { useEffect, useRef, useState } from "react";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-export function PropertyMap() {
-  const mapContainer = useRef<HTMLDivElement>(null);
+interface AreaData {
+  _id: string;
+  name: string;
+  point: {
+    type: string;
+    coordinates: number[];
+  };
+  property_count?: number;
+  all_count?: number;
+  sale_count?: number;
+  rent_count?: number;
+  newDev_count?: number;
+}
+
+interface PropertyMapProps {
+  areas?: AreaData[];
+  onAreaClick?: (area: AreaData) => void;
+}
+
+export function PropertyMap({ areas, onAreaClick }: PropertyMapProps) {
+  const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
-  const highlightRef = useRef<any>(null);
-  const [selectedLocation] = useState("Marbella");
+  const circleRef = useRef<any>(null);
+  const [leaflet, setLeaflet] = useState<any>(null);
+
   useEffect(() => {
     if (!mapContainer.current) return;
-
-    // Dynamically import Leaflet only on client side
-    const initMap = async () => {
+    let isMounted = true;
+    const init = async () => {
       const L = (await import("leaflet")).default;
       await import("leaflet/dist/leaflet.css");
-
-      // Initialize map
-      if (!map?.current) {
-        map.current = L?.map(
-          mapContainer?.current ? mapContainer?.current : "",
-          {
-            attributionControl: false,
-          },
-        ).setView([36.5116, -4.8848], 9);
-
+      if (!isMounted) return;
+      setLeaflet(L);
+      if (!map.current) {
+        map.current = L.map(mapContainer.current!, {
+          attributionControl: false,
+        }).setView([36.5116, -4.8848], 9);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           maxZoom: 19,
-        }).addTo(map?.current);
+        }).addTo(map.current);
       }
+    };
+    init();
+    return () => {
+      isMounted = false;
+      if (map.current) {
+        map.current.remove();
+        map.current = null;
+      }
+    };
+  }, []);
 
-      // Clear existing markers
-      markersRef.current.forEach((marker: any) => marker.remove());
-      markersRef.current = [];
-      highlightRef.current?.remove?.();
-      highlightRef.current = null;
+  useEffect(() => {
+    if (!leaflet || !map.current) return;
 
-      // Get properties for selected location
-      const locationProps = getPropertiesByLocation(selectedLocation);
-      const center = getLocationCenter(selectedLocation);
+    markersRef.current.forEach((m: any) => m.remove());
+    markersRef.current = [];
+    circleRef.current?.remove?.();
+    circleRef.current = null;
 
-      // Center map on location
-      if (map?.current) {
-        map?.current.setView(
-          [center.lat, center.lng],
-          selectedLocation === "Marbella" ? 12 : 13,
-        );
+    if (!areas || areas.length === 0) return;
 
-        highlightRef.current = L.circle([center.lat, center.lng], {
-          radius: 2500,
+    const allBounds: any[] = [];
+
+    areas.forEach((area) => {
+      const coords = area?.point?.coordinates;
+      if (!coords || coords.length < 2) return;
+      const [lng, lat] = coords;
+      if (typeof lat !== "number" || typeof lng !== "number") return;
+
+      const count = area.all_count ?? area.property_count ?? 0;
+      const radius = Math.max(1000, Math.min(8000, count * 50 + 1500));
+
+      const circle = leaflet
+        .circle([lat, lng], {
+          radius,
           color: "#111827",
           weight: 2,
           fillColor: "#D9F99D",
-          fillOpacity: 0.18,
-        }).addTo(map.current);
-      }
+          fillOpacity: 0.25,
+        })
+        .on("click", () => onAreaClick?.(area))
+        .addTo(map.current);
+      circleRef.current = circle;
 
-      // Add property markers
-      locationProps.forEach((property: Property) => {
-        if (map?.current) {
-          // Create custom icon
-          const iconHtml = `
-            <div class="flex items-center justify-center bg-blue-600 text-white rounded-full w-10 h-10 font-bold text-sm shadow-lg border-2 border-white">
-              ${property.priceFormatted.replace("€", "")}
-            </div>
-          `;
+      const label = leaflet
+        .marker([lat, lng], {
+          icon: leaflet.divIcon({
+            html: `<div style="transform: translate(-50%, -50%); white-space: nowrap;" class="flex flex-col items-center justify-center rounded-lg px-2 py-1 text-xs font-semibold pointer-events-none">
+              <span>${area.name}</span>
+              <span class="text-blue-600">${count}</span>
+            </div>`,
+            className: "",
+            iconSize: [0, 0],
+            iconAnchor: [0, 0],
+          }),
+        })
+        .addTo(map.current);
+      markersRef.current.push(label);
 
-          const marker = L.marker([property.lat, property.lng], {
-            icon: L.divIcon({
-              html: iconHtml,
-              className: "property-marker",
-              iconSize: [40, 40],
-              iconAnchor: [20, 20],
-            }),
-          })
-            .bindPopup(
-              `
-              <div class="p-3">
-                <h3 class="font-bold text-lg mb-2">${property.name}</h3>
-                <p class="text-sm text-gray-600 mb-1"><strong>Price:</strong> ${property.priceFormatted}</p>
-                <p class="text-sm text-gray-600 mb-1"><strong>Type:</strong> ${property.type}</p>
-                <p class="text-sm text-gray-600 mb-1"><strong>Area:</strong> ${property.area} m²</p>
-                <p class="text-sm text-gray-600"><strong>Beds:</strong> ${property.beds}</p>
-              </div>
-            `,
-            )
-            .addTo(map?.current);
+      allBounds.push(circle.getBounds());
+    });
 
-          markersRef.current.push(marker);
-        }
-      });
-    };
-
-    initMap();
-  }, [selectedLocation]);
+    if (allBounds.length > 0) {
+      const combined = allBounds.reduce(
+        (acc, b) => acc.extend(b),
+        leaflet.latLngBounds(allBounds[0]),
+      );
+      map.current.fitBounds(combined, { padding: [24, 24], animate: false });
+    }
+  }, [leaflet, areas]);
 
   return (
     <div className="relative w-full h-96 overflow-hidden">

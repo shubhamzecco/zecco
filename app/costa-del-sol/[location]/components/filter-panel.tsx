@@ -14,6 +14,8 @@ import { parsePrice } from "@/utils/common";
 
 interface FilterPanelProps {
   onFilterChange?: (filters: any) => void;
+  areas?: any[];
+  onAreaClick?: (area: any) => void;
 }
 
 type FiltersState = {
@@ -42,7 +44,7 @@ type CheckboxGroup =
   | "multimedia"
   | "publicationDate";
 
-export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
+export default function FilterPanel({ onFilterChange, areas, onAreaClick }: FilterPanelProps) {
   const [filters, setFilters] = useState<FiltersState>({
     categories: null,
     priceFrom: "",
@@ -248,7 +250,7 @@ export default function FilterPanel({ onFilterChange }: FilterPanelProps) {
   return (
     <div className="w-full bg-[#F8FAFC] rounded-lg h-full overflow-y-auto">
       <div className="w-full h-96 p-1">
-        <PropertyMap />
+        <PropertyMap areas={areas} onAreaClick={onAreaClick} />
       </div>
       <div className="p-6 space-y-6">
         <div className="space-y-3">

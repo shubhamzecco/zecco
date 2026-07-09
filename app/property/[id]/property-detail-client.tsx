@@ -34,7 +34,7 @@ export default function PropertyDetailClient() {
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const { mainReducer, user_data } = usePosterReducers();
   const params = useParams();
-  const propertyId = params.id || params.propertyId;
+  const propertyId = params.id || params.propertyId || (Array.isArray(params.slug) ? params.slug[params.slug.length - 1] : params.slug);
   const dispatch = useDispatch();
   const [step, setStep] = useState("intro");
   const [isCompleted, setIsCompleted] = useState(false);
