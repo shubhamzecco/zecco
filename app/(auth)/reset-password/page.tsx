@@ -16,9 +16,11 @@ import { App_url } from "@/constant/static";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
+import { Loader2 } from "lucide-react";
 import AuthLayout from "../layout/page";
 
 const formSchema = z.object({
@@ -37,6 +39,7 @@ const formSchema = z.object({
 
 const ResetPassword = () => {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,6 +49,7 @@ const ResetPassword = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
     postData(App_url?.endpoint_url?.RESET_PASSWORD, {
       password: values?.password,
       confirm_password: values?.confirm_password,
@@ -70,13 +74,13 @@ const ResetPassword = () => {
       })
       .catch((error) => {
         console.log("API Error :::", error);
-        // setLoader(false);
         const errorMessage =
           error?.response?.data?.error ||
           error?.message ||
           "An unexpected error occurred.";
         toast.error(errorMessage);
-      });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -146,9 +150,10 @@ const ResetPassword = () => {
             <div className="flex items-center mt-4 mb-5 gap-5">
               <Button
                 type="submit"
-                className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md"
+                disabled={loading}
+                className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
               >
-                Save Password
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Save Password"}
               </Button>
             </div>
           </form>

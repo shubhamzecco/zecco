@@ -64,6 +64,8 @@ const UserForm = () => {
   const { user_data, mainReducer } = usePosterReducers();
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchDropdown, setSearchDropdown] = useState(false);
   const [propertyTypeSearch, setPropertyTypeSearch] = useState("");
@@ -218,23 +220,32 @@ const UserForm = () => {
   useEffect(() => {
     if (
       lastEvent?.data?.status &&
-      lastEvent?.data?.request?.type === "userService" &&
-      (lastEvent?.data?.request?.action === "update" ||
-        lastEvent?.data?.request?.action === "updatePassword")
+      lastEvent?.data?.request?.type === "userService"
     ) {
-      const payload = {
-        type: "userService",
-        action: "get",
-        payload: {},
-      };
-      sendMessage("action", payload);
-    }
-    if (lastEvent?.data?.request?.action === "updatePassword") {
-      form?.reset({});
+      if (lastEvent?.data?.request?.action === "update") {
+        setProfileLoading(false);
+        const payload = {
+          type: "userService",
+          action: "get",
+          payload: {},
+        };
+        sendMessage("action", payload);
+      }
+      if (lastEvent?.data?.request?.action === "updatePassword") {
+        setPasswordLoading(false);
+        form?.reset({});
+        const payload = {
+          type: "userService",
+          action: "get",
+          payload: {},
+        };
+        sendMessage("action", payload);
+      }
     }
   }, [lastEvent]);
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
+    setProfileLoading(true);
     const payload = {
       type: "userService",
       action: "update",
@@ -251,6 +262,7 @@ const UserForm = () => {
   };
 
   const onPasswordSubmit = (data: z.infer<typeof passwordSchema>) => {
+    setPasswordLoading(true);
     const payload = {
       type: "userService",
       action: "updatePassword",
@@ -506,8 +518,15 @@ const UserForm = () => {
           <button
             onClick={form.handleSubmit(onSubmit)}
             type="submit"
-            className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2"
+            disabled={profileLoading}
+            className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2 disabled:opacity-50"
           >
+            {profileLoading ? (
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            ) : null}
             Update Profile
           </button>
         </div>
@@ -588,8 +607,15 @@ const UserForm = () => {
           <button
             onClick={passwordForm.handleSubmit(onPasswordSubmit)}
             type="button"
-            className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2"
+            disabled={passwordLoading}
+            className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2 disabled:opacity-50"
           >
+            {passwordLoading ? (
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            ) : null}
             Update Password
           </button>
         </div>

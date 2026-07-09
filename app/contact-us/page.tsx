@@ -13,9 +13,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { App_url } from "@/constant/static";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
@@ -33,6 +33,7 @@ const formSchema = z.object({
 });
 
 const ContactUs = () => {
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -53,12 +54,14 @@ const ContactUs = () => {
       lastEvent?.data?.request?.type === "inquiryService" &&
       lastEvent?.data?.request?.action === "add"
     ) {
+      setLoading(false);
       form?.reset({});
       toast.success(lastEvent?.data?.msg);
     }
   }, [lastEvent]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
     sendMessage("action", {
       type: "inquiryService",
       action: "add",
@@ -97,7 +100,7 @@ const ContactUs = () => {
                         name="first_name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="font-medium font-inter text-[#101828]">
+                            <FormLabel required className="font-medium font-inter text-[#101828]">
                               First Name
                             </FormLabel>
                             <FormControl>
@@ -116,7 +119,7 @@ const ContactUs = () => {
                         name="last_name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="font-medium font-inter text-[#101828]">
+                            <FormLabel required className="font-medium font-inter text-[#101828]">
                               Last Name
                             </FormLabel>
                             <FormControl>
@@ -136,7 +139,7 @@ const ContactUs = () => {
                       name="contact_no"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Mobile Number
                           </FormLabel>
                           <FormControl>
@@ -155,7 +158,7 @@ const ContactUs = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Email Address
                           </FormLabel>
                           <FormControl>
@@ -174,7 +177,7 @@ const ContactUs = () => {
                       name="consultation"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Consultation
                           </FormLabel>
                           <FormControl>
@@ -193,7 +196,7 @@ const ContactUs = () => {
                       name="project_information"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Project Information
                           </FormLabel>
                           <FormControl>
@@ -210,8 +213,12 @@ const ContactUs = () => {
                     />
                   </div>
                   <div className="flex items-center mt-3  gap-5">
-                    <button className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#136AED] text-white text-[15px] py-2.5 rounded-full font-inter font-medium flex items-center gap-2">
-                      Submit
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#136AED] text-white text-[15px] py-2.5 rounded-full font-inter font-medium flex items-center gap-2 disabled:opacity-50"
+                    >
+                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Submit"}
                     </button>
                   </div>
                 </form>

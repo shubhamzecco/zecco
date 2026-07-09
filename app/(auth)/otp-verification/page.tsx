@@ -18,6 +18,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
+import { Loader2 } from "lucide-react";
 import PackagesModal from "../components/package-modal";
 import AuthLayout from "../layout/page";
 
@@ -52,6 +53,7 @@ const OtpVerification = () => {
   const [timeLeft, setTimeLeft] = useState(OTP_TIME);
   const [canResend, setCanResend] = useState(false);
   const [userId, setUserId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -146,6 +148,7 @@ const OtpVerification = () => {
   /* -------------------- SUBMIT -------------------- */
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
     postData(
       forgetPassword === "forget-password"
         ? App_url?.endpoint_url?.FORGET_PASSWORD_VERIFY_OTP
@@ -167,7 +170,9 @@ const OtpVerification = () => {
           // router.push(App_url?.link?.SIGN_IN);
         }
       }
-    });
+    }).catch(() => {
+      // error handled by toast
+    }).finally(() => setLoading(false));
   };
 
   /* -------------------- RESEND -------------------- */
@@ -266,9 +271,10 @@ const OtpVerification = () => {
             <div className="flex justify-center items-center mt-4 mb-5 gap-5">
               <Button
                 type="submit"
-                className="w-[80%] capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md"
+                disabled={loading}
+                className="w-[80%] capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
               >
-                Verify OTP
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Verify OTP"}
               </Button>
             </div>
           </form>

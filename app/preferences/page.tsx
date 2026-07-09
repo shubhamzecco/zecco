@@ -14,14 +14,16 @@ import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { bedroomRanges, investmentType, priceRanges, propertyTypes } from "@/utils/common";
 import { preferenceSchema } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { Loader2 } from "lucide-react";
 
 
 export const PreferenceSection = (props?: any) => {
   const { user_data, mainReducer, socketResponse } = usePosterReducers();
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
+  const [loading, setLoading] = useState(false);
 
   const preferenceForm = useForm<z.infer<typeof preferenceSchema>>({
     resolver: zodResolver(preferenceSchema),
@@ -58,6 +60,7 @@ export const PreferenceSection = (props?: any) => {
       lastEvent?.data?.request?.type === "userService" &&
       lastEvent?.data?.request?.action === "update"
     ) {
+      setLoading(false);
       const payload = {
         type: "userService",
         action: "get",
@@ -68,6 +71,7 @@ export const PreferenceSection = (props?: any) => {
   }, [lastEvent]);
 
   const onPreferenceSubmit = (data: z.infer<typeof preferenceSchema>) => {
+    setLoading(true);
     const location = mainReducer?.all_location_list?.find(
       (item: any) => item.id === data.location
     )
@@ -254,9 +258,10 @@ export const PreferenceSection = (props?: any) => {
         <button
           onClick={preferenceForm.handleSubmit(onPreferenceSubmit)}
           type="submit"
-          className="w-fit px-10 tracking-wider shadow-md mt-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2"
+          disabled={loading}
+          className="w-fit px-10 tracking-wider shadow-md mt-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2 disabled:opacity-50"
         >
-          Update Preferences
+          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Update Preferences"}
         </button>
       </div>
     </section>
