@@ -26,10 +26,12 @@ import DropdownSelect from "@/components/ui/DropSelect";
 import { MultiSelectButtonGroup } from "@/components/ui/MultiselectButton";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { bedroomRanges, priceRanges } from "@/utils/common";
+import PackagesModal from "../components/package-modal";
 
 const otpSchema = z.object({
   otp: z
     .string()
+    .min(1, "One-Time Code is required")
     .length(6, "OTP must be 6 digits")
     .regex(/^\d+$/, "OTP must contain only numbers"),
 });
@@ -56,6 +58,7 @@ const OtpVerification = () => {
   const [showPreferences, setShowPreferences] = useState(false);
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected } = useWebSocket();
+  const [packageModal, setPackageModal] = useState(false);
 
   const form = useForm<z.infer<typeof otpSchema>>({
     resolver: zodResolver(otpSchema),
@@ -215,7 +218,7 @@ const OtpVerification = () => {
   };
 
   const handleSkip = () => {
-    router.push(App_url?.link?.SIGN_IN);
+    setPackageModal(true);
   };
 
   const handleResendOtp = () => {
@@ -254,8 +257,8 @@ const OtpVerification = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <AuthLayout
-        heading={showPreferences ? "Set Your Property Preferences" : "Welcome Back to Zecco!"}
-        description={showPreferences ? "" : "Sign in to Your Account"}
+        heading={showPreferences ? "Set Your Property Preferences" : "Verify OTP"}
+        description={showPreferences ? "" : "We'll send a 6-digit OTP to your email."}
       >
         {!showPreferences ? (
           <Form {...form}>
@@ -319,7 +322,7 @@ const OtpVerification = () => {
                   </FormItem>
                 )}
               />
-              <div className="flex justify-center items-center mt-4 mb-5 gap-5">
+              <div className="flex justify-center items-center mt-4 mb-1 gap-5">
                 <Button
                   type="submit"
                   disabled={loading}
@@ -330,7 +333,7 @@ const OtpVerification = () => {
               </div>
             </form>
 
-            <div className="flex items-center px-8 mt-1 mb-5">
+            <div className="flex items-center px-8 mt-1">
               <Link
                 href={App_url?.link?.SIGN_UP}
                 className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
@@ -433,6 +436,16 @@ const OtpVerification = () => {
           </Form>
         )}
       </AuthLayout>
+
+      {packageModal && (
+        <PackagesModal
+          userId={userId}
+          // formValue={formValue ?? ({} as IFormValue)}
+          onClose={() => {
+            setPackageModal(false);
+          }}
+        />
+      )}
     </>
   );
 };

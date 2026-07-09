@@ -70,7 +70,7 @@ const ForgetPassword = () => {
       <Head>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-    <AuthLayout heading="Forget Password" description="Verify your email">
+    <AuthLayout heading="Forget Password" description="We'll send a 6-digit OTP to your email.">
       <Form {...form}>
         <form
           className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
@@ -101,7 +101,7 @@ const ForgetPassword = () => {
             />
           </div>
 
-          <div className="flex items-center mt-4 mb-5 gap-5">
+          <div className="flex items-center mt-4 gap-5">
             <Button
               type="submit"
               disabled={loading}
@@ -112,7 +112,7 @@ const ForgetPassword = () => {
           </div>
         </form>
 
-        <div className="flex items-center px-8 mt-1 mb-5">
+        <div className="flex items-center px-8">
           <Link
             href={App_url?.link?.SIGN_UP}
             className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"

@@ -56,30 +56,35 @@ export default function PackagesModal({
   }, [isConnected]);
 
   const createPayment = async (value: any) => {
-    localStorage.setItem("isRegister", "true");
-    const payload = {
-      package_id: value,
-      user_id: userId || user_data?.user?._id,
-      cancelURL: window.location.href,
-      // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
-    };
-    CommonApiRequest(
-      "POST",
-      `${App_url.endpoint_url?.CREATE_PAYMENT}`,
-      payload,
-      {},
-      // true,
-    )?.then(async (response: any) => {
-      if (response?.status === 200) {
-        if (response?.success) {
-          if (typeof window !== "undefined") {
-            window.location.href = response.data.checkoutUrl;
+    if (value) {
+      localStorage.setItem("isRegister", "true");
+      const payload = {
+        package_id: value,
+        user_id: userId || user_data?.user?._id,
+        cancelURL: window.location.href,
+        // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
+      };
+      CommonApiRequest(
+        "POST",
+        `${App_url.endpoint_url?.CREATE_PAYMENT}`,
+        payload,
+        {},
+        // true,
+      )?.then(async (response: any) => {
+        if (response?.status === 200) {
+          if (response?.success) {
+            if (typeof window !== "undefined") {
+              window.location.href = response.data.checkoutUrl;
+            }
           }
+        } else {
+          toast.error(response?.message);
         }
-      } else {
-        toast.error(response?.message);
-      }
-    });
+      })
+    }else{
+      toast.error("Please select a package before proceeding.");
+    }
+
   };
 
   const icons = [
@@ -156,7 +161,8 @@ export default function PackagesModal({
                 ? router.push(App_url.link.CONTACT_US)
                 : createPayment(selectedPackage)
             }
-            className="flex-1 font-circular_std rounded-lg bg-[#0C87F1] px-4 py-2.5 text-sm font-medium text-white"
+            disabled={!selectedPackage}
+            className={`flex-1 font-circular_std rounded-lg  px-4 py-2.5 text-sm font-medium text-white ${selectedPackage ? 'bg-[#0C87F1]' : 'bg-blue-300 cursor-not-allowed '}`}
           >
             Apply Coupon
           </button>
@@ -194,18 +200,16 @@ function SelectablePackage({
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer rounded-xl p-[2px] transition ${
-        selected
+      className={`cursor-pointer rounded-xl p-[2px] transition ${selected
           ? "bg-gradient-to-r from-[#2563EB] via-[#92B1F5] to-[#2563EB]"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div
-        className={`relative flex items-center justify-between gap-3 rounded-[10px] px-4 py-3 ${
-          selected
+        className={`relative flex items-center justify-between gap-3 rounded-[10px] px-4 py-3 ${selected
             ? "bg-white"
             : "bg-white border border-gray-200 hover:border-blue-300"
-        }`}
+          }`}
       >
         <div className="flex items-start gap-5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">

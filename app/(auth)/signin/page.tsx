@@ -71,7 +71,6 @@ const Signin = () => {
           user: response.data.user,
           access_token: response.data.accessToken,
         };
-
         localStorage.setItem("access_token", response.data.accessToken);
 
         dispatch(setLogin(true));
