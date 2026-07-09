@@ -260,10 +260,10 @@ export default function ExploreRegions() {
       label: "Buy",
       value: "buy",
     },
-    {
-      label: "Rent",
-      value: "rent",
-    },
+    // {
+    //   label: "Rent",
+    //   value: "rent",
+    // },
     {
       label: "New",
       value: "new",

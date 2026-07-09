@@ -196,20 +196,20 @@ const PropertySearchBar = () => {
           shadow-sm
         "
       >
-        <div className="flex max-sm:gap-1 gap-5 max-md:bg-white max-md:rounded-full max-md:p-1">
+        <div className="flex max-sm:gap-1 gap-2 max-md:bg-white max-md:rounded-full max-md:p-1">
           {/* BUY / RENT */}
-          <div className="flex items-center rounded-full bg-[#D6E0EC] p-1 gap-2 w-full sm:w-auto">
+          <div className="flex items-center rounded-full bg-[#D6E0EC] p-1 w-full sm:w-auto">
             <button
               onClick={() => setButtonActivate("buy")}
               className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 ${buttonActivate === "buy"
-                ? "bg-sky_blue_color text-white"
+                ? "bg-[#D6E0EC text-black"
                 : "text-[#0F172A]"
                 }`}
             >
               Buy
             </button>
 
-            <button
+            {/* <button
               onClick={() => setButtonActivate("rent")}
               className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 ${buttonActivate === "rent"
                 ? "bg-sky_blue_color text-white"
@@ -217,7 +217,7 @@ const PropertySearchBar = () => {
                 }`}
             >
               Rent
-            </button>
+            </button> */}
           </div>
 
           <div className="flex items-center rounded-full bg-[#D6E0EC] p-2 w-full sm:w-auto">

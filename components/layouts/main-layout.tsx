@@ -91,7 +91,7 @@ const MainLayout = ({
   const TABS: { label: string; value: PropertyType }[] = [
     { label: "All", value: "all" },
     { label: "Buy", value: "buy" },
-    { label: "Rent", value: "rent" },
+    // { label: "Rent", value: "rent" },
     { label: "New", value: "new" },
   ];
 
