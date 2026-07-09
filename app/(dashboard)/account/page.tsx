@@ -7,7 +7,7 @@ import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { formatDateMonth, formatEuro } from "@/utils/common";
 import axios from "axios";
-import { Check, CloudUpload, Crown, ShieldCheck, Zap } from "lucide-react";
+import { Check, CloudUpload, Crown, FileUp, ShieldCheck, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -83,7 +83,7 @@ const AccountPackagePage = () => {
               className={`w-fit px-8 border border-[#1466EC] hover:bg-[#1466EC] hover:text-white text-[#1466EC] text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold`}
             >
               <div className="flex items-center">
-                <CloudUpload size={18} className="mr-2 inline" />
+                <FileUp size={18} className="mr-2 inline" />
                 Export
                 {exportLoading && (
                   <div className="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />

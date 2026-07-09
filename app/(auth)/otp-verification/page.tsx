@@ -181,6 +181,7 @@ const OtpVerification = () => {
         } else {
           setUserId(response?.data?.data?._id);
           setShowPreferences(true);
+           setPackageModal(true);
         }
       }
     }).catch(() => {
