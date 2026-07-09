@@ -53,7 +53,7 @@ export default function PackagesModal({
         status: true
       },
     });
-  }, [isConnected]);
+  }, []);
 
   const createPayment = async (value: any) => {
     if (value) {
@@ -86,6 +86,36 @@ export default function PackagesModal({
     }
 
   };
+
+  useEffect(() => {
+  const packages = mainReducer?.package_list_with_limit?.data;
+
+  if (packages?.length && !selectedPackage) {
+    const sortedPackages = [...packages].sort((a, b) => {
+      const getNumericPrice = (price: string) => {
+        const cleaned = price.replace(/[^\d]/g, "");
+        return cleaned ? Number(cleaned) : NaN;
+      };
+
+      const priceA = getNumericPrice(a.price);
+      const priceB = getNumericPrice(b.price);
+
+      const isANumber = !isNaN(priceA);
+      const isBNumber = !isNaN(priceB);
+
+      if (isANumber && isBNumber) return priceA - priceB;
+      if (isANumber && !isBNumber) return -1;
+      if (!isANumber && isBNumber) return 1;
+      return 0;
+    });
+
+    const firstPackage = sortedPackages[0];
+
+    setSelectedPackage(
+      firstPackage?.price === "VIP" ? "VIP" : firstPackage?._id
+    );
+  }
+}, [mainReducer?.package_list_with_limit?.data]);
 
   const icons = [
     <CircleUserRound className=" text-[#4A86E8]" size={20} />,

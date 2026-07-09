@@ -27,6 +27,8 @@ import { MultiSelectButtonGroup } from "@/components/ui/MultiselectButton";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { bedroomRanges, priceRanges } from "@/utils/common";
 import PackagesModal from "../components/package-modal";
+import { setAuthData, setLogin } from "@/redux/modules/common/user_data/action";
+import { useDispatch } from "react-redux";
 
 const otpSchema = z.object({
   otp: z
@@ -57,8 +59,9 @@ const OtpVerification = () => {
   const [prefLoading, setPrefLoading] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const { mainReducer } = usePosterReducers();
-  const { sendMessage, isConnected } = useWebSocket();
+  const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const [packageModal, setPackageModal] = useState(false);
+  const dispatch = useDispatch()
 
   const form = useForm<z.infer<typeof otpSchema>>({
     resolver: zodResolver(otpSchema),
@@ -179,9 +182,16 @@ const OtpVerification = () => {
         if (forgetPassword === "forget-password") {
           router.push(App_url?.link?.RESET_PASSWORD);
         } else {
-          setUserId(response?.data?.data?._id);
+          const payload = {
+            ...response?.data?.data,
+            user: response?.data?.data?.user,
+            access_token: response?.data?.data?.accessToken,
+          };
+          localStorage.setItem("access_token", response?.data?.data?.accessToken);
+          dispatch(setLogin(true));
+          dispatch(setAuthData(payload));
+          setUserId(response?.data?.data?.user?._id);
           setShowPreferences(true);
-           setPackageModal(true);
         }
       }
     }).catch(() => {
@@ -215,8 +225,19 @@ const OtpVerification = () => {
       },
     };
     sendMessage("action", payload);
-    router.push(App_url?.link?.SIGN_IN);
   };
+
+  useEffect(() => {
+    if (
+      lastEvent?.data?.status &&
+      lastEvent?.data?.request?.type === "userService" &&
+      lastEvent?.data?.request?.action === "update"
+    ) {
+      form?.reset({});
+      setPrefLoading(false)
+      setPackageModal(true)
+    }
+  }, [lastEvent]);
 
   const handleSkip = () => {
     setPackageModal(true);
