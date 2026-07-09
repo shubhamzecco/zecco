@@ -4,15 +4,16 @@ import PropertyCard from "@/components/cards/PropertyCard";
 import PropertyCardSkeleton from "@/app/costa-del-sol/[location]/components/PropertyCardSkeleton";
 import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import debounce from 'lodash/debounce'
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 
 const ZeccoFavorites = () => {
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const dispatch = useDispatch();
-  const [search , setSearch] = useState('')
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     sendMessage("action", {
@@ -61,20 +62,39 @@ const ZeccoFavorites = () => {
     }
   }, [lastEvent]);
 
-  const handleSearch = (e: any) => {
-    setSearch(e.name);
-    sendMessage("action", {
-      type: "propertyService",
-      action: "list",
-      payload: {
-        limit: 0,
-        page: 1,
-        search: e.name,
-        location_id: null,
-        favorite: true,
-      },
-    });
+  const handleSearch = (value: any) => {
+    const searchValue =
+      typeof value === "string" ? value : value?.name || "";
+
+    setSearch(searchValue);
+
+    debouncedSearch(searchValue);
   };
+
+
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((searchValue: string) => {
+        sendMessage("action", {
+          type: "propertyService",
+          action: "list",
+          payload: {
+            limit: 0,
+            page: 1,
+            search: searchValue,
+            location_id: null,
+            favorite: true,
+          },
+        });
+      }, 500),
+    [sendMessage]
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   return (
     <MainLayout

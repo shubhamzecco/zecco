@@ -28,7 +28,7 @@ const formSchema = z.object({
     .string()
     .min(1, "Phone number is required")
     .regex(/^\d+$/, "Invalid phone number"),
-  email: z.string().email("Invalid email address"),
+  email: z.string().min(1, "Email address is required").email("Please enter a valid email address"),
   consultation: z.string().optional(),
   project_information: z.string().optional(),
 });
@@ -424,7 +424,7 @@ const UserForm = () => {
                       name="first_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             First Name
                           </FormLabel>
                           <FormControl>
@@ -443,7 +443,7 @@ const UserForm = () => {
                       name="last_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Last Name
                           </FormLabel>
                           <FormControl>
@@ -463,7 +463,7 @@ const UserForm = () => {
                       name="contact_no"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Phone
                           </FormLabel>
                           <FormControl>
@@ -483,7 +483,7 @@ const UserForm = () => {
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Email Address
                           </FormLabel>
                           <FormControl>
@@ -522,9 +522,9 @@ const UserForm = () => {
                     name="current_password"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-medium font-inter text-[#101828]">
-                          Current Password
-                        </FormLabel>
+                        <FormLabel required className="font-medium font-inter text-[#101828]">
+                            Current Password
+                          </FormLabel>
                         <FormControl>
                           <Input
                             type="password"
@@ -544,7 +544,7 @@ const UserForm = () => {
                       name="new_password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             New Password
                           </FormLabel>
                           <FormControl>
@@ -565,7 +565,7 @@ const UserForm = () => {
                       name="confirm_password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Confirm Password
                           </FormLabel>
                           <FormControl>

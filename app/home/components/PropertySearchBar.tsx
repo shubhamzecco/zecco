@@ -33,6 +33,8 @@ const PropertySearchBar = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
   const [selected, setSelected] = useState<any>(propertyTypes?.[0] || null);
+  const [dropdownPosition, setDropdownPosition] = useState<"top" | "bottom">("bottom");
+  const [propertyDropdownPosition, setPropertyDropdownPosition] = useState<"top" | "bottom">("bottom");
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -139,9 +141,46 @@ const PropertySearchBar = () => {
       setSearchText(e.target.value);
       setSelectedLocation(null);
       setSearchDropdown(true);
+      handleSearchFocus();
     },
     [],
   );
+
+  const handleSearchFocus = () => {
+    if (!searchRef.current) return;
+
+    const rect = searchRef.current.getBoundingClientRect();
+
+    const dropdownHeight = 320; // approximate height
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+      setDropdownPosition("top");
+    } else {
+      setDropdownPosition("bottom");
+    }
+
+    setSearchDropdown(true);
+  };
+
+  const handlePropertyDropdown = () => {
+    if (!dropdownRef.current) return;
+
+    const rect = dropdownRef.current.getBoundingClientRect();
+
+    const dropdownHeight = 250;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+      setPropertyDropdownPosition("top");
+    } else {
+      setPropertyDropdownPosition("bottom");
+    }
+
+    setOpen((prev) => !prev);
+  };
 
   return (
     <div className="w-full max-w-[52rem] mx-auto">
@@ -184,7 +223,7 @@ const PropertySearchBar = () => {
           <div className="flex items-center rounded-full bg-[#D6E0EC] p-2 w-full sm:w-auto">
             <div ref={dropdownRef} className="relative">
               <button
-                onClick={() => setOpen((prev) => !prev)}
+                onClick={handlePropertyDropdown}
                 className="flex items-center w-[130px] truncate justify-between gap-2 rounded-full px-3 py-2 text-sm font-semibold min-w-[120px]"
               >
                 {selected?.name}
@@ -197,7 +236,16 @@ const PropertySearchBar = () => {
               </button>
 
               {open && (
-                <div className="absolute left-0 mt-2 w-44 rounded-xl bg-white shadow-lg border border-slate-200 z-50">
+                <div
+                  className={`
+                            absolute left-0 w-44 rounded-xl bg-white shadow-lg border
+                            border-slate-200 z-50 max-h-[300px] overflow-y-auto
+                            ${propertyDropdownPosition === "bottom"
+                                              ? "top-full mt-2"
+                                              : "bottom-full mb-2"
+                                            }
+                          `}
+                >
                   <ul className="py-1 text-sm text-slate-700">
                     {propertyTypes?.map((item: any) => (
                       <li key={item?.id}>
@@ -222,7 +270,6 @@ const PropertySearchBar = () => {
           </div>
         </div>
 
-        {/* SEARCH */}
         <div
           ref={searchRef}
           className="flex max-md:bg-white max-md:rounded-full max-md:p-[2px] sm:w-full relative"
@@ -234,14 +281,23 @@ const PropertySearchBar = () => {
               type="text"
               placeholder="Search in Spain..."
               value={searchText}
-              onFocus={() => setSearchDropdown(true)}
+              onFocus={handleSearchFocus}
               onChange={handleInputChange}
               className="w-full bg-transparent text-md text-dark-navy placeholder-slate-gray outline-none"
             />
           </div>
 
           {searchDropdown && (
-            <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[300px] overflow-y-auto">
+            <div
+              className={`
+                  absolute left-0 w-full rounded-xl bg-white shadow-lg border
+                  border-slate-200 z-50 max-h-[300px] overflow-y-auto
+                  ${dropdownPosition === "bottom"
+                  ? "top-full mt-2"
+                  : "bottom-full mb-2"
+                }
+                `}
+            >
               <ul className="py-1 text-sm text-slate-700">
                 <li>
                   <button

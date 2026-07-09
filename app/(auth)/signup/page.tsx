@@ -48,7 +48,7 @@ const formSchema = z.object({
       "Password must contain both letters and numbers."
     ),
   confirm_password: z.string().min(1, "Confirm password is required"),
-  email: z.string().email("Invalid email address"),
+  email: z.string().min(1, "Email address is required").email("Please enter a valid email address"),
   selectedLocation: z.any().optional(),
   location: z.any().optional(),
   category: z.array(z.number()).default([]),
