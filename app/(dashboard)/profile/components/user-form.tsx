@@ -26,8 +26,8 @@ const formSchema = z.object({
   last_name: z.string().min(1, "Last name is required"),
   contact_no: z
     .string()
-    .min(1, "Phone number is required")
-    .regex(/^\d+$/, "Invalid phone number"),
+    .min(1, "Mobile number is required")
+    .regex(/^((\+91|0)?[6-9]\d{9}|(\+34)?[67]\d{8})$/, "Invalid mobile number"),
   email: z.string().min(1, "Email address is required").email("Please enter a valid email address"),
   consultation: z.string().optional(),
   project_information: z.string().optional(),
@@ -476,11 +476,11 @@ const UserForm = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel required className="font-medium font-inter text-[#101828]">
-                            Phone
+                            Mobile Number
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Phone number"
+                              placeholder="Mobile number"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
