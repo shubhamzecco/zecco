@@ -1,8 +1,6 @@
 "use client";
 
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface AreaData {
   _id: string;
@@ -11,6 +9,7 @@ interface AreaData {
     type: string;
     coordinates: number[];
   };
+  boundryCordinates?: number[][];
   property_count?: number;
   all_count?: number;
   sale_count?: number;
@@ -20,10 +19,11 @@ interface AreaData {
 
 interface PropertyMapProps {
   areas?: AreaData[];
-  onAreaClick?: (area: AreaData) => void;
+  parentArea?: AreaData & { areas?: any[] };
+  onAreaClick?: (area: any) => void;
 }
 
-export function PropertyMap({ areas, onAreaClick }: PropertyMapProps) {
+export function PropertyMap({ areas, parentArea, onAreaClick }: PropertyMapProps) {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
@@ -65,37 +65,70 @@ export function PropertyMap({ areas, onAreaClick }: PropertyMapProps) {
     circleRef.current?.remove?.();
     circleRef.current = null;
 
-    if (!areas || areas.length === 0) return;
-
     const allBounds: any[] = [];
 
-    areas.forEach((area) => {
+    // Parent city boundary in yellow
+    //@ts-ignore
+    if (parentArea?.boundryCordinates?.length >= 3) {
+      const latLngs = parentArea?.boundryCordinates?.map(
+        (c) => [c[1], c[0]] as [number, number],
+      );
+      const polygon = leaflet
+        .polygon(latLngs, {
+          color: "#EAB308",
+          weight: 3,
+          fillColor: "#EAB308",
+          fillOpacity: 0.15,
+        })
+        .on("click", () => onAreaClick?.(parentArea))
+        .addTo(map.current);
+      circleRef.current = polygon;
+      allBounds.push(polygon.getBounds());
+
+      const center = polygon.getBounds().getCenter();
+      const label = leaflet
+        .marker([center.lat, center.lng], {
+          icon: leaflet.divIcon({
+            html: `<div style="transform: translate(-50%, -50%); white-space: nowrap;" class="flex flex-col items-center justify-center rounded-lg px-2 py-1 text-xs font-semibold pointer-events-none">
+              <span class="font-bold">${parentArea?.name}</span>
+              <span class="text-yellow-600">${parentArea?.all_count ?? parentArea?.property_count ?? 0}</span>
+            </div>`,
+            className: "",
+            iconSize: [0, 0],
+            iconAnchor: [0, 0],
+          }),
+        })
+        .addTo(map.current);
+      markersRef.current.push(label);
+    }
+
+    // Sub-area circles in orange
+    areas?.forEach((area) => {
       const coords = area?.point?.coordinates;
       if (!coords || coords.length < 2) return;
       const [lng, lat] = coords;
       if (typeof lat !== "number" || typeof lng !== "number") return;
 
       const count = area.all_count ?? area.property_count ?? 0;
-      const radius = Math.max(1000, Math.min(8000, count * 50 + 1500));
+      const radius = Math.max(800, Math.min(4000, count * 40 + 1000));
 
       const circle = leaflet
         .circle([lat, lng], {
           radius,
-          color: "#111827",
+          color: "#EA580C",
           weight: 2,
-          fillColor: "#D9F99D",
-          fillOpacity: 0.25,
+          fillColor: "#EA580C",
+          fillOpacity: 0.2,
         })
         .on("click", () => onAreaClick?.(area))
         .addTo(map.current);
-      circleRef.current = circle;
 
       const label = leaflet
         .marker([lat, lng], {
           icon: leaflet.divIcon({
             html: `<div style="transform: translate(-50%, -50%); white-space: nowrap;" class="flex flex-col items-center justify-center rounded-lg px-2 py-1 text-xs font-semibold pointer-events-none">
               <span>${area.name}</span>
-              <span class="text-blue-600">${count}</span>
+              <span class="text-orange-600">${count}</span>
             </div>`,
             className: "",
             iconSize: [0, 0],
@@ -115,7 +148,7 @@ export function PropertyMap({ areas, onAreaClick }: PropertyMapProps) {
       );
       map.current.fitBounds(combined, { padding: [24, 24], animate: false });
     }
-  }, [leaflet, areas]);
+  }, [leaflet, areas, parentArea]);
 
   return (
     <div className="relative w-full h-96 overflow-hidden">

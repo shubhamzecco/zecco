@@ -504,7 +504,7 @@ const Page = () => {
               }
             }
           >
-            <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} onAreaClick={onAreaClick} />
+            <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} parentArea={filtersArea?.[0]} onAreaClick={onAreaClick} />
           </div>
 
           {/* PROPERTY GRID */}
@@ -592,7 +592,7 @@ const Page = () => {
         </div>
 
         <div className="h-[calc(100%-180px)] overflow-y-auto">
-          <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} onAreaClick={onAreaClick} />
+          <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} parentArea={filtersArea?.[0]} onAreaClick={onAreaClick} />
         </div>
       </div>
       <LoginPopup />
