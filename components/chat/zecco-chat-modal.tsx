@@ -79,7 +79,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
-          text: res?.reply?.reply ?? "No response from Zecco AI",
+          text: res?.reply ?? res?.reply?.reply ?? "No response from Zecco AI",
           sender: "bot",
           timestamp: new Date(),
           hasMore: res?.reply?.hasMore,
