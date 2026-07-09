@@ -43,7 +43,7 @@ const preferenceSchema = z.object({
   bedrooms: z.array(z.string()).default([]),
 });
 
-const OTP_TIME = 10;
+const OTP_TIME = 300;
 
 const OtpVerification = () => {
   const router = useRouter();

@@ -15,7 +15,7 @@ import {
 import { IPropertyResponse } from "@/redux/modules/main/types";
 import { citySlug } from "@/utils/common";
 import { SearchX, SlidersHorizontal, X } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import FilterPanel from "./components/filter-panel";
@@ -47,6 +47,12 @@ const Page = () => {
   const dispatch = useDispatch();
   const id = useParams();
   const router = useRouter();
+  const path = usePathname()
+  const lastPath = path.split("/").filter(Boolean).pop();
+  const search_by_area = mainReducer?.search_by_area
+  const filtersArea = search_by_area?.data?.filter((i: any) => i.name?.toLowerCase() === lastPath?.toLowerCase())
+  console.log("search_by_area::", search_by_area)
+  console.log("filtersArea::", filtersArea)
 
   const fetchProperties = (
     currentPage: number,
@@ -411,12 +417,23 @@ const Page = () => {
   };
 
   useEffect(() => {
-    sendMessage("action", {
-      type: "locationService",
-      action: "searchLocationArea",
-      payload: {},
-    });
-  }, []);
+    if (isConnected) {
+      sendMessage("action", {
+        type: "locationService",
+        action: "searchLocationArea",
+        payload: {},
+      });
+      sendMessage("action", {
+        type: "locationService",
+        action: "areas_list",
+        payload: {
+          search: "",
+          limit: 10,
+          page: 1,
+        },
+      });
+    }
+  }, [isConnected]);
 
 
   return (
