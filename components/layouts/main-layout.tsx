@@ -2,8 +2,8 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { Search } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { Search, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import Footer from "../Footer";
 import Header from "../Header";
@@ -123,7 +123,7 @@ const MainLayout = ({
           </div>
         )}
         {isFilter && (
-          <div className="flex max-md:flex-col max-md:w-full justify-between items-start mb-8 mt-8 gap-4">
+          <div className="flex max-md:flex-col max-md:w-full justify-between items-start mb-8 mt-3 gap-4">
             <div className=" flex-1  lg:flex  items-center gap-3 max-md:w-full lg:w-[70%]  rounded-[7px]">
               <div
                 ref={dropdownRef}
@@ -142,7 +142,7 @@ const MainLayout = ({
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       if (searchValue.trim() === "") {
-                        handleSearch?.("");
+                        handleSearch?.(searchValue);
                       }
                       setSearchDropdown(false);
                     }
@@ -150,10 +150,21 @@ const MainLayout = ({
                   onChange={(e) => {
                     const value = e.target.value;
                     setSearchValue(value);
+                    handleSearch?.(value);
                     setSearchDropdown(value.trim().length > 0);
                   }}
                   onFocus={() => setSearchDropdown(true)}
                 />
+                {searchValue?.trim() !== '' && (
+                  <X
+                  onClick={() => {
+                     setSearchValue('');
+                     handleSearch?.('');
+                  }}
+                    className="absolute right-3 top-1/2 cursor-pointer bg-red-500 rounded-full -translate-y-1/2 text-white p-1"
+                    size={20}
+                  />
+                )}
                 {searchDropdown && searchValue && (
                   <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[300px] overflow-y-auto scrollbar-hide">
                     {searchedLocations?.length > 0 ? (

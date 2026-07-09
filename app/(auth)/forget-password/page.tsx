@@ -22,7 +22,7 @@ import * as z from "zod";
 import AuthLayout from "../layout/page";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string().min(1, "Email address is required").email({ message: "Please enter a valid email address" }),
 });
 
 const ForgetPassword = () => {

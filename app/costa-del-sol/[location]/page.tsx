@@ -16,10 +16,11 @@ import { IPropertyResponse } from "@/redux/modules/main/types";
 import { citySlug } from "@/utils/common";
 import { SearchX, SlidersHorizontal, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import FilterPanel from "./components/filter-panel";
 import PropertyCardSkeleton from "./components/PropertyCardSkeleton";
+import debounce from "lodash/debounce";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 
@@ -272,26 +273,64 @@ const Page = () => {
 
   // SEARCH
   const handleSearch = (value: any) => {
-    setSearch(value?.name);
+    const searchValue =
+      typeof value === "string" ? value : value?.name || "";
+
+    setSearch(searchValue);
+
     dispatch(
-      setPropertyFilter({ ...mainReducer?.propertyFilter, search: value?.name }),
+      setPropertyFilter({
+        ...mainReducer?.propertyFilter,
+        search: searchValue,
+      })
     );
 
-    setPage(1);
-    setProperties([]);
-    setHasMore(true);
-
-    fetchedPages.current.clear();
-
-    fetchProperties(1, filterData, true, value?.name);
-    if (value?.city_name !== id?.location) {
-      router.replace(
-        `${App_url.link.COSTA_DEL_SOL}/${citySlug(value?.city_name)}`,
-      );
-    }
+    debouncedSearch(searchValue, value, filterData, id?.location);
   };
 
-  // INFINITE SCROLL
+  const debouncedSearch = useMemo(
+    () =>
+      debounce(
+        (
+          searchValue: string,
+          value: any,
+          filters: any,
+          location: any,
+        ) => {
+          setPage(1);
+          setProperties([]);
+          setHasMore(true);
+
+          fetchedPages.current.clear();
+
+          fetchProperties(1, filters, true, searchValue);
+
+          if (typeof value === "string") {
+            if (searchValue.trim()) {
+              router.replace(
+                `${App_url.link.COSTA_DEL_SOL}/${citySlug(searchValue)}`
+              );
+            }
+          } else if (
+            value?.city_name &&
+            value.city_name !== location
+          ) {
+            router.replace(
+              `${App_url.link.COSTA_DEL_SOL}/${citySlug(value.city_name)}`
+            );
+          }
+        },
+        500
+      ),
+    [filterData, propertyType, categories]
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
   useEffect(() => {
     const handleScroll = () => {
       if (loading || !hasMore) return;

@@ -5,8 +5,9 @@ import AreaCard from "@/components/cards/AreaCard";
 import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setPropertyFilter } from "@/redux/modules/main/action";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
+import debounce from 'lodash/debounce'
 
 const LIMIT = 12;
 
@@ -20,7 +21,7 @@ const CostadelSol = () => {
   const [loading, setLoading] = useState(false);
   const [allAreas, setAllAreas] = useState<any[]>([]);
   const fetchedPages = useRef<Set<string>>(new Set());
-  
+
   const fetchAreas = (
     currentPage: number,
     searchValue: string,
@@ -78,15 +79,12 @@ const CostadelSol = () => {
   }, [mainReducer?.location_list_with_limit]);
 
   const handleSearch = (value: any) => {
-    setSearch(value?.name);
-    setPage(1);
-    setHasMore(true);
-    setAllAreas([]);
-    fetchedPages.current.clear();
-
-    fetchAreas(1, value?.name, true);
+    const searchValue =
+      typeof value === "string" ? value : value?.name || "";
+    setSearch(searchValue);
+    debouncedFetchAreas(searchValue);
   };
-  
+
   useEffect(() => {
     const handleScroll = () => {
       if (loading || !hasMore) return;
@@ -130,6 +128,24 @@ const CostadelSol = () => {
     });
   }, [isConnected, sendMessage]);
 
+  const debouncedFetchAreas = useCallback(
+    debounce((searchValue: string) => {
+      setPage(1);
+      setHasMore(true);
+      // setAllAreas([]);
+      fetchedPages.current.clear();
+
+      fetchAreas(1, searchValue, true);
+    }, 500),
+    [isConnected]
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedFetchAreas.cancel();
+    };
+  }, [debouncedFetchAreas]);
+
   return (
     <MainLayout
       isBreadcrumb
@@ -146,14 +162,6 @@ const CostadelSol = () => {
             </div>
           ))}
         </div>
-
-        {/* Loader */}
-        {loading && (
-          <div className="py-10 text-center text-sm font-medium text-gray-500">
-            Loading...
-          </div>
-        )}
-
         {/* No Data */}
         {!loading && allAreas?.length === 0 && (
           <div className="py-10 text-center text-sm font-medium text-gray-500">

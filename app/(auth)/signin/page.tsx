@@ -27,7 +27,7 @@ import AuthLayout from "../layout/page";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string().min(1, "Email address is required").email({ message: "Please enter a valid email address" }),
   password: z
     .string()
     .min(1, "Password is required.")
