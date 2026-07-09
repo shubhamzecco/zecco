@@ -355,14 +355,13 @@ export default function MapSearchClient() {
     };
 
     if (selectedArea?.name) {
-      console.log("selectedArea?.name::", selectedArea?.name)
       payload.search = selectedArea.name;
       payload.mapSelection = {
         type: "area",
         name: selectedArea.name,
       };
-      // dispatch(setPropertyFilter(payload));
-      // router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(selectedArea?.city_name || selectedArea.name)}`);
+      dispatch(setPropertyFilter(payload));
+      router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(selectedArea?.city_name || selectedArea.name)}`);
       return;
     }
 
