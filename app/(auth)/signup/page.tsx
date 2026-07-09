@@ -25,7 +25,7 @@ import { setPropertyFilter } from "@/redux/modules/main/action";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import AuthLayout from "../layout/page";
-import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown, Loader2 } from "lucide-react";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { bedroomRanges, priceRanges } from "@/utils/common";
@@ -60,6 +60,7 @@ const SignUpPage = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const [nextPage, setNextPage] = useState(false);
+  const [signupLoading, setSignupLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [searchDropdown, setSearchDropdown] = useState(false);
   const [propertyTypeSearch, setPropertyTypeSearch] = useState("");
@@ -109,6 +110,7 @@ const SignUpPage = () => {
       setNextPage(true);
     }
     if (nextPage && values) {
+      setSignupLoading(true);
       const location = mainReducer?.all_location_list?.find(
         (item: any) => item?.id === values?.location
       )
@@ -135,7 +137,8 @@ const SignUpPage = () => {
         ?.catch((error) => {
           toast.error("Something went wrong");
           console.error(error);
-        });
+        })
+        ?.finally(() => setSignupLoading(false));
     }
   };
 
@@ -333,9 +336,10 @@ const SignUpPage = () => {
                 <div className="flex items-center mt-2 gap-5">
                   <Button
                     type="submit"
-                    className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md"
+                    disabled={signupLoading}
+                    className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
                   >
-                    Next <ArrowRight />
+                    {signupLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <>Next <ArrowRight /></>}
                   </Button>
                 </div>
               </>
@@ -419,9 +423,10 @@ const SignUpPage = () => {
                 <div className="flex items-center mt-2 gap-5">
                   <Button
                     type="submit"
-                    className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md"
+                    disabled={signupLoading}
+                    className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
                   >
-                    Sign Up
+                    {signupLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Sign Up"}
                   </Button>
                 </div>
               </>
