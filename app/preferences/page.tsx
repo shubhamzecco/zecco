@@ -100,6 +100,18 @@ export const PreferenceSection = (props?: any) => {
       },
     };
     sendMessage("action", payload);
+    if (props?.isPreferenceCall) {
+      const payload = {
+        "type": "userService",
+        "action": "getPreferenceProperties",
+        "payload": {
+          "limit": 18,
+          "page": 1,
+          "status": true
+        }
+      }
+      sendMessage("action", payload);
+    }
   };
 
   useEffect(() => {

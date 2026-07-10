@@ -619,7 +619,7 @@ const UserForm = () => {
             Update Password
           </button>
         </div>
-        <PreferenceSection hideTitle classname={"mt-[-20px]"} innerClassname={"py-5 px-0"}/>
+        <PreferenceSection hideTitle classname={"mt-[-20px]"} innerClassname={"py-5 px-0"} isPreferenceCall={true}/>
       </div>
     </section>
   );
