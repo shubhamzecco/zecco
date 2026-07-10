@@ -24,9 +24,13 @@ import { Loader2 } from "lucide-react";
 import AuthLayout from "../layout/page";
 
 const formSchema = z.object({
-  confirm_password: z.string({
-    required_error: "Confirm password is required",
-  }),
+  confirm_password: z
+    .string()
+    .min(1, "Confirm password is required.")
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d).+$/,
+      "Password must contain both letters and numbers."
+    ),
   password: z
     .string()
     .min(1, "Password is required.")
