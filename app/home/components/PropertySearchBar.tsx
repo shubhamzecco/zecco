@@ -122,6 +122,19 @@ const PropertySearchBar = () => {
     router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(selectedLocation?.city_name)}`);
   }, [dispatch, router, selected, selectedLocation]);
 
+  const handleEnter = useCallback(() => {
+    if (!searchText) return;
+    dispatch(
+      setPropertyFilter({
+        categories: selected?.id,
+        propertyType: buttonActivate,
+        search: searchText,
+      }),
+    );
+
+    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(searchText)}`);
+  }, [dispatch, router, selected, searchText]);
+
   const handleLocationSelect = useCallback((item: any) => {
     setSelectedLocation(item);
     setSearchText(item?.name);
@@ -182,6 +195,8 @@ const PropertySearchBar = () => {
     setOpen((prev) => !prev);
   };
 
+
+
   return (
     <div className="w-full max-w-[52rem] mx-auto">
       <div
@@ -241,9 +256,9 @@ const PropertySearchBar = () => {
                             absolute left-0 w-44 rounded-xl bg-white shadow-lg border
                             border-slate-200 z-50 max-h-[300px] overflow-y-auto
                             ${propertyDropdownPosition === "bottom"
-                                              ? "top-full mt-2"
-                                              : "bottom-full mb-2"
-                                            }
+                      ? "top-full mt-2"
+                      : "bottom-full mb-2"
+                    }
                           `}
                 >
                   <ul className="py-1 text-sm text-slate-700">
@@ -283,6 +298,13 @@ const PropertySearchBar = () => {
               value={searchText}
               onFocus={handleSearchFocus}
               onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  console.log("clicked")
+                  e.preventDefault();
+                  handleEnter();
+                }
+              }}
               className="w-full bg-transparent text-md text-dark-navy placeholder-slate-gray outline-none"
             />
           </div>
