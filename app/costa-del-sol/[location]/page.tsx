@@ -15,7 +15,7 @@ import {
 import { IPropertyResponse } from "@/redux/modules/main/types";
 import { citySlug } from "@/utils/common";
 import { SearchX, SlidersHorizontal, X } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import FilterPanel from "./components/filter-panel";
@@ -48,9 +48,13 @@ const Page = () => {
   const id = useParams();
   const router = useRouter();
   const path = usePathname()
+  const searchParams = useSearchParams();
+  const type = searchParams.get("type");
+  const city = searchParams.get("cities");
   const lastPath = path.split("/").filter(Boolean).pop();
   const search_by_area = mainReducer?.search_by_area
-  const filtersArea = search_by_area?.data?.filter((i: any) => i.name?.toLowerCase() === lastPath?.toLowerCase())
+  const name = type === "slug" ? city : lastPath?.toLowerCase()
+  const filtersArea = search_by_area?.data?.filter((i: any) => i.name?.toLowerCase() === name)
 
   const fetchProperties = (
     currentPage: number,
@@ -59,6 +63,7 @@ const Page = () => {
     searchValue = search,
   ) => {
     if (!isConnected || loading) return;
+    const paramFilters = Object.fromEntries(searchParams.entries());
 
     const uniqueKey = JSON.stringify({
       page: currentPage,
@@ -77,44 +82,54 @@ const Page = () => {
 
     setLoading(true);
 
+    const commonPayload = {
+      limit: LIMIT,
+      page: currentPage,
+      country: "Spain",
+      status: true,
+      ...(propertyType === "buy" && {
+        forSale: true,
+        sold: false,
+        forRent: false,
+      }),
+
+      ...(propertyType === "rent" && {
+        forRent: true,
+        rented: false,
+        forSale: false,
+      }),
+
+      ...(propertyType === "new" && {
+        isNewDev: true,
+        sold: false,
+        rented: false,
+      }),
+    };
+
+    const payload =
+      type === "slug"
+        ? {
+          type,
+          slug: id?.location,
+          ...commonPayload,
+          ...paramFilters,
+        }
+        : {
+          ...commonPayload,
+          search: searchValue,
+          cities: id?.location,
+          forAll: propertyType === "all",
+
+          categories: categories
+            ? Number(categories)
+            : filters?.categories,
+          ...filters,
+        };
+
     sendMessage("action", {
       type: "propertyService",
       action: "list",
-      payload: {
-        limit: LIMIT,
-        page: currentPage,
-
-        // SEARCH VALUE
-        search: searchValue,
-
-        cities: id?.location,
-        country: "Spain",
-        status: true,
-
-        forAll: propertyType === "all",
-
-        categories: categories ? Number(categories) : filters?.categories,
-
-        ...filters,
-
-        ...(propertyType === "buy" && {
-          forSale: true,
-          sold: false,
-          forRent: false,
-        }),
-
-        ...(propertyType === "rent" && {
-          forRent: true,
-          rented: false,
-          forSale: false,
-        }),
-
-        ...(propertyType === "new" && {
-          isNewDev: true,
-          sold: false,
-          rented: false,
-        }),
-      },
+      payload,
     });
   };
 

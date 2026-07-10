@@ -24,7 +24,7 @@ const Breadcrumb = () => {
           <span key={index} className="flex items-center gap-1">
             {!isLast && item.href ? (
               <button
-                onClick={() => item.href && router.push(item.href)}
+                onClick={() => item.href && router.push(`${item.href}${window.location.search}`)}
                 className="hover:text-black transition capitalize"
               >
                 {item.label}

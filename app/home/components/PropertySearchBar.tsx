@@ -93,8 +93,24 @@ const PropertySearchBar = () => {
         search: data?.filters?.city ? data?.filters?.city : "",
       }),
     );
+    
+    const params = new URLSearchParams({
+      type: "slug",
+    });
 
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.filters?.city)}`);
+    Object.entries(data.filters ?? {}).forEach(([key, value]) => {
+      if (value === undefined || value === null) return;
+
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, String(v)));
+      } else {
+        params.set(key, String(value));
+      }
+    });
+
+    router.push(
+      `${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.title)}?${params.toString()}`
+    );
   }
 
 

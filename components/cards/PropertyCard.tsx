@@ -75,7 +75,7 @@ const PropertyCard = ({
   ]);
 
   const propertyIdentifier = property?.slug || property?._id;
-  const propertyDetailUrl = `${pathname.replace(/\/$/, "")}/${propertyIdentifier}`;
+  const propertyDetailUrl = `${pathname.replace(/\/$/, "")}/${propertyIdentifier}${window.location.search}`;
 
   const handleNavigate = () => {
     router.push(propertyDetailUrl);
