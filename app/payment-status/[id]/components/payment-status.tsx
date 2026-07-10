@@ -289,7 +289,7 @@ export function PaymentStatus({
                   if (localStorage.getItem("isRegister") === "true") {
                     // setEmailVerificationPopup(true)
                     localStorage.removeItem("isRegister");
-                    router.push(App_url.link.SIGN_IN);
+                    router.push(App_url.link.INITIAL_URL);
                   } else {
                     CommonApiRequest(
                       "GET",
