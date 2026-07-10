@@ -3,7 +3,7 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setPropertyFilter } from "@/redux/modules/main/action";
-import { citySlug } from "@/utils/common";
+import { citySlug, investmentType, propertyTypes } from "@/utils/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -11,12 +11,15 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
+import DropdownSelect from "./ui/DropSelect";
+import { MultiSelectButtonGroup } from "./ui/MultiselectButton";
+import { Loader2 } from "lucide-react";
 
 const preferenceSchema = z.object({
-  selectedLocation: z.any().optional(),
-  category: z.number().nullable().optional(),
+  location: z.any().optional(),
+  category: z.union([z.number(), z.array(z.number())]).nullable().optional(),
   budget: z.string().nullable().optional(),
-  bedrooms: z.string().nullable().optional(),
+  bedrooms: z.union([z.string(), z.array(z.string())]).nullable().optional(),
 });
 
 const FilterPopup = ({
@@ -33,7 +36,7 @@ const FilterPopup = ({
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
   const [searchValue, setSearchValue] = useState("");
   const [searchDropdown, setSearchDropdown] = useState(false);
-  const [propertyTypeSearch, setPropertyTypeSearch] = useState("");
+  const [location, setLocation] = useState<any>();
   const [propertyTypeDropdown, setPropertyTypeDropdown] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -72,8 +75,8 @@ const FilterPopup = ({
 
   const searchedLocations = searchValue.trim()
     ? mainReducer?.all_location_list?.filter((item: any) =>
-        item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
-      )
+      item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
+    )
     : [];
 
   const priceRanges = [
@@ -121,7 +124,7 @@ const FilterPopup = ({
   const preferenceForm = useForm<z.infer<typeof preferenceSchema>>({
     resolver: zodResolver(preferenceSchema),
     defaultValues: {
-      selectedLocation: "",
+      location: "",
       category: undefined,
       budget: "",
       bedrooms: "",
@@ -135,284 +138,158 @@ const FilterPopup = ({
       : Number(budget.split("-")[0]);
     const priceTo = budget.includes("+") ? null : Number(budget.split("-")[1]);
 
+    const categories = Array.isArray(data?.category)
+      ? data.category
+      : data?.category
+        ? [data.category]
+        : null;
+    const bedroomValues: string[] = data?.bedrooms
+      ? Array.isArray(data.bedrooms)
+        ? data.bedrooms
+        : [data.bedrooms]
+      : [];
+
+    const bedroomNumbers = bedroomValues.map((item: string) =>
+      Number(item.replace("+", "")),
+    );
+
+    const bedroomsFrom = bedroomNumbers.length > 0 ? Math.min(...bedroomNumbers) : null;
+
+    const bedroomsTo = bedroomNumbers.length > 0 ? Math.max(...bedroomNumbers) : null;
+
     dispatch(
       setPropertyFilter({
-        categories: data?.category || null,
-        bedroomsFrom: Number(data?.bedrooms?.replace("+", "")) || null,
-        bedroomsTo: Number(data?.bedrooms?.replace("+", "")) || null,
+        categories,
+        bedroomsFrom: bedroomsFrom,
+        bedroomsTo: bedroomsTo,
         priceFrom,
         priceTo,
         propertyType: propertyType || "all",
         search:
-          data.selectedLocation?.area_name ??
-          data.selectedLocation?.subarea_name ??
+          location?.label ??
+          data.location?.subarea_name ??
           null,
       }),
     );
     onClose?.();
     router.replace(
-      `${App_url.link.COSTA_DEL_SOL}/${citySlug(data.selectedLocation?.city_name)}`,
+      `${App_url.link.COSTA_DEL_SOL}/${citySlug(location?.label)}`,
     );
   };
 
+
+  const propertyTypeOptions =
+    mainReducer?.property_type_list?.map((item: any) => ({
+      value: item?.id,
+      label: item?.name,
+      key: item?.id,
+    })) || [];
+
+  const locationOptions =
+    mainReducer?.all_location_list?.map((item: any) => ({
+      value: item?.id,
+      label: item?.name,
+      key: item?.id,
+    })) || [];
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm max-md:p-3">
-      <div className="w-[470px] rounded-2xl bg-white shadow-2xl overflow-hidden">
+      <div className="w-[550px] max-sm:w-full rounded-2xl bg-white shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="px-6 py-4 border-b bg-[#F9F9F9]">
           <h2 className="text-lg font-semibold text-gray-900">Filter Popup</h2>
         </div>
 
-        <div className="m-2">
-          <div className="p-5">
+        <div className={`bg-white/70 p-3 sm:px-7 pt-5 rounded-lg `}>
+          <div className="sm:p-8 p-3 bg-[#F2F3F6] rounded-lg">
             <Form {...preferenceForm}>
               <form
-                className=""
+                className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
                 onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}
               >
-                <div className="grid grid-cols-1 gap-5">
-                  <div className="grid grid-cols-1 lg:grid-cols-1 gap-5">
-                    <FormField
-                      control={preferenceForm.control}
-                      name="selectedLocation"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
-                            Preferred Location
-                          </FormLabel>
+                <div className="grid grid-cols-1 gap-4">
+                  <DropdownSelect
+                    label="Preferred Location"
+                    defaultValue="Preferred Location"
+                    options={locationOptions}
+                    control={preferenceForm.control}
+                    name="location"
+                    labelClassName="font-bold"
+                    isRounded
+                    onSelect={(e) => setLocation(e)}
+                  />
+                  <DropdownSelect
+                    label="Property Type"
+                    defaultValue="Property Type"
+                    options={propertyTypeOptions}
+                    control={preferenceForm.control}
+                    name="category"
+                    labelClassName="font-bold"
+                    multiselect
+                    isRounded
+                  />
 
-                          <FormControl>
-                            <div ref={dropdownRef} className="relative">
-                              <input
-                                type="text"
-                                value={searchValue}
-                                placeholder="Search location"
-                                className="w-full h-12 pl-4 pr-4 rounded-[10px] border border-[#D1D5DB] bg-white text-black focus:outline-none"
-                                onChange={(e) => {
-                                  const value = e.target.value;
+                  <FormField
+                    control={preferenceForm.control}
+                    name="budget"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-semibold font-inter text-[#101828]">
+                          Budget Range
+                        </FormLabel>
+                        <FormControl>
+                          <div className="grid grid-cols-2 gap-2">
+                            {priceRanges?.map((item) => {
+                              const isSelected = field.value === item.value;
+                              return (
+                                <button
+                                  key={item.value}
+                                  type="button"
+                                  onClick={() => field.onChange(item.value)}
+                                  className={`
+                                  h-11 rounded-full border text-sm font-medium transition-all
+                                  ${isSelected
+                                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
+                                    }
+                                `}
+                                >
+                                  {item.label}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                                  setSearchValue(value);
-                                  field.onChange(value);
-
-                                  setSearchDropdown(value.trim().length > 0);
-                                }}
-                                onFocus={() => setSearchDropdown(true)}
-                              />
-
-                              {searchDropdown && searchValue && (
-                                <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[250px] overflow-y-auto scrollbar-hide">
-                                  {searchedLocations.filter((item: any) =>
-                                    item.name
-                                      .toLowerCase()
-                                      .includes(searchValue.toLowerCase()),
-                                  ).length ? (
-                                    <ul>
-                                      {searchedLocations
-                                        .filter((item: any) =>
-                                          item.name
-                                            .toLowerCase()
-                                            .includes(
-                                              searchValue.toLowerCase(),
-                                            ),
-                                        )
-                                        .map((item: any) => (
-                                          <li key={item.id}>
-                                            <button
-                                              type="button"
-                                              className="w-full text-left px-4 py-3 hover:bg-slate-100"
-                                              onMouseDown={(e) => {
-                                                e.preventDefault();
-                                                setSearchValue(item.name);
-                                                field.onChange(item);
-                                                setSearchDropdown(false);
-                                              }}
-                                            >
-                                              {item.name}
-                                            </button>
-                                          </li>
-                                        ))}
-                                    </ul>
-                                  ) : (
-                                    <div className="px-4 py-3 text-sm text-gray-500">
-                                      No locations found
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={preferenceForm.control}
-                      name="category"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
-                            Property Type
-                          </FormLabel>
-
-                          <FormControl>
-                            <div ref={dropdownRef} className="relative">
-                              <input
-                                type="text"
-                                value={propertyTypeSearch}
-                                placeholder="Search property type"
-                                className="w-full h-12 pl-4 pr-4 rounded-[10px] border border-[#D1D5DB] bg-white text-black focus:outline-none"
-                                onChange={(e) => {
-                                  const value = e.target.value;
-
-                                  setPropertyTypeSearch(value);
-                                  setPropertyTypeDropdown(true);
-                                }}
-                                onFocus={() => setPropertyTypeDropdown(true)}
-                              />
-
-                              {propertyTypeDropdown && (
-                                <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[250px] overflow-y-auto scrollbar-hide">
-                                  {mainReducer?.property_type_list?.filter(
-                                    (item: any) =>
-                                      item.name
-                                        .toLowerCase()
-                                        .includes(
-                                          propertyTypeSearch.toLowerCase(),
-                                        ),
-                                  ).length ? (
-                                    <ul>
-                                      {mainReducer?.property_type_list
-                                        ?.filter((item: any) =>
-                                          item.name
-                                            .toLowerCase()
-                                            .includes(
-                                              propertyTypeSearch.toLowerCase(),
-                                            ),
-                                        )
-                                        .map((item: any) => (
-                                          <li key={item.id}>
-                                            <button
-                                              type="button"
-                                              className="w-full text-left px-4 py-3 hover:bg-slate-100"
-                                              onClick={() => {
-                                                setPropertyTypeSearch(
-                                                  item.name,
-                                                );
-                                                field.onChange(item.id);
-                                                setPropertyTypeDropdown(false);
-                                              }}
-                                            >
-                                              {item.name}
-                                            </button>
-                                          </li>
-                                        ))}
-                                    </ul>
-                                  ) : (
-                                    <div className="px-4 py-3 text-sm text-gray-500">
-                                      No property types found
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={preferenceForm.control}
-                      name="budget"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
-                            Budget Range
-                          </FormLabel>
-
-                          <FormControl>
-                            <div className="grid grid-cols-4 gap-2">
-                              {priceRanges?.map((item) => {
-                                const isSelected = field.value === item.value;
-
-                                return (
-                                  <button
-                                    key={item.value}
-                                    type="button"
-                                    onClick={() => field.onChange(item.value)}
-                                    className={`
-                          h-12 rounded-[10px] border text-sm font-medium transition-all
-                          ${
-                            isSelected
-                              ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                              : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                          }
-                        `}
-                                  >
-                                    {item.label}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={preferenceForm.control}
-                      name="bedrooms"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
-                            Bedrooms
-                          </FormLabel>
-
-                          <FormControl>
-                            <div className="grid grid-cols-5 gap-2">
-                              {bedroomRanges?.map((item) => {
-                                const isSelected = field.value === item.value;
-
-                                return (
-                                  <button
-                                    key={item.value}
-                                    type="button"
-                                    onClick={() => field.onChange(item.value)}
-                                    className={`
-                          h-12 rounded-[10px] border text-sm font-medium transition-all
-                          ${
-                            isSelected
-                              ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                              : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                          }
-                        `}
-                                  >
-                                    {item.label}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <MultiSelectButtonGroup
+                    control={preferenceForm.control}
+                    name="bedrooms"
+                    label="Bedrooms"
+                    options={bedroomRanges}
+                    columns={5}
+                  />
+                </div>
+                <div className="flex gap-3  px-4 pt-4">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="flex-1 font-circular_std rounded-lg bg-[#000037] px-4 py-2.5 text-sm font-medium text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    // onClick={preferenceForm.handleSubmit(onPreferenceSubmit)}
+                    type="submit"
+                    className="flex-1 font-circular_std rounded-lg bg-[#0C87F1] px-4 py-2.5 text-sm font-medium text-white"
+                  >
+                    Apply
+                  </button>
                 </div>
               </form>
             </Form>
-          </div>
-          <div className="flex gap-3 border-t px-4 py-4">
-            <button
-              onClick={onClose}
-              className="flex-1 font-circular_std rounded-lg bg-[#000037] px-4 py-2.5 text-sm font-medium text-white"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={preferenceForm.handleSubmit(onPreferenceSubmit)}
-              type="submit"
-              className="flex-1 font-circular_std rounded-lg bg-[#0C87F1] px-4 py-2.5 text-sm font-medium text-white"
-            >
-              Apply
-            </button>
           </div>
         </div>
       </div>
