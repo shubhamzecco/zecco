@@ -3,14 +3,29 @@
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { generateBreadcrumbs } from "@/utils/common";
 import { ChevronsRight } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const Breadcrumb = () => {
   const { mainReducer } = usePosterReducers()
   const pathname = usePathname();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const propertyDetails = mainReducer?.property_details ?? {}
   const breadcrumbs = generateBreadcrumbs(pathname, propertyDetails);
+
+  const queryString = searchParams.toString();
+  const qs = queryString ? `?${queryString}` : "";
+
+  const callClickItem = (item: any) => {
+    const href = item.href;
+
+    if (href === "/" || href === "/costa-del-sol") {
+      router.push(href);
+      return;
+    }
+
+    router.push(`${href}${qs}`);
+  };
 
   return (
     <nav
@@ -24,7 +39,7 @@ const Breadcrumb = () => {
           <span key={index} className="flex items-center gap-1">
             {!isLast && item.href ? (
               <button
-                onClick={() => item.href && router.push(`${item.href}${window.location.search}`)}
+                onClick={() => callClickItem(item)}
                 className="hover:text-black transition capitalize"
               >
                 {item.label}

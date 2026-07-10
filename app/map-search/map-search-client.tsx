@@ -391,18 +391,10 @@ export default function MapSearchClient() {
       // router.push(`${App_url.link.COSTA_DEL_SOL}`);
     }
   };
-
-  const drawYourArea = () => {
-    setSelectedArea(null);
-    if (!mapRef.current || !leaflet) return;
-    setDrawModeActive(true);
-    setMessage("Use the polygon tool on the map to outline your area.");
-  };
-
   return (
     <MainLayout>
       <div className="min-h-screen bg-[#F3F7FB] mt-[-30px]">
-        <div className="mx-auto grid max-w-7xl gap-4 px-4 py-4 lg:grid-cols-[320px_1fr]">
+        <div className="mx-auto grid w-full gap-4 px-4 py-4 lg:grid-cols-[320px_1fr]">
           <aside className="space-y-4 rounded-3xl border bg-white p-4 shadow-sm">
             <div className="rounded-2xl bg-slate-50 p-4">
               <p className="text-sm font-semibold text-slate-500">Status</p>
@@ -410,14 +402,6 @@ export default function MapSearchClient() {
             </div>
 
             <div className="space-y-2">
-              <button onClick={drawYourArea} className="flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left hover:bg-slate-50">
-                <span className="flex items-center gap-2 font-semibold text-slate-800">
-                  <PenTool size={16} />
-                  Draw Your Area
-                </span>
-                {drawModeActive && <Check size={16} className="text-emerald-600" />}
-              </button>
-
               <button onClick={requestLocation} className="flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left hover:bg-slate-50">
                 <span className="flex items-center gap-2 font-semibold text-slate-800">
                   <LocateFixed size={16} />
@@ -432,7 +416,7 @@ export default function MapSearchClient() {
                 <MapPin size={16} className="text-slate-600" />
                 <h2 className="font-semibold text-slate-900">Select Area</h2>
               </div>
-              <div className="flex max-h-[360px] flex-col gap-2 overflow-auto pr-1">
+              <div className="flex max-h-[480px] flex-col gap-2 overflow-auto pr-1">
                 {areas.length > 0 && areaOptions?.map((name: any) => (
                   <button
                     key={name}

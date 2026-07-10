@@ -111,6 +111,7 @@ const Page = () => {
         ? {
           type,
           slug: id?.location,
+          ...(searchValue && { search: searchValue }),
           ...commonPayload,
           ...paramFilters,
         }
