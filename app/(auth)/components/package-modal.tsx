@@ -84,7 +84,6 @@ export default function PackagesModal({
     }else{
       toast.error("Please select a package before proceeding.");
     }
-
   };
 
   useEffect(() => {

@@ -76,6 +76,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
     setIsLoading(true);
     try {
       const res = await sendChatMessage(text, getSessionId());
+      console.log("sendChatMessage ::: " , res)
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
