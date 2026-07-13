@@ -114,7 +114,7 @@ const ForgetPassword = () => {
 
         <div className="flex items-center px-8">
           <Link
-            href={App_url?.link?.SIGN_UP}
+            href={App_url.link.SIGN_UP}
             className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
           >
             Don't have an account?

@@ -176,7 +176,7 @@ export default function ChatReplies({
     ),
   });
 
-  console.log(" messages ::: " , messages)
+  console.log("messages ::::" , messages)
 
   /* ---------------- render ---------------- */
   return (

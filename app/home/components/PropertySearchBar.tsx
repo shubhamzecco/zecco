@@ -93,7 +93,7 @@ const PropertySearchBar = () => {
         search: data?.filters?.city ? data?.filters?.city : "",
       }),
     );
-    
+
     const params = new URLSearchParams({
       type: "slug",
     });
@@ -113,6 +113,24 @@ const PropertySearchBar = () => {
     );
   }
 
+  const handleEnter = useCallback(() => {
+    if (!searchText) return;
+    dispatch(
+      setPropertyFilter({
+        categories: selected?.id,
+        propertyType: "buy",
+        search: searchText,
+      }),
+    );
+
+    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(searchText)}`);
+  }, [dispatch, router, selected, searchText]);
+
+  const handleLocationSelect = useCallback((item: any) => {
+    setSelectedLocation(item);
+    setSearchText(item?.name);
+    setSearchDropdown(false);
+  }, []);
 
   const openMapSearch = useCallback(
     (mode: "draw" | "select" = "draw") => {
@@ -198,6 +216,8 @@ const PropertySearchBar = () => {
 
     setOpen((prev) => !prev);
   };
+
+
 
   return (
     <div className="w-full max-w-[52rem] mx-auto">
@@ -286,6 +306,13 @@ const PropertySearchBar = () => {
               value={searchText}
               onFocus={handleSearchFocus}
               onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  console.log("clicked")
+                  e.preventDefault();
+                  handleEnter();
+                }
+              }}
               className="w-full bg-transparent text-md text-dark-navy placeholder-slate-gray outline-none"
             />
           </div>

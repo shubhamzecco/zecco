@@ -59,8 +59,7 @@ const PropertyCard = ({
     ) ||
     mainReducer?.favorite_property_list?.data?.some(
       (item) => String(item._id) === String(property?._id),
-    ) ||
-    Boolean(property?.favorite);
+    ) ;
 
   const [isFavorite, setIsFavorite] = useState(getIsFavoriteFromStore);
 
@@ -240,9 +239,7 @@ const PropertyCard = ({
 
         <button
           onClick={(e) => {
-            e.stopPropagation(); // prevent navigation
-            if (isZeccoFaviourite) return
-            // onLikeToggle?.();
+            e.stopPropagation(); 
             handleFavoriteAdd?.();
           }}
           className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
@@ -354,7 +351,7 @@ const PropertyCard = ({
           {property?.locationCity}, {property?.locationCountry}
         </h3>
 
-        <div className="flex gap-5 items-center pt-4 text-sm">
+        <div className="flex gap-5 justify-between items-center pt-4 text-sm">
           {property?.mtsBuild !== null && property?.mtsBuild !== undefined && (
             <div className="flex font-manrope font-normal items-center gap-1">
               <Expand size={18} className="text-gray-400" />
