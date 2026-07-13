@@ -1,7 +1,7 @@
 "use client";
 
+import { sendZeccoAIMessage, ZeccoAIResponse } from "@/lib/chatApi";
 import { App_url } from "@/constant/static";
-import { sendChatMessage } from "@/lib/chatApi";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { addAIChatMessage } from "@/redux/modules/main/action";
 import { AnimatePresence, motion } from "framer-motion";
@@ -31,6 +31,7 @@ export type ChatMessage = {
     category: string | null;
   };
   hasMore?: boolean;
+  properties?: ZeccoAIResponse["properties"];
 };
 
 type Props = {
@@ -42,10 +43,11 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const { mainReducer } = usePosterReducers();
+  const { mainReducer, user_id } = usePosterReducers();
   const ai_chat_messages = mainReducer?.ai_chat_messages ?? [];
-  console.log("ai_chat_messages", ai_chat_messages);
+
   const getSessionId = () => {
+    if (user_id) return user_id;
     const key = "zecco_session_id";
     let id = localStorage.getItem(key);
     if (!id) {
@@ -75,23 +77,24 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
 
     setIsLoading(true);
     try {
-      const res = await sendChatMessage(text, getSessionId());
-      console.log("sendChatMessage ::: " , res)
+      const sessionId = getSessionId();
+      const res: ZeccoAIResponse = await sendZeccoAIMessage(text, sessionId, user_id);
+
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
-          text: res?.reply ?? res?.reply?.reply ?? "No response from Zecco AI",
+          text: res.response || "No response from Zecco AI",
           sender: "bot",
           timestamp: new Date(),
-          hasMore: res?.reply?.hasMore,
-          viewMore: res?.reply?.viewMore,
+          hasMore: (res.properties?.length ?? 0) > 0,
+          properties: res.properties,
         }),
       );
     } catch {
       dispatch(
         addAIChatMessage({
           id: Date.now().toString(),
-          text: "I’m temporarily handling a high volume of property searches. Please try again in a moment, and I’ll continue helping you discover properties that match your preferences.",
+          text: "I'm temporarily handling a high volume of property searches. Please try again in a moment, and I'll continue helping you discover properties that match your preferences.",
           sender: "bot",
           timestamp: new Date(),
         }),

@@ -1,15 +1,15 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
 import { ChatMessage } from "./zecco-chat-modal";
 import { setPropertyFilter } from "@/redux/modules/main/action";
 import { App_url } from "@/constant/static";
-import { camelCase, citySlug } from "@/utils/common";
+import { citySlug } from "@/utils/common";
 import { useRouter } from "next/navigation";
-import { number } from "zod";
+import PropertyCarousel from "./PropertyCarousel";
 
 const QUICK_ACTIONS = [
   "Find properties for buy in Costa del Sol, Spain.",
@@ -229,6 +229,9 @@ export default function ChatReplies({
               <ReactMarkdown components={getMarkdownComponents(isUser, msg)}>
                 {formatChatMessage(msg?.text)}
               </ReactMarkdown>
+              {!isUser && msg.properties && msg.properties.length > 0 && (
+                <PropertyCarousel properties={msg.properties} />
+              )}
               {msg.hasMore && msg.viewMore && (
                 <button
                   onClick={() => handleShowProperties(msg)}

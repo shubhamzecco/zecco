@@ -77,6 +77,7 @@ export const App_url = {
   },
   chat_bot_url: "https://n8n.appristine.co.in/webhook/zecco/AI-Chatbot",
   chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco/AI-Chatbot",
+  zecco_ai_url: process.env.NEXT_PUBLIC_ZECCO_AI_URL || "http://localhost:8084",
 };
 
 export const initialState = {
