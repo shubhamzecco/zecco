@@ -227,6 +227,10 @@ export interface AIChatMessage {
     isRent?: boolean;
     imageUrl?: string | null;
   }>;
+  suggestions?: Array<{
+    text: string;
+    searchCriteria: Record<string, any>;
+  }>;
 }
 
 // interfaces/breadcrumb.ts

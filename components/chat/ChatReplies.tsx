@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight, MapPin, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
@@ -21,15 +21,18 @@ type Props = {
   messages: ChatMessage[];
   isLoading: boolean;
   onQuickSend: (text: string) => void;
+  onSuggestionClick?: () => void;
 };
 
 export default function ChatReplies({
   messages,
   isLoading,
   onQuickSend,
+  onSuggestionClick,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const hasScrolledInitially = useRef(false);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -72,7 +75,9 @@ export default function ChatReplies({
 
   useEffect(() => {
     if (shouldAutoScroll) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      const behavior = hasScrolledInitially.current ? "smooth" : "auto";
+      bottomRef.current?.scrollIntoView({ behavior });
+      hasScrolledInitially.current = true;
     }
   }, [messages, isLoading, shouldAutoScroll]);
 
@@ -90,10 +95,10 @@ export default function ChatReplies({
   const formatTime = (timestamp?: string | Date) =>
     timestamp
       ? new Date(timestamp).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
       : "";
 
   const getMarkdownComponents = (isUser: boolean, currentMsg: ChatMessage) => ({
@@ -104,8 +109,8 @@ export default function ChatReplies({
       // Safely join children into a cohesive string check to catch parsing fragmentation
       const rawText = Array.isArray(children)
         ? children
-            .map((c) => (typeof c === "string" ? c : c?.props?.children || ""))
-            .join("")
+          .map((c) => (typeof c === "string" ? c : c?.props?.children || ""))
+          .join("")
         : typeof children === "string"
           ? children
           : "";
@@ -176,7 +181,7 @@ export default function ChatReplies({
     ),
   });
 
-  console.log("messages ::::" , messages)
+  console.log("messages ::::", messages)
 
   /* ---------------- render ---------------- */
   return (
@@ -229,10 +234,75 @@ export default function ChatReplies({
               <ReactMarkdown components={getMarkdownComponents(isUser, msg)}>
                 {formatChatMessage(msg?.text)}
               </ReactMarkdown>
-              {!isUser && msg.properties && msg.properties.length > 0 && (
-                <PropertyCarousel properties={msg.properties} />
+              {!isUser && msg?.suggestions && msg?.suggestions?.length > 0 && (
+                <div className="mt-4 animate-slide-up">
+                  <div className="flex items-center gap-2 mb-3">
+                    <MapPin className="w-4 h-4 text-blue-600" />
+                    <p className="text-sm font-semibold text-gray-700">
+                      Suggested Locations
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {msg.suggestions.map((s, i) => (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          onSuggestionClick?.();
+                          onQuickSend(s.text);
+                        }}
+                        style={{ animationDelay: `${i * 80}ms` }}
+                        className="
+            group
+            w-full
+            flex
+            items-center
+            justify-between
+            rounded-2xl
+            border
+            border-blue-100
+            bg-gradient-to-r
+            from-blue-50
+            to-white
+            px-4
+            py-3
+            text-left
+            transition-all
+            duration-300
+            hover:border-blue-300
+            hover:shadow-lg
+            hover:shadow-blue-100/60
+            hover:-translate-y-0.5
+            active:scale-[0.98]
+          "
+                      >
+                        <div className="flex items-center gap-3">
+                          <div>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                              <MapPin className="w-5 h-5" />
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="font-medium text-gray-800 group-hover:text-blue-700">
+                              {s.text}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Search properties in this area
+                            </p>
+                          </div>
+                        </div>
+
+                        <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
               )}
-              {msg.hasMore && msg.viewMore && (
+              {!isUser && msg?.properties && msg?.properties.length > 0 && (
+                <PropertyCarousel properties={msg?.properties} />
+              )}
+              {msg?.hasMore && msg?.viewMore && (
                 <button
                   onClick={() => handleShowProperties(msg)}
                   className="px-6 py-2.5 bg-white hover:bg-blue-50 text-blue-600 font-semibold flex items-center justify-center gap-2 rounded-lg text-sm"

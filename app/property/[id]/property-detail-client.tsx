@@ -130,7 +130,7 @@ export default function PropertyDetailClient() {
     : null;
 
   return (
-    <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={false}>
+    <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={true}>
       {jsonLd && (
         <script
           type="application/ld+json"

@@ -36,6 +36,10 @@ export interface ZeccoAIResponse {
     isRent?: boolean;
     imageUrl?: string | null;
   }>;
+  suggestions?: Array<{
+    text: string;
+    searchCriteria: Record<string, any>;
+  }>;
 }
 
 export async function sendZeccoAIMessage(

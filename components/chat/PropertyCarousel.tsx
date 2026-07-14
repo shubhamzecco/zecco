@@ -2,7 +2,10 @@
 
 import { ChevronLeft, ChevronRight, Bed, Bath, Maximize2, MapPin } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setChatBadgeOpen } from "@/redux/modules/main/action";
 
 interface Property {
   _id: string;
@@ -15,6 +18,7 @@ interface Property {
   mtsBuild?: number;
   locationCity?: string;
   locationArea?: string;
+  locationCitySlug?:string
   propertyType?: { id: number; name: string };
   isSale?: boolean;
   isRent?: boolean;
@@ -34,6 +38,7 @@ function formatPrice(p: Property): string {
 }
 
 export default function PropertyCarousel({ properties }: Props) {
+  const router = useRouter();
   const [current, setCurrent] = useState(0);
   const [imgErrors, setImgErrors] = useState<Set<number>>(new Set());
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -63,10 +68,22 @@ export default function PropertyCarousel({ properties }: Props) {
   const typeName = p.propertyType?.name || "Property";
   const hasImage = p.imageUrl && !imgErrors.has(current);
 
+  const dispatch = useDispatch();
+
+  const handleCardClick = () => {
+    if (p.slug) {
+      dispatch(setChatBadgeOpen(true));
+      router.push(`/costa-del-sol/${p.locationCitySlug}/${p.slug}`);
+    }
+  };
+
   return (
     <div className="relative w-full mt-3">
       {/* Card */}
-      <div className="relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] transition-all duration-300">
+      <button
+        onClick={handleCardClick}
+        className="relative w-full overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 text-left cursor-pointer"
+      >
         {/* Image */}
         <div className="relative h-44 sm:h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
           {hasImage ? (
@@ -106,14 +123,14 @@ export default function PropertyCarousel({ properties }: Props) {
           {total > 1 && (
             <>
               <button
-                onClick={prev}
+                onClick={(e) => { e.stopPropagation(); prev(); }}
                 className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm shadow flex items-center justify-center hover:bg-white hover:scale-105 active:scale-95 transition-all"
                 aria-label="Previous property"
               >
                 <ChevronLeft size={18} className="text-gray-700" />
               </button>
               <button
-                onClick={next}
+                onClick={(e) => { e.stopPropagation(); next(); }}
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm shadow flex items-center justify-center hover:bg-white hover:scale-105 active:scale-95 transition-all"
                 aria-label="Next property"
               >
@@ -167,15 +184,15 @@ export default function PropertyCarousel({ properties }: Props) {
             )}
           </div>
         </div>
-      </div>
+      </button>
 
-      {/* Dots */}
+        {/* Dots */}
       {total > 1 && (
         <div className="flex items-center justify-center gap-1.5 mt-3">
           {properties.map((_, i) => (
             <button
               key={i}
-              onClick={() => goTo(i)}
+              onClick={(e) => { e.stopPropagation(); goTo(i); }}
               className={`rounded-full transition-all duration-300 ${
                 i === current
                   ? "w-6 h-2 bg-blue-600"
