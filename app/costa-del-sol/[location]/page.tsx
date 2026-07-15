@@ -15,12 +15,11 @@ import {
 import { IPropertyResponse } from "@/redux/modules/main/types";
 import { citySlug } from "@/utils/common";
 import { SearchX, SlidersHorizontal, X } from "lucide-react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import FilterPanel from "./components/filter-panel";
 import PropertyCardSkeleton from "./components/PropertyCardSkeleton";
-import debounce from "lodash/debounce";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 
@@ -47,11 +46,6 @@ const Page = () => {
   const dispatch = useDispatch();
   const id = useParams();
   const router = useRouter();
-  const path = usePathname()
-  const lastPath = path.split("/").filter(Boolean).pop();
-  const search_by_area = mainReducer?.search_by_area
-  const filtersArea = search_by_area?.data?.filter((i: any) => i.name?.toLowerCase() === lastPath?.toLowerCase())
-
   const fetchProperties = (
     currentPage: number,
     filters = filterData,
@@ -158,7 +152,11 @@ const Page = () => {
       ),
     );
 
-    setFilterData(cleanPayload);
+    setFilterData((prev: any) => {
+      const prevStr = JSON.stringify(prev);
+      const newStr = JSON.stringify(cleanPayload);
+      return prevStr === newStr ? prev : cleanPayload;
+    });
 
     if (mainReducer?.propertyFilter?.propertyType) {
       setPropertyType(mainReducer?.propertyFilter?.propertyType || "");
@@ -190,7 +188,6 @@ const Page = () => {
     propertyType,
     categories,
     filterData,
-    search,
     filtersInitialized,
   ]);
 
@@ -279,6 +276,7 @@ const Page = () => {
   const handleSearch = (value: any) => {
     const searchValue =
       typeof value === "string" ? value : value?.name || "";
+      if(!searchValue) return 
 
     setSearch(searchValue);
 
@@ -289,51 +287,29 @@ const Page = () => {
       })
     );
 
-    debouncedSearch(searchValue, value, filterData, id?.location);
+    // Typing: only update state, show dropdown handled by MainLayout
+    if (typeof value === "string") {
+      if (value.trim() === "") {
+        setPage(1);
+        setHasMore(true);
+        fetchedPages.current.clear();
+        fetchProperties(1, filterData, true, "");
+      }
+      return;
+    }
+
+    // Dropdown selection: fetch results and update route
+    setPage(1);
+    setHasMore(true);
+    fetchedPages.current.clear();
+    fetchProperties(1, filterData, true, searchValue);
+
+    if (value?.city_name && value.city_name !== id?.location) {
+      router.replace(
+        `${App_url.link.COSTA_DEL_SOL}/${citySlug(value.city_name)}`
+      );
+    }
   };
-
-  const debouncedSearch = useMemo(
-    () =>
-      debounce(
-        (
-          searchValue: string,
-          value: any,
-          filters: any,
-          location: any,
-        ) => {
-          setPage(1);
-          setProperties([]);
-          setHasMore(true);
-
-          fetchedPages.current.clear();
-
-          fetchProperties(1, filters, true, searchValue);
-
-          if (typeof value === "string") {
-            if (searchValue.trim()) {
-              router.replace(
-                `${App_url.link.COSTA_DEL_SOL}/${citySlug(searchValue)}`
-              );
-            }
-          } else if (
-            value?.city_name &&
-            value.city_name !== location
-          ) {
-            router.replace(
-              `${App_url.link.COSTA_DEL_SOL}/${citySlug(value.city_name)}`
-            );
-          }
-        },
-        500
-      ),
-    [filterData, propertyType, categories]
-  );
-
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
-  }, [debouncedSearch]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -360,24 +336,6 @@ const Page = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [page, loading, hasMore, filterData, search]);
-
-  const onAreaClick = (area: any) => {
-    const searchValue = area?.name || "";
-
-    setSearch(searchValue);
-    dispatch(
-      setPropertyFilter({
-        ...mainReducer?.propertyFilter,
-        search: searchValue,
-      }),
-    );
-
-    if (area?.city_name && area.city_name !== id?.location) {
-      router.replace(
-        `${App_url.link.COSTA_DEL_SOL}/${citySlug(area.city_name)}`,
-      );
-    }
-  };
 
   // FAVORITE / SAVE SEARCH
   useEffect(() => {
@@ -433,23 +391,12 @@ const Page = () => {
   };
 
   useEffect(() => {
-    if (isConnected) {
-      sendMessage("action", {
-        type: "locationService",
-        action: "searchLocationArea",
-        payload: {},
-      });
-      sendMessage("action", {
-        type: "locationService",
-        action: "areas_list",
-        payload: {
-          search: "",
-          limit: 10,
-          page: 1,
-        },
-      });
-    }
-  }, [isConnected]);
+    sendMessage("action", {
+      type: "locationService",
+      action: "searchLocationArea",
+      payload: {},
+    });
+  }, []);
 
 
   return (
@@ -458,6 +405,7 @@ const Page = () => {
       isFilter
       isPropertyType
       isProperty
+      isLocationDropdown
       propertyTypes={categories}
       searchValueProp={search}
       handleSearch={(e) => handleSearch(e)}
@@ -504,7 +452,7 @@ const Page = () => {
               }
             }
           >
-            <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} parentArea={filtersArea?.[0]} onAreaClick={onAreaClick} />
+            <FilterPanel onFilterChange={handleFilterChange} />
           </div>
 
           {/* PROPERTY GRID */}
@@ -592,7 +540,7 @@ const Page = () => {
         </div>
 
         <div className="h-[calc(100%-180px)] overflow-y-auto">
-          <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} parentArea={filtersArea?.[0]} onAreaClick={onAreaClick} />
+          <FilterPanel onFilterChange={handleFilterChange} />
         </div>
       </div>
       <LoginPopup />

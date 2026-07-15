@@ -1,10 +1,12 @@
 import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { Check, Zap } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function SmarterSearch() {
   const router = useRouter();
+  const {user_data} = usePosterReducers()
   return (
     <section className="relative overflow-hidden bg-[#0B1220]">
       <div className="absolute inset-0 bg-gradient-to-br from-[#0B1220] via-[#0E1B3C] to-[#1A140E]" />
@@ -48,14 +50,14 @@ export default function SmarterSearch() {
           {/* BUTTONS */}
           <div className="flex gap-4">
             <button
-              onClick={() => router.push(App_url.link.SIGN_UP)}
+              onClick={() => user_data?.access_token ? router.push(App_url.link.INITIAL_URL) : router.push(App_url.link.SIGN_UP)}
               className="bg-[#2563EB] hover:bg-[#1D4ED8] transition text-white text-sm font-medium px-6 py-3 rounded-full"
             >
               Register Free
             </button>
 
             <button
-              onClick={() => router.push(App_url.link.SIGN_IN)}
+              onClick={() => user_data?.access_token ? router.push(App_url.link.INITIAL_URL) : router.push(App_url.link.SIGN_IN)}
               className="bg-white/10 hover:bg-white/20 transition text-white text-sm font-medium px-6 py-3 rounded-full"
             >
               Login to Portal

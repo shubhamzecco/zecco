@@ -2,11 +2,12 @@
 
 import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import CommonCard from "@/components/cards/common-card";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setPropertyFilter } from "@/redux/modules/main/action";
-import { citySlug, formatEuro } from "@/utils/common";
-import { Eye, Trash2 } from "lucide-react";
+import { citySlug, formatEuro, formatMessageDate } from "@/utils/common";
+import { Eye, Search, Trash2, View } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
@@ -14,9 +15,10 @@ import { useDispatch } from "react-redux";
 
 type SavedSearchesProps = {
   isDashboard?: boolean;
+  searches?: any
 };
 
-const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
+const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) => {
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const router = useRouter();
@@ -101,21 +103,21 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
     const parts: string[] = [];
 
     // Bedrooms
-    if (item?.bedroomsFrom && item?.bedroomsTo) {
-      parts.push(`${item?.bedroomsFrom}–${item?.bedroomsTo} Bedroom`);
-    } else if (item?.bedroomsFrom) {
-      parts.push(`${item?.bedroomsFrom}+ Bedroom`);
-    } else if (item?.bedroomsTo) {
-      parts.push(`Up to ${item?.bedroomsTo} Bedroom`);
-    }
+    // if (item?.bedroomsFrom && item?.bedroomsTo) {
+    //   parts.push(`${item?.bedroomsFrom}–${item?.bedroomsTo} Bedroom`);
+    // } else if (item?.bedroomsFrom) {
+    //   parts.push(`${item?.bedroomsFrom}+ Bedroom`);
+    // } else if (item?.bedroomsTo) {
+    //   parts.push(`Up to ${item?.bedroomsTo} Bedroom`);
+    // }
 
-    // Category
-    if (item?.categories && item?.types?.filter(Boolean)?.length === 0) {
-      const categoryName = propertyCategoryMap[item?.categories];
-      if (categoryName) {
-        parts.push(categoryName);
-      }
-    }
+    // // Category
+    // if (item?.categories && item?.types?.filter(Boolean)?.length === 0) {
+    //   const categoryName = propertyCategoryMap[item?.categories];
+    //   if (categoryName) {
+    //     parts.push(categoryName);
+    //   }
+    // }
 
     // Property Types
     if (item?.types?.filter(Boolean)?.length > 0) {
@@ -130,16 +132,16 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
     }
 
     // Status
-    const status: string[] = [];
+    // const status: string[] = [];
 
-    if (item?.forSale) status.push("for Sale");
-    else if (item?.forRent) status.push("for Rent");
-    else if (item?.isNewDev) status.push("New Developments");
-    else status.push("for Sale or Rent");
+    // if (item?.forSale) status.push("for Sale");
+    // else if (item?.forRent) status.push("for Rent");
+    // else if (item?.isNewDev) status.push("New Developments");
+    // else status.push("for Sale or Rent");
 
-    if (status.length > 0) {
-      parts.push(status.join(" & "));
-    }
+    // if (status.length > 0) {
+    //   parts.push(status.join(" & "));
+    // }
 
     // Location
     if (
@@ -152,36 +154,36 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
     }
 
     // Price
-    if (item?.priceFrom && item?.priceTo) {
-      parts.push(
-        `from ${formatEuro(item?.priceFrom)} to ${formatEuro(item?.priceTo)}`,
-      );
-    } else if (item?.priceFrom) {
-      parts.push(`from ${formatEuro(item?.priceFrom)}`);
-    } else if (item?.priceTo) {
-      parts.push(`up to ${formatEuro(item?.priceTo)}`);
-    }
+    // if (item?.priceFrom && item?.priceTo) {
+    //   parts.push(
+    //     `from ${formatEuro(item?.priceFrom)} to ${formatEuro(item?.priceTo)}`,
+    //   );
+    // } else if (item?.priceFrom) {
+    //   parts.push(`from ${formatEuro(item?.priceFrom)}`);
+    // } else if (item?.priceTo) {
+    //   parts.push(`up to ${formatEuro(item?.priceTo)}`);
+    // }
 
-    // Build Size
-    if (item?.buildFrom && item?.buildTo) {
-      parts.push(`with ${item?.buildFrom}m²–${item?.buildTo}m² Build Area`);
-    } else if (item?.buildFrom) {
-      parts.push(`with ${item?.buildFrom}m²+ Build Area`);
-    } else if (item?.buildTo) {
-      parts.push(`with up to ${item?.buildTo}m² Build Area`);
-    }
+    // // Build Size
+    // if (item?.buildFrom && item?.buildTo) {
+    //   parts.push(`with ${item?.buildFrom}m²–${item?.buildTo}m² Build Area`);
+    // } else if (item?.buildFrom) {
+    //   parts.push(`with ${item?.buildFrom}m²+ Build Area`);
+    // } else if (item?.buildTo) {
+    //   parts.push(`with up to ${item?.buildTo}m² Build Area`);
+    // }
 
-    // Features
-    if (item?.features?.filter(Boolean)?.length > 0) {
-      const features = (item?.features || [])
-        .filter(Boolean)
-        .map((feature: number) => featureMap[feature])
-        .filter(Boolean);
+    // // Features
+    // if (item?.features?.filter(Boolean)?.length > 0) {
+    //   const features = (item?.features || [])
+    //     .filter(Boolean)
+    //     .map((feature: number) => featureMap[feature])
+    //     .filter(Boolean);
 
-      if (features?.length > 0) {
-        parts.push(`featuring ${features.join(" & ")}`);
-      }
-    }
+    //   if (features?.length > 0) {
+    //     parts.push(`featuring ${features.join(" & ")}`);
+    //   }
+    // }
 
     return parts.join(" ");
   };
@@ -202,79 +204,140 @@ const SavedSearches = ({ isDashboard = false }: SavedSearchesProps) => {
   }, [lastEvent]);
 
   return (
-    <section className="mt-1">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="font-bold text-lg font-inter text-[#111827]">
-          Saved Searches
-        </h2>
-        <button
-          onClick={() => router.push(`${App_url.link.SAVED_SEARCHES}`)}
-          className="rounded-full font-manrope bg-btn_color font-medium  px-3 lg:px-7   py-2 text-xs lg:text-sm shadow-sm  text-white "
-        >
-          View All
-        </button>
-      </div>
-      <div className="space-y-4">
-        {mainReducer?.saved_searches?.data?.slice(0, 3)?.map((item: any) => {
-          const title = generateSearchTitle(item);
+    // <section className="mt-1">
+    //   <div className="flex justify-between items-center mb-4">
+    //     <h2 className="font-bold text-lg font-inter text-[#111827]">
+    //       Saved Searches
+    //     </h2>
+    //     <button
+    //       onClick={() => router.push(`${App_url.link.SAVED_SEARCHES}`)}
+    //       className="rounded-full font-manrope bg-btn_color font-medium  px-3 lg:px-7   py-2 text-xs lg:text-sm shadow-sm  text-white "
+    //     >
+    //       View All
+    //     </button>
+    //   </div>
+    //   <div className="space-y-4">
+    //     {mainReducer?.saved_searches?.data?.slice(0, 3)?.map((item: any) => {
+    //       const title = generateSearchTitle(item);
 
+    //       return (
+    //         <div
+    //           key={item?._id}
+    //           className="rounded-lg flex gap-4 py-4 bg-white px-5 shadow-sm transition-all duration-300 hover:shadow-lg"
+    //         >
+    //           {item?.city && (
+    //             <div className="shrink-0">
+    //               <Image
+    //                 src={`${URL}${item?.city?.image}`}
+    //                 alt={item?.city?.name || "City"}
+    //                 width={64}
+    //                 height={64}
+    //                 className="h-16 w-16 rounded-2xl object-cover border border-gray-200"
+    //               />
+    //             </div>
+    //           )}
+
+    //           <div className="flex-1 min-w-0">
+    //             <div className="font-semibold text-sm text-black leading-7 break-words">
+    //               {title}
+
+    //               <div className="flex justify-end items-center gap-3 ml-auto shrink-0">
+    //                 <button
+    //                   onClick={() => handleApplySearch(item)}
+    //                   className="rounded-2xl border border-blue-200 p-2 text-blue-600 transition-all hover:bg-blue-50"
+    //                   aria-label="view"
+    //                 >
+    //                   <Eye size={15} />
+    //                 </button>
+
+    //                 <button
+    //                   onClick={() => handleDelete(item?._id)}
+    //                   className="rounded-2xl border border-red-200 p-2 text-red-600 transition-all hover:bg-red-50"
+    //                   aria-label="delete"
+    //                 >
+    //                   <Trash2 size={15} />
+    //                 </button>
+    //               </div>
+    //             </div>
+    //           </div>
+    //         </div>
+    //       );
+    //     })}
+    //   </div>
+
+    //   {mainReducer?.saved_searches?.data?.length === 0 && (
+    //     <div className="flex flex-col items-center justify-center">
+    //       <h2 className="mt-5 text-xl font-bold text-gray-800">
+    //         No Saved Searches
+    //       </h2>
+
+    //       <p className="mt-2 text-center text-sm text-gray-500">
+    //         Your saved filters will appear here
+    //       </p>
+    //     </div>
+    //   )}
+    // </section>
+
+    <CommonCard heading="Saved Searches">
+      <div className="mt-2">
+        {searches?.map((item: any, index: number) => {
+          const title = generateSearchTitle(item);
           return (
             <div
               key={item?._id}
-              className="rounded-lg flex gap-4 py-4 bg-white px-5 shadow-sm transition-all duration-300 hover:shadow-lg"
+              onClick={() => {
+                router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(item?.cities)}`);
+                dispatch(setPropertyFilter(item));
+              }}
+              className={`flex cursor-pointer justify-between py-3.5 ${index !== searches.length - 1
+                ? "border-b border-[#F1F5F9]"
+                : ""
+                }`}
             >
-              {item?.city && (
-                <div className="shrink-0">
-                  <Image
-                    src={`${URL}${item?.city?.image}`}
-                    alt={item?.city?.name || "City"}
-                    width={64}
-                    height={64}
-                    className="h-16 w-16 rounded-2xl object-cover border border-gray-200"
-                  />
-                </div>
-              )}
+              <div className="flex gap-3">
+                <Search
+                  size={20}
+                  className="mt-1 text-[#64748B]"
+                  strokeWidth={2}
+                />
 
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold text-sm text-black leading-7 break-words">
-                  {title}
+                <div>
+                  <h4 className="text-[13px] font-semibold text-[#1F2937]">
+                    {title}
+                  </h4>
 
-                  <div className="flex justify-end items-center gap-3 ml-auto shrink-0">
-                    <button
-                      onClick={() => handleApplySearch(item)}
-                      className="rounded-2xl border border-blue-200 p-2 text-blue-600 transition-all hover:bg-blue-50"
-                      aria-label="view"
-                    >
-                      <Eye size={15} />
-                    </button>
+                  {item.filters && (
+                    <p className="mt-1 text-[12px] text-[#64748B]">
+                      {item.filters}
+                    </p>
+                  )}
 
-                    <button
-                      onClick={() => handleDelete(item?._id)}
-                      className="rounded-2xl border border-red-200 p-2 text-red-600 transition-all hover:bg-red-50"
-                      aria-label="delete"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
+                  <p className="mt-1 text-[11px] text-[#9CA3AF]">{formatMessageDate(item.createdAt)}</p>
                 </div>
               </div>
+
+              <div className="flex flex-col items-end">
+                {item.badge && (
+                  <span className="rounded-full bg-[#22C55E] px-2 py-[3px] text-[10px] font-semibold text-white">
+                    {item.badge}
+                  </span>
+                )}
+
+                <Eye
+                  size={20}
+                  className="mt-3 text-[#94A3B8]"
+                  strokeWidth={2}
+                />
+              </div>
             </div>
-          );
+          )
         })}
       </div>
 
-      {mainReducer?.saved_searches?.data?.length === 0 && (
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="mt-5 text-xl font-bold text-gray-800">
-            No Saved Searches
-          </h2>
-
-          <p className="mt-2 text-center text-sm text-gray-500">
-            Your saved filters will appear here
-          </p>
-        </div>
-      )}
-    </section>
+      <button onClick={() => router.push(App_url.link.SAVED_SEARCHES)} className="mt-4 text-[13px] font-semibold text-[#2563EB] transition hover:translate-x-1">
+        Manage Searches →
+      </button>
+    </CommonCard>
   );
 };
 

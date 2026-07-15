@@ -1,103 +1,43 @@
 "use client";
 
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import CommonCard from "@/components/cards/common-card";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { IProperty } from "@/redux/modules/main/types";
-import { formatEuro } from "@/utils/common";
 import {
   ArrowRight,
-  Bath,
-  BedSingle,
-  ChevronDown,
-  Cpu,
-  Expand,
-  FileText,
-  Search,
+  Sparkles
 } from "lucide-react";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import FavoritesPage from "./favorites";
+import { useState } from "react";
 
 type AiInsightsProps = {
-  onGetStarted: () => void;
+  onGetStarted: (property: IProperty) => void;
 };
 
 const AiInsights = ({ onGetStarted }: AiInsightsProps) => {
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected } = useWebSocket();
+  const [property, setProperty] = useState<any>()
 
   return (
-    <section className="mb-6">
-      <h2 className="mb-4 font-inter text-lg font-bold text-[#111827]">
-        AI Insights
+    <CommonCard className="mt-5 px-3">
+      <h2 className="mb-2 font-manrope text-2xl text-center font-bold text-[#111827]">
+        Step 01 — Select Your Property
       </h2>
-      {/* STEPS */}
-      <div className="my-5 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2">
-        <div className="flex items-start gap-4 rounded-lg bg-white p-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#4A86E8] p-2">
-            <Search size={25} className="text-white" />
-          </div>
+      <p className="font-manrope text-base text-center font-normal text-[#64748B]">Choose a property from your saved properties to generate an AI-powered investment report.</p>
 
-          <div className="w-[80%]">
-            <h1 className="font-inter text-md font-bold text-[#111827]">
-              1. Select Property
-            </h1>
+      <FavoritesPage onGetStarted={(data) => setProperty(data)} />
 
-            <p className="font-inter text-sm font-medium text-[#4B5563]">
-              Choose a property based on your location, budget, and preferences.
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-start gap-4 rounded-lg bg-white p-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#4A86E8] p-2">
-            <Cpu size={25} className="text-white" />
-          </div>
-
-          <div className="w-[80%]">
-            <h1 className="font-inter text-md font-bold text-[#111827]">
-              2. AI Analysis
-            </h1>
-
-            <p className="font-inter text-sm font-medium text-[#4B5563]">
-              Our AI processes property details using market trends, pricing
-              data, and comparable properties.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex items-start gap-4 rounded-lg bg-white p-4">
-        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-[#4A86E8] p-2">
-          <FileText size={25} className="text-white" />
-        </div>
-
-        <div className="w-[80%]">
-          <h1 className="font-inter text-md font-bold text-[#111827]">
-            3. Property Analysis Report
-          </h1>
-
-          <p className="font-inter text-sm font-medium text-[#4B5563]">
-            Receive a personalized AI-powered report with valuation, investment
-            insights, and market recommendations.
-          </p>
-        </div>
-      </div>
-
-      {/* BUTTON */}
       <button
-        onClick={() => onGetStarted()}
-        className="
-          my-4 flex w-fit items-center gap-2
-          rounded-[10px] bg-[#111827]
-          px-10 py-2.5 text-[15px]
-          font-extrabold tracking-wider
-          text-white shadow-md
-        "
+        onClick={() => onGetStarted(property)}
+        className="relative w-fit mx-auto mt-8 my-5 py-3.5 px-10 rounded-full flex items-center bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-medium shadow-md disabled:opacity-50 "
       >
-        Get Started
-        <ArrowRight size={18} className="ml-2" />
+        <Sparkles size={18} className="mr-2" />
+        Select the property to generate AI reports
       </button>
-    </section>
+      <p className="font-normal text-sm mb-4 font-manrope text-[#64748B] text-center">⚡ Powered by Zecco AI · Free for Premium Members</p>
+    </CommonCard>
   );
 };
 

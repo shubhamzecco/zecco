@@ -3,30 +3,65 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import Head from "next/head";
-import { PreferenceSection } from "../preferences/page";
-import PreferenceProperty from "./components/preference";
+import Greeting from "./components/greating";
+import { useRouter } from "next/navigation";
+import AgentCard from "@/components/cards/agent-card";
+import CommonCard from "@/components/cards/common-card";
+import { App_url } from "@/constant/static";
+import { ArrowRight } from "lucide-react";
+import { useEffect } from "react";
 
 const DashboardPage = () => {
-  const { mainReducer } = usePosterReducers();
+  const { mainReducer, user_data } = usePosterReducers();
   const { sendMessage, isConnected } = useWebSocket();
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isConnected) return
+    sendMessage("action", {
+      type: "savedSearchService",
+      action: "list",
+      payload: {},
+    });
+    sendMessage("action", {
+      type: "userService",
+      action: "favoritePropertyList",
+      payload: {},
+    });
+  }, [])
 
   return (
     <SidebarLayout>
       <Head>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <div
-        className="sm:px-5 lg:px-12  pt-2 pb-4 mb-10 p-3
-                            bg-gradient-to-r
-                        from-[#60A5FA]/10
-                        via-[#fafafa] via-[70%]
-                        to-[#fafafa] to-[100%]"
-      >
-        <PreferenceSection />
-        <PreferenceProperty />
+      <div className="flex items-start gap-3">
+        <div className="w-[70%]">
+          <Greeting />
+        </div>
+        <div className="w-[30%]">
+          <div>
+            <CommonCard heading="AI Concierge">
+              <p className="bg-[#F6F8FC] p-4 mt-2 rounded-xl font-manrope text-[#64748B] font-medium text-sm">
+                Based on your preferences, I found 5 new luxury villas in Marbella matching your €2M budget.
+              </p>
+              <button
+                onClick={() => router.push(App_url.link.CONTACT_US)}
+                className="relative justify-center flex items-center gap-2 w-full mt-4 py-3.5 px-10 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
+              >
+                Chat with AI <ArrowRight className="w-4 h-4" />
+              </button>
+            </CommonCard>
+          </div>
+          <div className="mt-6">
+            {user_data?.user?.agent?.agent && (
+              <AgentCard />
+            )}
+          </div>
+        </div>
       </div>
     </SidebarLayout>
-  ); 
+  );
 };
 
 export default DashboardPage;

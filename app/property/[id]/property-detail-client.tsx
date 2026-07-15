@@ -164,6 +164,7 @@ export default function PropertyDetailClient() {
             </div>
             {step === "processing" && (
               <AIProcessingCard
+                isPropertyDetail
                 isCompleted={isCompleted}
                 onComplete={() => setStep("complete")}
                 heading="AI Market Intelligence"
@@ -171,6 +172,7 @@ export default function PropertyDetailClient() {
             )}
             {step === "complete" && mainReducer?.ai_insight && (
               <AIMarketIntelligence
+              isPropertyDetail
                 ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
               />
             )}

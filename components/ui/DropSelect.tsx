@@ -102,7 +102,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
     field: any,
   ) => {
     const value: any = multiselect
-      ? (selectedOption as MultiValue<Option>).map((option) => option.value)
+      ? (selectedOption as MultiValue<Option>)?.map((option) => option.value)
       : (selectedOption as SingleValue<Option>)?.value;
     const Keyvalue = (selectedOption as SingleValue<Option>)?.key;
 
@@ -200,8 +200,8 @@ const DropdownSelect: React.FC<DropdownProps> = ({
         if (field?.value) {
           return (
             options?.filter((option) =>
-              (field.value as (string | number)[]).includes(option.value),
-            ) || field.value?.map((value: any) => ({ label: value, value }))
+              (field?.value as (string | number)[]).includes(option.value),
+            ) || field?.value?.map((value: any) => ({ label: value, value }))
           );
         } else {
           return null;

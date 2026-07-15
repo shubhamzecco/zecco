@@ -51,31 +51,16 @@ const FavoritesPage = () => {
       <Head>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <div
-        className="lg:px-12 px-5  py-8 h-full
-                            bg-gradient-to-r
-                        from-[#60A5FA]/10
-                        via-[#fafafa] via-[70%]
-                        to-[#fafafa] to-[100%]"
-      >
-        <section className="mt-2 mb-6">
-          <div className="flex justify-between items-center mb-1">
-            <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
-              Favorites
-            </h2>
-            <div className=" bg-[#EEF2FF] rounded-full px-3 py-1 ">
-              <p className="font-manrope font-semibold text-[#2828FF] uppercase text-sm">
-                {mainReducer?.favorite_property_list?.data?.length} Properties
-              </p>
-            </div>
-          </div>
-          <div className="bg-white/70 p-7 rounded-lg">
+      <>
+        <section className="mt-2 mb-10">
+       
+          <div className="">
             {!mainReducer?.favorite_property_list ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)}
               </div>
             ) : mainReducer?.favorite_property_list?.data?.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-scroll max-h-[130vh] scrollbar-hide">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-scroll max-h-[130vh] pb-3 scrollbar-hide">
                 {mainReducer?.favorite_property_list?.data?.map((property) => (
                   <PropertyCard
                     property={property}
@@ -97,7 +82,7 @@ const FavoritesPage = () => {
             )}
           </div>
         </section>
-      </div>
+      </>
     </SidebarLayout>
   );
 };

@@ -200,7 +200,7 @@ const FilterPopup = ({
           <h2 className="text-lg font-semibold text-gray-900">Filter Popup</h2>
         </div>
 
-        <div className={`bg-white/70 p-3 sm:px-7 pt-5 rounded-lg `}>
+        <div className={`bg-white/70 p-3 sm:px-7 pt-5 mb-3 rounded-lg `}>
           <div className="sm:p-8 p-3 bg-[#F2F3F6] rounded-lg">
             <Form {...preferenceForm}>
               <form

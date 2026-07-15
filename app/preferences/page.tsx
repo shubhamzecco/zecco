@@ -18,6 +18,8 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Loader2 } from "lucide-react";
+import CommonCard from "@/components/cards/common-card";
+import MatchedProperties from "@/components/matched-properties";
 
 
 export const PreferenceSection = (props?: any) => {
@@ -172,124 +174,79 @@ export const PreferenceSection = (props?: any) => {
     })) || [];
 
   return (
-    <section className={`mt-8 mb-6 ${props?.classname}`}>
-      {!props?.hideTitle && <div className="flex justify-between items-center mb-1">
-        <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
-          Update Preferences
-        </h2>
-      </div>}
+    <>
+    <CommonCard heading="Property Preferences" description="Tell us what you're looking for.">
+      <div className="rounded-2xl">
+        <Form {...preferenceForm}>
+          <form className="" onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}>
+            <div className="grid grid-cols-1 gap-5">
+              <div className="grid grid-cols-1 lg:grid-cols-1 gap-5">
+                <DropdownSelect
+                  label="Preferred Location"
+                  defaultValue="Preferred Location"
+                  options={locationOptions}
+                  control={preferenceForm.control}
+                  name="location"
+                  labelClassName="font-bold" />
 
-      <div className={`bg-white/70 p-3 sm:p-7 rounded-lg ${props?.innerClassname}`}>
-        <div className="sm:p-8 p-3 bg-[#F2F3F6] rounded-lg">
-          <Form {...preferenceForm}>
-            <form className="" onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}>
-              <div className="grid grid-cols-1 gap-5">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                  <DropdownSelect
-                    label="Preferred Location"
-                    defaultValue="Preferred Location"
-                    options={locationOptions}
-                    control={preferenceForm.control}
-                    name="location"
-                    labelClassName="font-bold"
-                  />
-                  <DropdownSelect
-                    label="Property Type"
-                    defaultValue="Property Type"
-                    options={propertyTypeOptions}
-                    control={preferenceForm.control}
-                    name="category"
-                    labelClassName="font-bold"
-                    multiselect
-                  />
+                <MultiSelectButtonGroup
+                  control={preferenceForm.control}
+                  name="category"
+                  label="Property Type"
+                  options={propertyTypeOptions}
+                  className="!flex items-center gap-4 flex-wrap" />
 
-                  <FormField
-                    control={preferenceForm.control}
-                    name="budget"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-medium font-inter text-[#101828]">
-                          Budget Range
-                        </FormLabel>
+                <MultiSelectButtonGroup
+                  control={preferenceForm.control}
+                  name="budget"
+                  label="Budget Range"
+                  options={priceRanges}
+                  className="!flex items-center gap-4 flex-wrap" />
 
-                        <FormControl>
-                          <div className="grid max-sm:grid-cols-2 grid-cols-4 gap-2">
-                            {priceRanges?.map((item) => {
-                              const isSelected = field.value === item.value;
+                <MultiSelectButtonGroup
+                  control={preferenceForm.control}
+                  name="bedrooms"
+                  label="Bedrooms"
+                  options={bedroomRanges}
+                  className="!flex items-center gap-4 flex-wrap" />
 
-                              return (
-                                <button
-                                  key={item.value}
-                                  type="button"
-                                  onClick={() => field.onChange(item.value)}
-                                  className={`
-                  h-11 rounded-[10px] border text-sm font-medium transition-all
-                  ${isSelected
-                                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
-                                      : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
-                                    }
-                `}
-                                >
-                                  {item.label}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                <MultiSelectButtonGroup
+                  control={preferenceForm.control}
+                  name="investmentType"
+                  label="Investment Type"
+                  options={investmentType}
+                  className="!flex items-center gap-4 flex-wrap" />
 
-                  <MultiSelectButtonGroup
-                    control={preferenceForm.control}
-                    name="bedrooms"
-                    label="Bedrooms"
-                    options={bedroomRanges}
-                    columns={5}
-                  />
-
-                  <MultiSelectButtonGroup
-                    control={preferenceForm.control}
-                    name="investmentType"
-                    label="Investment Type"
-                    options={investmentType}
-                  />
-
-                  <MultiSelectButtonGroup
-                    control={preferenceForm.control}
-                    name="types"
-                    label="Types"
-                    options={propertyTypes}
-                  />
-                </div>
+                <MultiSelectButtonGroup
+                  control={preferenceForm.control}
+                  name="types"
+                  label="Types"
+                  options={propertyTypes}
+                  className="!flex items-center gap-4 flex-wrap" />
               </div>
-            </form>
-          </Form>
-        </div>
-
-        <button
-          onClick={preferenceForm.handleSubmit(onPreferenceSubmit)}
-          type="submit"
-          disabled={loading}
-          className="w-fit px-10 tracking-wider shadow-md mt-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2 disabled:opacity-50"
-        >
-          {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Update Preferences"}
-        </button>
+            </div>
+          </form>
+        </Form>
       </div>
-    </section>
+
+      <button
+        onClick={preferenceForm.handleSubmit(onPreferenceSubmit)}
+        type="submit"
+        disabled={loading}
+        className="relative w-full mx-auto mt-8 my-5 py-3.5 px-10 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
+      >
+        {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Update Preferences"}
+      </button>
+    </CommonCard><div className="my-5">
+        <MatchedProperties />
+      </div></>
   );
 };
 
 const PreferenceForm = () => {
   return (
     <SidebarLayout>
-      <div
-        className="lg:px-12 px-3 sm:px-5 py-2 h-full
-                            bg-gradient-to-r
-                        from-[#60A5FA]/10
-                        via-[#fafafa] via-[70%]
-                        to-[#fafafa] to-[100%]"
-      >
+      <div className="mb-10">
         <PreferenceSection />
       </div>
     </SidebarLayout>
