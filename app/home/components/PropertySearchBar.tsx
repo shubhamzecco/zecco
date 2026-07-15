@@ -90,26 +90,16 @@ const PropertySearchBar = () => {
       setPropertyFilter({
         categories: selected?.id,
         propertyType: "buy",
-        search: data?.filters?.city ? data?.filters?.city : "",
+        search: data?.filters?.cities ? data?.filters?.cities : "",
+        cities: data?.filters?.cities ? data?.filters?.cities : undefined,
+        bedroomsFrom: data?.filters?.bedrooms ? data?.filters?.bedrooms : undefined,
+        bedroomsTo: data?.filters?.bedrooms ? data?.filters?.bedrooms : undefined,
+        ...data.filters,
       }),
     );
-    
-    const params = new URLSearchParams({
-      type: "slug",
-    });
-
-    Object.entries(data.filters ?? {}).forEach(([key, value]) => {
-      if (value === undefined || value === null) return;
-
-      if (Array.isArray(value)) {
-        value.forEach((v) => params.append(key, String(v)));
-      } else {
-        params.set(key, String(value));
-      }
-    });
 
     router.push(
-      `${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.title)}?${params.toString()}`
+      `${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.title)}?type=slug`
     );
   }
 
