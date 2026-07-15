@@ -65,7 +65,6 @@ const Page = () => {
     searchValue = search,
   ) => {
     if (!isConnected || loading) return;
-    const paramFilters = Object.fromEntries(searchParams.entries());
 
     const uniqueKey = JSON.stringify({
       page: currentPage,
@@ -115,7 +114,7 @@ const Page = () => {
           slug: id?.location,
           ...(searchValue && { search: searchValue }),
           ...commonPayload,
-          ...paramFilters,
+          ...filters,
           cities: searchValue?.toLowerCase()
         }
         : {
