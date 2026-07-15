@@ -14,13 +14,13 @@ import {
 } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
 import { citySlug } from "@/utils/common";
+import debounce from "lodash/debounce";
 import { SearchX, SlidersHorizontal, X } from "lucide-react";
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import FilterPanel from "./components/filter-panel";
 import PropertyCardSkeleton from "./components/PropertyCardSkeleton";
-import debounce from "lodash/debounce";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 
@@ -28,7 +28,6 @@ const LIMIT = 18;
 
 const Page = () => {
   const gridRef = useRef<HTMLDivElement>(null);
-  const [gridHeight, setGridHeight] = useState<number>(0);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [propertyType, setPropertyType] = useState<PropertyType>("all");
   const [categories, setPropertyTypes] = useState("");
@@ -54,7 +53,10 @@ const Page = () => {
   const lastPath = path.split("/").filter(Boolean).pop();
   const search_by_area = mainReducer?.search_by_area
   const name = type === "slug" ? city : lastPath?.toLowerCase()
+  const isSlug = type === "slug"
   const filtersArea = search_by_area?.data?.filter((i: any) => i.name?.toLowerCase() === name)
+  const areas = isSlug ? search_by_area?.data : filtersArea?.[0]?.areas
+  const parentArea = isSlug ? {} : filtersArea?.[0]
 
   const fetchProperties = (
     currentPage: number,
@@ -114,6 +116,7 @@ const Page = () => {
           ...(searchValue && { search: searchValue }),
           ...commonPayload,
           ...paramFilters,
+          cities: searchValue?.toLowerCase()
         }
         : {
           ...commonPayload,
@@ -378,13 +381,14 @@ const Page = () => {
   }, [page, loading, hasMore, filterData, search]);
 
   const onAreaClick = (area: any) => {
+    console.log("area::",area)
     const searchValue = area?.name || "";
 
     setSearch(searchValue);
     dispatch(
       setPropertyFilter({
         ...mainReducer?.propertyFilter,
-        search: searchValue,
+        cities: searchValue,
       }),
     );
 
@@ -450,6 +454,45 @@ const Page = () => {
 
   useEffect(() => {
     if (isConnected) {
+      const paramFilters = Object.fromEntries(searchParams.entries());
+      const commonPayload = {
+        limit: LIMIT,
+        page: 1,
+        country: "Spain",
+        status: true,
+        ...(propertyType === "buy" && {
+          forSale: true,
+          sold: false,
+          forRent: false,
+        }),
+
+        ...(propertyType === "rent" && {
+          forRent: true,
+          rented: false,
+          forSale: false,
+        }),
+
+        ...(propertyType === "new" && {
+          isNewDev: true,
+          sold: false,
+          rented: false,
+        }),
+      };
+
+      const payload =
+        type === "slug"
+          ? {
+            type,
+            slug: id?.location,
+            ...commonPayload,
+            ...paramFilters,
+          }
+          : {
+            ...commonPayload,
+            cities: id?.location,
+            forAll: propertyType === "all",
+            categories: Number(categories)
+          };
       sendMessage("action", {
         type: "locationService",
         action: "searchLocationArea",
@@ -458,11 +501,7 @@ const Page = () => {
       sendMessage("action", {
         type: "locationService",
         action: "areas_list",
-        payload: {
-          search: "",
-          limit: 10,
-          page: 1,
-        },
+        payload
       });
     }
   }, [isConnected]);
@@ -509,18 +548,10 @@ const Page = () => {
         </div>
 
         <div className="flex items-start gap-4">
-          {/* DESKTOP FILTER */}
           <div
             className=" min-w-[300px] hidden lg:block"
-            style={
-              {
-                // height: gridHeight ? `${gridHeight}px` : "100%",
-                // maxHeight: "calc(100vh - 120px)",
-                // overflowY: "auto",
-              }
-            }
           >
-            <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} parentArea={filtersArea?.[0]} onAreaClick={onAreaClick} />
+            <FilterPanel onFilterChange={handleFilterChange} areas={areas} parentArea={parentArea} onAreaClick={onAreaClick} />
           </div>
 
           {/* PROPERTY GRID */}
