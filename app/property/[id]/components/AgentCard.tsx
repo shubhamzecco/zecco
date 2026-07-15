@@ -57,21 +57,21 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
     user_data?.user?.agent?.agent ||
     property?.agent_assigned ||
     property?.location?.agent_assigned ||
+    agent_details
     null;
 
-  const appointedAgentName = isLoggedIn
-    ? assignedAgent
+    console.log("property ::: " , agent_details)
+
+  const appointedAgentName = assignedAgent
       ? `${assignedAgent.first_name || ""} ${assignedAgent.last_name || ""}`.trim()
       : ""
+
+  const appointedAgentContact =  assignedAgent ? assignedAgent?.contact_no 
     : "";
 
-  const appointedAgentContact = isLoggedIn
-    ? assignedAgent?.contact_no || "+44*******789"
-    : "+44*******789";
-
-  const appointedAgentEmail = isLoggedIn
-    ? assignedAgent?.email || "*******@gmail.com"
-    : "*******@gmail.com";
+  const appointedAgentEmail = assignedAgent
+    ? assignedAgent?.email
+    : "";
 
   return (
     <div className="sticky top-24 bg-[#F7F8FC] border border-[#F3F4F6] rounded-lg p-6 mb-6 shadow-sm relative overflow-hidden">
@@ -139,22 +139,18 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
               onClick={() =>
                 isLoggedIn ? handleCreateChat() : dispatch(setLoginPopup(true))
               }
-              className="w-full cursor-pointer bg-heading_text_color text-white font-semibold py-3 rounded-full transition mb-4"
+              className="w-full uppercase cursor-pointer bg-heading_text_color text-white bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] font-semibold py-3 rounded-full transition mb-4"
             >
-              SUBMIT
+              Chat with our agent
             </button>
           </>
         )}
 
         <button
           onClick={() => {
-            if (isLoggedIn) {
               if (typeof window !== "undefined") {
                 window.location.href = `tel:${agent_details?.contact_no || user_data?.user?.agent?.agent?.contact_no}`;
               }
-            } else {
-              dispatch(setLoginPopup(true));
-            }
           }}
           className="w-full cursor-pointer mb-5 border flex items-center gap-2 justify-center border-[#DDDFE3] text-heading_text_color font-semibold py-2 rounded-full bg-white transition"
         >

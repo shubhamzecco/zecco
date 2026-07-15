@@ -206,19 +206,19 @@ export const propertyTypes = [
 
 export const bedroomRanges = [
   {
-    label: "1",
+    label: "1+",
     value: "1",
   },
   {
-    label: "2",
+    label: "2+",
     value: "2",
   },
   {
-    label: "3",
+    label: "3+",
     value: "3",
   },
   {
-    label: "4",
+    label: "4+",
     value: "4",
   },
   {
@@ -259,4 +259,48 @@ export const parsePrice = (value: string): number | "" => {
   const number = Number(formatted);
 
   return isNaN(number) ? "" : number;
+};
+
+
+export const formatMessageDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const today = new Date();
+
+  // Remove time for comparison
+  const current = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+
+  const target = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate()
+  );
+
+  const diffInDays =
+    (current.getTime() - target.getTime()) / (1000 * 60 * 60 * 24);
+
+  if (diffInDays === 0) {
+    return "Today";
+  }
+
+  if (diffInDays === 1) {
+    return "Yesterday";
+  }
+
+  const options: Intl.DateTimeFormatOptions =
+    date.getFullYear() === today.getFullYear()
+      ? {
+          month: "short",
+          day: "numeric",
+        }
+      : {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        };
+
+  return new Intl.DateTimeFormat("en-US", options).format(date);
 };

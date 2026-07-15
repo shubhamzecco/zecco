@@ -2,6 +2,7 @@
 import { postData, URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { PreferenceSection } from "@/app/preferences/page";
+import CommonCard from "@/components/cards/common-card";
 import ProfileAvatar from "@/components/profile";
 import {
   Form,
@@ -15,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ImageIcon, User } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -38,18 +40,48 @@ const passwordSchema = z
     current_password: z.string().min(6, "Current password is required"),
     new_password: z
       .string()
-      .min(1, "New password is required.")
-      .min(6, "New password must be at least 6 characters long.")
-      .regex(
-        /^(?=.*[A-Za-z])(?=.*\d).+$/,
-        "New password must contain both letters and numbers."
-      ),
+      .min(6, "Password must be at least 6 characters.")
+      .regex(/[a-z]/, "Must contain one lowercase letter.")
+      .regex(/[0-9]/, "Must contain one number."),
     confirm_password: z.string().min(6, "Confirm password is required"),
   })
   .refine((data) => data.new_password === data.confirm_password, {
     path: ["confirm_password"],
     message: "Passwords do not match",
   });
+
+const getPasswordStrength = (password: string) => {
+  if (!password) return { text: "", color: "bg-gray-200", width: "0%", level: 0 };
+
+  let types = 0;
+  if (/[a-z]/.test(password)) types++;
+  if (/[A-Z]/.test(password)) types++;
+  if (/[0-9]/.test(password)) types++;
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) types++;
+
+  if (types <= 1)
+    return {
+      text: "Weak",
+      color: "bg-red-500",
+      width: "33%",
+      level: 1,
+    };
+
+  if (types === 2)
+    return {
+      text: "Medium",
+      color: "bg-amber-500",
+      width: "66%",
+      level: 2,
+    };
+
+  return {
+    text: "Strong",
+    color: "bg-green-500",
+    width: "100%",
+    level: 3,
+  };
+};
 
 const preferenceSchema = z.object({
   selectedLocation: z.any().optional(),
@@ -107,83 +139,6 @@ const UserForm = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const searchedLocations = searchValue.trim()
-    ? mainReducer?.all_location_list?.filter((item: any) =>
-      item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
-    )
-    : [];
-
-  const priceRanges = [
-    {
-      label: "Under €1M",
-      value: "0-1000000",
-    },
-    {
-      label: "€1M - €2M",
-      value: "1000000-2000000",
-    },
-    {
-      label: "€2M - €3.5M",
-      value: "2000000-3500000",
-    },
-    {
-      label: "€3.5M+",
-      value: "3500000+",
-    },
-  ];
-
-  const investmentType = [
-    {
-      label: "Wealth Preservation",
-      value: "wealth_preservation",
-    },
-    {
-      label: "Return",
-      value: "return",
-    },
-    {
-      label: "Growth",
-      value: "growth",
-    },
-  ];
-
-  const propertyTypes = [
-    {
-      label: "New Property",
-      value: "new_property",
-    },
-    {
-      label: "Existing Property",
-      value: "existing_property",
-    },
-    {
-      label: "Rental Property",
-      value: "rental_property",
-    },
-  ];
-
-  const bedroomRanges = [
-    {
-      label: "1",
-      value: "1",
-    },
-    {
-      label: "2",
-      value: "2",
-    },
-    {
-      label: "3",
-      value: "3",
-    },
-    {
-      label: "4",
-      value: "4",
-    },
-    {
-      label: "5+",
-      value: "5+",
-    },
-  ];
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -205,6 +160,7 @@ const UserForm = () => {
     },
   });
 
+
   const preferenceForm = useForm<z.infer<typeof preferenceSchema>>({
     resolver: zodResolver(preferenceSchema),
     defaultValues: {
@@ -216,6 +172,9 @@ const UserForm = () => {
       types: "",
     },
   });
+
+  const password = passwordForm.watch("new_password");
+  const strength = getPasswordStrength(password || "");
 
   useEffect(() => {
     if (
@@ -380,175 +339,86 @@ const UserForm = () => {
   };
 
   return (
-    <section className=" mb-6">
-      <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
-        Edit Profile
-      </h2>
+    <section className="flex flex-col gap-7 mb-10">
 
-      <div className="bg-white p-8 rounded-lg ">
-        <div className="flex items-center gap-3 ">
-          {user_data?.user?.profile_image ? (
-            <Image
-              src={URL + user_data?.user?.profile_image}
-              alt="AI Insights"
-              width={160}
-              height={100}
-              className="rounded-full object-cover w-20 h-20"
-            />
-          ) : (
-            <>
-              <ProfileAvatar
-                name={`${user_data?.user?.first_name + " " + user_data?.user?.last_name}`}
-                className="!w-20 !h-20 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
-              />
-            </>
-          )}
+      <CommonCard heading="Personal Information" description="Update your photo and personal details.">
+        <div
+          onClick={handleCameraClick}
+          className="w-full border border-dashed border-[#F3B8A3] bg-[#FFF9F6] rounded-2xl px-6 py-5 cursor-pointer hover:bg-[#FFF5F1] transition-all duration-300"
+        >
+          <div className="flex items-center gap-4">
+            {/* Upload Icon */}
+            <div className="w-12 h-12 rounded-full bg-[#FDE9DF] flex items-center justify-center border border-[#F5C7B6]">
+              <User size={24} className="text-[#D89A6A]" />
+            </div>
 
-          <div className="">
-            <button
-              type="button"
-              onClick={handleCameraClick}
-              className="w-fit  text-sm px-2 tracking-wider shadow-md my-3 bg-[#111827] text-white text-[15px] py-1 rounded-[5px] font-manrope font-normal flex items-center gap-2"
-            >
-              Update Photo
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-            <p className="text-[#64748B] font-manrope font-medium text-xs">
-              JPG, PNG or GIF (max. 5MB)
-            </p>
-          </div>
-        </div>
+            {/* Content */}
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="font-semibold text-[#222]">
+                Drag & Drop
+              </span>
 
-        <div className="my-5">
-          <div className="p-8 bg-[#F2F3F6] rounded-lg my-5">
-            <Form {...form}>
-              <form className="" onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="grid grid-cols-1 gap-5">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                    <FormField
-                      control={form.control}
-                      name="first_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required className="font-medium font-inter text-[#101828]">
-                            First Name
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="First name"
-                              className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="last_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required className="font-medium font-inter text-[#101828]">
-                            Last Name
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Last name"
-                              className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+              <span className="text-[#999]">or</span>
 
-                    <FormField
-                      control={form.control}
-                      name="contact_no"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required className="font-medium font-inter text-[#101828]">
-                            Mobile Number
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Mobile number"
-                              className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+              <button
+                type="button"
+                className="text-[#E26B43] font-medium hover:underline"
+              >
+                Upload New Photo
+              </button>
 
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required className="font-medium font-inter text-[#101828]">
-                            Email Address
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Email address"
-                              className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-              </form>
-            </Form>
+              <span className="text-[#999] text-xs">
+                PNG JPG · 5MB
+              </span>
+            </div>
           </div>
 
-          <button
-            onClick={form.handleSubmit(onSubmit)}
-            type="submit"
-            disabled={profileLoading}
-            className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2 disabled:opacity-50"
-          >
-            {profileLoading ? (
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-            ) : null}
-            Update Profile
-          </button>
+          {/* Hidden Input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/jpg"
+            className="hidden"
+            onChange={handleFileChange}
+          />
         </div>
 
-        <div className="my-5">
-          <div className="p-8 bg-[#F2F3F6] rounded-lg my-5">
-            <Form {...passwordForm}>
-              <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}>
-                <div className="grid grid-cols-1 gap-5">
+        <div className="mt-5">
+          <Form {...form}>
+            <form className="" onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-1 gap-5">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                   <FormField
-                    control={passwordForm.control}
-                    name="current_password"
+                    control={form.control}
+                    name="first_name"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel required className="font-medium font-inter text-[#101828]">
-                            Current Password
-                          </FormLabel>
+                          First Name
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            type="password"
-                            placeholder="Current password"
-                            className="rounded-[10px] h-12 bg-white border-[#D1D5DB]"
+                            placeholder="First name"
+                            className="rounded-[10px] h-12 bg-[#F8FAFE] border-[#E2E8F0] text-black"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="last_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required className="font-medium font-inter text-[#101828]">
+                          Last Name
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Last name"
+                            className="rounded-[10px] h-12 bg-[#F8FAFE] border-[#E2E8F0] text-black"
                             {...field}
                           />
                         </FormControl>
@@ -557,71 +427,204 @@ const UserForm = () => {
                     )}
                   />
 
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                    <FormField
-                      control={passwordForm.control}
-                      name="new_password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required className="font-medium font-inter text-[#101828]">
-                            New Password
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="New password"
-                              className="rounded-[10px] h-12 bg-white border-[#D1D5DB]"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <FormField
+                    control={form.control}
+                    name="contact_no"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required className="font-medium font-inter text-[#101828]">
+                          Mobile Number
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Mobile number"
+                            className="rounded-[10px] h-12 bg-[#F8FAFE] border-[#E2E8F0] text-black"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                    <FormField
-                      control={passwordForm.control}
-                      name="confirm_password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel required className="font-medium font-inter text-[#101828]">
-                            Confirm Password
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="password"
-                              placeholder="Confirm password"
-                              className="rounded-[10px] h-12 bg-white border-[#D1D5DB]"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required className="font-medium font-inter text-[#101828]">
+                          Email Address
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Email address"
+                            className="rounded-[10px] h-12 bg-[#F8FAFE] border-[#E2E8F0] text-black"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-              </form>
-            </Form>
-          </div>
+              </div>
+            </form>
+          </Form>
+
           <button
-            onClick={passwordForm.handleSubmit(onPasswordSubmit)}
-            type="button"
-            disabled={passwordLoading}
-            className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold flex items-center gap-2 disabled:opacity-50"
+            onClick={form.handleSubmit(onSubmit)}
+            type="submit"
+            disabled={profileLoading}
+            className="relative w-full mx-auto my-5 py-3 px-10 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
           >
-            {passwordLoading ? (
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            {profileLoading && (
+              <svg
+                className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
               </svg>
-            ) : null}
-            Update Password
+            )}
+
+            <span className="block text-center">
+              Update Profile
+            </span>
           </button>
         </div>
-        <PreferenceSection hideTitle classname={"mt-[-20px]"} innerClassname={"py-5 px-0"} isPreferenceCall={true}/>
-      </div>
-    </section>
+      </CommonCard>
+
+      <CommonCard heading="Personal Information" description="Update your photo and personal details.">
+        <Form {...passwordForm}>
+          <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}>
+            <div className="grid grid-cols-1 gap-5">
+              <FormField
+                control={passwordForm.control}
+                name="current_password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required className="font-medium font-inter text-[#101828]">
+                      Current Password
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder="Current password"
+                        className="rounded-[10px] h-12 bg-[#F8FAFE] border-[#E2E8F0]"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 lg:grid-cols-1 gap-5">
+                <div className="">
+                  <FormField
+                    control={passwordForm.control}
+                    name="new_password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel required className="font-medium font-inter text-[#101828]">
+                          New Password
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="New password"
+                            className="rounded-[10px] h-12 bg-[#F8FAFE] border-[#E2E8F0]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {password?.trim() !== '' && (
+                    <div className="flex gap-1 mt-3">
+                      <div
+                        className={`h-1 flex-1 rounded-full transition-all duration-500 overflow-hidden ${password.length > 0 ? "bg-red-500" : "bg-gray-200"
+                          }`}
+                      >
+                        {password.length > 0 && (
+                          <div className="h-full w-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                        )}
+                      </div>
+
+                      <div
+                        className={`h-1 flex-1 rounded-full transition-all duration-500 overflow-hidden ${strength.level >= 2 ? "bg-amber-500" : "bg-gray-200"
+                          }`}
+                      >
+                        {strength.level >= 2 && (
+                          <div className="h-full w-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                        )}
+                      </div>
+
+                      <div
+                        className={`h-1 flex-1 rounded-full transition-all duration-500 overflow-hidden ${strength.level >= 3 ? "bg-green-500" : "bg-gray-200"
+                          }`}
+                      >
+                        {strength.level >= 3 && (
+                          <div className="h-full w-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <FormField
+                  control={passwordForm.control}
+                  name="confirm_password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel required className="font-medium font-inter text-[#101828]">
+                        Confirm Password
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Confirm password"
+                          className="rounded-[10px] h-12 bg-[#F8FAFE] border-[#E2E8F0]"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </form>
+        </Form>
+        <button
+          onClick={passwordForm.handleSubmit(onPasswordSubmit)}
+          type="button"
+          disabled={passwordLoading}
+          className="relative w-full mx-auto my-5 py-3 px-10 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
+        >
+          {passwordLoading ? (
+            <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            </svg>
+          ) : null}
+          Update Password
+        </button>
+      </CommonCard>
+    </section >
   );
 };
 

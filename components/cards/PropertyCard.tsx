@@ -161,9 +161,9 @@ const PropertyCard = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white overflow-hidden shadow-card transition-all`}
+      className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white shadow-md border rounded-2xl overflow-hidden transition-all`}
     >
-      <div className="relative h-64 rounded-lg bg-gray-200 overflow-hidden">
+      <div className="relative h-64 rounded-t-2xl bg-gray-200 overflow-hidden">
         <div
           className="flex h-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -242,7 +242,7 @@ const PropertyCard = ({
             e.stopPropagation(); 
             handleFavoriteAdd?.();
           }}
-          className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
+          className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/80 rounded-full flex items-center justify-center hover:bg-red-50"
           aria-label="up"
         >
           {isFavorite ? (
@@ -293,7 +293,7 @@ const PropertyCard = ({
             </>
           )}
       </div>
-      <div className="space-y-1 py-3">
+      <div className="space-y-1 py-3 px-4">
         <div className="flex items-center justify-between">
           {property?.isSale && property?.isRent ? (
             <div className="text-md font-manrope font-bold text-[#727272] w-full">
@@ -315,7 +315,7 @@ const PropertyCard = ({
               ) : null}
             </div>
           ) : (
-            <p className="text-md font-manrope font-bold text-[#727272]">
+            <p className="text-md font-manrope font-black text-[#0F172A]">
               {property?.isRent
                 ? formatEuro(
                   property?.rentalPrice ??
@@ -333,7 +333,7 @@ const PropertyCard = ({
           )}
         </div>
 
-        <h3 className="text-[0.9rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
+        <h3 className="text-[0.9rem] text-[#0A0915] font-manrope font-medium max-w-[85%] pb-1">
           {property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""}{" "}
           {property?.propertyType
             ? property?.propertyType?.name
@@ -351,7 +351,7 @@ const PropertyCard = ({
           {property?.locationCity}, {property?.locationCountry}
         </h3>
 
-        <div className="flex gap-5 justify-between items-center pt-4 text-sm">
+        <div className="flex gap-5 justify-between items-center pt-2.5 text-sm border-t">
           {property?.mtsBuild !== null && property?.mtsBuild !== undefined && (
             <div className="flex font-manrope font-normal items-center gap-1">
               <Expand size={18} className="text-gray-400" />

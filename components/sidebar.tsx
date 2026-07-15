@@ -5,13 +5,17 @@ import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import {
   Archive,
+  CreditCard,
   Heart,
+  House,
   LayoutGrid,
   LogOut,
   Logs,
+  MessageCircle,
   MessagesSquare,
   Search,
-  Sparkles
+  Sparkles,
+  User
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,17 +27,18 @@ import { setAuthData } from "@/redux/modules/common/user_data/action";
 import { setReduxClear } from "@/redux/modules/main/action";
 
 const menuItems = [
-  { name: "Dashboard", href: App_url.link.DASHBOARD, icon: LayoutGrid },
+  { name: "Dashboard", href: App_url.link.DASHBOARD, icon: House },
+  { name: "My Profile", href: App_url.link.PROFILE, icon: User },
   { name: "Preferences", href: App_url.link.PREFERENCES, icon: Logs },
-  { name: "Favorites", href: App_url.link.FAVORITES, icon: Heart },
-  {
-    name: "Account / Package",
-    href: App_url.link.ACCOUNT_PACKAGE,
-    icon: Archive,
-  },
+  { name: "Saved Properties", href: App_url.link.FAVORITES, icon: Heart },
   { name: "Saved Searches", href: App_url.link.SAVED_SEARCHES, icon: Search },
-  { name: "Chat with Agent", href: App_url.link.MESSAGE, icon: MessagesSquare },
   { name: "AI Insights", href: App_url.link.AI_INSIGHTS, icon: Sparkles },
+  { name: "Message", href: App_url.link.MESSAGE, icon: MessageCircle },
+  {
+    name: "Subscription",
+    href: App_url.link.ACCOUNT_PACKAGE,
+    icon: CreditCard,
+  },
 ];
 type SidebarProps = {
   isOpen: boolean;
@@ -47,25 +52,25 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const router = useRouter()
   return (
     <>
-      <aside className="hidden lg:flex w-full max-md:h-[calc(100vh-50px)] bg-white pl-14 px-10 py-6 flex-col overflow-y-scroll hide-scrollbar">
-        <div className="flex items-center gap-3 border-b border-[#E2E9E0] pb-5 mt-1 mb-5">
+      <aside className="hidden lg:flex w-full max-md:h-[calc(100vh-50px)] bg-white px-6 py-6 rounded-3xl flex-col overflow-y-scroll hide-scrollbar shadow-xl">
+        <div className="flex flex-col items-center gap-3 border-b border-[#E2E9E0] pb-5 mt-1 mb-5">
           {user_data?.user?.profile_image ? (
             <Image
               src={URL + user_data?.user?.profile_image}
               alt="Profile"
               width={70}
               height={70}
-              className="rounded-full object-cover w-12 h-12"
+              className="rounded-full object-cover w-16 h-16"
             />
           ) : (
             <>
               <ProfileAvatar
                 name={`${user_data?.user?.first_name + " " + user_data?.user?.last_name}`}
-                className="!w-12 !h-12 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
+                className="!w-16 !h-16 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
               />
             </>
           )}
-          <div>
+          <div className="text-center">
             <p className="text-md font-manrope font-semibold text-[#111827] leading-tight">
               {user_data?.user?.first_name + " " + user_data?.user?.last_name}
             </p>
@@ -73,10 +78,13 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               {user_data?.user?.email}
             </p>
           </div>
+          <div className="text-sm font-manrope font-semibold text-[#2F80FF] leading-tight">
+            <h2>Premium Member</h2>
+          </div>
         </div>
 
         {/* Navigation */}
-        <nav className="space-y-1">
+        <nav className="space-y-2">
           {menuItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = item.icon;
@@ -85,10 +93,10 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex font-manrope text-[0.9rem] font-semibold items-center gap-3 px-4 py-2.5 rounded-full transition
+                className={`flex font-manrope text-[0.9rem] font-semibold items-center gap-3 px-4 py-3 rounded-2xl transition
                   ${isActive
-                    ? "bg-[#2563EB] text-white"
-                    : "text-[#111827] hover:bg-[#F3F4F6]"
+                    ? "bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white shadow-lg shadow-blue-100"
+                    : "text-[#64748B] hover:bg-[#F3F4F6]"
                   }`}
               >
                 <Icon size={23} />
@@ -97,11 +105,28 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             );
           })}
         </nav>
+        <div className="mt-2">
+          <button
+            onClick={() => {
+              dispatch(setLogout());
+              localStorage.clear();
+              dispatch(setAuthData({} as any));
+              dispatch(setReduxClear());
+              router.push(App_url.link.INITIAL_URL);
+            }}
+            className="group w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-colors hover:bg-red-50"
+          >
+            <LogOut className="w-5 h-5 text-red-500 group-hover:text-red-600" />
+            <span className="text-sm font-medium text-red-500 group-hover:text-red-600">
+              Logout
+            </span>
+          </button>
+        </div>
 
         {/* Agent Card */}
-        <div className="mt-auto pt-8">
+        {/* <div className="mt-auto pt-8">
           {user_data?.user?.agent?.agent && <AgentCard />}
-        </div>
+        </div> */}
       </aside>
 
       <div
@@ -189,60 +214,11 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </span>
               </button>
             </div>
-            <div className="lg:mt-auto pt-8 max-sm:pb-36">
+            {/* <div className="lg:mt-auto pt-8 max-sm:pb-36">
               {user_data?.user?.agent?.agent && <AgentCard />}
-            </div>
+            </div> */}
           </div>
         </div>
-      </div>
-    </>
-  );
-}
-
-/* ================= AGENT CARD (UNCHANGED) ================= */
-function AgentCard() {
-  const router = useRouter();
-  const { user_data } = usePosterReducers();
-  return (
-    <>
-      <p className="font-inter max-md:text-md text-[0.95rem] font-semibold text-[#111827] mb-3">
-        Appointed Real Estate Agent
-      </p>
-
-      <div className="bg-gradient-to-br from-[#E9EBEF] to-[#E9EBEF] rounded-2xl p-4 text-center">
-        <div className="relative overflow-hidden border-2 border-white rounded-full w-16 h-16 mx-auto mb-4">
-          {user_data?.user?.agent?.agent?.profile_image ? (
-            <Image
-              src={URL + (user_data?.user?.agent?.agent?.profile_image ?? "")}
-              alt="Agent"
-              fill
-              priority
-              className="object-cover"
-            />
-          ) : (
-            <ProfileAvatar
-              name={`${user_data?.user?.agent?.agent?.first_name + " " + user_data?.user?.agent?.agent?.last_name}`}
-              className="rounded-full w-full h-full !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
-            />
-          )}
-        </div>
-        <p className="text-[15px] font-inter font-semibold text-[#101828] my-1">
-          {user_data?.user?.agent?.agent?.first_name +
-            " " +
-            user_data?.user?.agent?.agent?.last_name}
-        </p>
-        <p className="text-[14px] font-inter font-semibold text-[#101828] my-1">
-          {user_data?.user?.agent?.agent?.contact_no}
-        </p>
-        <p className="text-[14px] font-inter font-semibold text-[#101828] my-1">
-          Website: <span className="underline cursor-pointer">zecco.es</span>
-        </p>
-        <button
-          onClick={() => router.push(App_url.link.CONTACT_US)}
-          className="w-fit px-16 tracking-wider shadow-md my-4 bg-[#111827] text-white text-[15px] py-2.5 rounded-full font-medium"
-        >
-          Contact
-        </button>
       </div>
     </>
   );

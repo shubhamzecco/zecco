@@ -177,7 +177,11 @@ const Page = () => {
       ),
     );
 
-    setFilterData(cleanPayload);
+    setFilterData((prev: any) => {
+      const prevStr = JSON.stringify(prev);
+      const newStr = JSON.stringify(cleanPayload);
+      return prevStr === newStr ? prev : cleanPayload;
+    });
 
     if (mainReducer?.propertyFilter?.propertyType) {
       setPropertyType(mainReducer?.propertyFilter?.propertyType || "");
@@ -209,7 +213,6 @@ const Page = () => {
     propertyType,
     categories,
     filterData,
-    search,
     filtersInitialized,
   ]);
 
@@ -298,6 +301,7 @@ const Page = () => {
   const handleSearch = (value: any) => {
     const searchValue =
       typeof value === "string" ? value : value?.name || "";
+      if(!searchValue) return 
 
     setSearch(searchValue);
 
@@ -308,51 +312,29 @@ const Page = () => {
       })
     );
 
-    debouncedSearch(searchValue, value, filterData, id?.location);
+    // Typing: only update state, show dropdown handled by MainLayout
+    if (typeof value === "string") {
+      if (value.trim() === "") {
+        setPage(1);
+        setHasMore(true);
+        fetchedPages.current.clear();
+        fetchProperties(1, filterData, true, "");
+      }
+      return;
+    }
+
+    // Dropdown selection: fetch results and update route
+    setPage(1);
+    setHasMore(true);
+    fetchedPages.current.clear();
+    fetchProperties(1, filterData, true, searchValue);
+
+    if (value?.city_name && value.city_name !== id?.location) {
+      router.replace(
+        `${App_url.link.COSTA_DEL_SOL}/${citySlug(value.city_name)}`
+      );
+    }
   };
-
-  const debouncedSearch = useMemo(
-    () =>
-      debounce(
-        (
-          searchValue: string,
-          value: any,
-          filters: any,
-          location: any,
-        ) => {
-          setPage(1);
-          setProperties([]);
-          setHasMore(true);
-
-          fetchedPages.current.clear();
-
-          fetchProperties(1, filters, true, searchValue);
-
-          if (typeof value === "string") {
-            if (searchValue.trim()) {
-              router.replace(
-                `${App_url.link.COSTA_DEL_SOL}/${citySlug(searchValue)}`
-              );
-            }
-          } else if (
-            value?.city_name &&
-            value.city_name !== location
-          ) {
-            router.replace(
-              `${App_url.link.COSTA_DEL_SOL}/${citySlug(value.city_name)}`
-            );
-          }
-        },
-        500
-      ),
-    [filterData, propertyType, categories]
-  );
-
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
-  }, [debouncedSearch]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -513,6 +495,7 @@ const Page = () => {
       isFilter
       isPropertyType
       isProperty
+      isLocationDropdown
       propertyTypes={categories}
       searchValueProp={search}
       handleSearch={(e) => handleSearch(e)}
@@ -639,7 +622,7 @@ const Page = () => {
         </div>
 
         <div className="h-[calc(100%-180px)] overflow-y-auto">
-          <FilterPanel onFilterChange={handleFilterChange} areas={filtersArea?.[0]?.areas} parentArea={filtersArea?.[0]} onAreaClick={onAreaClick} />
+          <FilterPanel onFilterChange={handleFilterChange} />
         </div>
       </div>
       <LoginPopup />

@@ -15,9 +15,10 @@ import { formatEuro } from "@/utils/common";
 
 export interface IAiInsightProps {
   ai_insight: PropertyAnalysis;
+  isPropertyDetail?:boolean
 }
 
-export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
+export function AIMarketIntelligence({ ai_insight , isPropertyDetail}: IAiInsightProps) {
   const { mainReducer } = usePosterReducers();
   return (
     <div className={`mb-8 bg-[#fafafa] border border-[#F3F4F6] rounded-xl p-6`}>
