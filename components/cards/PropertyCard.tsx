@@ -59,7 +59,7 @@ const PropertyCard = ({
     ) ||
     mainReducer?.favorite_property_list?.data?.some(
       (item) => String(item._id) === String(property?._id),
-    ) ;
+    );
 
   const [isFavorite, setIsFavorite] = useState(getIsFavoriteFromStore);
 
@@ -72,9 +72,9 @@ const PropertyCard = ({
     property?._id,
     property?.favorite,
   ]);
-
+  
   const propertyIdentifier = property?.slug || property?._id;
-  const propertyDetailUrl = `${pathname.replace(/\/$/, "")}/${propertyIdentifier}${window.location.search}`;
+  const propertyDetailUrl = `${pathname.replace(/\/$/, "")}/${propertyIdentifier}${window.location.search || ""}`;
 
   const handleNavigate = () => {
     router.push(propertyDetailUrl);
@@ -239,7 +239,7 @@ const PropertyCard = ({
 
         <button
           onClick={(e) => {
-            e.stopPropagation(); 
+            e.stopPropagation();
             handleFavoriteAdd?.();
           }}
           className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/80 rounded-full flex items-center justify-center hover:bg-red-50"

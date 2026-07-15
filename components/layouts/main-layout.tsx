@@ -1,18 +1,18 @@
 "use client";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
-import { citySlug } from "@/utils/common";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setPropertyFilter } from "@/redux/modules/main/action";
+import { cityName, citySlug } from "@/utils/common";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import Footer from "../Footer";
 import Header from "../Header";
 import Breadcrumb from "../breadcrumbs";
 import ChatbotWidget from "../chat/chatbot-widget";
 import DropdownSelect from "../ui/DropSelect";
-import { useDispatch } from "react-redux";
-import { setPropertyFilter } from "@/redux/modules/main/action";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 interface MainLayoutProps {
@@ -56,18 +56,30 @@ const MainLayout = ({
   filteredLocations = [],
   searchValueProp,
 }: MainLayoutProps) => {
+  const searchParams = useSearchParams();
   const pathname = usePathname();
+  const router = useRouter();
   const dispatch = useDispatch()
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
-  const param = useParams();
-  const searchval = searchValueProp || param?.location
-  const { control } = useForm({
+  const city = searchParams.get("city") || "";
+  const area = searchParams.get("area") || "";
+  const subarea = searchParams.get("subarea") || "";
+  const searchval = searchValueProp || subarea || area || city
+  const updatedSearchVal = cityName(searchval)
+
+  const { control, reset } = useForm({
     defaultValues: {
-      location: searchval
+      location: updatedSearchVal
     }
   })
-  const router = useRouter();
+
+  useEffect(() => {
+    reset({
+      location: updatedSearchVal,
+    });
+  }, [updatedSearchVal]);
+
 
   useEffect(() => {
     if (!isPropertyType) return;
@@ -98,10 +110,11 @@ const MainLayout = ({
     );
 
     const params = new URLSearchParams(window.location.search);
-    params.set("cities", data?.value);
+    params.delete("cities");
+    params.set("city", citySlug(data?.label || data?.value || ""));
 
     router.push(
-      `${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.label)}?${params.toString()}`
+      `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
     );
   };
 
@@ -123,7 +136,7 @@ const MainLayout = ({
                   placeholder="All Area"
                   onSelect={callLocationSelect}
                   options={filteredLocations?.map((location) => ({
-                    value: location?.name?.toLowerCase(),
+                    value: location?.name_slug,
                     label: location?.name,
                     key: location?.id
                   })) || []}

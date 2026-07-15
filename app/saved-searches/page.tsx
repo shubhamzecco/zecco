@@ -6,7 +6,6 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug, formatEuro } from "@/utils/common";
 import { Eye, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -18,7 +17,6 @@ const SavedSearches = () => {
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const router = useRouter();
-  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isConnected) return;
@@ -97,8 +95,16 @@ const SavedSearches = () => {
   };
 
   const handleApplySearch = (item: any) => {
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(item?.cities)}`);
-    dispatch(setPropertyFilter(item));
+    const params = new URLSearchParams();
+    if (item?.cities) params.set("city", citySlug(item.cities));
+    if (item?.categories) params.set("categories", String(item.categories));
+    if (item?.bedroomsFrom) params.set("bedroomsFrom", String(item.bedroomsFrom));
+    if (item?.bedroomsTo) params.set("bedroomsTo", String(item.bedroomsTo));
+    if (item?.priceFrom) params.set("priceFrom", String(item.priceFrom));
+    if (item?.priceTo) params.set("priceTo", String(item.priceTo));
+    if (item?.buildFrom) params.set("buildFrom", String(item.buildFrom));
+    if (item?.buildTo) params.set("buildTo", String(item.buildTo));
+    router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
   };
 
   const generateSearchTitle = (item: any) => {

@@ -2,7 +2,7 @@
 import Head from "next/head";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import PropertyCard from "@/components/cards/PropertyCard";
-import PropertyCardSkeleton from "@/app/costa-del-sol/[location]/components/PropertyCardSkeleton";
+import PropertyCardSkeleton from "@/app/costa-del-sol/properties/components/PropertyCardSkeleton";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useEffect } from "react";

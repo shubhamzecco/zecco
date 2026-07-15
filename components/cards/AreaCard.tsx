@@ -29,7 +29,7 @@ const AreaCard = ({
     if (onNavigate) {
       onNavigate();
     } else {
-      router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(name_slug)}`);
+      router.push(`${App_url.link.COSTA_DEL_SOL}/properties?city=${citySlug(name_slug)}`);
     }
   };
 

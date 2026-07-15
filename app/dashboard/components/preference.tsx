@@ -1,6 +1,6 @@
 "use client";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
-import PropertyCardSkeleton from "@/app/costa-del-sol/[location]/components/PropertyCardSkeleton";
+import PropertyCardSkeleton from "@/app/costa-del-sol/properties/components/PropertyCardSkeleton";
 import PropertyCard from "@/components/cards/PropertyCard";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useRouter } from "next/navigation";

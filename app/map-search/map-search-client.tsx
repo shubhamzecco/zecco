@@ -4,7 +4,6 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import MainLayout from "@/components/layouts/main-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 import {
   ArrowRight,
@@ -15,7 +14,6 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
 
 type Mode = "draw" | "select";
 
@@ -350,18 +348,11 @@ export default function MapSearchClient() {
 
   const applySelection = () => {
     const drawn = drawnLayerRef.current?.getLayers?.()?.[0];
-    const payload: any = {
-      propertyType: "all",
-    };
 
     if (selectedArea?.name) {
-      payload.search = selectedArea.name;
-      payload.mapSelection = {
-        type: "area",
-        name: selectedArea.name,
-      };
-      dispatch(setPropertyFilter(payload));
-      router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(selectedArea?.city_name || selectedArea.name)}`);
+      router.push(
+        `${App_url.link.COSTA_DEL_SOL}/properties?city=${citySlug(selectedArea?.city_name || selectedArea.name)}`
+      );
       return;
     }
 
@@ -369,26 +360,10 @@ export default function MapSearchClient() {
       const latLngs = drawn.getLatLngs?.()[0]?.map((point: any) => [point.lat, point.lng]) || [];
       const center = drawn.getBounds().getCenter();
       const nearestArea = findNearestArea(center.lat, center.lng);
-      payload.mapSelection = {
-        type: "polygon",
-        coordinates: latLngs,
-        name: nearestArea?.name,
-      };
-      payload.search = nearestArea?.name || "marbella";
-      dispatch(setPropertyFilter(payload));
-      router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(nearestArea?.name)}`);
+      router.push(
+        `${App_url.link.COSTA_DEL_SOL}/properties?city=${citySlug(nearestArea?.name || "marbella")}`
+      );
       return;
-    }
-
-    if (currentLocation) {
-      payload.search = "My location";
-      payload.mapSelection = {
-        type: "location",
-        coordinates: currentLocation,
-      };
-      console.log("payload2::", payload)
-      // dispatch(setPropertyFilter(payload));
-      // router.push(`${App_url.link.COSTA_DEL_SOL}`);
     }
   };
   return (

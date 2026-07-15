@@ -9,13 +9,12 @@ import React, {
 } from "react";
 
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
 import { ChevronDown, MapPlus, Search, SearchIcon } from "lucide-react";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
+import { useDispatch } from "react-redux";
 
 const PropertySearchBar = () => {
   const router = useRouter();
@@ -74,35 +73,24 @@ const PropertySearchBar = () => {
 
 
   const handleSearch = useCallback(() => {
-    dispatch(
-      setPropertyFilter({
-        categories: selected?.id,
-        propertyType: "buy",
-        search: searchText,
-      }),
-    );
-
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(searchText)}`);
-  }, [dispatch, router, selected]);
+    const params = new URLSearchParams();
+    if (selected?.id) params.set("categories", String(selected.id));
+    if (searchText) params.set("city", citySlug(searchText));
+    router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+  }, [router, selected, searchText]);
 
   const callSearch = (data: any) => {
-    dispatch(
-      setPropertyFilter({
-        categories: selected?.id,
-        propertyType: "buy",
-        search: data?.filters?.cities ? data?.filters?.cities : "",
-        cities: data?.filters?.cities ? data?.filters?.cities : undefined,
-        bedroomsFrom: data?.filters?.bedrooms ? data?.filters?.bedrooms : undefined,
-        bedroomsTo: data?.filters?.bedrooms ? data?.filters?.bedrooms : undefined,
-        ...data.filters,
-      }))
+    const params = new URLSearchParams();
+    const filters = data.filters || {};
 
-    const params = new URLSearchParams({
-      type: "slug",
-    });
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === "") return;
 
-    Object.entries(data.filters ?? {}).forEach(([key, value]) => {
-      if (value === undefined || value === null) return;
+      if (key === "bedrooms") {
+        params.set("bedroomsFrom", String(value));
+        params.set("bedroomsTo", String(value));
+        return;
+      }
 
       if (Array.isArray(value)) {
         value.forEach((v) => params.append(key, String(v)));
@@ -111,16 +99,14 @@ const PropertySearchBar = () => {
       }
     });
 
-    if (data?.filters?.cities) {
-      router.push(
-        `${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.filters?.cities)}?${params.toString()}`
-      );
-    } else {
-      router.push(
-        `${App_url.link.COSTA_DEL_SOL}/marbella?${params.toString()}`
-      );
+    if (!params.has("city") && filters.cities) {
+      params.set("city", String(filters.cities));
     }
-  }
+
+    router.push(
+      `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+    );
+  };
 
 
   const openMapSearch = useCallback(

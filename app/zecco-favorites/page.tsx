@@ -1,7 +1,7 @@
 "use client";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import PropertyCard from "@/components/cards/PropertyCard";
-import PropertyCardSkeleton from "@/app/costa-del-sol/[location]/components/PropertyCardSkeleton";
+import PropertyCardSkeleton from "@/app/costa-del-sol/properties/components/PropertyCardSkeleton";
 import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import debounce from 'lodash/debounce'

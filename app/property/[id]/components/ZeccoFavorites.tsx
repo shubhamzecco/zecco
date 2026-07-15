@@ -7,7 +7,7 @@ import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { IProperty } from "@/redux/modules/main/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import PropertyCardSkeleton from "@/app/costa-del-sol/[location]/components/PropertyCardSkeleton";
+import PropertyCardSkeleton from "@/app/costa-del-sol/properties/components/PropertyCardSkeleton";
 
 interface PropertyInfoProps {
   property: IProperty;

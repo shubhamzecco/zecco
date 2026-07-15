@@ -1,12 +1,10 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
 
 type ListingType = "all" | "buy" | "rent" | "new";
 
@@ -19,8 +17,6 @@ export default function ExploreRegions() {
   const [selectedButton, setSelectedButton] = useState<ListingType>("all");
 
   const { sendMessage } = useWebSocket();
-
-  const dispatch = useDispatch();
 
   const { mainReducer } = usePosterReducers();
 
@@ -241,14 +237,7 @@ export default function ExploreRegions() {
 
   const handleNavigate = (region: any) => {
     if (!region) return;
-    dispatch(
-      setPropertyFilter({
-        propertyType: selectedButton,
-        search: region?.name,
-      }),
-    );
-
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(region?.name)}`);
+    router.push(`${App_url.link.COSTA_DEL_SOL}/properties?city=${citySlug(region?.name)}`);
   };
 
   const TABS = [
