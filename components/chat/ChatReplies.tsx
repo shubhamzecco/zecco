@@ -1,13 +1,10 @@
 "use client";
 
-import { ArrowRight, ArrowUpRight, MapPin, Sparkles } from "lucide-react";
+import { ArrowUpRight, MapPin, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useDispatch } from "react-redux";
 import { ChatMessage } from "./zecco-chat-modal";
-import { setPropertyFilter } from "@/redux/modules/main/action";
-import { App_url } from "@/constant/static";
-import { citySlug } from "@/utils/common";
 import { useRouter } from "next/navigation";
 import PropertyCarousel from "./PropertyCarousel";
 
@@ -38,27 +35,6 @@ export default function ChatReplies({
   const dispatch = useDispatch();
 
   /* ---------------- detect manual scroll ---------------- */
-
-  const handleShowProperties = (msg: ChatMessage) => {
-    if (!msg?.hasMore || !msg?.viewMore) return;
-    dispatch(setPropertyFilter({}));
-    const data = msg.viewMore;
-
-    dispatch(
-      setPropertyFilter({
-        categories: Number(data?.category) || null,
-        propertyType: data?.intent || "",
-        search: data?.location || "",
-        bedroomsFrom: Number(data?.bedrooms) || null,
-        bedroomsTo: Number(data?.bedrooms) || null,
-        priceFrom: data?.budgetMin || "",
-        priceTo: data?.budgetMax || "",
-        types: data?.propertyType ? [Number(data?.propertyType)] : [],
-      }),
-    );
-
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(data.locationCity)}`);
-  };
 
   const handleScroll = () => {
     if (!containerRef.current) return;
@@ -125,22 +101,6 @@ export default function ChatReplies({
               <p className="text-[14px] leading-6 whitespace-pre-line mb-2">
                 {before.trim()}
               </p>
-            )}
-
-            {/* Interactive Button Section */}
-            {currentMsg?.hasMore && currentMsg?.viewMore && (
-              <div className="my-2 pt-1 pb-1">
-                <p className="text-xs text-gray-500 mb-1.5 font-medium">
-                  Click below to view your results:
-                </p>
-                <button
-                  onClick={() => handleShowProperties(currentMsg)}
-                  className="w-full sm:w-auto px-6 py-2.5 bg-white border border-gray-200 hover:bg-blue-50 text-blue-600 font-semibold flex items-center justify-center gap-2 rounded-lg text-sm shadow-sm transition-all"
-                >
-                  <span>View matching properties</span>
-                  <ArrowRight size={16} />
-                </button>
-              </div>
             )}
 
             {/* Next Follow-up Question */}
@@ -301,15 +261,6 @@ export default function ChatReplies({
               )}
               {!isUser && msg?.properties && msg?.properties.length > 0 && (
                 <PropertyCarousel properties={msg?.properties} />
-              )}
-              {msg?.hasMore && msg?.viewMore && (
-                <button
-                  onClick={() => handleShowProperties(msg)}
-                  className="px-6 py-2.5 bg-white hover:bg-blue-50 text-blue-600 font-semibold flex items-center justify-center gap-2 rounded-lg text-sm"
-                >
-                  <span>Show more properties</span>
-                  <ArrowRight size={16} className={`transition-transform`} />
-                </button>
               )}
               <div className="text-[11px] opacity-70 text-right">
                 {formatTime(msg?.timestamp)}

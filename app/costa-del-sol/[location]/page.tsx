@@ -44,7 +44,7 @@ const Page = () => {
   const [filtersInitialized, setFiltersInitialized] = useState(false);
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const dispatch = useDispatch();
-  const id = useParams();
+  const param = useParams();
   const router = useRouter();
   const path = usePathname()
   const searchParams = useSearchParams();
@@ -111,7 +111,7 @@ const Page = () => {
       type === "slug"
         ? {
           type,
-          slug: id?.location,
+          slug: param?.location,
           ...(searchValue && { search: searchValue }),
           ...commonPayload,
           ...filters,
@@ -120,7 +120,7 @@ const Page = () => {
         : {
           ...commonPayload,
           search: searchValue,
-          cities: id?.location,
+          cities: param?.location,
           forAll: propertyType === "all",
 
           categories: categories
@@ -312,7 +312,7 @@ const Page = () => {
       })
     );
 
-    debouncedSearch(searchValue, value, filterData, id?.location);
+    debouncedSearch(searchValue, value, filterData, param?.location);
   };
 
   const debouncedSearch = useMemo(
@@ -396,7 +396,7 @@ const Page = () => {
       }),
     );
 
-    if (area?.city_name && area.city_name !== id?.location) {
+    if (area?.city_name && area.city_name !== param?.location) {
       router.replace(
         `${App_url.link.COSTA_DEL_SOL}/${citySlug(area.city_name)}`,
       );
@@ -435,7 +435,7 @@ const Page = () => {
           ...filterData,
           search,
           categories: categories ?? filterData?.categories,
-          cities: id?.location,
+          cities: param?.location,
           ...(propertyType === "buy" && {
             forSale: true,
             sold: false,
