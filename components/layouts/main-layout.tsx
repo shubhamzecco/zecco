@@ -124,7 +124,6 @@ const MainLayout = ({
     };
   }, []);
 
-  console.log("filteredLocations ::: ", filteredLocations)
 
   return (
     <main className="w-full bg-white">
