@@ -97,9 +97,29 @@ const PropertySearchBar = () => {
         ...data.filters,
       }))
 
-    router.push(
-      `${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.title)}?type=slug`
-    );
+    const params = new URLSearchParams({
+      type: "slug",
+    });
+
+    Object.entries(data.filters ?? {}).forEach(([key, value]) => {
+      if (value === undefined || value === null) return;
+
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, String(v)));
+      } else {
+        params.set(key, String(value));
+      }
+    });
+
+    if (data?.filters?.cities) {
+      router.push(
+        `${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.filters?.cities)}?${params.toString()}`
+      );
+    } else {
+      router.push(
+        `${App_url.link.COSTA_DEL_SOL}/marbella?${params.toString()}`
+      );
+    }
   }
 
 

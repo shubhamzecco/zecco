@@ -96,8 +96,14 @@ const MainLayout = ({
         cities: data?.value,
       })
     );
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.label)}`);
-  }
+
+    const params = new URLSearchParams(window.location.search);
+    params.set("cities", data?.value);
+
+    router.push(
+      `${App_url.link.COSTA_DEL_SOL}/${citySlug(data?.label)}?${params.toString()}`
+    );
+  };
 
   return (
     <main className="w-full bg-white">

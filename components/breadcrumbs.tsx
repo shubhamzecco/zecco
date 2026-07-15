@@ -6,18 +6,48 @@ import { ChevronsRight } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const Breadcrumb = () => {
-  const { mainReducer } = usePosterReducers()
+  const { mainReducer } = usePosterReducers();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const propertyDetails = mainReducer?.property_details ?? {}
-  const breadcrumbs = generateBreadcrumbs(pathname, propertyDetails);
+
+  const propertyDetails = mainReducer?.property_details ?? {};
+
+  const type = searchParams.get("type");
+  const city = searchParams.get("cities");
+  const bedrooms = searchParams.get("bedrooms");
+
+  const capitalize = (text: string) =>
+    text.replace(/\b\w/g, (char) => char.toUpperCase());
+
+  const breadcrumbs =
+    type === "slug" && city
+      ? [
+          {
+            label: "Home",
+            href: "/",
+          },
+          {
+            label: "Costa del Sol areas and Cities",
+            href: "/costa-del-sol",
+          },
+          {
+            label: bedrooms
+              ? `${bedrooms} Bedroom${bedrooms === "1" ? "" : "s"} in ${capitalize(
+                  city
+                )}`
+              : capitalize(city),
+          },
+        ]
+      : generateBreadcrumbs(pathname, propertyDetails);
 
   const queryString = searchParams.toString();
   const qs = queryString ? `?${queryString}` : "";
 
   const callClickItem = (item: any) => {
     const href = item.href;
+
+    if (!href) return;
 
     if (href === "/" || href === "/costa-del-sol") {
       router.push(href);
@@ -30,22 +60,24 @@ const Breadcrumb = () => {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="min-h-12 max-md:flex-wrap flex items-center text-md gap-1 font-manrope font-normal text-[#666666]"
+      className="min-h-12 max-md:flex-wrap flex items-center gap-1 text-md font-manrope font-normal text-[#666666]"
     >
-      {breadcrumbs?.map((item, index) => {
-        const isLast = index === breadcrumbs?.length - 1;
+      {breadcrumbs.map((item: any, index: number) => {
+        const isLast = index === breadcrumbs.length - 1;
 
         return (
           <span key={index} className="flex items-center gap-1">
             {!isLast && item.href ? (
               <button
                 onClick={() => callClickItem(item)}
-                className="hover:text-black transition capitalize"
+                className="capitalize transition hover:text-black"
               >
                 {item.label}
               </button>
             ) : (
-              <span className="text-[#000000] capitalize">{item.label}</span>
+              <span className="capitalize text-[#000000]">
+                {item.label}
+              </span>
             )}
 
             {!isLast && (
