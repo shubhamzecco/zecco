@@ -139,7 +139,7 @@ const Greeting = () => {
                 <div className="flex flex-col text-manrope justify-between md:flex-row md:items-center">
                     <div>
                         <h1 className="text-2xl md:text-3xl font-bold font-manrope">
-                            {getGreeting()}, {user_data?.user?.first_name}
+                            {getGreeting()}, {user_data?.user?.first_name} 👋
                         </h1>
                         <p className="mt-2 text-white/60 font-manrope">
                             You&apos;ve got 3 new messages and 5 new property matches today
