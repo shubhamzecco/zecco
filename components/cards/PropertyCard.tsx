@@ -72,10 +72,10 @@ const PropertyCard = ({
     property?._id,
     property?.favorite,
   ]);
-  
-  const propertyIdentifier = property?.slug || property?._id;
-  const propertyDetailUrl = `${pathname.replace(/\/$/, "")}/${propertyIdentifier}${window.location.search || ""}`;
 
+  const propertyIdentifier = property?.slug || property?._id;
+  const propertyDetailUrl = `/zecco-favorites/${propertyIdentifier}${window.location.search}`;
+  
   const handleNavigate = () => {
     router.push(propertyDetailUrl);
   };

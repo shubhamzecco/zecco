@@ -73,7 +73,7 @@ export default function PropertyCarousel({ properties }: Props) {
   const handleCardClick = () => {
     if (p.slug) {
       dispatch(setChatBadgeOpen(true));
-      router.push(`/costa-del-sol/${p.locationCitySlug}/${p.slug}`);
+      router.push(`/costa-del-sol/properties/${p.slug}`);
     }
   };
 
