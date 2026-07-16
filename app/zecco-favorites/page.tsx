@@ -106,11 +106,11 @@ const ZeccoFavorites = () => {
     >
       <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
         {!mainReducer?.zecco_favorite ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-6 mb-8">
             {Array.from({ length: 8 }).map((_, i) => <PropertyCardSkeleton key={i} />)}
           </div>
         ) : mainReducer?.zecco_favorite?.data?.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-6 mb-8">
             {mainReducer?.zecco_favorite?.data?.map((property) => (
               <PropertyCard property={property} key={property?._id} {...property} />
             ))}
