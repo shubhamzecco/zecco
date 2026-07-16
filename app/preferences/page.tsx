@@ -65,6 +65,18 @@ export const PreferenceSection = (props?: any) => {
         payload: {},
       };
       sendMessage("action", payload);
+        const payload2 = {
+        "type": "userService",
+        "action": "getPreferenceProperties",
+        "payload": {
+          "limit": 0,
+          "page": 1,
+          "status": true
+        }
+      }
+      sendMessage("action", payload2)
+    } else {
+      setLoading(false);
     }
   }, [lastEvent]);
 
@@ -90,7 +102,7 @@ export const PreferenceSection = (props?: any) => {
             : data?.category
               ? [Number(data?.category)]
               : null,
-          budget: data.budget || null,
+          budget: Array.isArray(data.budget) ? data.budget[0] || null : data.budget || null,
           bedrooms: data.bedrooms?.map((bedroom) => Number(bedroom.replace("+", ""))) || null,
           investmentType: data.investmentType || null,
           types: data.types || null,
@@ -103,7 +115,7 @@ export const PreferenceSection = (props?: any) => {
         "type": "userService",
         "action": "getPreferenceProperties",
         "payload": {
-          "limit": 18,
+          "limit": 0,
           "page": 1,
           "status": true
         }
@@ -171,71 +183,73 @@ export const PreferenceSection = (props?: any) => {
 
   return (
     <>
-    <CommonCard heading="Property Preferences" description="Tell us what you're looking for.">
-      <div className="rounded-2xl">
-        <Form {...preferenceForm}>
-          <form className="" onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}>
-            <div className="grid grid-cols-1 gap-5">
-              <div className="grid grid-cols-1 lg:grid-cols-1 gap-5">
-                <DropdownSelect
-                  label="Preferred Location"
-                  defaultValue="Preferred Location"
-                  options={locationOptions}
-                  control={preferenceForm.control}
-                  name="location"
-                  labelClassName="font-bold" />
+      <CommonCard heading="Property Preferences" description="Tell us what you're looking for.">
+        <div className="rounded-2xl">
+          <Form {...preferenceForm}>
+            <form onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}>
+              <div className="grid grid-cols-1 gap-5">
+                <div className="grid grid-cols-1 lg:grid-cols-1 gap-5">
+                  <DropdownSelect
+                    label="Preferred Location"
+                    defaultValue="Preferred Location"
+                    options={locationOptions}
+                    control={preferenceForm.control}
+                    name="location"
+                    labelClassName="font-bold" />
 
-                <MultiSelectButtonGroup
-                  control={preferenceForm.control}
-                  name="category"
-                  label="Property Type"
-                  options={propertyTypeOptions}
-                  className="!flex items-center gap-4 flex-wrap" />
+                  <MultiSelectButtonGroup
+                    control={preferenceForm.control}
+                    name="category"
+                    label="Property Type"
+                    options={propertyTypeOptions}
+                    className="!flex items-center gap-4 flex-wrap" />
 
-                <MultiSelectButtonGroup
-                  control={preferenceForm.control}
-                  name="budget"
-                  label="Budget Range"
-                  options={priceRanges}
-                  className="!flex items-center gap-4 flex-wrap" />
+                  <MultiSelectButtonGroup
+                    control={preferenceForm.control}
+                    name="budget"
+                    label="Budget Range"
+                    options={priceRanges}
+                    className="!flex items-center gap-4 flex-wrap"
+                    maxSelected={1} />
 
-                <MultiSelectButtonGroup
-                  control={preferenceForm.control}
-                  name="bedrooms"
-                  label="Bedrooms"
-                  options={bedroomRanges}
-                  className="!flex items-center gap-4 flex-wrap" />
+                  <MultiSelectButtonGroup
+                    control={preferenceForm.control}
+                    name="bedrooms"
+                    label="Bedrooms"
+                    options={bedroomRanges}
+                    className="!flex items-center gap-4 flex-wrap" />
 
-                <MultiSelectButtonGroup
-                  control={preferenceForm.control}
-                  name="investmentType"
-                  label="Investment Type"
-                  options={investmentType}
-                  className="!flex items-center gap-4 flex-wrap" />
+                  <MultiSelectButtonGroup
+                    control={preferenceForm.control}
+                    name="investmentType"
+                    label="Investment Type"
+                    options={investmentType}
+                    className="!flex items-center gap-4 flex-wrap" />
 
-                <MultiSelectButtonGroup
-                  control={preferenceForm.control}
-                  name="types"
-                  label="Types"
-                  options={propertyTypes}
-                  className="!flex items-center gap-4 flex-wrap" />
+                  <MultiSelectButtonGroup
+                    control={preferenceForm.control}
+                    name="types"
+                    label="Types"
+                    options={propertyTypes}
+                    className="!flex items-center gap-4 flex-wrap" />
+                </div>
               </div>
-            </div>
-          </form>
-        </Form>
-      </div>
 
-      <button
-        onClick={preferenceForm.handleSubmit(onPreferenceSubmit)}
-        type="submit"
-        disabled={loading}
-        className="relative w-full mx-auto mt-8 my-5 py-3.5 px-10 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
-      >
-        {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Update Preferences"}
-      </button>
-    </CommonCard><div className="my-5">
-        <MatchedProperties />
-      </div></>
+              <button
+                type="submit"
+                disabled={loading}
+                className="relative w-full mx-auto mt-8 my-5 py-3.5 px-10 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50 flex items-center justify-center"
+              >
+                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Update Preferences"}
+              </button>
+            </form>
+          </Form>
+        </div>
+      </CommonCard>
+      <div className="my-5">
+        <MatchedProperties properties={mainReducer?.preference_property_list?.data} />
+      </div>
+    </>
   );
 };
 

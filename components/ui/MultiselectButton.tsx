@@ -12,6 +12,7 @@ interface MultiSelectButtonGroupProps {
     options: Option[];
     columns?: 2 | 3 | 4 | 5 | 6;
     className?: string;
+    maxSelected?: number;
 }
 
 export function MultiSelectButtonGroup({
@@ -21,6 +22,7 @@ export function MultiSelectButtonGroup({
     options,
     columns = 3,
     className = "",
+    maxSelected,
 }: MultiSelectButtonGroupProps) {
     const getGridColumns = () => {
         switch (columns) {
@@ -44,16 +46,24 @@ export function MultiSelectButtonGroup({
             control={control}
             name={name}
             render={({ field }) => {
-                const values: string[] = Array.isArray(field.value)
-                    ? field.value
-                    : [];
+                const values: string[] = maxSelected === 1
+                    ? (field.value ? [field.value] : [])
+                    : Array.isArray(field.value) ? field.value : [];
 
                 const toggleSelection = (value: string) => {
-                    const updatedValues = values.includes(value)
-                        ? values.filter((item) => item !== value)
-                        : [...values, value];
-
-                    field.onChange(updatedValues);
+                    if (maxSelected === 1) {
+                        field.onChange(values.includes(value) ? "" : value);
+                        return;
+                    }
+                    if (values.includes(value)) {
+                        field.onChange(values.filter((item) => item !== value));
+                        return;
+                    }
+                    if (maxSelected && values.length >= maxSelected) {
+                        field.onChange([value]);
+                        return;
+                    }
+                    field.onChange([...values, value]);
                 };
 
                 return (

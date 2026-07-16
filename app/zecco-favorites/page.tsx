@@ -8,6 +8,7 @@ import debounce from 'lodash/debounce'
 
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Heart } from "lucide-react";
 
 const ZeccoFavorites = () => {
   const { mainReducer } = usePosterReducers();
@@ -116,12 +117,13 @@ const ZeccoFavorites = () => {
             ))}
           </div>
         ) : (
-          <div className="!bg-none flex flex-col items-center justify-center">
-            <h2 className="mt-5 text-xl font-bold text-gray-800">
+          <div className="flex flex-col items-center justify-center h-[400px] w-full">
+            <Heart size={48} className="text-gray-300 mb-4" />
+            <h2 className="text-lg font-bold text-gray-800 font-manrope">
               No Favorite Properties
             </h2>
-            <p className="mt-2 text-center text-sm text-gray-500">
-              Saved Zecco's favorite properties will appear here once added.
+            <p className="mt-2 text-center text-sm text-gray-500 font-manrope max-w-md">
+              Saved Zecco&apos;s favorite properties will appear here once added.
             </p>
           </div>
         )}

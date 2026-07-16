@@ -5,6 +5,7 @@ import PropertyCard from "@/components/cards/PropertyCard";
 import PropertyCardSkeleton from "@/app/costa-del-sol/properties/components/PropertyCardSkeleton";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { Heart } from "lucide-react";
 import { useEffect } from "react";
 
 const FavoritesPage = () => {
@@ -70,13 +71,13 @@ const FavoritesPage = () => {
                 ))}
               </div>
             ) : (
-              <div className="!bg-none flex flex-col items-center justify-center">
-                <h2 className="mt-5 text-xl font-bold text-gray-800">
+              <div className="flex flex-col items-center justify-center h-[400px] w-full">
+                <Heart size={48} className="text-gray-300 mb-4" />
+                <h2 className="text-lg font-bold text-gray-800 font-manrope">
                   No Favorite Properties
                 </h2>
-                <p className="mt-2 text-center text-sm text-gray-500">
-                  Properties you save as favorites will appear here for quick
-                  access.
+                <p className="mt-2 text-center text-sm text-gray-500 font-manrope max-w-md">
+                  Properties you save as favorites will appear here for quick access.
                 </p>
               </div>
             )}

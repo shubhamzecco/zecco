@@ -7,7 +7,7 @@ import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { formatDateMonth, formatEuro } from "@/utils/common";
 import axios from "axios";
-import { Check, CloudUpload, Crown, FileUp, ShieldCheck, Zap, SquareArrowRight, Star } from "lucide-react";
+import { Check, CloudUpload, Crown, FileUp, ShieldCheck, Zap, SquareArrowRight, Star, Package } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -68,6 +68,24 @@ const AccountPackagePage = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
       <section className="mt-2 mb-6">
+        {!user_data?.user?.package ? (
+          <div className="flex flex-col items-center justify-center h-[400px] w-full rounded-2xl bg-white border border-gray-200 shadow-sm">
+            <Package size={48} className="text-gray-300 mb-4" />
+            <h2 className="text-lg font-bold text-gray-800 font-manrope">
+              No Active Subscription
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-500 font-manrope max-w-md">
+              You don&apos;t have an active package yet. Subscribe to a plan to access premium features.
+            </p>
+            <button
+              onClick={() => router.push(App_url.link.PACKAGE)}
+              className="mt-6 px-6 py-3 rounded-xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-bold shadow-md hover:shadow-lg transition-shadow"
+            >
+              View Packages
+            </button>
+          </div>
+        ) : (
+          <>
         {/* <div className="flex justify-between items-center mb-1">
           <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
             Account Protocol
@@ -359,6 +377,8 @@ const AccountPackagePage = () => {
             <div className="mx-4 w-[calc(100%-32px)] text-sm text-gray-500 text-center py-10">No package history found</div>
           )}
         </div>
+          </>
+        )}
       </section>
     </SidebarLayout>
   );
