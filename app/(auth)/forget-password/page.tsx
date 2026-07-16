@@ -107,7 +107,7 @@ const ForgetPassword = () => {
               disabled={loading}
               className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
             >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Send OTP"}
+              {loading && <Loader2 className="h-5 w-5 animate-spin" />}  Send OTP
             </Button>
           </div>
         </form>

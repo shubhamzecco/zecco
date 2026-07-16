@@ -218,7 +218,7 @@ const ContactUs = () => {
                       disabled={loading}
                       className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#136AED] text-white text-[15px] py-2.5 rounded-full font-inter font-medium flex items-center justify-center gap-2 disabled:opacity-50"
                     >
-                      {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Submit"}
+                      {loading && <Loader2 className="h-5 w-5 animate-spin" />} Submit
                     </button>
                   </div>
                 </form>

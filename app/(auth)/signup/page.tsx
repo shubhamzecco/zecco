@@ -180,7 +180,7 @@ const SignUpPage = () => {
             </div>
             <div className="flex items-center mt-2 gap-5">
               <Button type="submit" disabled={signupLoading} className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50">
-                {signupLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Sign Up"}
+                {signupLoading && <Loader2 className="h-5 w-5 animate-spin" /> } Sign Up
               </Button>
             </div>
           </form>

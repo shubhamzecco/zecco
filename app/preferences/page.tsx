@@ -65,7 +65,7 @@ export const PreferenceSection = (props?: any) => {
         payload: {},
       };
       sendMessage("action", payload);
-        const payload2 = {
+      const payload2 = {
         "type": "userService",
         "action": "getPreferenceProperties",
         "payload": {
@@ -240,7 +240,7 @@ export const PreferenceSection = (props?: any) => {
                 disabled={loading}
                 className="relative w-full mx-auto mt-8 my-5 py-3.5 px-10 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50 flex items-center justify-center"
               >
-                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Update Preferences"}
+                {loading && <Loader2 className="h-5 w-5 animate-spin" />}  Update Preferences
               </button>
             </form>
           </Form>

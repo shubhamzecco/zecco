@@ -350,7 +350,7 @@ const OtpVerification = () => {
                   disabled={loading}
                   className="w-[80%] capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
                 >
-                  {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Verify OTP"}
+                  {loading && <Loader2 className="h-5 w-5 animate-spin" /> } Verify OTP
                 </Button>
               </div>
             </form>
@@ -444,7 +444,7 @@ const OtpVerification = () => {
                   disabled={prefLoading}
                   className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
                 >
-                  {prefLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Save Preferences"}
+                  {prefLoading && <Loader2 className="h-5 w-5 animate-spin" /> } Save Preferences
                 </Button>
                 <Button
                   type="button"
