@@ -70,7 +70,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
       const res: ZeccoAIResponse = await sendZeccoAIMessage(text, sessionId, user_id);
 
       const LIMIT_MARKER = "[LIMIT_REACHED]";
-      const isLimit = res.response?.includes(LIMIT_MARKER);
+      const isLimit = res?.response?.includes(LIMIT_MARKER);
       if (isLimit) {
         setIsLimitReached(true);
       }
