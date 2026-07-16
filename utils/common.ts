@@ -145,6 +145,10 @@ export const citySlug = (city_name: any) => {
   return city_name?.trim().toLowerCase().replace(/\s+/g, "-");
 };
 
+export const cityName = (slug: string) => {
+  return slug?.trim().toLowerCase().replace(/-/g, " ");
+};
+
 export const formatEuro = (amount: number | string) => {
   const formatted = new Intl.NumberFormat('es-ES', {
     minimumFractionDigits: 2,
@@ -293,14 +297,14 @@ export const formatMessageDate = (dateString: string) => {
   const options: Intl.DateTimeFormatOptions =
     date.getFullYear() === today.getFullYear()
       ? {
-          month: "short",
-          day: "numeric",
-        }
+        month: "short",
+        day: "numeric",
+      }
       : {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        };
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      };
 
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };

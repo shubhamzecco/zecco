@@ -4,9 +4,7 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import AreaCard from "@/components/cards/AreaCard";
 import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setPropertyFilter } from "@/redux/modules/main/action";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
 import debounce from 'lodash/debounce'
 
 const LIMIT = 12;
@@ -14,7 +12,6 @@ const LIMIT = 12;
 const CostadelSol = () => {
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
-  const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [hasMore, setHasMore] = useState(true);
@@ -109,10 +106,6 @@ const CostadelSol = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [page, loading, hasMore, search]);
-
-  useEffect(() => {
-    dispatch(setPropertyFilter({}));
-  }, []);
 
   useEffect(() => {
     if (!isConnected) return;

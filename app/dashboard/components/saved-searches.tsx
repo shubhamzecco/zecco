@@ -5,13 +5,11 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import CommonCard from "@/components/cards/common-card";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug, formatEuro, formatMessageDate } from "@/utils/common";
 import { Eye, Search, Trash2, View } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useDispatch } from "react-redux";
 
 type SavedSearchesProps = {
   isDashboard?: boolean;
@@ -22,7 +20,6 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const handleDelete = (id: string) => {
     sendMessage("action", {
@@ -95,8 +92,16 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
   }, [mainReducer?.property_features_list]);
 
   const handleApplySearch = (item: any) => {
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(item?.cities)}`);
-    dispatch(setPropertyFilter(item));
+    const params = new URLSearchParams();
+    if (item?.cities) params.set("city", citySlug(item.cities));
+    if (item?.categories) params.set("categories", String(item.categories));
+    if (item?.bedroomsFrom) params.set("bedroomsFrom", String(item.bedroomsFrom));
+    if (item?.bedroomsTo) params.set("bedroomsTo", String(item.bedroomsTo));
+    if (item?.priceFrom) params.set("priceFrom", String(item.priceFrom));
+    if (item?.priceTo) params.set("priceTo", String(item.priceTo));
+    if (item?.buildFrom) params.set("buildFrom", String(item.buildFrom));
+    if (item?.buildTo) params.set("buildTo", String(item.buildTo));
+    router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
   };
 
   const generateSearchTitle = (item: any) => {
@@ -286,8 +291,16 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
             <div
               key={item?._id}
               onClick={() => {
-                router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(item?.cities)}`);
-                dispatch(setPropertyFilter(item));
+                const params = new URLSearchParams();
+                if (item?.cities) params.set("city", citySlug(item.cities));
+                if (item?.categories) params.set("categories", String(item.categories));
+                if (item?.bedroomsFrom) params.set("bedroomsFrom", String(item.bedroomsFrom));
+                if (item?.bedroomsTo) params.set("bedroomsTo", String(item.bedroomsTo));
+                if (item?.priceFrom) params.set("priceFrom", String(item.priceFrom));
+                if (item?.priceTo) params.set("priceTo", String(item.priceTo));
+                if (item?.buildFrom) params.set("buildFrom", String(item.buildFrom));
+                if (item?.buildTo) params.set("buildTo", String(item.buildTo));
+                router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
               }}
               className={`flex cursor-pointer justify-between py-3.5 ${index !== searches.length - 1
                 ? "border-b border-[#F1F5F9]"

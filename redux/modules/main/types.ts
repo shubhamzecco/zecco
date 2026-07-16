@@ -211,6 +211,26 @@ export interface AIChatMessage {
   timestamp: Date;
   hasMore?: boolean;
   viewMore?: ViewMore;
+  properties?: Array<{
+    _id: string;
+    uID?: string;
+    slug?: string;
+    salePrice?: number;
+    rentalPrice?: number;
+    bedrooms?: number;
+    bathrooms?: number;
+    mtsBuild?: number;
+    locationCity?: string;
+    locationArea?: string;
+    propertyType?: { id: number; name: string };
+    isSale?: boolean;
+    isRent?: boolean;
+    imageUrl?: string | null;
+  }>;
+  suggestions?: Array<{
+    text: string;
+    searchCriteria: Record<string, any>;
+  }>;
 }
 
 // interfaces/breadcrumb.ts

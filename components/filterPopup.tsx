@@ -2,13 +2,11 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setPropertyFilter } from "@/redux/modules/main/action";
 import { citySlug, investmentType, propertyTypes } from "@/utils/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import DropdownSelect from "./ui/DropSelect";
@@ -157,23 +155,18 @@ const FilterPopup = ({
 
     const bedroomsTo = bedroomNumbers.length > 0 ? Math.max(...bedroomNumbers) : null;
 
-    dispatch(
-      setPropertyFilter({
-        categories,
-        bedroomsFrom: bedroomsFrom,
-        bedroomsTo: bedroomsTo,
-        priceFrom,
-        priceTo,
-        propertyType: propertyType || "all",
-        search:
-          location?.label ??
-          data.location?.subarea_name ??
-          null,
-      }),
-    );
+    const params = new URLSearchParams();
+    if (location?.label) params.set("city", citySlug(location.label));
+    if (data.location?.subarea_name) params.set("area", citySlug(data.location.subarea_name));
+    if (categories) params.set("categories", String(categories));
+    if (bedroomsFrom !== null) params.set("bedroomsFrom", String(bedroomsFrom));
+    if (bedroomsTo !== null) params.set("bedroomsTo", String(bedroomsTo));
+    if (priceFrom) params.set("priceFrom", String(priceFrom));
+    if (priceTo) params.set("priceTo", String(priceTo));
+
     onClose?.();
     router.replace(
-      `${App_url.link.COSTA_DEL_SOL}/${citySlug(location?.label)}`,
+      `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`,
     );
   };
 
