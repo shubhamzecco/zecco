@@ -1,7 +1,6 @@
 "use client";
 
-import React from "react";
-import CommonCard from "./cards/common-card";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,10 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { formatEuro } from "@/utils/common";
-import { Bed, Bath, Maximize, Home } from "lucide-react";
+import { Home } from "lucide-react";
 import Image from "next/image";
+import CommonCard from "./cards/common-card";
 import PropertyCard from "./cards/PropertyCard";
 
 interface MatchedPropertiesProps {
@@ -46,46 +45,6 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
             {/* Mobile cards */}
             <div className="md:hidden grid grid-cols-1 gap-4 px-4 mb-6">
               {properties.slice(0, 4).map((property: any) => (
-                // <div
-                //   key={property?._id}
-                //   className="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-gray-100 hover:shadow-md transition-shadow bg-white"
-                // >
-                //   <div className="w-full sm:w-28 h-48 sm:h-28 rounded-xl overflow-hidden bg-gray-100 shrink-0">
-                //     <Image
-                //       src={property?.propertyImages?.[0]?.url || "/placeholder.svg"}
-                //       alt={property?.title || "Property"}
-                //       width={112}
-                //       height={112}
-                //       className="w-full h-full object-cover"
-                //     />
-                //   </div>
-                //   <div className="flex flex-col justify-between flex-1 min-w-0">
-                //     <div>
-                //       <h3 className="font-manrope font-bold text-sm text-[#0F172A] truncate">
-                //         {property?.title || `${property?.bedrooms || ""} Bedroom ${property?.itemType?.name || property?.itemCategory?.name || ""}`}
-                //       </h3>
-                //       <p className="font-manrope text-xs text-[#64748B] mt-0.5">
-                //         {property?.locationSubarea || ""}{property?.locationSubarea && property?.locationArea ? ", " : ""}{property?.locationArea || ""}{(property?.locationSubarea || property?.locationArea) && property?.locationCity ? ", " : ""}{property?.locationCity || ""}
-                //       </p>
-                //     </div>
-                //     <div className="flex items-center justify-between mt-2">
-                //       <span className="font-manrope font-bold text-sm text-[#2F80FF]">
-                //         {formatEuro(property?.salePrice || property?.price || 0)}
-                //       </span>
-                //       <div className="flex items-center gap-3 text-[#64748B] text-xs font-manrope">
-                //         <span className="flex items-center gap-1">
-                //           <Bed size={14} /> {property?.bedrooms || 0}
-                //         </span>
-                //         <span className="flex items-center gap-1">
-                //           <Bath size={14} /> {property?.bathrooms || 0}
-                //         </span>
-                //         <span className="flex items-center gap-1">
-                //           <Maximize size={14} /> {property?.buildSize || 0}m²
-                //         </span>
-                //       </div>
-                //     </div>
-                //   </div>
-                // </div>
                 <PropertyCard
                   property={property}
                   key={property?._id}
@@ -144,7 +103,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                         {property?.bathrooms || 0}
                       </TableCell>
                       <TableCell className="text-center font-black font-manrope text-sm text-[#0F172A]">
-                        {property?.buildSize || 0} m²
+                        {property?.mtsBuild || 0} m²
                       </TableCell>
                       <TableCell className="text-right pr-8">
                         <Button size="sm" className="relative w-fit mx-auto py-3.5 px-3 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50">
