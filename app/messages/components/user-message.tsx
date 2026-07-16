@@ -397,7 +397,7 @@ const UserMessage = ({
 
             <button
               onClick={handleSend}
-              className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] flex items-center justify-center text-white transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+              className="w-10 h-10 -mr-1.5 rounded-xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] flex items-center justify-center text-white transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
               // style={{
               //   background:
               //     message.trim()

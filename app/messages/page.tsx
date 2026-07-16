@@ -72,7 +72,7 @@ const MessagePage = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
         <section className="h-full">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0]">
             <div className="hidden md:grid grid-cols-[0.6fr_1.2fr] gap-3">
               <UserList
                 selectedUser={selectedUser}
