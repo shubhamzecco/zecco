@@ -369,7 +369,7 @@ const Page = () => {
             {loading ? (
               <div
                 ref={gridRef}
-                className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+                className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
               >
                 {Array.from({ length: 9 }).map((_, i) => (
                   <PropertyCardSkeleton key={i} />
@@ -378,7 +378,7 @@ const Page = () => {
             ) : properties?.length > 0 ? (
               <div
                 ref={gridRef}
-                className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+                className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
               >
                 {properties?.map((p) => (
                   <PropertyCard key={p._id} property={p} {...p} />

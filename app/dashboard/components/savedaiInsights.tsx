@@ -38,7 +38,7 @@ const AiInsights = () => {
                     <Image
                       src={
                         item?.property?.propertyImages?.[0]?.url
-                          ? item?.property.propertyImages[0]?.url
+                          ? item?.property?.propertyImages?.[0]?.url
                           : ""
                       }
                       alt="AI Insights"

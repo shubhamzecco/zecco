@@ -74,7 +74,7 @@ export default function PackagesModal({
         if (response?.status === 200) {
           if (response?.success) {
             if (typeof window !== "undefined") {
-              window.location.href = response.data.checkoutUrl;
+              window.location.href = response?.data?.checkoutUrl;
             }
           }
         } else {

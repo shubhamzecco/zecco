@@ -71,7 +71,7 @@ export default function PropertyDetailClient() {
   useEffect(() => {
     if (
       mainReducer?.ai_insight &&
-      Object.keys(mainReducer?.ai_insight).length > 0
+      Object.keys(mainReducer?.ai_insight || {}).length > 0
     ) {
       setStep("complete");
       setIsCompleted(true);

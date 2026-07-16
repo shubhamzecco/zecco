@@ -51,7 +51,7 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
   const propertyCategoryMap = useMemo(() => {
     if (!mainReducer?.property_type_list) return {} as Record<number, string>;
 
-    return mainReducer.property_type_list.reduce(
+    return mainReducer?.property_type_list?.reduce(
       (acc, item) => {
         if (!item?.is_subtype) {
           acc[item?.id] = item?.name;
@@ -66,7 +66,7 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
     if (!mainReducer?.property_subtype_list)
       return {} as Record<number, string>;
 
-    return mainReducer.property_subtype_list.reduce(
+    return mainReducer?.property_subtype_list?.reduce(
       (acc, item) => {
         if (item?.is_subtype) {
           acc[item?.id] = item?.name;

@@ -26,7 +26,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         </RouteGuard>
         {mounted && (
           <ToastContainer
-            position="top-right"
+            position="top-center"
             autoClose={3000}
             hideProgressBar={false}
             newestOnTop={false}
@@ -36,6 +36,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
             draggable
             pauseOnHover
             theme="light"
+            toastClassName="custom-toast-body"
+            className="custom-toast-container"
+            progressClassName="custom-toast-progress"
           />
         )}
       </WebSocketProvider>

@@ -77,7 +77,7 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
       );
 
       if (response?.status === 200 && response?.success) {
-        window.location.href = response.data.checkoutUrl;
+        window.location.href = response?.data?.checkoutUrl;
       }
     } catch (error) {
       // handle/log error so loading state still clears cleanly

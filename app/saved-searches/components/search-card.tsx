@@ -13,7 +13,7 @@ interface SavedSearchCardProps {
 export default function SavedSearchCard({ item, title, onApplySearch, handleDelete }: SavedSearchCardProps) {
     const chips: string[] = [];
 
-    if (item?.city?.name) chips.push(item.city.name);
+    if (item?.city?.name) chips.push(item?.city?.name);
 
     if (item?.priceFrom || item?.priceTo) {
         chips.push(
@@ -31,11 +31,11 @@ export default function SavedSearchCard({ item, title, onApplySearch, handleDele
         chips.push(...item.types);
     }
 
-    if (item.forSale) chips.push("For Sale");
+    if (item?.forSale) chips.push("For Sale");
 
-    if (item.forRent) chips.push("For Rent");
+    if (item?.forRent) chips.push("For Rent");
 
-    if (item.isNewDev) chips.push("New Development");
+    if (item?.isNewDev) chips.push("New Development");
 
     return (
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">

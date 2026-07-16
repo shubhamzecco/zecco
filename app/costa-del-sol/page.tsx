@@ -148,7 +148,7 @@ const CostadelSol = () => {
       filteredLocations={mainReducer?.location_list_without_limit?.data || []}
     >
       <div className="px-4 sm:px-6 lg:mx-7 lg:px-8 lg:pb-10">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {allAreas?.map((area) => (
             <div key={area?._id} className="w-full flex-shrink-0">
               <AreaCard {...area} />

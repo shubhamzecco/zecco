@@ -127,29 +127,29 @@ export const PreferenceSection = (props?: any) => {
       location: user_data?.user?.preferences?.locationId,
 
       category: Array.isArray(user_data?.user?.preferences?.category)
-        ? user_data.user.preferences.category
+        ? user_data?.user?.preferences?.category
         : user_data?.user?.preferences?.category != null
-          ? [user_data.user.preferences.category]
+          ? [user_data?.user?.preferences?.category]
           : [],
 
       budget: user_data?.user?.preferences?.budget ?? "",
 
       bedrooms: Array.isArray(user_data?.user?.preferences?.bedrooms)
-        ? user_data.user.preferences.bedrooms.map(String)
+        ? user_data?.user?.preferences?.bedrooms.map(String)
         : user_data?.user?.preferences?.bedrooms != null
-          ? [String(user_data.user.preferences.bedrooms)]
+          ? [String(user_data?.user?.preferences?.bedrooms)]
           : [],
 
       investmentType: Array.isArray(user_data?.user?.preferences?.investmentType)
-        ? user_data.user.preferences.investmentType
+        ? user_data?.user?.preferences?.investmentType
         : user_data?.user?.preferences?.investmentType
-          ? [user_data.user.preferences.investmentType]
+          ? [user_data?.user?.preferences?.investmentType]
           : [],
 
       types: Array.isArray(user_data?.user?.preferences?.types)
-        ? user_data.user.preferences.types
+        ? user_data?.user?.preferences?.types
         : user_data?.user?.preferences?.types
-          ? [user_data.user.preferences.types]
+          ? [user_data?.user?.preferences?.types]
           : [],
     });
   }, [user_data, preferenceForm]);
