@@ -1,13 +1,13 @@
 "use client";
 
 import { useWebSocket } from "@/api/socket/WebSocketContext";
-import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import {
   setLoginPopup,
   setUpdatePropertyLike,
 } from "@/redux/modules/main/action";
 import { IProperty } from "@/redux/modules/main/types";
+import { formatEuro } from "@/utils/common";
 import {
   Bath,
   BedSingle,
@@ -24,7 +24,6 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
-import { citySlug, formatEuro } from "@/utils/common";
 
 interface PropertyCardProps {
   featured?: boolean;
@@ -33,11 +32,13 @@ interface PropertyCardProps {
   property: IProperty;
   onLikeToggle?: () => void;
   onNavigate?: (property: IProperty) => void;
+  type?: string
 }
 const PropertyCard = ({
   aiInsights = false,
   property,
   onNavigate,
+  type
 }: PropertyCardProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -78,11 +79,11 @@ const PropertyCard = ({
   const currentPath = window.location.pathname;
   const searchParams = window.location.search;
 
-  const propertyDetailUrl = `${currentPath === "/"
-      ? "/zecco-favorites"
-      : currentPath.replace(/\/$/, "")
+  const propertyDetailUrl = `${(currentPath === "/" || type === "zecco-favorites")
+    ? "/zecco-favorites"
+    : currentPath.replace(/\/$/, "")
     }/${propertyIdentifier}${searchParams}`;
-    
+
 
   const handleNavigate = () => {
     router.push(propertyDetailUrl);
