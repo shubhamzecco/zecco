@@ -92,7 +92,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                         </p>
                       </TableCell>
                       <TableCell>
-                        <span className="font-manrope font-bold text-sm text-[#2F80FF]">
+                        <span className="font-manrope font-bold text-sm text-[#2F80FF] whitespace-nowrap">
                           {formatEuro(property?.salePrice || property?.price || 0)}
                         </span>
                       </TableCell>
