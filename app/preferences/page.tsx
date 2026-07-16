@@ -1,25 +1,21 @@
 "use client";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import CommonCard from "@/components/cards/common-card";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
+import MatchedProperties from "@/components/matched-properties";
 import DropdownSelect from "@/components/ui/DropSelect";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel
+  Form
 } from "@/components/ui/form";
 import { MultiSelectButtonGroup } from "@/components/ui/MultiselectButton";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { bedroomRanges, investmentType, priceRanges, propertyTypes } from "@/utils/common";
 import { preferenceSchema } from "@/utils/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { Loader2 } from "lucide-react";
-import CommonCard from "@/components/cards/common-card";
-import MatchedProperties from "@/components/matched-properties";
 
 
 export const PreferenceSection = (props?: any) => {
