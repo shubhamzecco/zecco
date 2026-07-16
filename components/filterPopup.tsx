@@ -2,16 +2,15 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { citySlug, investmentType, propertyTypes } from "@/utils/common";
+import { citySlug } from "@/utils/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import DropdownSelect from "./ui/DropSelect";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 import { MultiSelectButtonGroup } from "./ui/MultiselectButton";
-import { Loader2 } from "lucide-react";
 
 const preferenceSchema = z.object({
   location: z.any().optional(),
@@ -36,7 +35,6 @@ const FilterPopup = ({
   const [searchDropdown, setSearchDropdown] = useState(false);
   const [location, setLocation] = useState<any>();
   const [propertyTypeDropdown, setPropertyTypeDropdown] = useState(false);
-  const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {
@@ -70,12 +68,6 @@ const FilterPopup = ({
 
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  const searchedLocations = searchValue.trim()
-    ? mainReducer?.all_location_list?.filter((item: any) =>
-      item?.name?.toLowerCase()?.startsWith(searchValue.toLowerCase()),
-    )
-    : [];
 
   const priceRanges = [
     {
