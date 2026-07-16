@@ -339,7 +339,7 @@ const UserForm = () => {
   };
 
   return (
-    <section className="flex flex-col gap-7 mb-10">
+    <section className="flex max-2xl:flex-col 2xl:grid grid-cols-[1.4fr_0.6fr] gap-7 mb-10">
 
       <CommonCard heading="Personal Information" description="Update your photo and personal details.">
         <div
