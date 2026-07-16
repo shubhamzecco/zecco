@@ -180,7 +180,7 @@ export default function PackagesModal({
         <div className="flex gap-3 border-t px-4 py-4">
           <button
             onClick={() => {
-              App_url.link.INITIAL_URL
+             router.push( App_url.link.INITIAL_URL)
               onClose?.()
             }}
             className="flex-1 font-circular_std rounded-lg bg-[#000037] px-4 py-2.5 text-sm font-medium text-white"
