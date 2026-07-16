@@ -203,10 +203,10 @@ const AccountPackagePage = () => {
                     ].sort((a: any, b: any) => {
                       const dateA = a?.paidAt
                         ? new Date(a.paidAt).getTime()
-                        : new Date(a.failedAt).getTime();
+                        : a?.failedAt ? new Date(a.failedAt).getTime() : 0;
                       const dateB = b?.paidAt
                         ? new Date(b.paidAt).getTime()
-                        : new Date(b.failedAt).getTime();
+                        : b?.failedAt ? new Date(b.failedAt).getTime() : 0;
                       return dateB - dateA;
                     });
                     const paidPackages = sortedPackages.filter(
@@ -281,10 +281,10 @@ const AccountPackagePage = () => {
               ].sort((a: any, b: any) => {
                 const dateA = a?.paidAt
                   ? new Date(a.paidAt).getTime()
-                  : new Date(a.failedAt).getTime();
+                  : a?.failedAt ? new Date(a.failedAt).getTime() : 0;
                 const dateB = b?.paidAt
                   ? new Date(b.paidAt).getTime()
-                  : new Date(b.failedAt).getTime();
+                  : b?.failedAt ? new Date(b.failedAt).getTime() : 0;
                 return dateB - dateA;
               });
               const paidPackages = sortedPackages.filter(

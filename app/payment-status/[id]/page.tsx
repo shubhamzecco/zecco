@@ -21,7 +21,7 @@ const PaymentSuccess = () => {
       // true,
     )?.then(async (response: any) => {
       if (response?.status === 200) {
-        if (response.success) {
+        if (response?.success) {
           // window.location.href = response.data.checkoutUrl;
           setPaymentData(response);
         }

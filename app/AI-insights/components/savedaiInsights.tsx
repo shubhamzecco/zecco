@@ -56,7 +56,7 @@ const SavedAiInsights = () => {
       </h2>
       <div className="flex flex-col gap-6 overflow-y-scroll max-h-[50vh]">
         {(mainReducer?.stored_aiInsight?.data?.length ?? 0) > 0 ? (
-          mainReducer?.stored_aiInsight?.data.map(
+          mainReducer?.stored_aiInsight?.data?.map(
             (item: any, index: number) => (
               <div
                 onClick={() => handlePropertyNavigation(item?.property, item?.data)}

@@ -122,7 +122,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
                     name={user_data?.user?.first_name ?? ""}
                     avatar={
                       user_data?.user?.profile_image
-                        ? URL + user_data.user.profile_image
+                        ? URL + user_data?.user?.profile_image
                         : App_url.image.profile
                     }
                     onNavigate={(path) => router.push(path)}
