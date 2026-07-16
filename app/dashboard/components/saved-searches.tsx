@@ -284,8 +284,15 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
     // </section>
 
     <CommonCard heading="Saved Searches">
-      <div className="mt-2">
-        {searches?.map((item: any, index: number) => {
+      {!searches || searches.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-[280px] w-full">
+          <Search size={40} className="text-gray-300 mb-3" />
+          <p className="text-sm font-semibold text-gray-400">No saved searches found</p>
+          <p className="text-xs text-gray-300 mt-1">Your saved searches will appear here</p>
+        </div>
+      ) : (
+        <div className="mt-2">
+          {searches?.map((item: any, index: number) => {
           const title = generateSearchTitle(item);
           return (
             <div
@@ -345,11 +352,14 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
             </div>
           )
         })}
-      </div>
+        </div>
+      )}
 
-      <button onClick={() => router.push(App_url.link.SAVED_SEARCHES)} className="mt-4 text-[13px] font-semibold text-[#2563EB] transition hover:translate-x-1">
-        Manage Searches →
-      </button>
+      {searches && searches.length > 0 && (
+        <button onClick={() => router.push(App_url.link.SAVED_SEARCHES)} className="mt-4 text-[13px] font-semibold text-[#2563EB] transition hover:translate-x-1">
+          Manage Searches →
+        </button>
+      )}
     </CommonCard>
   );
 };

@@ -8,10 +8,18 @@ import React from 'react'
 
 const RecentSaved = ({ properties }: any) => {
     const router = useRouter()
+    const isEmpty = !properties || properties.length === 0
     return (
         <CommonCard heading='Recent Saved Properties' description='Properties you saved recently'>
-            <div className="">
-                {properties?.map((item: any, index: number) => (
+            {isEmpty ? (
+                <div className="flex flex-col items-center justify-center h-[280px] w-full">
+                    <Heart size={40} className="text-gray-300 mb-3" />
+                    <p className="text-sm font-semibold text-gray-400">No saved properties found</p>
+                    <p className="text-xs text-gray-300 mt-1">Your saved properties will appear here</p>
+                </div>
+            ) : (
+                <div className="">
+                    {properties?.map((item: any, index: number) => (
                     <div
                         key={item.id}
                         onClick={() => router.push(`${App_url.link.PROPERTY_DETAILS}/${item?._id}`)}
@@ -69,11 +77,14 @@ const RecentSaved = ({ properties }: any) => {
                         </div>
                     </div>
                 ))}
-            </div>
+                </div>
+            )}
 
-            <button onClick={() => router.push(App_url.link.FAVORITES)} className="mt-4 text-[13px] font-semibold text-[#2563EB] transition hover:translate-x-1">
-                View All Saved →
-            </button>
+            {!isEmpty && (
+                <button onClick={() => router.push(App_url.link.FAVORITES)} className="mt-4 text-[13px] font-semibold text-[#2563EB] transition hover:translate-x-1">
+                    View All Saved →
+                </button>
+            )}
         </CommonCard>
     )
 }

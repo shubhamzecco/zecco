@@ -8,6 +8,7 @@ import { citySlug } from "@/utils/common";
 import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
+import { Search } from "lucide-react";
 import SavedSearchCard from "./components/search-card";
 
 const SavedSearches = () => {
@@ -154,65 +155,27 @@ const SavedSearches = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
 
-      <div className="space-y-4 overflow-y-auto max-h-[100vh] scrollbar-hide bg-slate-50">
-        {mainReducer?.saved_searches?.data?.map((item: any) => {
-          const title = generateSearchTitle(item);
-
-          return (
-            // <div
-            //   key={item?._id}
-            //   className="rounded-lg flex gap-4 py-4 bg-white px-5 shadow-sm transition-all duration-300 hover:shadow-lg"
-            // >
-            //   {item?.city && (
-            //     <div className="shrink-0">
-            //       <img
-            //         src={`${URL}${item?.city?.image}`}
-            //         alt={item?.city?.name}
-            //         className="h-16 w-16 rounded-2xl object-cover border border-gray-200"
-            //       />
-            //     </div>
-            //   )}
-
-            //   <div className="flex-1 min-w-0">
-            //     <div className="font-semibold text-sm text-black leading-7 break-words">
-            //       {title}
-
-            //       <div className="flex justify-end items-center gap-3 ml-auto shrink-0">
-            //         <button
-            //           onClick={() => handleApplySearch(item)}
-            //           className="rounded-2xl border border-blue-200 p-2 text-blue-600 transition-all hover:bg-blue-50"
-            //           aria-label="view"
-            //         >
-            //           <Eye size={15} />
-            //         </button>
-
-            //         <button
-            //           onClick={() => handleDelete(item?._id)}
-            //           className="rounded-2xl border border-red-200 p-2 text-red-600 transition-all hover:bg-red-50"
-            //           aria-label="delete"
-            //         >
-            //           <Trash2 size={15} />
-            //         </button>
-            //       </div>
-            //     </div>
-            //   </div>
-            // </div>
-            <div key={item?.id} >
-              <SavedSearchCard title={title} item={item} handleDelete={handleDelete}  onApplySearch={handleApplySearch} />
-            </div>
-          );
-        })}
-      </div>
-
-      {mainReducer?.saved_searches?.data?.length === 0 && (
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="mt-5 text-2xl font-bold text-gray-800">
+      {!mainReducer?.saved_searches?.data || mainReducer?.saved_searches?.data?.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-[400px] w-full">
+          <Search size={40} className="text-gray-300 mb-3" />
+          <h2 className="text-lg font-bold text-gray-800">
             No Saved Searches
           </h2>
-
           <p className="mt-2 text-center text-sm text-gray-500">
-            Your saved filters will appear here
+            Your saved searches will appear here
           </p>
+        </div>
+      ) : (
+        <div className="space-y-4 overflow-y-auto max-h-[100vh] scrollbar-hide bg-slate-50">
+          {mainReducer?.saved_searches?.data?.map((item: any) => {
+            const title = generateSearchTitle(item);
+
+            return (
+              <div key={item?.id} >
+                <SavedSearchCard title={title} item={item} handleDelete={handleDelete}  onApplySearch={handleApplySearch} />
+              </div>
+            );
+          })}
         </div>
       )}
 

@@ -202,10 +202,10 @@ export const propertyTypes = [
     label: "Existing Property",
     value: "existing_property",
   },
-  {
-    label: "Rental Property",
-    value: "rental_property",
-  },
+  // {
+  //   label: "Rental Property",
+  //   value: "rental_property",
+  // },
 ];
 
 export const bedroomRanges = [
