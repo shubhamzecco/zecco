@@ -106,6 +106,17 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         shimmer: "shimmer 2s infinite",
       },
+      screens: {
+        xs: "360px",
+        sm: "640px",
+        md: "768px",
+        lg: "1280px",
+        xl: "1400px",
+        "2xl": "1536px", // Large desktops
+        "3xl": "1680px", // Large laptops / small 2K monitors
+        "4xl": "1920px", // Full HD monitors
+        "5xl": "2560px", // 2K / QHD monitors
+      },
 
       fontFamily: {
         inter: ["var(--font-inter)", "sans-serif"],
