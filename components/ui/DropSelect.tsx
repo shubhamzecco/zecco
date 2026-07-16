@@ -247,7 +247,6 @@ const DropdownSelect: React.FC<DropdownProps> = ({
             <CreatableSelect
               classNamePrefix="select-form"
               isDisabled={disabled}
-              // isMulti={multiselect}
               value={selectedValue}
               onChange={(selectedOption, actionMeta) =>
                 handleSelectChange(selectedOption, actionMeta, field)
@@ -268,7 +267,6 @@ const DropdownSelect: React.FC<DropdownProps> = ({
               isSearchable
               components={{ IndicatorSeparator: null }}
               menuShouldScrollIntoView={false}
-              // menuIsOpen={menuIsOpen}
               menuPosition="fixed"
               classNames={classNames}
             />
@@ -298,19 +296,11 @@ const DropdownSelect: React.FC<DropdownProps> = ({
               components={{ IndicatorSeparator: null }}
               isSearchable
               menuShouldScrollIntoView={false}
-              // menuIsOpen={menuIsOpen}
               menuPosition="fixed"
               isClearable={isClearable}
             />
           )}
         </div>
-        {errors && (
-          <div className={`flex items-center mt-1 ${errorclassname}`}>
-            <p className="text-xs mx-1 text-red-600  text-left">
-              {errors.message}
-            </p>
-          </div>
-        )}
       </div>
     );
   };
@@ -332,7 +322,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
         </label>
       )}
       <div
-        className={`flex  ${inline ? 'items-center space-x-2' : 'flex flex-col'}  ${formClassName} border-[1px] ${isRounded ? 'rounded-full' : ' rounded-md'}   overflow-hidden h-11  ${errors ? 'border-red-600' : `focus-within:border-[#C8C9C9] border-[#C8C9C9]`}`}
+        className={`flex  ${inline ? 'items-center space-x-2' : 'flex flex-col'}  ${formClassName} border-[1px] ${isRounded ? 'rounded-full' : ' rounded-md'}   overflow-hidden ${errors ? 'border-red-600' : `focus-within:border-[#C8C9C9] border-[#C8C9C9]`}`}
       >
         <Controller
           name={name!}
@@ -342,6 +332,13 @@ const DropdownSelect: React.FC<DropdownProps> = ({
           render={RenderSelect}
         />
       </div>
+      {errors && (
+        <div className={`flex items-center mt-1 ${errorclassname}`}>
+          <p className="text-xs mx-1 text-red-600 text-left">
+            {errors.message}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

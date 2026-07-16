@@ -39,6 +39,7 @@ export default function PropertyDetailClient() {
   const [step, setStep] = useState("intro");
   const [isCompleted, setIsCompleted] = useState(false);
   const isLoggedIn = !!user_data?.access_token;
+  const propertyDetails = mainReducer?.property_details
 
   useEffect(() => {
     if (!isConnected || !propertyId) return;
@@ -83,7 +84,7 @@ export default function PropertyDetailClient() {
     setIsCompleted(false);
     CommonApiRequest(
       "GET",
-      `${App_url.endpoint_url?.AI_INSIGHT}/${propertyId}/${user_data?.user?._id}`,
+      `${App_url.endpoint_url?.AI_INSIGHT}/${propertyDetails?._id}/${user_data?.user?._id}`,
       {},
       {},
     )?.then((response: any) => {
@@ -172,7 +173,7 @@ export default function PropertyDetailClient() {
             )}
             {step === "complete" && mainReducer?.ai_insight && (
               <AIMarketIntelligence
-              isPropertyDetail
+                isPropertyDetail
                 ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
               />
             )}

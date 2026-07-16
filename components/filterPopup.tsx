@@ -9,14 +9,30 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import DropdownSelect from "./ui/DropSelect";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { MultiSelectButtonGroup } from "./ui/MultiselectButton";
 
 const preferenceSchema = z.object({
-  location: z.any().optional(),
-  category: z.union([z.number(), z.array(z.number())]).nullable().optional(),
-  budget: z.string().nullable().optional(),
-  bedrooms: z.union([z.string(), z.array(z.string())]).nullable().optional(),
+  location: z.any().refine(
+    (val) => val !== undefined && val !== null && val !== "",
+    { message: "Please select a location" },
+  ),
+  category: z.any().refine(
+    (val) =>
+      val !== null &&
+      val !== undefined &&
+      val !== "" &&
+      !(Array.isArray(val) && val.length === 0),
+    { message: "Please select a property type" },
+  ),
+  budget: z.string().min(1, "Please select a budget range"),
+  bedrooms: z.any().refine(
+    (val) =>
+      val !== "" &&
+      val !== undefined &&
+      !(Array.isArray(val) && val.length === 0),
+    { message: "Please select at least one bedroom option" },
+  ),
 });
 
 const FilterPopup = ({
@@ -177,6 +193,8 @@ const FilterPopup = ({
       key: item?.id,
     })) || [];
 
+  console.log("preferenceForm.formState.errors::", preferenceForm.formState.errors)
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm max-md:p-3">
       <div className="w-[550px] max-sm:w-full rounded-2xl bg-white shadow-2xl overflow-hidden">
@@ -202,6 +220,7 @@ const FilterPopup = ({
                     labelClassName="font-bold"
                     isRounded
                     onSelect={(e) => setLocation(e)}
+                    errors={preferenceForm.formState.errors.location}
                   />
                   <DropdownSelect
                     label="Property Type"
@@ -212,6 +231,7 @@ const FilterPopup = ({
                     labelClassName="font-bold"
                     multiselect
                     isRounded
+                    errors={preferenceForm.formState.errors.category}
                   />
 
                   <FormField
@@ -245,6 +265,7 @@ const FilterPopup = ({
                             })}
                           </div>
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

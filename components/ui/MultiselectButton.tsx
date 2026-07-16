@@ -1,4 +1,4 @@
-import { FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
 interface Option {
     label: string;
@@ -88,6 +88,7 @@ export function MultiSelectButtonGroup({
                                 })}
                             </div>
                         </FormControl>
+                        <FormMessage />
                     </FormItem>
                 );
             }}
