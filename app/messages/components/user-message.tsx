@@ -307,7 +307,7 @@ const UserMessage = ({
                           {msg?.sender?.last_name?.[0]}
                         </div>
                       )} */}
-                      <div className="max-w-[75%]">
+                      <div className="max-w-[80%]">
                         {msg?.message && (
                           <div className="bg-[#F1F5F9] px-4 py-2.5 rounded-2xl rounded-bl-md text-sm shadow-sm border border-gray-100/80 text-[#374151] font-manrope leading-relaxed">
                             {msg?.message}
@@ -397,7 +397,7 @@ const UserMessage = ({
 
             <button
               onClick={handleSend}
-              className="w-10 h-10 rounded-xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] flex items-center justify-center text-white transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
+              className="w-10 h-10 -mr-1.5 rounded-xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] flex items-center justify-center text-white transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105"
               // style={{
               //   background:
               //     message.trim()

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import CommonCard from "./cards/common-card";
 import {
   Table,
@@ -11,23 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { formatEuro } from "@/utils/common";
+import { Bed, Bath, Maximize } from "lucide-react";
 import Image from "next/image";
 
 interface MatchedProperty {
@@ -94,50 +79,76 @@ const matchedProperties: MatchedProperty[] = [
   },
 ];
 
-const ITEMS_PER_PAGE = 5;
-
-const sortOptions = [
-  { value: "price-desc", label: "Price: High to Low" },
-  { value: "price-asc", label: "Price: Low to High" },
-  { value: "beds-desc", label: "Beds: High to Low" },
-  { value: "size-desc", label: "Size: Largest First" },
-];
-
 const MatchedProperties = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortBy, setSortBy] = useState("price-desc");
-
-  const sorted = [...matchedProperties].sort((a, b) => {
-    switch (sortBy) {
-      case "price-asc":
-        return a.price - b.price;
-      case "price-desc":
-        return b.price - a.price;
-      case "beds-desc":
-        return b.beds - a.beds;
-      case "size-desc":
-        return b.size - a.size;
-      default:
-        return 0;
-    }
-  });
-
-  const totalPages = Math.ceil(sorted.length / ITEMS_PER_PAGE);
-  const paginatedData = sorted.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
-
   return (
     <CommonCard className="!px-0">
-      <div className="px-8  gap-3 mb-2">
-        <h1 className="font-bold text-lg font-manrope text-[#0F172A]">Your Matched Properties</h1>
-        <div className="">
-          <p className="font-normal text-sm mb-4 font-manrope text-[#64748B]">Based on your preferences: <span className="text-[#2F80FF]">Costa del Sol · €1M-€2M · Villa · 3+ Beds</span></p>
-        </div>
+      <div className="px-8 gap-3 mb-2">
+        <h1 className="font-bold text-lg font-manrope text-[#0F172A]">
+          Your Matched Properties
+        </h1>
+        <p className="font-normal text-sm mb-4 font-manrope text-[#64748B]">
+          Based on your preferences:{" "}
+          <span className="text-[#2F80FF]">
+            Costa del Sol · €1M-€2M · Villa · 3+ Beds
+          </span>
+        </p>
       </div>
 
-      <div className="overflow-x-auto">
+      {/* Mobile cards */}
+      <div className="md:hidden grid grid-cols-1 gap-4 px-4 mb-6">
+        {matchedProperties.slice(0, 4).map((property) => (
+          <div
+            key={property.id}
+            className="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-gray-100 hover:shadow-md transition-shadow bg-white"
+          >
+            <div className="w-full sm:w-28 h-48 sm:h-28 rounded-xl overflow-hidden bg-gray-100 shrink-0">
+              <Image
+                src={property.image}
+                alt={property.title}
+                width={112}
+                height={112}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex flex-col justify-between flex-1 min-w-0">
+              <div>
+                <h3 className="font-manrope font-bold text-sm text-[#0F172A] truncate">
+                  {property.title}
+                </h3>
+                <p className="font-manrope text-xs text-[#64748B] mt-0.5">
+                  {property.location}
+                </p>
+              </div>
+              <div className="flex items-center justify-between mt-2">
+                <span className="font-manrope font-bold text-sm text-[#2F80FF]">
+                  {formatEuro(property.price)}
+                </span>
+                <div className="flex items-center gap-3 text-[#64748B] text-xs font-manrope">
+                  <span className="flex items-center gap-1">
+                    <Bed size={14} /> {property.beds}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Bath size={14} /> {property.baths}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Maximize size={14} /> {property.size}m²
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Mobile view more button */}
+      <div className="md:hidden px-4 pb-4">
+        <button className="w-full py-3 rounded-xl border-2 border-[#2F80FF] text-[#2F80FF] font-manrope font-bold text-sm hover:bg-[#EFF6FF] transition-colors">
+          View More Properties
+        </button>
+      </div>
+
+      {/* Tablet/Desktop table */}
+      <div className="hidden md:block overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow className="bg-[#F8FAFC] hover:bg-[#F8FAFC]">
@@ -151,7 +162,7 @@ const MatchedProperties = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.map((property) => (
+            {matchedProperties.map((property) => (
               <TableRow
                 key={property.id}
                 className="hover:bg-slate-50 transition-colors"
@@ -199,86 +210,7 @@ const MatchedProperties = () => {
           </TableBody>
         </Table>
       </div>
-
-      {
-    totalPages > 1 && (
-      <div className="mt-6">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage > 1) setCurrentPage(currentPage - 1);
-                }}
-                className={
-                  currentPage === 1
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
-              />
-            </PaginationItem>
-            {Array.from({ length: totalPages }, (_, i) => i + 1)
-              .filter((page) => {
-                if (totalPages <= 5) return true;
-                if (page === 1 || page === totalPages) return true;
-                if (Math.abs(page - currentPage) <= 1) return true;
-                return false;
-              })
-              .reduce<(number | "ellipsis")[]>((acc, page, idx, arr) => {
-                if (idx > 0 && page - (arr[idx - 1] as number) > 1) {
-                  acc.push("ellipsis");
-                }
-                acc.push(page);
-                return acc;
-              }, [])
-              .map((item, idx) =>
-                item === "ellipsis" ? (
-                  <PaginationItem key={`ellipsis-${idx}`}>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                ) : (
-                  <PaginationItem key={item}>
-                    <PaginationLink
-                      href="#"
-                      isActive={currentPage === item}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setCurrentPage(item);
-                      }}
-                      className={
-                        currentPage === item
-                          ? "bg-[#2F80FF] text-white hover:bg-[#2F80FF] hover:text-white border-[#2F80FF]"
-                          : ""
-                      }
-                    >
-                      {item}
-                    </PaginationLink>
-                  </PaginationItem>
-                )
-              )}
-            <PaginationItem>
-              <PaginationNext
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  if (currentPage < totalPages)
-                    setCurrentPage(currentPage + 1);
-                }}
-                className={
-                  currentPage === totalPages
-                    ? "pointer-events-none opacity-50"
-                    : ""
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
-    )
-  }
-    </CommonCard >
+    </CommonCard>
   );
 };
 

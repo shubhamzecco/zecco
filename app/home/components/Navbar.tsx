@@ -116,14 +116,42 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* Mobile Button */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden max-md:flex justify-end items-center p-2 rounded-lg text-gray-700"
-              aria-label="close"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            {/* Mobile Buttons */}
+            <div className="lg:hidden flex items-center justify-end gap-2">
+              {mounted && user_data?.user && (
+                <ImageDropdown
+                  name={user_data?.user?.first_name}
+                  avatar={App_url.image.image_1}
+                  onNavigate={(path) => {
+                    router.push(path);
+                    setIsOpen(false);
+                  }}
+                  items={[
+                    { label: "Profile", path: App_url?.link.PROFILE },
+                    { label: "Dashboard", path: App_url.link.DASHBOARD },
+                    {
+                      label: "Logout",
+                      onClick: () => {
+                        dispatch(setLogout());
+                        localStorage.clear();
+                        dispatch(setAuthData({} as any));
+                        dispatch(setReduxClear());
+                        router.push(App_url.link.INITIAL_URL);
+                        toast.success("Logout successfully");
+                        setIsOpen(false);
+                      },
+                    },
+                  ]}
+                />
+              )}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center p-2 rounded-lg text-gray-700"
+                aria-label="close"
+              >
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -148,11 +176,7 @@ export default function Navbar() {
         ))}
 
         {user_data?.user ? (
-          <div className="border-t px-5 py-3 space-y-2">
-            <Link href={App_url.link.DASHBOARD} className="block text-gray-700">
-              Dashboard
-            </Link>
-          </div>
+          ''
         ) : (
           <div className="border-t px-5 py-3 space-y-2">
             <Link href={App_url.link.SIGN_IN} className="block text-gray-700">

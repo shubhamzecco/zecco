@@ -79,10 +79,10 @@ export default function AIProcessingCard({
 
         <div className="w-full mx-auto bg-white/90 rounded-2xl p-4 lg:p-14 border border-gray-100">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-sm font-semibold tracking-wide text-blue-600 uppercase">
+            <span className="text-xs sm:text-sm font-semibold tracking-wide text-blue-600 uppercase">
               Processing...
             </span>
-            <span className="text-xl font-manrope font-semibold text-gray-900">
+            <span className="text-xs sm:text-xl font-manrope font-semibold text-gray-900">
               {Math.round(progress)}%
             </span>
           </div>
@@ -165,10 +165,10 @@ export default function AIProcessingCard({
         <div className="w-full mx-auto bg-white/90 rounded-2xl p-4 lg:p-14 border border-gray-100 mt-4">
           <div className="border border-[#E6EBF4] bg-[#E6EBF44A] p-5 rounded-2xl">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-manrope font-semibold tracking-wide text-blue-600 uppercase">
+              <span className="text-xs sm:text-sm font-manrope font-semibold tracking-wide text-blue-600 uppercase">
                 Processing...
               </span>
-              <span className="text-xl font-manrope font-semibold text-gray-900">
+              <span className="text-xs sm:text-xl font-manrope font-semibold text-gray-900">
                 {Math.round(progress)}% Complete
               </span>
             </div>
@@ -181,8 +181,8 @@ export default function AIProcessingCard({
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-7 mt-10 border">
-            <p className="text-base flex items-center gap-2 w-full border-b pb-2 font-black font-manrope tracking-widest text-[#0F172A]  mb-4">
+          <div className="bg-white rounded-xl p-7 mt-10 border  !border-[#2F80FF]">
+            <p className="text-base flex items-center gap-2 w-full border-b border-[#2F80FF] pb-2 font-black font-manrope tracking-widest text-[#0F172A]  mb-4">
              <Sparkle size={20} className="text-[#2F80FF]"/> AI ANALYSIS STEPS
             </p>
 

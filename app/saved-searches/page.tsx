@@ -1,16 +1,13 @@
 "use client";
 
-import { URL } from "@/api/rest/fetchData";
-import Head from "next/head";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { citySlug, formatEuro } from "@/utils/common";
-import { Eye, Trash2 } from "lucide-react";
+import { citySlug } from "@/utils/common";
+import Head from "next/head";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { useDispatch } from "react-redux";
 import SavedSearchCard from "./components/search-card";
 
 const SavedSearches = () => {

@@ -60,7 +60,7 @@ const FavoritesPage = () => {
                 {Array.from({ length: 6 }).map((_, i) => <PropertyCardSkeleton key={i} />)}
               </div>
             ) : mainReducer?.favorite_property_list?.data?.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-scroll max-h-[130vh] pb-3 scrollbar-hide">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6 overflow-y-scroll max-h-[130vh] pb-3 scrollbar-hide">
                 {mainReducer?.favorite_property_list?.data?.map((property) => (
                   <PropertyCard
                     property={property}
