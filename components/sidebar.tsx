@@ -2,17 +2,17 @@
 
 import { URL } from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
+import { setLogout } from "@/redux/actions/action";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setAuthData } from "@/redux/modules/common/user_data/action";
+import { setReduxClear } from "@/redux/modules/main/action";
 import {
-  Archive,
   CreditCard,
   Heart,
   House,
-  LayoutGrid,
   LogOut,
   Logs,
   MessageCircle,
-  MessagesSquare,
   Search,
   Sparkles,
   User
@@ -20,11 +20,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import ProfileAvatar from "./profile";
 import { useDispatch } from "react-redux";
-import { setLogout } from "@/redux/actions/action";
-import { setAuthData } from "@/redux/modules/common/user_data/action";
-import { setReduxClear } from "@/redux/modules/main/action";
+import ProfileAvatar from "./profile";
 
 const menuItems = [
   { name: "Dashboard", href: App_url.link.DASHBOARD, icon: House },
