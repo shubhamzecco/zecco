@@ -14,11 +14,9 @@ import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { citySlug } from "@/utils/common";
-import { useDispatch } from "react-redux";
 
 const PropertySearchBar = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const propertyTypes = mainReducer?.property_type_list || [];
