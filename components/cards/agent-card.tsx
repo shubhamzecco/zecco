@@ -10,7 +10,7 @@ function AgentCard() {
     const { user_data } = usePosterReducers();
     return (
         <>
-            <div className="bg-white rounded-2xl p-4 text-center">
+            <div className="bg-white rounded-2xl p-4 text-center shadow-xl">
                 <div className="flex items-start gap-1">
                     <div className="relative overflow-hidden border-2 border-white rounded-full w-16 h-16 mb-1">
                         {user_data?.user?.agent?.agent?.profile_image ? (

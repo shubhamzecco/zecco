@@ -70,7 +70,7 @@ const AIInsights = () => {
 
       <CommonCard>
         <div className="flex justify-center">
-          <div className="flex flex-col items-center w-full max-w-2xl">
+          <div className="flex flex-col items-center w-full max-w-2xl px-6 lg:px-0">
             {/* Circles + Lines */}
             <div className="flex items-center w-full">
               <CircleStep step={1} activeStep={activeStep} />

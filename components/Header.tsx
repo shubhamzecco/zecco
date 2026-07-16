@@ -115,38 +115,41 @@ export default function Header({ onProfileClick }: HeaderProps) {
               </div>
             )}
 
-            <div className="flex items-center max-lg:justify-end  gap-3">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden max-md:flex justify-end items-center p-2 rounded-lg text-gray-700"
-                aria-label="menu"
-              >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-
-              {/* {
-              (pathname === App_url.link.DASHBOARD || pathname === App_url.link.FAVORITES || pathname === App_url.link.ACCOUNT_PACKAGE
-                || pathname === App_url.link.SAVED_SEARCHES || pathname === App_url.link.MESSAGE || pathname === App_url.link.AI_INSIGHTS) && ( */}
+            <div className="flex items-center max-lg:justify-end gap-3">
               {user_data?.access_token && (
-                <button
-                  onClick={onProfileClick}
-                  className="lg:hidden w-10 h-10 rounded-full overflow-hidden border"
-                  aria-label="profile"
-                >
-                  <Image
-                    src={
+                <div className="lg:hidden">
+                  <ImageDropdown
+                    name={user_data?.user?.first_name ?? ""}
+                    avatar={
                       user_data?.user?.profile_image
                         ? URL + user_data.user.profile_image
                         : App_url.image.profile
                     }
-                    alt="Profile"
-                    width={40}
-                    height={40}
-                    className="rounded-full object-cover w-12 h-12"
+                    onNavigate={(path) => router.push(path)}
+                    items={[
+                      { label: "Profile", path: App_url?.link.PROFILE },
+                      { label: "Dashboard", path: App_url.link.DASHBOARD },
+                      {
+                        label: "Logout",
+                        onClick: () => {
+                          dispatch(setLogout());
+                          localStorage.clear();
+                          dispatch(setAuthData({} as any));
+                          dispatch(setReduxClear());
+                          router.push(App_url.link.INITIAL_URL);
+                        },
+                      },
+                    ]}
                   />
-                </button>
+                </div>
               )}
-              {/* )} */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="lg:hidden flex items-center p-2 rounded-lg text-gray-700"
+                aria-label="menu"
+              >
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
             </div>
           </div>
         </div>

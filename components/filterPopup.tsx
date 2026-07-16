@@ -36,7 +36,6 @@ const FilterPopup = ({
   const [searchDropdown, setSearchDropdown] = useState(false);
   const [location, setLocation] = useState<any>();
   const [propertyTypeDropdown, setPropertyTypeDropdown] = useState(false);
-  const dispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {

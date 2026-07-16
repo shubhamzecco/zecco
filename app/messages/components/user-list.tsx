@@ -49,7 +49,7 @@ const UserList: React.FC<UserListProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-full border-r bg-[#F8F9FA] overflow-hidden rounded-bl-2xl rounded-tl-2xl">
+    <div className="flex flex-col h-full border-r bg-[#F8F9FA] overflow-hidden max-lg:rounded-2xl rounded-bl-2xl rounded-tl-2xl">
       {/* Header */}
       {/* <div className="">
         <div className="relative">

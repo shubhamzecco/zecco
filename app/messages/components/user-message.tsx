@@ -307,7 +307,7 @@ const UserMessage = ({
                           {msg?.sender?.last_name?.[0]}
                         </div>
                       )} */}
-                      <div className="max-w-[75%]">
+                      <div className="max-w-[80%]">
                         {msg?.message && (
                           <div className="bg-[#F1F5F9] px-4 py-2.5 rounded-2xl rounded-bl-md text-sm shadow-sm border border-gray-100/80 text-[#374151] font-manrope leading-relaxed">
                             {msg?.message}

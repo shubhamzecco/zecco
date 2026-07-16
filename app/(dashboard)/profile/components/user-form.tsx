@@ -346,8 +346,8 @@ const UserForm = () => {
           onClick={handleCameraClick}
           className="w-full border border-dashed border-[#F3B8A3] bg-[#FFF9F6] rounded-2xl px-6 py-5 cursor-pointer hover:bg-[#FFF5F1] transition-all duration-300"
         >
-          <div className="flex items-center gap-4">
-            {/* Upload Icon */}
+          <div className="grid grid-cols-[0.4fr_1fr] sm:flex items-center gap-4">
+            
             <div className="w-12 h-12 rounded-full bg-[#FDE9DF] flex items-center justify-center border border-[#F5C7B6]">
               <User size={24} className="text-[#D89A6A]" />
             </div>

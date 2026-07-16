@@ -35,13 +35,13 @@ const DashboardPage = () => {
       <Head>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <div className="flex items-start gap-3">
-        <div className="w-[70%]">
+      <div className="lg:flex items-start gap-3  ">
+        <div className="lg:w-[70%]">
           <Greeting />
         </div>
-        <div className="w-[30%]">
+        <div className="lg:w-[30%] lg:block max-lg:mt-5 sm:grid grid-cols-2 items-stretch gap-5">
           <div>
-            <CommonCard heading="AI Concierge">
+            <CommonCard heading="AI Concierge" className="max-lg:h-full">
               <p className="bg-[#F6F8FC] p-4 mt-2 rounded-xl font-manrope text-[#64748B] font-medium text-sm">
                 Based on your preferences, I found 5 new luxury villas in Marbella matching your €2M budget.
               </p>
@@ -53,7 +53,7 @@ const DashboardPage = () => {
               </button>
             </CommonCard>
           </div>
-          <div className="mt-6">
+          <div className="lg:mt-6 max-sm:mt-5">
             {user_data?.user?.agent?.agent && (
               <AgentCard />
             )}

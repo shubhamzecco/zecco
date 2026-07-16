@@ -58,7 +58,7 @@ export default function SavedSearchCard({ item, title, onApplySearch, handleDele
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button onClick={() => onApplySearch(item)} className="h-10 rounded-xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] px-3 text-sm font-semibold text-white hover:bg-blue-700">
+                    <button onClick={() => onApplySearch(item)} className="h-10 max-sm:w-full rounded-xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] px-3 text-sm font-semibold text-white hover:bg-blue-700">
                         View Results
                     </button>
                     <button
