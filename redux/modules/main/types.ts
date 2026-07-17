@@ -127,6 +127,7 @@ export interface IChat {
   message: string;
   createdAt: string;
   updatedAt: string;
+  unread_count?:string
 }
 
 export interface ChatParticipant {

@@ -102,16 +102,18 @@ const MainLayout = ({
   ];
 
   const callLocationSelect = (data: any) => {
+    console.log("data::",data)
     dispatch(
       setPropertyFilter({
         ...mainReducer?.propertyFilter,
         cities: data?.value,
       })
     );
+    const type=data?.type || "city"
 
     const params = new URLSearchParams(window.location.search);
     params.delete("cities");
-    params.set("city", citySlug(data?.label || data?.value || ""));
+    params.set(type, citySlug(data?.label || data?.value || ""));
 
     router.push(
       `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
@@ -138,7 +140,8 @@ const MainLayout = ({
                   options={filteredLocations?.map((location) => ({
                     value: location?.name_slug,
                     label: location?.name,
-                    key: location?.id
+                    key: location?.id,
+                    type:location?.type
                   })) || []}
                   control={control}
                   name="location"

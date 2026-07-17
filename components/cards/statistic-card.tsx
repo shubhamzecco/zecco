@@ -12,18 +12,17 @@ export function StatisticCard({
     change?: string
 }) {
     return (
-        <CommonCard className="!p-4">
-            <div className="flex justify-end">
-                <div className="px-3 py-2 rounded-lg bg-[#ECFDF5] text-[#10B981] text-xs font-semibold leading-none">
+        <CommonCard className="!p-6">
+            <div className="flex justify-between items-center">
+                <h3 className={`text-base font-manrope font-medium text-[#64748B] `}>
+                    {label}
+                </h3>
+                <div className={`px-3 py-2 rounded-lg  text-xs font-semibold leading-none ${label === 'Messages' ? 'text-red-500 bg-red-100' : 'bg-[#ECFDF5] text-[#10B981]'}`}>
                     {change}
                 </div>
             </div>
             <div>
-                <h3 className="text-base font-manrope mt-2 font-medium text-[#64748B]">
-                    {label}
-                </h3>
-
-                <p className="mt-2 text-xl font-bold leading-none text-[#0F172A]">
+                <p className="mt-3 text-xl font-bold leading-none text-[#0F172A]">
                     {value}
                 </p>
             </div>
