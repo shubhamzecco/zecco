@@ -130,6 +130,8 @@ export default function PropertyDetailClient() {
     }
     : null;
 
+    console.log("mainReducer?.property_details ::: " , mainReducer?.property_details)
+
   return (
     <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={true}>
       {jsonLd && (

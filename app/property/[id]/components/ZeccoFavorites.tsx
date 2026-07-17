@@ -66,7 +66,7 @@ export default function ZeccoFavorites({ property }: PropertyInfoProps) {
       })
       .slice(0, 4);
   }, [mainReducer?.zecco_favorite?.data]);
-
+  
   return (
     <section className=" bg-white mb-20">
       <div className="">
