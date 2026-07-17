@@ -58,15 +58,25 @@ export default function ZeccoFavorites({ property }: PropertyInfoProps) {
   }, [lastEvent]);
 
   const randomFavorites = useMemo(() => {
-    return [...(mainReducer?.zecco_favorite?.data || [])]
-      .sort((a: any, b: any) => {
-        const aKey = String(a?._id || a?.id || "");
-        const bKey = String(b?._id || b?.id || "");
-        return aKey.localeCompare(bKey);
-      })
-      .slice(0, 4);
-  }, [mainReducer?.zecco_favorite?.data]);
-  
+    const currentId = String(property?._id || property?.id || "");
+    const seen = new Set<string>();
+    const unique: IProperty[] = [];
+
+    for (const item of mainReducer?.zecco_favorite?.data || []) {
+      const key = String(item?._id || item?.id || "");
+      if (key && key === currentId) continue;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      unique.push(item);
+    }
+
+    return unique.sort((a: any, b: any) => {
+      const aKey = String(a?._id || a?.id || "");
+      const bKey = String(b?._id || b?.id || "");
+      return aKey.localeCompare(bKey);
+    }).slice(0, 4);
+  }, [mainReducer?.zecco_favorite?.data, property?._id, property?.id]);
+
   return (
     <section className=" bg-white mb-20">
       <div className="">
@@ -91,7 +101,7 @@ export default function ZeccoFavorites({ property }: PropertyInfoProps) {
         ) : randomFavorites?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {randomFavorites?.map((property) => (
-              <PropertyCard key={property?._id} {...property} property={property} type={"zecco-favorites"} />
+              <PropertyCard key={property?._id} {...property} property={property} />
             ))}
           </div>
         ) : (
