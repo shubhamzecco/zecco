@@ -323,7 +323,6 @@ const Page = () => {
     [urlFilters],
   );
 
-  console.log("urlFilters ::: " , urlFilters)
 
   return (
     <MainLayout
