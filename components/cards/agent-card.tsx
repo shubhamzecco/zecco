@@ -3,11 +3,41 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ProfileAvatar from "../profile";
 import { App_url } from "@/constant/static";
-import { Globe, Phone } from "lucide-react";
+import { Globe, Mail, Phone } from "lucide-react";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { useEffect } from "react";
+import Link from "next/link";
 
 function AgentCard() {
     const router = useRouter();
     const { user_data } = usePosterReducers();
+    const { sendMessage, lastEvent } = useWebSocket()
+
+    // const handleConnect = () => {
+    //     sendMessage("action", {
+    //         type: "chatService",
+    //         action: "create",
+    //         payload: {
+    //             participants: user_data?.user?.agent?.agent?._id,
+    //             property_id: null,
+    //             message: null,
+    //         },
+    //     });
+    // }
+
+
+    // useEffect(() => {
+    //     if (
+    //         lastEvent?.data?.status &&
+    //         lastEvent?.data?.request?.type === "chatService" &&
+    //         lastEvent?.data?.request?.action === "create"
+    //     ) {
+    //         router.push(`${App_url.link.MESSAGE}`);
+    //     }
+    // }, [lastEvent]);
+
+    console.log("user_data ::: ", user_data)
+
     return (
         <>
             <div className="bg-white rounded-2xl p-4 text-center shadow-xl">
@@ -41,14 +71,20 @@ function AgentCard() {
                     <p className="text-[14px] flex items-center gap-1 font-manrope font-semibold text-[#1A1C1E] my-1">
                         <Phone className="w-4 h-4" />  {user_data?.user?.agent?.agent?.contact_no}
                     </p>
-                    <p className="text-[14px] mt-3 flex items-center gap-1 font-manrope font-semibold text-[#1A1C1E] my-1">
-                        <Globe className="w-4 h-4" />  <span className="underline cursor-pointer">zecco.es</span>
-                    </p>
+                    <Link
+                        href={`mailto:${user_data?.user?.agent?.agent?.email ?? ""}`}
+                        className="text-[14px] mt-3 flex items-center gap-1 font-manrope font-semibold text-[#1A1C1E] my-1"
+                    >
+                        <Mail className="w-4 h-4" />
+                        <span className="underline">
+                            {user_data?.user?.agent?.agent?.email}
+                        </span>
+                    </Link>
                     <div className="text-[#22C55E] text-xs mt-3 w-fit px-3 rounded-md py-1 bg-[#22C55E15] uppercase font-manrope font-bold tracking-wider">
                         Verified Agent
                     </div>
                     <button
-                        onClick={() => router.push(App_url.link.CONTACT_US)}
+                        onClick={() => window.location.href = `tel:${user_data?.user?.agent?.agent?.contact_no}`}
                         className="relative w-full mt-4 my-5 py-3.5 px-10 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
                     >
                         Contact Agent

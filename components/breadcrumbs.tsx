@@ -2,6 +2,7 @@
 
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { cityName, generateBreadcrumbs } from "@/utils/common";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ChevronsRight } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -111,14 +112,89 @@ const Breadcrumb = () => {
     breadcrumbs = generateBreadcrumbs(pathname, propertyDetails);
   }
 
+  const shouldCollapse = breadcrumbs.length > 4;
+  const visibleBreadcrumbs = shouldCollapse
+    ? [breadcrumbs[0], ...breadcrumbs.slice(-2)]
+    : breadcrumbs;
+  const hiddenBreadcrumbs = shouldCollapse ? breadcrumbs.slice(1, -2) : [];
+
+  const renderCrumb = (item: { label: string; href?: string }, isLast: boolean) => (
+    <span className="flex items-center gap-1">
+      {!isLast && item.href ? (
+        <button
+          onClick={() => router.push(item.href)}
+          className="capitalize transition hover:text-black"
+        >
+          {item.label}
+        </button>
+      ) : (
+        <span className="capitalize text-[#000000]">{item.label}</span>
+      )}
+      {!isLast && (
+        <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
+      )}
+    </span>
+  );
+
   return (
     <nav
       aria-label="Breadcrumb"
       className="min-h-12 max-md:flex-wrap flex items-center gap-1 text-md font-manrope font-normal text-[#666666]"
     >
-      {breadcrumbs.map((item: any, index: number) => {
+      {shouldCollapse && (
+        <>
+          {renderCrumb(visibleBreadcrumbs[0], false)}
+          <TooltipProvider delayDuration={200}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button className="capitalize transition hover:text-black px-1">
+                  ...
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-xs">
+                <div className="flex flex-col gap-1">
+                  {hiddenBreadcrumbs.map((item, i) =>
+                    item.href ? (
+                      <button
+                        key={i}
+                        onClick={() => router.push(item.href!)}
+                        className="text-sm capitalize text-left hover:underline hover:text-black transition"
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <span key={i} className="text-sm capitalize">{item.label}</span>
+                    )
+                  )}
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          {visibleBreadcrumbs.slice(1).map((item, i) => {
+            const realIndex = i + 1;
+            const isLast = realIndex === visibleBreadcrumbs.length - 1;
+            return (
+              <span key={`tail-${i}`} className="flex items-center gap-1">
+                {!isLast && item.href ? (
+                  <button
+                    onClick={() => router.push(item.href)}
+                    className="capitalize transition hover:text-black"
+                  >
+                    {item.label}
+                  </button>
+                ) : (
+                  <span className="capitalize text-[#000000]">{item.label}</span>
+                )}
+                {!isLast && (
+                  <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
+                )}
+              </span>
+            );
+          })}
+        </>
+      )}
+      {!shouldCollapse && breadcrumbs.map((item, index) => {
         const isLast = index === breadcrumbs.length - 1;
-
         return (
           <span key={index} className="flex items-center gap-1">
             {!isLast && item.href ? (
@@ -129,11 +205,8 @@ const Breadcrumb = () => {
                 {item.label}
               </button>
             ) : (
-              <span className="capitalize text-[#000000]">
-                {item.label}
-              </span>
+              <span className="capitalize text-[#000000]">{item.label}</span>
             )}
-
             {!isLast && (
               <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
             )}

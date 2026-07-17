@@ -323,6 +323,8 @@ const Page = () => {
     [urlFilters],
   );
 
+  console.log("urlFilters ::: " , urlFilters)
+
   return (
     <MainLayout
       isBreadcrumb
@@ -336,7 +338,7 @@ const Page = () => {
       propertyCount={mainReducer?.property_list_with_limit?.pagination?.totalCount}
       propertyType={propertyType}
       onPropertyTypeChange={(v: PropertyType) => setPropertyType(v)}
-      savedSearch={Object.keys(urlFilters).some((k) => k !== "city" && urlFilters[k as keyof UrlFilters])}
+      savedSearch={Object.keys(urlFilters).some((k) => (k !== "city" && k !== "area" && k !== "subarea") && Boolean(urlFilters[k as keyof UrlFilters]))}
       savedSearches={handleSavedSearches}
       filteredLocations={mainReducer?.all_location_list || []}
     >

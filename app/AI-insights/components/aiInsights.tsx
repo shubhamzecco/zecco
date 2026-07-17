@@ -29,14 +29,19 @@ const AiInsights = ({ onGetStarted }: AiInsightsProps) => {
 
       <FavoritesPage onGetStarted={(data) => setProperty(data)} />
 
-      <button
-        onClick={() => onGetStarted(property)}
-        className="relative w-fit mx-auto mt-8 text-xs sm:text-sm whitespace-nowrap my-5 py-3.5 px-4 sm:px-10 rounded-full flex items-center bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white font-manrope font-medium shadow-md disabled:opacity-50 "
-      >
-        <Sparkles size={18} className="mr-2" />
-        Select the property to generate AI reports
-      </button>
-      <p className="font-normal text-xs sm:text-sm mb-4 font-manrope text-[#64748B] text-center">⚡ Powered by Zecco AI · Free for Premium Members</p>
+      {mainReducer?.favorite_property_list?.data && mainReducer.favorite_property_list.data.length > 0 && (
+        <>
+          <button
+            onClick={() => onGetStarted(property)}
+            className="relative w-fit mx-auto mt-8 text-xs sm:text-sm whitespace-nowrap my-5 py-3.5 px-4 sm:px-10 rounded-full flex items-center bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white font-manrope font-medium shadow-md disabled:opacity-50 "
+          >
+            <Sparkles size={18} className="mr-2" />
+            Select the property to generate AI reports
+          </button>
+          <p className="font-normal text-xs sm:text-sm mb-4 font-manrope text-[#64748B] text-center">⚡ Powered by Zecco AI · Free for Premium Members</p>
+        </>
+      )}
+
     </CommonCard>
   );
 };

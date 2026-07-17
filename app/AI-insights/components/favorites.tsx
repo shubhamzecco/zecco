@@ -4,8 +4,9 @@ import PropertyCard from "@/components/cards/PropertyCard";
 import PropertyCardSkeleton from "@/app/costa-del-sol/properties/components/PropertyCardSkeleton";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { IProperty } from "@/redux/modules/main/types";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Heart } from "lucide-react";
 
 type AiInsightsProps = {
   onGetStarted: (property: IProperty) => void;
@@ -15,6 +16,7 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
   const { isConnected, sendMessage } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (isConnected) {
@@ -75,13 +77,24 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
           </div>
         </>
       ) : (
-        <div className="!bg-none flex flex-col items-center justify-center">
-          <h2 className="mt-5 text-xl font-bold text-gray-800">
-            No Favorite Properties
+        <div className="flex flex-col items-center justify-center py-14 px-4">
+          <div className="relative mb-6">
+            <div className="w-24 h-24 rounded-full bg-red-50 flex items-center justify-center">
+              <Heart size={48} className="text-red-400" strokeWidth={1.5} />
+            </div>
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 font-manrope mb-2">
+            No Favorite Properties Yet
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-500">
-            Properties you save as favorites will appear here for quick access.
+          <p className="text-center text-sm text-gray-500 font-manrope max-w-md mb-6">
+            Explore properties, save your favorites, and unlock AI-powered insights to make smarter decisions.
           </p>
+          <button
+            onClick={() => router.push("/costa-del-sol/properties")}
+            className="relative w-fit mx-auto mt-8 text-xs sm:text-sm whitespace-nowrap my-5 py-3.5 px-4 sm:px-10 rounded-full flex items-center bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white font-manrope font-medium shadow-md disabled:opacity-50 "
+          >
+            Browse Properties
+          </button>
         </div>
       )}
     </section>

@@ -58,15 +58,13 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
     property?.agent_assigned ||
     property?.location?.agent_assigned ||
     agent_details
-    null;
-
-    console.log("property ::: " , agent_details)
+  null;
 
   const appointedAgentName = assignedAgent
-      ? `${assignedAgent.first_name || ""} ${assignedAgent.last_name || ""}`.trim()
-      : ""
+    ? `${assignedAgent.first_name || ""} ${assignedAgent.last_name || ""}`.trim()
+    : ""
 
-  const appointedAgentContact =  assignedAgent ? assignedAgent?.contact_no 
+  const appointedAgentContact = assignedAgent ? assignedAgent?.contact_no
     : "";
 
   const appointedAgentEmail = assignedAgent
@@ -110,10 +108,13 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
           </div>
         </div>
 
-        <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
-          <Phone className="w-4 h-4" />{" "}
+        <a
+          href={`tel:${appointedAgentContact}`}
+          className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2 hover:text-primary transition-colors"
+        >
+          <Phone className="w-4 h-4" />
           {appointedAgentContact}
-        </p>
+        </a>
 
         <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
           <Mail className="w-4 h-4" />
@@ -148,9 +149,9 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
 
         <button
           onClick={() => {
-              if (typeof window !== "undefined") {
-                window.location.href = `tel:${agent_details?.contact_no || user_data?.user?.agent?.agent?.contact_no}`;
-              }
+            if (typeof window !== "undefined") {
+              window.location.href = `tel:${agent_details?.contact_no || user_data?.user?.agent?.agent?.contact_no}`;
+            }
           }}
           className="w-full cursor-pointer mb-5 border flex items-center gap-2 justify-center border-[#DDDFE3] text-heading_text_color font-semibold py-2 rounded-full bg-white transition"
         >

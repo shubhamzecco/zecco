@@ -45,6 +45,7 @@ interface Agent {
   password: string;
   verificationCodeExpiry: string | null;
   profile_image: string;
+  link?:string
 }
 
 interface AssignedAgent {
@@ -55,6 +56,7 @@ interface AssignedAgent {
   status: string;
   createdAt: string;
   updatedAt: string;
+  link?:string
 }
 
 interface IPreferences {
