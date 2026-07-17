@@ -36,7 +36,6 @@ export default function MapSearchClient() {
   const mode = (searchParams.get("mode") === "select" ? "select" : "draw") as Mode;
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
-  const dispatch = useDispatch();
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);

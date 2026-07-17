@@ -284,8 +284,8 @@ const Page = () => {
       action: "add",
       payload: {
         search: searchValue,
-        categories: urlFilters.categories || undefined,
-        cities: urlFilters.city || undefined,
+        categories: urlFilters.categories || null,
+        cities: urlFilters.city || null,
         ...(urlFilters.bedroomsFrom && { bedroomsFrom: Number(urlFilters.bedroomsFrom) }),
         ...(urlFilters.bedroomsTo && { bedroomsTo: Number(urlFilters.bedroomsTo) }),
         ...(urlFilters.priceFrom && { priceFrom: Number(urlFilters.priceFrom) }),

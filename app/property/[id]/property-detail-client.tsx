@@ -130,6 +130,8 @@ export default function PropertyDetailClient() {
     }
     : null;
 
+    console.log("mainReducer?.property_details?.features ::: " , mainReducer?.property_details?.features)
+
   return (
     <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={true}>
       {jsonLd && (
@@ -183,7 +185,7 @@ export default function PropertyDetailClient() {
                   ?.propertyDescriptions as IPropertyDescription[]
               }
             />
-            {mainReducer?.property_details?.features && (
+            {(mainReducer?.property_details?.features?.length ?? 0) > 0 && (
               <BasicFeatures
                 features={mainReducer?.property_details?.features as IFeature[]}
               />
