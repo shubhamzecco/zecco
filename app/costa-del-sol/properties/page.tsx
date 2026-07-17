@@ -337,7 +337,7 @@ const Page = () => {
       propertyCount={mainReducer?.property_list_with_limit?.pagination?.totalCount}
       propertyType={propertyType}
       onPropertyTypeChange={(v: PropertyType) => setPropertyType(v)}
-      savedSearch={Object.keys(urlFilters).some((k) => (k !== "city" && k !== "area" && k !== "subarea") && Boolean(urlFilters[k as keyof UrlFilters]))}
+      savedSearch={Object.keys(urlFilters).some((k) => (k !== "city" && k !== "area" && k !== "subarea" && (mainReducer?.property_list_with_limit?.data?.length ?? 0) > 0) && Boolean(urlFilters[k as keyof UrlFilters]))}
       savedSearches={handleSavedSearches}
       filteredLocations={mainReducer?.all_location_list || []}
     >

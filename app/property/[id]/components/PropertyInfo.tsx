@@ -25,7 +25,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
             } else if (["verified seller"].includes(normalizedTag)) {
               Icon = ShieldCheck;
               className += " bg-[#5BA55A]";
-            } else if (["zecco favourite"].includes(normalizedTag)) {
+            } else if (["zecco favourites"].includes(normalizedTag)) {
               Icon = Heart;
               className += " bg-[#F59E0B]";
             } else {
