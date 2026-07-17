@@ -22,6 +22,8 @@ export default function ZeccoFavorites({ property }: PropertyInfoProps) {
     router.push(`${App_url.link.ZECCO_FAVORITES}`);
   };
 
+  console.log("property ::: " , property)
+
   useEffect(() => {
     sendMessage("action", {
       type: "propertyService",
@@ -29,7 +31,7 @@ export default function ZeccoFavorites({ property }: PropertyInfoProps) {
       payload: {
         limit: 10,
         page: 1,
-        search: property?.locationCity ? property?.locationCity : "",
+        search:  "",
         location_id: null,
         favorite: true,
       },
@@ -49,7 +51,7 @@ export default function ZeccoFavorites({ property }: PropertyInfoProps) {
         payload: {
           limit: 0,
           page: 1,
-          search: property?.locationCity ? property?.locationCity : "",
+          search: "",
           location_id: null,
           favorite: true,
         },
