@@ -129,7 +129,7 @@ export default function PropertyDetailClient() {
         : undefined,
     }
     : null;
-    
+
   return (
     <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={true}>
       {jsonLd && (
@@ -183,9 +183,11 @@ export default function PropertyDetailClient() {
                   ?.propertyDescriptions as IPropertyDescription[]
               }
             />
-            <BasicFeatures
-              features={mainReducer?.property_details?.features as IFeature[]}
-            />
+            {mainReducer?.property_details?.features && (
+              <BasicFeatures
+                features={mainReducer?.property_details?.features as IFeature[]}
+              />
+            )}
             <MapSection />
           </div>
 
