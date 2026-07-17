@@ -102,7 +102,6 @@ const MainLayout = ({
   ];
 
   const callLocationSelect = (data: any) => {
-    console.log("data::",data)
     dispatch(
       setPropertyFilter({
         ...mainReducer?.propertyFilter,

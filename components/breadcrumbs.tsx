@@ -97,19 +97,23 @@ const Breadcrumb = () => {
     return `Up to ${bedroomsTo} Bedroom Properties`;
   })();
 
-  let breadcrumbs: { label: string; href?: string }[];
+  type BreadcrumbLink = { label: string; href?: string };
+  let breadcrumbs: BreadcrumbLink[];
+
+  const sanitizeBreadcrumbs = (items: Array<{ label: string; href?: string | null }>) =>
+    items.map((item) => ({ label: item.label, href: item.href ?? undefined }));
 
   if (isDetailPage) {
     if (hasFilters) {
       breadcrumbs = buildFilterBreadcrumbs(city, area, subarea, bedroomText, bedroomsFrom, bedroomsTo, true);
       breadcrumbs.push({ label: propertyTitle || "Property Details" });
     } else {
-      breadcrumbs = generateBreadcrumbs(pathname, propertyDetails);
+      breadcrumbs = sanitizeBreadcrumbs(generateBreadcrumbs(pathname, propertyDetails));
     }
   } else if (hasFilters) {
     breadcrumbs = buildFilterBreadcrumbs(city, area, subarea, bedroomText, bedroomsFrom, bedroomsTo, false);
   } else {
-    breadcrumbs = generateBreadcrumbs(pathname, propertyDetails);
+    breadcrumbs = sanitizeBreadcrumbs(generateBreadcrumbs(pathname, propertyDetails));
   }
 
   const shouldCollapse = breadcrumbs.length > 4;
@@ -122,7 +126,7 @@ const Breadcrumb = () => {
     <span className="flex items-center gap-1">
       {!isLast && item.href ? (
         <button
-          onClick={() => router.push(item.href)}
+          onClick={() => router.push(item.href!)}
           className="capitalize transition hover:text-black"
         >
           {item.label}
@@ -177,7 +181,7 @@ const Breadcrumb = () => {
               <span key={`tail-${i}`} className="flex items-center gap-1">
                 {!isLast && item.href ? (
                   <button
-                    onClick={() => router.push(item.href)}
+                    onClick={() => router.push(item.href!)}
                     className="capitalize transition hover:text-black"
                   >
                     {item.label}
@@ -199,7 +203,7 @@ const Breadcrumb = () => {
           <span key={index} className="flex items-center gap-1">
             {!isLast && item.href ? (
               <button
-                onClick={() => router.push(item.href)}
+                onClick={() => router.push(item.href!)}
                 className="capitalize transition hover:text-black"
               >
                 {item.label}

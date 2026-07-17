@@ -57,7 +57,15 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
   const { mainReducer } = usePosterReducers();
   const propertyTypeList = mainReducer?.property_type_list || [];
   const propertySubtypeList = mainReducer?.property_subtype_list || [];
-  const propertyFeaturesList = mainReducer?.property_features_list || [];
+  const propertyFeaturesList = (mainReducer?.property_features_list || []).filter(
+    (item: any) => {
+      const itemName = item.name.toLowerCase();
+      return !propertyTypeList.some((t: any) => {
+        const typeName = t.name.toLowerCase();
+        return typeName === itemName || itemName.includes(typeName) || typeName.includes(itemName);
+      });
+    }
+  );
 
   const handleInputChange = (field: string, value: string | number) => {
     let updated = { ...filters, [field]: value };
@@ -104,7 +112,7 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
               className="w-full px-3 py-2.5 border border-gray-300 rounded-lg appearance-none bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
             >
               <option value="">All Property Types</option>
-              {propertyTypeList.map((t: any) => (
+              {propertyTypeList?.map((t: any) => (
                 <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </select>
@@ -112,11 +120,11 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
           </div>
         </div>
 
-        {propertySubtypeList.length > 0 && filters.categories && (
+        {propertySubtypeList?.length > 0 && filters?.categories && (
           <div className="space-y-3">
             <Label className="text-md font-medium text-text_gray_color font-manrope tracking-wide">Type of home</Label>
             <div className="space-y-2.5">
-              {propertySubtypeList.map((item: any) => (
+              {propertySubtypeList?.map((item: any) => (
                 <div key={item.id} className="flex items-center space-x-3">
                   <Checkbox
                     id={String(item.id)}
@@ -220,7 +228,7 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
         <div className="space-y-3">
           <Label className="text-md font-medium text-text_gray_color font-manrope tracking-wide">More filters</Label>
           <div className="space-y-2.5 max-h-[300px] overflow-y-auto">
-            {propertyFeaturesList.map((item: any) => (
+            {propertyFeaturesList?.map((item: any) => (
               <div key={item.id} className="flex items-center space-x-3">
                 <Checkbox
                   id={item.name}
