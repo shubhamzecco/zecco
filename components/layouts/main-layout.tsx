@@ -106,12 +106,20 @@ const MainLayout = ({
     dispatch(
       setPropertyFilter({
         ...mainReducer?.propertyFilter,
-        cities: data?.value,
+        cities: data?.city,
       })
     );
     const type=data?.type || "city"
 
     const params = new URLSearchParams(window.location.search);
+    if(type === 'city'){
+      params.delete("area");
+      params.delete("subarea");
+    }
+    if(type === 'area' || type === "subarea"){
+      params.delete("city");
+      params.set('city', citySlug(data?.city || ""));
+    }
     params.delete("cities");
     params.set(type, citySlug(data?.label || data?.value || ""));
 
@@ -119,6 +127,23 @@ const MainLayout = ({
       `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
     );
   };
+
+//   {
+//     "id": "6a212988be616682e93b6102",
+//     "type": "city",
+//     "name": "Benadalid",
+//     "name_slug": "benadalid",
+//     "city_name": "benadalid",
+//     "area_name": null,
+//     "subarea_name": null,
+//     "point": {
+//         "type": "Point",
+//         "coordinates": [
+//             -5.268939,
+//             36.605768
+//         ]
+//     }
+// }
 
   return (
     <main className="w-full bg-white">
@@ -141,7 +166,8 @@ const MainLayout = ({
                     value: location?.name_slug,
                     label: location?.name,
                     key: location?.id,
-                    type:location?.type
+                    type:location?.type,
+                    city:location?.city_name
                   })) || []}
                   control={control}
                   name="location"
