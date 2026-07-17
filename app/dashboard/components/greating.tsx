@@ -5,12 +5,6 @@ import { Heart, Home, TrendingUp } from 'lucide-react'
 import RecentSaved from './recent-saved'
 import SavedSearches from './saved-searches'
 
-const stats = [
-    { label: 'Total Properties', value: 24, change: '+2 this week' },
-    { label: 'Saved Searches', value: 58, change: '+8 this week' },
-    { label: 'Messages', value: 3, change: 'Unread' },
-]
-
 export const getGreeting = (): string => {
     const hour = new Date().getHours();
 
@@ -31,8 +25,18 @@ export const getGreeting = (): string => {
 
 
 const Greeting = () => {
-    const { mainReducer , user_data} = usePosterReducers()
-    
+    const { mainReducer, user_data } = usePosterReducers()
+    const totalUnreadCount = mainReducer?.chat_user_list?.reduce(
+        (total, chat) => total + Number(chat?.unread_count || 0),
+        0
+    );
+
+    const stats = [
+        { label: 'Saved Properties', value: mainReducer?.favorite_property_list?.data?.length ?? 0, change: '+2 this week' },
+        { label: 'Saved Searches', value: mainReducer?.saved_searches?.data?.length ?? 0, change: '+8 this week' },
+        { label: 'Messages', value: totalUnreadCount ?? 0, change: 'Unread' },
+    ]
+
     return (
         <div className="space-y-4">
             <motion.div
@@ -55,7 +59,7 @@ const Greeting = () => {
 
             <div>
                 <div className="grid gap-4 md:grid-cols-3">
-                    {stats.map((stat, idx) => (
+                    {stats?.map((stat, idx) => (
                         <motion.div
                             key={stat.label}
                             initial={{ opacity: 0, y: 20 }}

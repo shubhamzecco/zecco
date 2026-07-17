@@ -28,6 +28,11 @@ const DashboardPage = () => {
       action: "favoritePropertyList",
       payload: {},
     });
+    sendMessage("action", {
+      type: "chatService",
+      action: "list",
+      payload: {},
+    });
   }, [])
 
   return (

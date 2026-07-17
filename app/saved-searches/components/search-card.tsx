@@ -1,6 +1,6 @@
 "use client";
 
-import { Trash2 } from "lucide-react";
+import { Trash, Trash2 } from "lucide-react";
 
 interface SavedSearchCardProps {
     item: any;
@@ -66,7 +66,7 @@ export default function SavedSearchCard({ item, title, onApplySearch, handleDele
                         className=" text-red-600 transition-all "
                         aria-label="delete"
                     >
-                        <Trash2 size={23} />
+                        <Trash size={23} />
                     </button>
                 </div>
             </div>
