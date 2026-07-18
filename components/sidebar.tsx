@@ -118,7 +118,7 @@ export default function Sidebar({ isOpen, onClose, desktopOnly, mobileOnly }: Si
               <h2>
                 {Number(user_data?.user?.package?.price) > 0
                   ? "Premium Member"
-                  : "Free Member"}
+                  : "Standard Member"}
               </h2>
             </div>
           </div>

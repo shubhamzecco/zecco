@@ -79,10 +79,11 @@ const PropertyCard = ({
   const currentPath = window.location.pathname;
   const searchParams = window.location.search;
 
-  const propertyDetailUrl = `${(currentPath === "/" || type === "zecco-favorites")
-    ? "/zecco-favorites"
-    : currentPath.replace(/\/$/, "")
-    }/${propertyIdentifier}${searchParams}`;
+  const propertyDetailUrl = `${(
+    currentPath === "/" || type === "zecco-favorites"
+      ? "/zecco-favorites"
+      : currentPath.replace(/\/$/, "")
+  )}/${propertyIdentifier}${type === "zecco-favorites" ? "" : searchParams}`;
 
   const handleNavigate = () => {
     router.push(propertyDetailUrl);
