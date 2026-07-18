@@ -104,7 +104,7 @@ export default function Navbar() {
 
                   <Link
                     href={App_url.link.SIGN_UP}
-                    className="px-5 py-2 text-sm text-white bg-[#136AED] rounded-full flex items-center gap-2"
+                    className="px-5 py-2 text-sm text-white bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] rounded-full flex items-center gap-2"
                   >
                     <UserPlus className="w-5 h-5" /> Registration
                   </Link>

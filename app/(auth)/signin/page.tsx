@@ -107,30 +107,30 @@ const Signin = () => {
       </Head>
       <AuthLayout
         heading="Welcome Back to Zecco!"
-        description=" Sign in to Your Account"
+        description="Sign in to Your Account"
         backToHome
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-5 max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
+            className="space-y-5 max-md:flex max-md:flex-col max-md:justify-center max-md:min-h-fit max-md:py-3"
           >
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required className="font-semibold text-[#101828]">
+                  <FormLabel required className="font-semibold text-[#101828] max-md:text-white">
                     Email Address
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Email address"
-                      className="h-12 rounded-full bg-white border-[#D1D5DB]"
+                      className="h-12 rounded-full bg-white border-[#D1D5DB] max-md:bg-white/90 max-md:text-black"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="max-md:text-red-300" />
                 </FormItem>
               )}
             />
@@ -140,25 +140,24 @@ const Signin = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required className="font-semibold  text-[#101828]">
+                  <FormLabel required className="font-semibold text-[#101828] max-md:text-white">
                     Password
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="password"
                       placeholder="Password"
-                      className="h-12 bg-white rounded-full border-[#D1D5DB]"
+                      className="h-12 bg-white rounded-full border-[#D1D5DB] max-md:bg-white/90 max-md:text-black"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="max-md:text-red-300" />
                 </FormItem>
               )}
             />
 
             {/* REMEMBER + FORGOT */}
             <div className="my-2 mt-5 flex items-center justify-between">
-              {/* Left: Remember Me */}
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -167,16 +166,15 @@ const Signin = () => {
                 />
                 <label
                   htmlFor="rememberMe"
-                  className="font-inter text-sm font-medium text-[#344054] cursor-pointer"
+                  className="font-inter text-sm font-medium text-[#344054] cursor-pointer max-md:text-white/80"
                 >
                   Remember me
                 </label>
               </div>
 
-              {/* Right: Forgot Password */}
               <Link
                 href={App_url?.link?.FORGET_PASSWORD}
-                className="font-inter text-sm font-medium text-[#9CA3AF] hover:underline"
+                className="font-inter text-sm font-medium text-[#9CA3AF] hover:underline max-md:text-white/70"
               >
                 Forgot password?
               </Link>
@@ -186,17 +184,17 @@ const Signin = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
+              className="w-full capitalize font-inter font-bold tracking-wider  bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
             >
-              {loading && <Loader2 className="h-5 w-5 animate-spin mr-2" />
-              }Login
+              {loading && <Loader2 className="h-5 w-5 animate-spin mr-2" />}
+              Login
             </Button>
           </form>
         </Form>
 
         {/* REGISTER */}
-        <div className="w-full my-3 font-inter font-medium text-center text-[#6B7280] text-md">
-          Don’t have an account?
+        <div className="w-full my-3 font-inter font-medium text-center text-[#6B7280] text-md max-md:text-white/70">
+          Don&apos;t have an account?
           <Link
             href={App_url.link.SIGN_UP}
             className="text-[#3B82F6] font-bold font-inter text-base ml-2"

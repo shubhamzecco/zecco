@@ -55,7 +55,7 @@ export default function EmailVerifiedPage() {
         >
           <Button
             onClick={() => router.push(App_url.link.INITIAL_URL)}
-            className="mt-8 w-full font-instrument_sans rounded-full bg-[#136AED] h-12 text-sm font-normal tracking-wider text-white shadow-lg transition"
+            className="mt-8 w-full font-instrument_sans rounded-full bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12 text-sm font-normal tracking-wider text-white shadow-lg transition"
           >
             Go to Homepage
           </Button>

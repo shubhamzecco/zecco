@@ -254,7 +254,7 @@ const FilterPopup = ({
                                   className={`
                                   h-11 rounded-full border text-sm font-medium transition-all
                                   ${isSelected
-                                      ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                      ? "border-[#136AED] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white shadow-md"
                                       : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
                                     }
                                 `}
