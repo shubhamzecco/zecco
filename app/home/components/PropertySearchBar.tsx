@@ -219,16 +219,16 @@ const PropertySearchBar = () => {
           </div>
 
           <div className="flex items-center rounded-full bg-[#D6E0EC] p-2 w-full sm:w-auto">
-            <div ref={dropdownRef} className="relative">
+            <div ref={dropdownRef} className="relative w-full sm:w-auto">
               <button
                 onClick={handlePropertyDropdown}
-                className="flex items-center w-[130px] truncate justify-between gap-2 rounded-full px-3 py-2 text-sm font-semibold min-w-[120px]"
+                className="flex items-center justify-center w-full sm:w-[130px] truncate gap-2 rounded-full px-3 py-2 text-sm font-semibold sm:min-w-[120px]"
               >
-                {selected?.name}
+                <span className="truncate">{selected?.name}</span>
 
                 <ChevronDown
                   size={14}
-                  className={`transition-transform duration-200 ${open ? "rotate-180" : ""
+                  className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""
                     }`}
                 />
               </button>
@@ -252,7 +252,7 @@ const PropertySearchBar = () => {
                             setSelected(item);
                             setOpen(false);
                           }}
-                          className={`w-full px-4 py-2 text-left transition ${selected?.id === item?.id
+                          className={`w-full px-4 py-2 text-center transition ${selected?.id === item?.id
                             ? "bg-slate-100 font-semibold"
                             : "hover:bg-slate-100"
                             }`}
