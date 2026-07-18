@@ -18,7 +18,7 @@ const LoginPopup = () => {
           dispatch(setLoginPopup(false));
         }}
       />
-      <div className="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-xl p-6 animate-scaleIn">
+      <div className="relative z-10 max-sm:m-3 w-full max-w-md bg-white rounded-2xl shadow-xl p-6 animate-scaleIn">
         <div className="flex items-center justify-center w-14 h-14 mx-auto bg-red-100 rounded-full mb-4">
           <span className="text-2xl">🔒</span>
         </div>
