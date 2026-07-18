@@ -9,6 +9,8 @@ import debounce from 'lodash/debounce'
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Heart } from "lucide-react";
+import { setAiInsight, setStoredAiInsightList } from "@/redux/modules/main/action";
+import { IPropertyResponse } from "@/redux/modules/main/types";
 
 const ZeccoFavorites = () => {
   const { mainReducer } = usePosterReducers();
@@ -38,7 +40,8 @@ const ZeccoFavorites = () => {
         status: true,
       },
     });
-  }, [isConnected]);
+     dispatch(setAiInsight({} as IPropertyResponse));
+  }, []);
 
 
 
@@ -96,6 +99,8 @@ const ZeccoFavorites = () => {
       debouncedSearch.cancel();
     };
   }, [debouncedSearch]);
+
+
 
   return (
     <MainLayout

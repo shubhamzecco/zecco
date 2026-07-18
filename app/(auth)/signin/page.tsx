@@ -108,6 +108,7 @@ const Signin = () => {
       <AuthLayout
         heading="Welcome Back to Zecco!"
         description=" Sign in to Your Account"
+        backToHome
       >
         <Form {...form}>
           <form

@@ -162,7 +162,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
   const customStyles = {
     control: (provided: any, state: any) => ({
       ...provided,
-      backgroundColor: state.isDisabled ? '#fdfcfb' : 'white',
+      backgroundColor: state.isDisabled ? '#fdfcfb' : '#fffff',
       padding: '0.08rem',
       minHeight: "42px",
       border: 'none',

@@ -25,20 +25,36 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
   return (
     <>
       <CommonCard className="!px-0 !pb-2">
-        <div className="px-8 gap-3 mb-2">
-          <h1 className="font-bold text-lg font-manrope text-[#0F172A]">
-            Your Matched Properties
-          </h1>
-          <p className="font-normal text-sm mb-4 font-manrope text-[#64748B]">
-            Based on your preferences
-          </p>
-        </div>
+        {!isEmpty && (
+          <div className="px-8 gap-3 mb-2">
+            <h1 className="font-bold text-lg font-manrope text-[#0F172A]">
+              Your Matched Properties
+            </h1>
+            <p className="font-normal text-sm mb-4 font-manrope text-[#64748B]">
+              Based on your preferences
+            </p>
+          </div>
+        )}
 
         {isEmpty ? (
-          <div className="flex flex-col items-center justify-center h-[280px] w-full">
-            <Home size={40} className="text-gray-300 mb-3" />
-            <p className="text-sm font-semibold text-gray-400">No matched properties found</p>
-            <p className="text-xs text-gray-300 mt-1">Update your preferences to see matched properties</p>
+          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-250px)] px-4">
+            <div className="relative mb-6">
+              <div className="w-24 h-24 rounded-full bg-blue-50 flex items-center justify-center">
+                <Home size={48} className="text-blue-400" strokeWidth={1.5} />
+              </div>
+            </div>
+            <h2 className="text-xl font-bold text-gray-800 font-manrope mb-2">
+              No Matched Properties Yet
+            </h2>
+            <p className="text-center text-sm text-gray-500 font-manrope max-w-md mb-6">
+              Update your preferences above to discover properties that match your criteria.
+            </p>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="relative w-fit mx-auto mt-8 text-xs sm:text-sm whitespace-nowrap my-5 py-3.5 px-4 sm:px-10 rounded-full flex items-center bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white font-manrope font-medium shadow-md disabled:opacity-50 "
+            >
+              Set Preferences
+            </button>
           </div>
         ) : (
           <>

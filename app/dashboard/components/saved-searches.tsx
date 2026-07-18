@@ -283,12 +283,26 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
     //   )}
     // </section>
 
-    <CommonCard heading="Saved Searches">
+    <CommonCard heading={searches && searches.length > 0 ? "Saved Searches" : undefined}>
       {!searches || searches.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-[280px] w-full">
-          <Search size={40} className="text-gray-300 mb-3" />
-          <p className="text-sm font-semibold text-gray-400">No saved searches found</p>
-          <p className="text-xs text-gray-300 mt-1">Your saved searches will appear here</p>
+        <div className="flex flex-col items-center justify-center h-[280px] lg:h-[365px] 2xl:h-[380px] px-4">
+          <div className="relative mb-6">
+            <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center">
+              <Search size={30} className="text-blue-400" strokeWidth={1.5} />
+            </div>
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 font-manrope mb-2">
+            No Saved Searches Yet
+          </h2>
+          <p className="text-center text-sm text-gray-500 font-manrope max-w-md mb-4">
+            Your saved searches will appear here for quick access to your preferred property filters.
+          </p>
+          <button
+            onClick={() => router.push("/costa-del-sol/properties")}
+            className="relative w-fit mx-auto text-xs sm:text-sm whitespace-nowrap my-5 py-3.5 px-4 sm:px-10 rounded-full flex items-center bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white font-manrope font-medium shadow-md disabled:opacity-50 "
+          >
+            Browse Properties
+          </button>
         </div>
       ) : (
         <div className="mt-2">

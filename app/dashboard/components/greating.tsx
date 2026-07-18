@@ -58,7 +58,7 @@ const Greeting = () => {
             </motion.div>
 
             <div>
-                <div className="grid gap-4 md:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
                     {stats?.map((stat, idx) => (
                         <motion.div
                             key={stat.label}

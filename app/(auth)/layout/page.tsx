@@ -10,6 +10,7 @@ interface AuthImageLayoutProps {
   bottomContent?: React.ReactNode;
   heading?: string;
   description?: string;
+  backToHome?: boolean
 }
 
 export default function AuthLayout({
@@ -17,6 +18,7 @@ export default function AuthLayout({
   bottomContent,
   heading,
   description,
+  backToHome
 }: AuthImageLayoutProps) {
   return (
     <section className="lg:h-screen h-screen overflow-hidden bg-white lg:p-10 w-full">
@@ -78,15 +80,17 @@ export default function AuthLayout({
 
             {bottomContent && <div className="mt-6">{bottomContent}</div>}
 
-            <div className="mt-2 flex justify-center">
-              <Link
-                href={App_url.link.INITIAL_URL}
-                className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-heading_text_color text-md"
-              >
-                <ArrowLeft size={18} />
-                Back to Home
-              </Link>
-            </div>
+            {backToHome && (
+              <div className="mt-2 flex justify-center">
+                <Link
+                  href={App_url.link.INITIAL_URL}
+                  className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-heading_text_color text-md"
+                >
+                  <ArrowLeft size={18} />
+                  Back to Home
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
