@@ -30,6 +30,8 @@ export default function ExploreRegions() {
 
   const [isHovered, setIsHovered] = useState(false);
 
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+
   const [areasData, setAreasData] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const totalPages = Math.ceil(totalCount / LIMIT);
@@ -209,22 +211,49 @@ export default function ExploreRegions() {
           left: 0,
           behavior: "smooth",
         });
+        setActiveCardIndex(0);
       } else {
         // move full card
         container.scrollBy({
           left: cardWidth,
           behavior: "smooth",
         });
+        setActiveCardIndex((prev) => Math.min(prev + 1, groupedCards.length - 1));
       }
     }, 3000);
 
     return () => clearInterval(interval);
   }, [page, isHovered, selectedButton]);
 
+  const updateActiveCardIndex = () => {
+    const container = scrollRef.current;
+    const card = container?.querySelector<HTMLElement>(".region-card");
+    if (!container || !card) return;
+
+    const cardWidth = card.offsetWidth + 24;
+    const index = Math.round(container.scrollLeft / cardWidth);
+    setActiveCardIndex(Math.min(index, groupedCards.length - 1));
+  };
+
+  const scrollToCard = (index: number) => {
+    const container = scrollRef.current;
+    const card = container?.querySelector<HTMLElement>(".region-card");
+    if (!container || !card) return;
+
+    const cardWidth = card.offsetWidth + 24;
+    container.scrollTo({
+      left: cardWidth * index,
+      behavior: "smooth",
+    });
+    setActiveCardIndex(index);
+  };
+
   const handleScroll = () => {
     const container = scrollRef.current;
 
     if (!container || loading) return;
+
+    updateActiveCardIndex();
 
     const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
@@ -375,6 +404,22 @@ export default function ExploreRegions() {
                 ))}
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* DOT INDICATORS - Mobile only */}
+        <div className="flex md:hidden justify-center gap-2 mt-4">
+          {groupedCards.map((_: any, index: number) => (
+            <button
+              key={index}
+              onClick={() => scrollToCard(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === activeCardIndex
+                  ? "bg-[#0F172A] w-6"
+                  : "bg-slate-300"
+              }`}
+              aria-label={`Go to card ${index + 1}`}
+            />
           ))}
         </div>
       </div>

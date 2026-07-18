@@ -3,7 +3,9 @@
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { cityName, generateBreadcrumbs } from "@/utils/common";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChevronsRight } from "lucide-react";
+import { useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 const slugToLabel = (slug: string) =>
@@ -74,6 +76,7 @@ const Breadcrumb = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const propertyDetails: any = mainReducer?.property_details ?? {};
   const propertyTitle = cityName(propertyDetails?.slug) || "";
@@ -116,11 +119,22 @@ const Breadcrumb = () => {
     breadcrumbs = sanitizeBreadcrumbs(generateBreadcrumbs(pathname, propertyDetails));
   }
 
-  const shouldCollapse = breadcrumbs.length > 4;
-  const visibleBreadcrumbs = shouldCollapse
+  const shouldCollapseMobile = breadcrumbs.length > 2;
+  const shouldCollapseDesktop = breadcrumbs.length > 4;
+
+  const visibleBreadcrumbsMobile = shouldCollapseMobile
+    ? [breadcrumbs[0], breadcrumbs[breadcrumbs.length - 1]]
+    : breadcrumbs;
+  const hiddenBreadcrumbsMobile = shouldCollapseMobile
+    ? breadcrumbs.slice(1, -1)
+    : [];
+
+  const visibleBreadcrumbsDesktop = shouldCollapseDesktop
     ? [breadcrumbs[0], ...breadcrumbs.slice(-2)]
     : breadcrumbs;
-  const hiddenBreadcrumbs = shouldCollapse ? breadcrumbs.slice(1, -2) : [];
+  const hiddenBreadcrumbsDesktop = shouldCollapseDesktop
+    ? breadcrumbs.slice(1, -2)
+    : [];
 
   const renderCrumb = (item: { label: string; href?: string }, isLast: boolean) => (
     <span className="flex items-center gap-1">
@@ -143,42 +157,66 @@ const Breadcrumb = () => {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="min-h-12 max-md:flex-wrap flex items-center gap-1 text-md font-manrope font-normal text-[#666666]"
+      className="min-h-12 flex items-center gap-1 text-md font-manrope font-normal text-[#666666]"
     >
-      {shouldCollapse && (
-        <>
-          {renderCrumb(visibleBreadcrumbs[0], false)}
-          <TooltipProvider delayDuration={200}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="capitalize transition hover:text-black px-1">
-                  ...
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="max-w-xs">
-                <div className="flex flex-col gap-1">
-                  {hiddenBreadcrumbs.map((item, i) =>
-                    item.href ? (
-                      <button
-                        key={i}
-                        onClick={() => router.push(item.href!)}
-                        className="text-sm capitalize text-left hover:underline hover:text-black transition"
-                      >
-                        {item.label}
-                      </button>
-                    ) : (
-                      <span key={i} className="text-sm capitalize">{item.label}</span>
-                    )
+      {/* Desktop view */}
+      <div className="hidden md:flex items-center gap-1">
+        {shouldCollapseDesktop ? (
+          <>
+            {renderCrumb(visibleBreadcrumbsDesktop[0], false)}
+            <TooltipProvider delayDuration={200}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="capitalize transition hover:text-black px-1">
+                    ...
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-xs">
+                  <div className="flex flex-col gap-1">
+                    {hiddenBreadcrumbsDesktop.map((item, i) =>
+                      item.href ? (
+                        <button
+                          key={i}
+                          onClick={() => router.push(item.href!)}
+                          className="text-sm capitalize text-left hover:underline hover:text-black transition"
+                        >
+                          {item.label}
+                        </button>
+                      ) : (
+                        <span key={i} className="text-sm capitalize">{item.label}</span>
+                      )
+                    )}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            {visibleBreadcrumbsDesktop.slice(1).map((item, i) => {
+              const realIndex = i + 1;
+              const isLast = realIndex === visibleBreadcrumbsDesktop.length - 1;
+              return (
+                <span key={`desktop-${i}`} className="flex items-center gap-1">
+                  {!isLast && item.href ? (
+                    <button
+                      onClick={() => router.push(item.href!)}
+                      className="capitalize transition hover:text-black"
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <span className="capitalize text-[#000000]">{item.label}</span>
                   )}
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          {visibleBreadcrumbs.slice(1).map((item, i) => {
-            const realIndex = i + 1;
-            const isLast = realIndex === visibleBreadcrumbs.length - 1;
+                  {!isLast && (
+                    <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
+                  )}
+                </span>
+              );
+            })}
+          </>
+        ) : (
+          breadcrumbs.map((item, index) => {
+            const isLast = index === breadcrumbs.length - 1;
             return (
-              <span key={`tail-${i}`} className="flex items-center gap-1">
+              <span key={index} className="flex items-center gap-1">
                 {!isLast && item.href ? (
                   <button
                     onClick={() => router.push(item.href!)}
@@ -194,29 +232,87 @@ const Breadcrumb = () => {
                 )}
               </span>
             );
-          })}
-        </>
-      )}
-      {!shouldCollapse && breadcrumbs.map((item, index) => {
-        const isLast = index === breadcrumbs.length - 1;
-        return (
-          <span key={index} className="flex items-center gap-1">
-            {!isLast && item.href ? (
-              <button
-                onClick={() => router.push(item.href!)}
-                className="capitalize transition hover:text-black"
-              >
-                {item.label}
-              </button>
-            ) : (
-              <span className="capitalize text-[#000000]">{item.label}</span>
-            )}
-            {!isLast && (
-              <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
-            )}
-          </span>
-        );
-      })}
+          })
+        )}
+      </div>
+
+      {/* Mobile view */}
+      <div className="flex md:hidden items-center gap-1 flex-wrap">
+        {shouldCollapseMobile ? (
+          <>
+            {renderCrumb(visibleBreadcrumbsMobile[0], false)}
+            <Popover open={mobileOpen} onOpenChange={setMobileOpen}>
+              <PopoverTrigger asChild>
+                <button className="capitalize transition hover:text-black px-1">
+                  ...
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="bottom" className="max-w-xs w-auto p-2">
+                <div className="flex flex-col gap-1">
+                  {hiddenBreadcrumbsMobile.map((item, i) =>
+                    item.href ? (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          router.push(item.href!);
+                          setMobileOpen(false);
+                        }}
+                        className="text-sm capitalize text-left hover:underline hover:text-black transition"
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <span key={i} className="text-sm capitalize">{item.label}</span>
+                    )
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
+            {visibleBreadcrumbsMobile.slice(1).map((item, i) => {
+              const realIndex = i + 1;
+              const isLast = realIndex === visibleBreadcrumbsMobile.length - 1;
+              return (
+                <span key={`mobile-${i}`} className="flex items-center gap-1">
+                  {!isLast && item.href ? (
+                    <button
+                      onClick={() => router.push(item.href!)}
+                      className="capitalize transition hover:text-black"
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <span className="capitalize text-[#000000]">{item.label}</span>
+                  )}
+                  {!isLast && (
+                    <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
+                  )}
+                </span>
+              );
+            })}
+          </>
+        ) : (
+          breadcrumbs.map((item, index) => {
+            const isLast = index === breadcrumbs.length - 1;
+            return (
+              <span key={index} className="flex items-center gap-1">
+                {!isLast && item.href ? (
+                  <button
+                    onClick={() => router.push(item.href!)}
+                    className="capitalize transition hover:text-black"
+                  >
+                    {item.label}
+                  </button>
+                ) : (
+                  <span className="capitalize text-[#000000]">{item.label}</span>
+                )}
+                {!isLast && (
+                  <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
+                )}
+              </span>
+            );
+          })
+        )}
+      </div>
     </nav>
   );
 };
