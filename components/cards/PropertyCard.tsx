@@ -84,7 +84,6 @@ const PropertyCard = ({
     : currentPath.replace(/\/$/, "")
     }/${propertyIdentifier}${searchParams}`;
 
-
   const handleNavigate = () => {
     router.push(propertyDetailUrl);
   };
@@ -288,7 +287,7 @@ const PropertyCard = ({
           property?.isRented ||
           property?.zeccoRented) && (
             <>
-              <div className="absolute inset-0 bg-black/45 z-20" />
+              <div className="absolute inset-0 bg-black/45" />
               <div className="absolute inset-0 z-30 flex items-center justify-center">
                 <div className="relative w-full flex items-center justify-center">
                   <div className="absolute w-full h-[2px]" />

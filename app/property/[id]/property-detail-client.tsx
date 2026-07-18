@@ -130,7 +130,7 @@ export default function PropertyDetailClient() {
     }
     : null;
 
-    console.log("mainReducer?.property_details?.features ::: " , mainReducer?.property_details?.features)
+    console.log("mainReducer?.ai_insight ::: " , mainReducer?.ai_insight)
 
   return (
     <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={true}>

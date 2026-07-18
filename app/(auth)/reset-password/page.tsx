@@ -162,7 +162,7 @@ const ResetPassword = () => {
             </div>
           </form>
 
-          <div className="flex items-center px-8 mt-1 mb-5">
+          {/* <div className="flex items-center px-8 mt-1 mb-5">
             <Link
               href={App_url?.link?.SIGN_UP}
               className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
@@ -173,7 +173,7 @@ const ResetPassword = () => {
                 Register
               </span>
             </Link>
-          </div>
+          </div> */}
         </Form>
       </AuthLayout>
     </>

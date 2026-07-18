@@ -14,7 +14,7 @@ const SidebarLayout = ({ children }: { children: React.ReactNode }) => {
       <div className="fixed top-0 left-0 right-0 z-50 h-[72px]">
         <Header onProfileClick={() => setSidebarOpen(!sidebarOpen)} />
       </div>
-      <div className="lg:px-16 px-3 sm:px-7">
+      <div className="lg:px-14 px-3 sm:px-7">
         <div className="flex justify-between items-center  pt-[75px] gap-4">
           <Breadcrumb />
         </div>

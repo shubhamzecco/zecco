@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { Search } from "lucide-react";
 import SavedSearchCard from "./components/search-card";
+import CommonCard from "@/components/cards/common-card";
 
 const SavedSearches = () => {
   const { sendMessage, lastEvent, isConnected } = useWebSocket();
@@ -155,29 +156,41 @@ const SavedSearches = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
 
-      {!mainReducer?.saved_searches?.data || mainReducer?.saved_searches?.data?.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-[400px] w-full">
-          <Search size={40} className="text-gray-300 mb-3" />
-          <h2 className="text-lg font-bold text-gray-800">
-            No Saved Searches
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-500">
-            Your saved searches will appear here
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-4 overflow-y-auto max-h-[100vh] scrollbar-hide bg-slate-50">
-          {mainReducer?.saved_searches?.data?.map((item: any) => {
-            const title = generateSearchTitle(item);
-
-            return (
-              <div key={item?.id} >
-                <SavedSearchCard title={title} item={item} handleDelete={handleDelete}  onApplySearch={handleApplySearch} />
+      <CommonCard heading={mainReducer?.saved_searches?.data && mainReducer?.saved_searches?.data?.length > 0 ? "Saved Searches" : undefined} className="min-h-[calc(100vh-130px)]">
+        {!mainReducer?.saved_searches?.data || mainReducer?.saved_searches?.data?.length === 0 ? (
+          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-250px)] px-4">
+            <div className="relative mb-6">
+              <div className="w-24 h-24 rounded-full bg-blue-50 flex items-center justify-center">
+                <Search size={48} className="text-blue-400" strokeWidth={1.5} />
               </div>
-            );
-          })}
-        </div>
-      )}
+            </div>
+            <h2 className="text-xl font-bold text-gray-800 font-manrope mb-2">
+              No Saved Searches Yet
+            </h2>
+            <p className="text-center text-sm text-gray-500 font-manrope max-w-md mb-6">
+              Your saved searches will appear here for quick access to your preferred property filters.
+            </p>
+            <button
+              onClick={() => router.push("/costa-del-sol/properties")}
+              className="relative w-fit mx-auto mt-8 text-xs sm:text-sm whitespace-nowrap my-5 py-3.5 px-4 sm:px-10 rounded-full flex items-center bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white font-manrope font-medium shadow-md disabled:opacity-50 "
+            >
+              Browse Properties
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-4 overflow-y-auto max-h-[100vh] scrollbar-hide">
+            {mainReducer?.saved_searches?.data?.map((item: any) => {
+              const title = generateSearchTitle(item);
+
+              return (
+                <div key={item?.id} >
+                  <SavedSearchCard title={title} item={item} handleDelete={handleDelete}  onApplySearch={handleApplySearch} />
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </CommonCard>
 
     </SidebarLayout>
   );

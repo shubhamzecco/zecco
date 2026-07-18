@@ -85,7 +85,7 @@ const SignUpPage = () => {
       <Head>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <AuthLayout heading="Create Your Zecco Account" description="">
+      <AuthLayout heading="Create Your Zecco Account" description="" backToHome>
         <Form {...form}>
           <form
             className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"

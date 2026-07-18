@@ -37,13 +37,14 @@ const formSchema = z.object({
 
 const passwordSchema = z
   .object({
-    current_password: z.string().min(6, "Current password is required"),
+    current_password: z.string().min(6, "Current password is required."),
     new_password: z
       .string()
+      .nonempty("Password is required.")
       .min(6, "Password must be at least 6 characters.")
       .regex(/[a-z]/, "Must contain one lowercase letter.")
       .regex(/[0-9]/, "Must contain one number."),
-    confirm_password: z.string().min(6, "Confirm password is required"),
+    confirm_password: z.string().min(6, "Confirm password is required."),
   })
   .refine((data) => data.new_password === data.confirm_password, {
     path: ["confirm_password"],

@@ -6,6 +6,9 @@ import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useCallback, useEffect, useRef, useState } from "react";
 import debounce from 'lodash/debounce'
+import { useDispatch } from "react-redux";
+import { setAiInsight, setStoredAiInsightList } from "@/redux/modules/main/action";
+import { IPropertyResponse } from "@/redux/modules/main/types";
 
 const LIMIT = 12;
 
@@ -18,6 +21,7 @@ const CostadelSol = () => {
   const [loading, setLoading] = useState(false);
   const [allAreas, setAllAreas] = useState<any[]>([]);
   const fetchedPages = useRef<Set<string>>(new Set());
+  const dispatch = useDispatch()
 
   const fetchAreas = (
     currentPage: number,
@@ -47,6 +51,7 @@ const CostadelSol = () => {
 
   useEffect(() => {
     fetchAreas(1, "", true);
+     dispatch(setAiInsight({} as IPropertyResponse));
   }, [isConnected]);
 
   useEffect(() => {
