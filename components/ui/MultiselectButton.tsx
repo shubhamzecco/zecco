@@ -12,6 +12,7 @@ interface MultiSelectButtonGroupProps {
     options: Option[];
     columns?: 2 | 3 | 4 | 5 | 6;
     className?: string;
+    labelClassName?: string;
     maxSelected?: number;
 }
 
@@ -22,6 +23,7 @@ export function MultiSelectButtonGroup({
     options,
     columns = 3,
     className = "",
+    labelClassName = "",
     maxSelected,
 }: MultiSelectButtonGroupProps) {
     const getGridColumns = () => {
@@ -68,7 +70,7 @@ export function MultiSelectButtonGroup({
 
                 return (
                     <FormItem>
-                        <FormLabel className="font-medium font-inter text-[#101828]">
+                        <FormLabel className={`font-medium font-inter text-[#101828] ${labelClassName}`}>
                             {label}
                         </FormLabel>
 

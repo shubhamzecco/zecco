@@ -42,7 +42,7 @@ const AboutZecco = () => {
               </p>
               <button
                 onClick={handleNavigate}
-                className="w-fit px-10 mt-10 tracking-wider shadow-md my-4 bg-[#136AED] text-white text-[15px] py-2.5 rounded-full font-inter font-semibold flex items-center gap-2"
+                className="w-fit px-10 max-sm:mt-6 mt-10 tracking-wider shadow-md my-4 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-[15px] py-2.5 rounded-full font-inter font-semibold flex items-center gap-2"
               >
                 Explore properties
               </button>

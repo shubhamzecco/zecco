@@ -297,7 +297,7 @@ const OtpVerification = () => {
                       <>
                         <div className="text-center my-7">
                           {!canResend ? (
-                            <p className="text-black/60 flex flex-col items-center justify-center">
+                            <p className="text-black/60 flex flex-col items-center justify-center max-md:text-white/80">
                               Resend OTP in{" "}
                               <span className="font-semibold text-brand-orange text-2xl ">
                                 {formatTime(timeLeft)}
@@ -334,13 +334,14 @@ const OtpVerification = () => {
                               onPaste={(e) => handlePaste(e, field.onChange)}
                               className="w-12 h-12 text-center text-xl rounded-[10px]
                                 border border-indigo-50 shadow-lg bg-indigo-50 text-black
-                                focus:outline-none focus:ring-2"
+                                focus:outline-none focus:ring-2
+                                max-md:bg-white/20 max-md:border-white/30 max-md:text-white max-md:backdrop-blur-sm"
                             />
                           ))}
                         </div>
                       </>
                     </FormControl>
-                    <FormMessage className="text-center mt-3" />
+                    <FormMessage className="text-center mt-3 max-md:text-red-300" />
                   </FormItem>
                 )}
               />
@@ -348,7 +349,7 @@ const OtpVerification = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-[80%] capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
+                  className="w-[80%] capitalize bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF]  h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
                 >
                   {loading && <Loader2 className="h-5 w-5 animate-spin" /> } Verify OTP
                 </Button>
@@ -374,14 +375,14 @@ const OtpVerification = () => {
               className="max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
               onSubmit={preferenceForm.handleSubmit(onPreferenceSubmit)}
             >
-              <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-4">
                 <DropdownSelect
                   label="Preferred Location"
                   defaultValue="Preferred Location"
                   options={locationOptions}
                   control={preferenceForm.control}
                   name="location"
-                  labelClassName="font-bold"
+                  labelClassName="font-bold max-md:text-white"
                   isRounded
                 />
                 <DropdownSelect
@@ -390,7 +391,7 @@ const OtpVerification = () => {
                   options={propertyTypeOptions}
                   control={preferenceForm.control}
                   name="category"
-                  labelClassName="font-bold"
+                  labelClassName="font-bold max-md:text-white"
                   multiselect
                   isRounded
                 />
@@ -400,7 +401,7 @@ const OtpVerification = () => {
                   name="budget"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-semibold font-inter text-[#101828]">
+                      <FormLabel className="font-semibold font-inter text-[#101828] max-md:text-white">
                         Budget Range
                       </FormLabel>
                       <FormControl>
@@ -415,7 +416,7 @@ const OtpVerification = () => {
                                 className={`
                                   h-11 rounded-full border text-sm font-medium transition-all
                                   ${isSelected
-                                    ? "border-[#136AED] bg-[#136AED] text-white shadow-md"
+                                    ? "border-[#136AED] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white shadow-md"
                                     : "border-[#D1D5DB] bg-white text-[#374151] hover:border-[#136AED]"
                                   }
                                 `}
@@ -436,13 +437,14 @@ const OtpVerification = () => {
                   label="Bedrooms"
                   options={bedroomRanges}
                   columns={5}
+                  labelClassName="max-md:text-white"
                 />
               </div>
               <div className="flex items-center mt-4 gap-5">
                 <Button
                   type="submit"
                   disabled={prefLoading}
-                  className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
+                  className="w-full capitalize font-inter font-bold tracking-wider  bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
                 >
                   {prefLoading && <Loader2 className="h-5 w-5 animate-spin" /> } Save Preferences
                 </Button>

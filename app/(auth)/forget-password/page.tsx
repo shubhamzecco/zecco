@@ -84,18 +84,18 @@ const ForgetPassword = () => {
                 <FormItem>
                   <FormLabel
                     required
-                    className="font-semibold font-inter text-[#101828]"
+                    className="font-semibold font-inter text-[#101828] max-md:text-white"
                   >
                     Email Address
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Email address"
-                      className="rounded-full h-12 bg-white border-[#D1D5DB] text-black"
+                      className="rounded-full h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="max-md:text-red-300" />
                 </FormItem>
               )}
             />
@@ -105,7 +105,7 @@ const ForgetPassword = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
+              className="w-full capitalize bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF]  h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
             >
               {loading && <Loader2 className="h-5 w-5 animate-spin" />}  Send OTP
             </Button>
@@ -115,9 +115,9 @@ const ForgetPassword = () => {
         <div className="flex items-center px-8">
           <Link
             href={App_url.link.SIGN_UP}
-            className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md"
+            className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md max-md:text-white/70"
           >
-            Don't have an account?
+            Don&apos;t have an account?
             <span className="text-[#3B82F6] font-bold font-inter text-base">
               {" "}
               Register

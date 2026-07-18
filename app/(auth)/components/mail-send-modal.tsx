@@ -47,7 +47,7 @@ export default function CheckInboxModal({
           </p>
           <Button
             onClick={onReturn}
-            className="mt-8 w-full font-instrument_sans rounded-full bg-[#136AED] h-12  py-3.5 text-sm font-normal tracking-wider text-white shadow-lg transition"
+            className="mt-8 w-full font-instrument_sans rounded-full bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12  py-3.5 text-sm font-normal tracking-wider text-white shadow-lg transition"
           >
             Return to Homepage
           </Button>

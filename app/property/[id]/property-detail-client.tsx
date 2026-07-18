@@ -160,7 +160,7 @@ export default function PropertyDetailClient() {
                 onClick={() =>
                   isLoggedIn ? handleAIInsight() : dispatch(setLoginPopup(true))
                 }
-                className="w-full capitalize bg-[#136AED] shadow-[#BFDBFE] h-11 my-4 text-white rounded-full shadow-md"
+                className="w-full capitalize bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF]  h-11 my-4 text-white rounded-full shadow-md"
               >
                 AI Market Intelligence
               </Button>
