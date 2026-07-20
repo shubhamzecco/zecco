@@ -9,7 +9,7 @@ interface ICommonCard {
 
 const CommonCard = ({ children, heading, description , className }: ICommonCard) => {
     return (
-        <div className={`bg-white p-8 rounded-3xl border shadow-xl ${className}`}>
+        <div className={`bg-white max-sm:p-5 p-8 rounded-3xl border shadow-xl ${className}`}>
             {heading && (
                 <h2 className="font-bold text-lg font-manrope text-[#0F172A]">
                     {heading}

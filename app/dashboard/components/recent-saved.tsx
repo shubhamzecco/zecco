@@ -11,7 +11,7 @@ const RecentSaved = ({ properties }: any) => {
     const isEmpty = !properties || properties.length === 0
 
     return (
-        <CommonCard className='!px-3' heading={isEmpty ? undefined : 'Recent Saved Properties'} description={isEmpty ? undefined : 'Properties you saved recently'}>
+        <CommonCard className="max-2xl:p-5" heading={isEmpty ? undefined : 'Recent Saved Properties'} description={isEmpty ? undefined : 'Properties you saved recently'}>
             {isEmpty ? (
                 <div className="flex flex-col items-center justify-center h-[280px] lg:h-[365px] 2xl:h-[380px] px-4">
                     <div className="relative mb-6">
@@ -39,8 +39,8 @@ const RecentSaved = ({ properties }: any) => {
                         return (
                             <div
                                 key={item?._id || index}
-                                onClick={() => router.push(`${App_url.link.PROPERTY_DETAILS}/${itemIdentifier}`)}
-                                className={`flex items-center cursor-pointer justify-between gap-3 py-[7px] ${index !== properties.length - 1
+                                onClick={() => router.push(`${App_url.link.COSTA_DEL_SOL}/properties/${itemIdentifier}`)}
+                                className={`flex items-center cursor-pointer justify-between gap-3 px-2 py-[9px] ${index !== properties.length - 1
                                     ? "border-b border-[#F1F5F9]"
                                     : ""
                                     }`}
@@ -81,7 +81,7 @@ const RecentSaved = ({ properties }: any) => {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-col items-end shrink-0">
+                                <div className="flex flex-col items-end shrink-0 px-2">
                                     <span className="text-[12px] whitespace-nowrap font-semibold text-[#3B82F6]">
                                         {formatEuro(item?.salePrice)}
                                     </span>
@@ -99,7 +99,7 @@ const RecentSaved = ({ properties }: any) => {
             )}
 
             {!isEmpty && (
-                <button onClick={() => router.push(App_url.link.FAVORITES)} className="mt-4 text-[13px] font-semibold text-[#2563EB] transition hover:translate-x-1">
+                <button onClick={() => router.push(App_url.link.FAVORITES)} className="mt-2 text-[13px] px-2 font-semibold text-[#2563EB] transition hover:translate-x-1">
                     View All Saved →
                 </button>
             )}

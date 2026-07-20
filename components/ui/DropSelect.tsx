@@ -314,7 +314,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
       )}
       {label && !isLabelRight && (
         <label
-          className={`font-normal z-[1] w-fit dropdown-label font-${fontWeight} ${labelClassName} form-label  text-black  text-sm`}
+          className={`font-medium font-inter text-[#101828]  z-[1] w-fit dropdown-label font-${fontWeight} ${labelClassName} form-label  text-sm`}
           htmlFor={name}
         >
           {label}
