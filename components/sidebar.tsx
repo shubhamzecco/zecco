@@ -90,7 +90,7 @@ export default function Sidebar({ isOpen, onClose, desktopOnly, mobileOnly }: Si
     <>
       {/* ===== DESKTOP SIDEBAR ===== */}
       {!mobileOnly && (
-        <aside className="hidden lg:flex w-full max-md:h-[calc(100vh-50px)] bg-white px-6 py-6 rounded-3xl flex-col overflow-y-scroll hide-scrollbar shadow-xl">
+        <aside className="hidden lg:flex w-full max-md:h-[calc(100vh-50px)] bg-white px-6 py-6 rounded-3xl flex-col overflow-y-scroll hide-scrollbar border shadow-xl">
           <div className="flex flex-col items-center gap-3 border-b border-[#E2E9E0] pb-5 mt-1 mb-5">
             {user_data?.user?.profile_image ? (
               <Image

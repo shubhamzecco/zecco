@@ -195,6 +195,7 @@ export const PreferenceSection = (props?: any) => {
                     options={locationOptions}
                     control={preferenceForm.control}
                     name="location"
+                    isRounded
                     labelClassName="font-bold" />
 
                   <MultiSelectButtonGroup

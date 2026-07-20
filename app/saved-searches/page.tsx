@@ -156,7 +156,7 @@ const SavedSearches = () => {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
 
-      <CommonCard heading={mainReducer?.saved_searches?.data && mainReducer?.saved_searches?.data?.length > 0 ? "Saved Searches" : undefined} className="min-h-[calc(100vh-130px)]">
+      <CommonCard heading={mainReducer?.saved_searches?.data && mainReducer?.saved_searches?.data?.length > 0 ? "Saved Searches" : undefined} description={mainReducer?.saved_searches?.data && mainReducer?.saved_searches?.data?.length > 0 ? "Your saved searches will appear here for quick access to your preferred property filters." : undefined} className="min-h-[calc(100vh-130px)]">
         {!mainReducer?.saved_searches?.data || mainReducer?.saved_searches?.data?.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-[calc(100vh-250px)] px-4">
             <div className="relative mb-6">
