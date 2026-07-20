@@ -66,7 +66,7 @@ function AgentCard() {
                         onClick={() => window.location.href = `tel:${user_data?.user?.agent?.agent?.contact_no}`}
                         className="relative w-full mt-4 my-5 py-3.5 px-10 rounded-2xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
                     >
-                        Contact Agent
+                        Chat with an Agent
                     </button>
                 </div>
             </CommonCard>

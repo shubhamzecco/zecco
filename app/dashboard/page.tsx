@@ -44,7 +44,6 @@ const DashboardPage = () => {
       <div className="lg:flex items-start gap-3  ">
         <div className="lg:w-[70%]">
           <Greeting />
-
         </div>
         <div className="lg:w-[30%] lg:block max-lg:mt-5 sm:grid grid-cols-2 items-stretch gap-5">
           <div>

@@ -9,6 +9,7 @@ import { setReduxClear } from "@/redux/modules/main/action";
 import {
   CreditCard,
   Filter,
+  Gem,
   Heart,
   Home,
   LogOut,
@@ -114,8 +115,9 @@ export default function Sidebar({ isOpen, onClose, desktopOnly, mobileOnly }: Si
                 {user_data?.user?.email}
               </p>
             </div>
-            <div className="text-sm font-manrope font-semibold text-[#2F80FF] leading-tight">
-              <h2>
+            <div className={`text-xs font-manrope font-semibold leading-tight ${Number(user_data?.user?.package?.price) > 0 ? 'bg-gradient-to-r from-[#D4AF37] via-[#F7E27D] to-[#C99700] text-black' : 'bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF]  text-white '}  rounded-full px-3 py-1`}>
+              <h2 className="flex items-center gap-1">
+                <Gem className="w-5 h-5"/>
                 {Number(user_data?.user?.package?.price) > 0
                   ? "Premium Member"
                   : "Standard Member"}

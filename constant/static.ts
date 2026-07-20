@@ -14,7 +14,7 @@ export const App_url = {
     ai_search: "/assets/images/ai-search.svg",
     modular: "/assets/images/modular.svg",
     building: "/assets/images/building.png",
-    home: "/assets/images/dev-1/hero.png",
+    home: "/assets/images/dev-1/hero-try.png",
     your_search: "/assets/images/dev-1/manage-search.jpg",
     plan: "/assets/images/dev/plan.jpg",
     plan_3d: "/assets/images/dev-1/3d-plan.png",
