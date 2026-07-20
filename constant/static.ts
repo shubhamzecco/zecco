@@ -14,7 +14,7 @@ export const App_url = {
     ai_search: "/assets/images/ai-search.svg",
     modular: "/assets/images/modular.svg",
     building: "/assets/images/building.png",
-    home: "/assets/images/dev-1/hero.png",
+    home: "/assets/images/dev-1/hero-try.png",
     your_search: "/assets/images/dev-1/manage-search.jpg",
     plan: "/assets/images/dev/plan.jpg",
     plan_3d: "/assets/images/dev-1/3d-plan.png",
@@ -28,6 +28,7 @@ export const App_url = {
     away_icon: "/assets/images/away.svg",
     footer: "/assets/images/footer.svg",
     profile: "/assets/images/dev/profile.png",
+    chat_image : "/assets/images/chat-image.webp"
   },
   link: {
     INITIAL_URL: "/",
@@ -56,6 +57,7 @@ export const App_url = {
     DRAW_AREA: "/draw-area",
     NEAR_BY_LOCATIONS: "/near-by-locations",
     SELECT_AREA: "/select-area",
+    PREFERENCES: "/preferences",
   },
   endpoint_url: {
     GET_AUTH_USER: "/api/user",
@@ -66,15 +68,17 @@ export const App_url = {
     FORGET_PASSWORD_VERIFY_OTP: "/api/auth/verify-otp",
     VERIFY_OTP: "/api/auth/verify-otp",
     VERIFY_ACCOUNT: "/api/auth/verify-account",
-    RESEND_OTP: "/resend-otp",
+    RESEND_OTP: "/api/auth/resend-otp",
     LOGOUT: "/api/auth/logout",
     UPLOAD_FILE: "/api/upload",
     AI_INSIGHT: "/api/ai-insight",
     CREATE_PAYMENT: "/api/payment/create-payment",
     PAYMENT_STATUS: "/api/payment/status",
+    EXPORT: "/api/payment/export",
   },
-  chat_bot_url: "http://localhost:5678/webhook/zecco",
-  chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco",
+  chat_bot_url: "https://n8n.appristine.co.in/webhook/zecco/AI-Chatbot",
+  chat_bot_url_main: "https://n8n.appristine.co.in/webhook/zecco/AI-Chatbot",
+  zecco_ai_url: process.env.NEXT_PUBLIC_ZECCO_AI_URL || "http://localhost:8084",
 };
 
 export const initialState = {

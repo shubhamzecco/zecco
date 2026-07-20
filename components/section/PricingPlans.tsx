@@ -27,6 +27,35 @@ export default function PricingPlans({ heading, description }: IPricePlans) {
     });
   }, [isConnected]);
 
+  const sortPackagesByPrice = (packages: any[] = []) => {
+    return packages.slice().sort((a, b) => {
+      const getNumericPrice = (price: string) => {
+        const cleaned = price?.replace(/[^\d]/g, "");
+        return cleaned ? Number(cleaned) : NaN;
+      };
+
+      const priceA = getNumericPrice(a?.price);
+      const priceB = getNumericPrice(b?.price);
+
+      const isANumber = !isNaN(priceA);
+      const isBNumber = !isNaN(priceB);
+
+      if (isANumber && isBNumber) {
+        return priceA - priceB;
+      }
+
+      if (isANumber && !isBNumber) {
+        return -1;
+      }
+
+      if (!isANumber && isBNumber) {
+        return 1;
+      }
+
+      return 0;
+    });
+  };
+
   return (
     <section className="bg-[#F8FAFC] py-14">
       <div className="lg:mx-10 px-6">
@@ -39,33 +68,15 @@ export default function PricingPlans({ heading, description }: IPricePlans) {
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {mainReducer?.package_list_with_limit?.data
-            ?.slice()
-            ?.sort((a, b) => {
-              const getNumericPrice = (price: string) => {
-                const cleaned = price.replace(/[^\d]/g, "");
-                return cleaned ? Number(cleaned) : NaN;
-              };
-
-              const priceA = getNumericPrice(a.price);
-              const priceB = getNumericPrice(b.price);
-
-              const isANumber = !isNaN(priceA);
-              const isBNumber = !isNaN(priceB);
-              if (isANumber && isBNumber) {
-                return priceA - priceB;
-              }
-              if (isANumber && !isBNumber) {
-                return -1;
-              }
-              if (!isANumber && isBNumber) {
-                return 1;
-              }
-              return 0;
-            })
-            ?.map((plan, index) => (
-              <PackageCard key={plan._id || index} plan={plan} index={index} />
-            ))}
+          {sortPackagesByPrice(mainReducer?.package_list_with_limit?.data)?.map(
+            (plan, index) => (
+              <PackageCard
+                key={plan?._id || index}
+                plan={plan}
+                index={index}
+              />
+            )
+          )}
         </div>
       </div>
     </section>

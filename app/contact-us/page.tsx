@@ -2,20 +2,20 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import MainLayout from "@/components/layouts/main-layout";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { App_url } from "@/constant/static";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as z from "zod";
@@ -23,13 +23,17 @@ import * as z from "zod";
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  contact_no: z.string().min(1, "Mobile number is required"),
-  email: z.string().email("Invalid email address"),
-  consultation: z.string().optional(),
-  project_information: z.string().optional(),
+  contact_no: z
+    .string()
+    .min(1, "Mobile number is required")
+    .regex(/^((\+91|0)?[6-9]\d{9}|(\+34)?[67]\d{8})$/, "Invalid mobile number"),
+  email: z.string().min(1, "Email address is required").email("Please enter a valid email address"),
+  consultation: z.string().min(1, "Consultation is required"),
+  project_information: z.string().min(1, "Project information is required"),
 });
 
 const ContactUs = () => {
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,6 +44,7 @@ const ContactUs = () => {
       consultation: "",
       project_information: "",
     },
+    mode: "onChange",
   });
   const { sendMessage, lastEvent } = useWebSocket();
 
@@ -49,12 +54,14 @@ const ContactUs = () => {
       lastEvent?.data?.request?.type === "inquiryService" &&
       lastEvent?.data?.request?.action === "add"
     ) {
+      setLoading(false);
       form?.reset({});
       toast.success(lastEvent?.data?.msg);
     }
   }, [lastEvent]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
     sendMessage("action", {
       type: "inquiryService",
       action: "add",
@@ -93,12 +100,12 @@ const ContactUs = () => {
                         name="first_name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="font-medium font-inter text-[#101828]">
+                            <FormLabel required className="font-medium font-inter text-[#101828]">
                               First Name
                             </FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter first name"
+                                placeholder="First name"
                                 className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                                 {...field}
                               />
@@ -112,12 +119,12 @@ const ContactUs = () => {
                         name="last_name"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="font-medium font-inter text-[#101828]">
+                            <FormLabel required className="font-medium font-inter text-[#101828]">
                               Last Name
                             </FormLabel>
                             <FormControl>
                               <Input
-                                placeholder="Enter last name"
+                                placeholder="Last name"
                                 className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                                 {...field}
                               />
@@ -127,18 +134,17 @@ const ContactUs = () => {
                         )}
                       />
                     </div>
-
                     <FormField
                       control={form.control}
                       name="contact_no"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
-                            Phone
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
+                            Mobile Number
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter your phone"
+                              placeholder="Mobile number"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -147,18 +153,17 @@ const ContactUs = () => {
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
-                            Email
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
+                            Email Address
                           </FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Enter email"
+                              placeholder="Email address"
                               className="rounded-[10px] h-12 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -167,13 +172,12 @@ const ContactUs = () => {
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="consultation"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Consultation
                           </FormLabel>
                           <FormControl>
@@ -187,19 +191,18 @@ const ContactUs = () => {
                         </FormItem>
                       )}
                     />
-
                     <FormField
                       control={form.control}
                       name="project_information"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-medium font-inter text-[#101828]">
+                          <FormLabel required className="font-medium font-inter text-[#101828]">
                             Project Information
                           </FormLabel>
                           <FormControl>
                             <Textarea
                               rows={10}
-                              placeholder="What would you like to consult about"
+                              placeholder="Tell us more about the project"
                               className="rounded-[10px] h-28 bg-white border-[#D1D5DB] text-black"
                               {...field}
                             />
@@ -210,14 +213,17 @@ const ContactUs = () => {
                     />
                   </div>
                   <div className="flex items-center mt-3  gap-5">
-                    <button className="w-fit px-10 tracking-wider shadow-md my-4 bg-[#136AED] text-white text-[15px] py-2.5 rounded-full font-inter font-medium flex items-center gap-2">
-                      Submit
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="w-fit px-10 tracking-wider shadow-md my-4 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-[15px] py-2.5 rounded-full font-inter font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {loading && <Loader2 className="h-5 w-5 animate-spin" />} Submit
                     </button>
                   </div>
                 </form>
               </Form>
             </div>
-
             <div className="grid grid-cols-1 gap-2">
               <div className="p-8 bg-[#F2F3F6] rounded-lg">
                 <div className="space-y-4 text-sm flex gap-4 items-center">
@@ -234,28 +240,26 @@ const ContactUs = () => {
                     </span>
                   </div>
                 </div>
-
                 <div className="space-y-4 text-sm flex gap-4 items-center">
                   <div className="">
                     <Mail size={25} className="text-[#0B5394] mt-0.5" />
                   </div>
                   <div className="">
                     <h1 className="font-manrope font-bold text-[#000000] text-lg">
-                      Email
+                      Email Address
                     </h1>
                     <span className="font-manrope text-[#475569] font-normal">
                       info@zecco.es
                     </span>
                   </div>
                 </div>
-
                 <div className="space-y-4 text-sm flex gap-4 items-center">
                   <div className="">
                     <Phone size={25} className="text-[#0B5394] mt-0.5" />
                   </div>
                   <div className="">
                     <h1 className="font-manrope font-bold text-[#000000] text-lg">
-                      Phone
+                      Mobile Number
                     </h1>
                     <span className="font-manrope text-[#475569] font-normal">
                       <span className="font-semibold"> Mobile :</span> +34 600

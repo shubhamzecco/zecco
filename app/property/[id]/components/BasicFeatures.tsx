@@ -432,19 +432,19 @@ export default function BasicFeatures(features: { features: IFeature[] }) {
       <div className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-5 shadow-sm">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-2 gap-x-2">
           {visibleFeatures?.map((feature, index) => {
-            const Icon = lowerCaseIconMap[normalizeKey(feature.name)] || Scan;
+            const Icon = lowerCaseIconMap[normalizeKey(feature?.name)] || Scan;
             return (
               <>
                 <Feature
                   key={index}
                   icon={<Icon className="w-5 h-5 text-[#94A3B8]" />}
-                  text={formatText(feature.name)}
+                  text={formatText(feature?.name)}
                 />
               </>
             );
           })}
         </div>
-        {featureList.length > 10 && (
+        {featureList?.length > 10 && (
           <button
             onClick={() => setShowAllFeatures(!showAllFeatures)}
             className="mt-4 w-full text-center text-blue-600 font-medium font-manrope hover:underline"

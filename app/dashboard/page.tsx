@@ -1,34 +1,28 @@
 "use client";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setAiInsight } from "@/redux/modules/main/action";
-import { IPropertyResponse } from "@/redux/modules/main/types";
+import Head from "next/head";
+import Greeting from "./components/greating";
+import { useRouter } from "next/navigation";
+import AgentCard from "@/components/cards/agent-card";
+import CommonCard from "@/components/cards/common-card";
+import { App_url } from "@/constant/static";
+import { ArrowRight } from "lucide-react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import AiInsights from "./components/aiInsights";
-import Favorite from "./components/favorite";
-import SavedSearches from "./components/saved-searches";
-import { Search } from "lucide-react";
-import { useWebSocket } from "@/api/socket/WebSocketContext";
+import AiCard from "./components/ai-card";
 
 const DashboardPage = () => {
-  const dispatch = useDispatch();
-  const { mainReducer } = usePosterReducers();
+  const { mainReducer, user_data } = usePosterReducers();
   const { sendMessage, isConnected } = useWebSocket();
+  const router = useRouter()
 
   useEffect(() => {
-    dispatch(setAiInsight({} as IPropertyResponse));
-  }, []);
-
-  useEffect(() => {
+    if (!isConnected) return
     sendMessage("action", {
-      type: "aiInsightService",
+      type: "savedSearchService",
       action: "list",
-      payload: {
-        search: "",
-        limit: 3,
-        page: 1,
-      },
+      payload: {},
     });
     sendMessage("action", {
       type: "userService",
@@ -36,49 +30,41 @@ const DashboardPage = () => {
       payload: {},
     });
     sendMessage("action", {
-      type: "savedSearchService",
+      type: "chatService",
       action: "list",
       payload: {},
     });
-  }, [isConnected]);
-
-  const hasSavedSearches = (mainReducer?.saved_searches?.data?.length ?? 0) > 0;
-  const hasFavorites =
-    (mainReducer?.favorite_property_list?.data?.length ?? 0) > 0;
-  const hasInsights = (mainReducer?.stored_aiInsight?.data?.length ?? 0) > 0;
-  const isDashboardEmpty = !hasSavedSearches && !hasFavorites && !hasInsights;
+  }, [])
 
   return (
     <SidebarLayout>
-      <div
-        className="px-5 lg:px-12  pt-12 pb-4 mb-10
-                            bg-gradient-to-r
-                        from-[#60A5FA]/10
-                        via-[#fafafa] via-[70%]
-                        to-[#fafafa] to-[100%]"
-      >
-        {isDashboardEmpty ? (
-          <div className="min-h-[80vh] flex flex-col items-center justify-center text-center">
-            <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center mb-5">
-              <Search className="text-blue-600 w-10 h-10" />
-            </div>
-
-            <h1 className="text-2xl font-bold text-[#111827] mb-2">
-              Your dashboard is empty
-            </h1>
-
-            <p className="text-gray-500 max-w-md">
-              Save searches, favorite properties, and explore AI insights to
-              personalize your property experience.
-            </p>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <div className="lg:flex items-start gap-3  ">
+        <div className="lg:w-[70%]">
+          <Greeting />
+        </div>
+        <div className="lg:w-[30%] lg:block max-lg:mt-5 sm:grid grid-cols-2 items-stretch gap-5">
+          <div>
+            <CommonCard heading="AI Concierge" className="max-lg:h-full 2xl:h-[27vh] !py-4 max-2xl:!px-[14.3px]">
+              <p className="bg-[#edf0f7] p-[14.5px]  2xl:my-3 m-1.5 tracking-wide  rounded-xl font-manrope text-[#64748B] font-medium max-sm:text-xs sm:text-[15px] lg:text-xs xl:text-sm">
+               Your personal AI property assistant is always searching for homes that fit your preferences. Discover curated recommendations, market insights, and new listings tailored just for you.
+              </p>
+              <button
+                onClick={() => router.push(App_url.link.CONTACT_US)}
+                className="relative justify-center flex items-center gap-2 w-full mt-[16px] sm:mt-7 lg:mt-1 2xl:mt-[16px]  py-3.5 px-10 rounded-2xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
+              >
+                Chat with AI <ArrowRight className="w-4 h-4" />
+              </button>
+            </CommonCard>
           </div>
-        ) : (
-          <>
-            <SavedSearches />
-            <Favorite />
-            <AiInsights />
-          </>
-        )}
+          <div className="lg:mt-4 max-sm:mt-5">
+            {user_data?.user?.agent?.agent && (
+              <AgentCard />
+            )}
+          </div>
+        </div>
       </div>
     </SidebarLayout>
   );

@@ -10,6 +10,7 @@ interface AuthImageLayoutProps {
   bottomContent?: React.ReactNode;
   heading?: string;
   description?: string;
+  backToHome?: boolean;
 }
 
 export default function AuthLayout({
@@ -17,11 +18,11 @@ export default function AuthLayout({
   bottomContent,
   heading,
   description,
+  backToHome,
 }: AuthImageLayoutProps) {
   return (
-    <section className="lg:h-screen h-screen overflow-hidden bg-white lg:p-10 w-full">
+    <section className="min-h-screen w-full bg-white lg:h-screen lg:p-10">
       <div className="flex h-full items-center gap-10">
-        {/* LEFT IMAGE */}
         <div className="w-[53%] hidden lg:block relative h-full">
           <Image
             src={App_url.image.sign_up_image}
@@ -42,49 +43,77 @@ export default function AuthLayout({
             </span>
           </div>
         </div>
-        <div className="relative w-full lg:w-[40%] h-fit flex flex-col   max-md:py-10  max-md:rounded-xl">
+
+        {/* FORM PANEL — responsive: glass card on mobile, white panel on desktop */}
+        <div className="relative w-full lg:w-[40%] h-screen flex items-center justify-center ">
+          {/* MOBILE/TABLET: Full-screen background image behind the card */}
           <div
-            className="absolute inset-0 bg-center bg-cover opacity-20 md:hidden max-md:rounded-xl"
+            className="absolute inset-0 bg-cover bg-center lg:hidden"
             style={{
-              backgroundImage: "url('/assets/images/signup-image.png')",
+              backgroundImage: `url('${App_url.image.sign_up_image}')`,
             }}
           />
-          <div className="absolute inset-0 bg-black/10 md:hidden max-md:rounded-xl" />
+          {/* <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50 lg:hidden" /> */}
 
-          <div className="relative z-10 w-full h-full px-10 flex flex-col max-md:justify-center">
-            <div className="flex justify-center">
-              <Image
-                src={App_url.image.logo}
-                alt="logo"
-                width={170}
-                height={170}
-                unoptimized
-              />
+          {/* GLASS CARD (mobile/tablet) / WHITE PANEL (desktop) */}
+          <div
+            className="
+              relative z-10
+              w-[92%] max-w-[420px] max-h-[90vh] overflow-y-auto
+              lg:w-full lg:max-w-none lg:h-full lg:overflow-visible
+              rounded-3xl lg:rounded-none
+              lg:flex justify-center
+              border border-white/30 lg:border-none
+              bg-white/20 backdrop-blur-xl lg:bg-white lg:backdrop-blur-none
+              shadow-[0_8px_32px_rgba(0,0,0,0.25)] lg:shadow-none
+              p-6 lg:p-10
+              flex flex-col
+              lg:py-10
+            "
+          >
+            {/* Logo */}
+            <div className="flex justify-center cursor-pointer mb-4 lg:mb-0">
+              <Link href="/">
+                <Image
+                  src={App_url.image.logo}
+                  alt="logo"
+                  width={150}
+                  height={150}
+                  unoptimized
+                />
+              </Link>
             </div>
-            <div className="mt-4 my-3 flex flex-col gap-2 text-center mb-4">
-              <h1 className="capitalize font-inter font-bold text-[#101828] text-xl max-md:text-center lg:text-2xl">
+
+            {/* Heading */}
+            <div className="text-center my-3 lg:mb-4">
+              <h1 className="font-inter font-bold text-white lg:text-[#101828] text-xl lg:text-2xl lg:capitalize">
                 {heading}
               </h1>
-              <p className="font-inter font-medium text-[#6B7280] capitalize max-md:text-center">
-                {description}
-              </p>
+              {description && (
+                <p className="font-inter font-medium text-white/80 lg:text-[#6B7280] text-sm lg:text-base mt-1 lg:capitalize">
+                  {description}
+                </p>
+              )}
             </div>
 
-            <div className="flex-1 lg:flex lg:flex-col lg:justify-center overflow-y-auto lg:overflow-visible">
+            {/* Form content — rendered once */}
+            <div className="max-lg:flex-1 lg:flex lg:flex-col overflow-y-auto lg:overflow-visible">
               {children}
             </div>
 
-            {bottomContent && <div className="mt-6">{bottomContent}</div>}
+            {bottomContent && <div className="mt-4 lg:mt-6">{bottomContent}</div>}
 
-            <div className="mt-4 flex justify-center">
-              <Link
-                href={App_url.link.INITIAL_URL}
-                className="w-full mx-auto flex justify-center items-center gap-2 font-inter font-medium text-heading_text_color text-md"
-              >
-                <ArrowLeft size={18} />
-                Back to Home
-              </Link>
-            </div>
+            {backToHome && (
+              <div className="mt-4 flex justify-center">
+                <Link
+                  href={App_url.link.INITIAL_URL}
+                  className="flex items-center gap-2 font-inter font-medium text-white/80 lg:text-heading_text_color text-sm lg:text-md hover:text-white lg:hover:text-heading_text_color transition-colors"
+                >
+                  <ArrowLeft size={16} />
+                  Back to Home
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>

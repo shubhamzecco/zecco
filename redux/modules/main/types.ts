@@ -127,6 +127,7 @@ export interface IChat {
   message: string;
   createdAt: string;
   updatedAt: string;
+  unread_count?:string
 }
 
 export interface ChatParticipant {
@@ -192,11 +193,45 @@ export interface ChatMessagesResponse {
   messages: Message[];
 }
 
+export interface ViewMore {
+  location: string;
+  intent: string;
+  budgetMin: string;
+  budgetMax: string;
+  bedrooms: string | null;
+  propertyType: string | null;
+  locationCity: string;
+  category: string | null;
+  features?: string[] | null;
+}
+
 export interface AIChatMessage {
   id: string;
   text: string;
   sender: "user" | "bot";
   timestamp: Date;
+  hasMore?: boolean;
+  viewMore?: ViewMore;
+  properties?: Array<{
+    _id: string;
+    uID?: string;
+    slug?: string;
+    salePrice?: number;
+    rentalPrice?: number;
+    bedrooms?: number;
+    bathrooms?: number;
+    mtsBuild?: number;
+    locationCity?: string;
+    locationArea?: string;
+    propertyType?: { id: number; name: string };
+    isSale?: boolean;
+    isRent?: boolean;
+    imageUrl?: string | null;
+  }>;
+  suggestions?: Array<{
+    text: string;
+    searchCriteria: Record<string, any>;
+  }>;
 }
 
 // interfaces/breadcrumb.ts
@@ -627,6 +662,9 @@ export interface IProperty {
   clonedFromNetworkId: string | null;
   favorite: boolean;
   rentalPriceShort: number | null;
+  property_tags?: any[];
+  location?: any
+  slug?: string
 }
 
 export interface ILookup {
@@ -739,6 +777,11 @@ export interface IPropertyResponse {
   pagination: IPagination | null;
 }
 
+export interface IPreferenceResponse {
+  data: IProperty[];
+  pagination: IPagination | null;
+}
+
 export interface IFavoriteProperty {
   data: IProperty[];
   pagination: IPagination;
@@ -760,7 +803,6 @@ export interface IPrivacyPolicy {
 
 export interface IMainResponse {
   chat_messages: ChatMessagesResponse | null;
-  breadcrumbs: BreadcrumbItem[];
   package_list_with_limit: IPackageResponse | null;
   ai_chat_messages: AIChatMessage[];
   ai_chat_loading: boolean;
@@ -790,4 +832,5 @@ export interface IMainResponse {
   property_features_list: IFeatures[] | null;
   privacy_policy: IPrivacyPolicy | null;
   terms_conditions: IPrivacyPolicy | null;
+  preference_property_list: IPreferenceResponse | null;
 }

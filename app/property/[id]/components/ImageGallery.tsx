@@ -18,8 +18,10 @@ interface PropertyStats {
 }
 
 export default function PropertyGallery({ property }: PropertyStats) {
+  // Avoid non-deterministic ordering (Math.random) during the initial render/hydration.
+  // We keep the incoming order for SSR/first client render.
   const shuffleArray = (array: IImage[] = []) => {
-    return [...array].sort(() => Math.random() - 0.5);
+    return [...array];
   };
 
   const [images, setImages] = useState<IImage[]>([]);
@@ -149,7 +151,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
         >
           <img
             src={images?.[0]?.url}
-            className="lg:w-[650px] lg:h-[460px] object-cover rounded-xl"
+            className="lg:w-[47vw] lg:h-[460px] object-cover rounded-xl"
           />
 
           <button
@@ -159,6 +161,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               handleFavoriteAdd?.();
             }}
             className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
+            aria-label="close"
           >
             {mainReducer?.property_details?.favorite ? (
               <Heart size={20} className="text-red-500 fill-red-500" />
@@ -226,7 +229,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
             className="w-full h-[260px] object-cover"
           />
 
-          <button className="absolute top-3 right-3 bg-white p-2 rounded-full shadow">
+          <button className="absolute top-3 right-3 bg-white p-2 rounded-full shadow" aria-label="close">
             <Heart className="w-4 h-4 text-red-500 fill-red-500" />
           </button>
         </div>
@@ -263,6 +266,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
           <button
             className="absolute top-6 right-6 text-white z-50"
             onClick={() => setOpen(false)}
+            aria-label="close"
           >
             <X size={28} />
           </button>
@@ -383,6 +387,7 @@ function ActionBtn({
       ${isActivate ? "bg-[#0A96F4] text-white" : "bg-white/90 text-[#111827]"} backdrop-blur 
       px-3 py-1.5 rounded-lg text-xs
       border border-white/40`}
+      aria-label="close"
     >
       {icon}
       {label}

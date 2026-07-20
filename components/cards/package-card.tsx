@@ -9,12 +9,23 @@ import {
   CircleStar,
   CircleUserRound,
   Crown,
-  Gem
+  Gem,
+  Loader2
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { formatEuro } from "@/utils/common";
 
 const icons = [
@@ -31,34 +42,76 @@ interface IPackageProps {
 
 const PackageCard = ({ index, plan }: IPackageProps) => {
   const features = plan?.packagePermissions || [];
-  const { user_data } = usePosterReducers();
+  const { mainReducer, user_data } = usePosterReducers();
   const isLoggedIn = !!user_data?.access_token;
   const dispatch = useDispatch();
   const router = useRouter();
+  const [loadingPlanId, setLoadingPlanId] = useState(null);
+  const [downgradeTarget, setDowngradeTarget] = useState<any>(null);
+
+  const isCurrentPackage = user_data?.user?.package?._id === plan?._id;
+
+  const currentPlan = mainReducer?.package_list_with_limit?.data?.find(
+    (p: any) => p._id === user_data?.user?.package?._id,
+  );
+
 
   const createPayment = async (value: any) => {
     if (value?.price == "VIP") {
       router.push(App_url.link.CONTACT_US);
-    } else {
-      const payload = {
-        package_id: value?._id,
-        user_id: user_data?.user?._id,
-        // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
-      };
-      CommonApiRequest(
+      return;
+    }
+
+    const payload = {
+      package_id: value?._id,
+      user_id: user_data?.user?._id,
+      cancelURL: window.location.href,
+    };
+
+    try {
+      const response: any = await CommonApiRequest(
         "POST",
         `${App_url.endpoint_url?.CREATE_PAYMENT}`,
         payload,
         {},
-        // true,
-      )?.then(async (response: any) => {
-        if (response?.status === 200) {
-          if (response.success) {
-            window.location.href = response.data.checkoutUrl;
-          }
-        } else {
-        }
-      });
+      );
+
+      if (response?.status === 200 && response?.success) {
+        window.location.href = response?.data?.checkoutUrl;
+      }
+    } catch (error) {
+      // handle/log error so loading state still clears cleanly
+      console.error(error);
+    }
+  };
+
+  const handlePlanClick = async (plan: any) => {
+    if (!isLoggedIn) {
+      if (plan?.price === "VIP") {
+        router.push(App_url.link.CONTACT_US);
+      } else {
+        dispatch(setLoginPopup(true));
+      }
+      return;
+    }
+
+    const currentPrice = Number(currentPlan?.price);
+    const newPrice = Number(plan?.price);
+
+    if (currentPlan && newPrice < currentPrice) {
+      setDowngradeTarget(plan);
+      return;
+    }
+
+    proceedPayment(plan);
+  };
+
+  const proceedPayment = async (plan: any) => {
+    try {
+      setLoadingPlanId(plan._id);
+      await createPayment(plan);
+    } finally {
+      setLoadingPlanId(null);
     }
   };
 
@@ -78,12 +131,12 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         </div>
       </div>
       <div className="flex items-end gap-2 mb-5">
-        <h3 className="font-manrope capitalize font-bold text-2xl text-[#000000]">
+        <h3 className="font-manrope whitespace-nowrap capitalize font-bold text-2xl text-[#000000]">
           {plan?.price?.toLocaleLowerCase() === "vip"
             ? plan?.price
             : formatEuro(plan?.price)}
         </h3>
-        <p className="font-manrope capitalize font-semibold text-sm  text-[#64748B]">
+        <p className="font-manrope whitespace-nowrap capitalize font-semibold text-sm  text-[#64748B]">
           {plan?.tag_line}
         </p>
       </div>
@@ -107,19 +160,32 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
         ))}
       </ul>
       <button
-        onClick={() =>
-          isLoggedIn
-            ? createPayment(plan)
-            : plan?.price === "VIP"
-              ? router.push(App_url.link.CONTACT_US)
-              : dispatch(setLoginPopup(true))
-        }
-        className={`${user_data?.user?.package?._id === plan?._id ? "bg-green-500 text-white cursor-not-allowed pointer-events-none border-none" : "text-[#000000]"} w-full  text-sm  py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition`}
+        onClick={() => handlePlanClick(plan)}
+        className={`${isCurrentPackage ? "bg-green-500 text-white cursor-not-allowed pointer-events-none border-none" : "text-[#000000]"} w-full  text-sm  py-3 rounded-full border border-[#4A86E8] hover:text-white hover:bg-[#4A86E8] flex items-center justify-center gap-2 font-manrope font-semibold tracking-wider transition`}
       >
-        {user_data?.user?.package?._id === plan?._id
+        {isCurrentPackage
           ? "Active"
-          : plan?.button_title}
+          : plan?.button_title} {loadingPlanId == plan._id && <Loader2 className="h-5 w-5 animate-spin" />
+        }
       </button>
+      <AlertDialog open={!!downgradeTarget} onOpenChange={(open) => !open && setDowngradeTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Downgrade Package</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are currently subscribed to the <strong>{currentPlan?.name}</strong> package. Are you sure you want to downgrade to the <strong>{downgradeTarget?.name}</strong> package?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDowngradeTarget(null)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => { proceedPayment(downgradeTarget); setDowngradeTarget(null); }} className="text-white">
+              Yes, Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <LoginPopup />
     </div>
   );

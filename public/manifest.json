@@ -1,0 +1,27 @@
+{
+  "name": "Zecco Real Estate",
+  "short_name": "Zecco",
+  "description": "Zecco is an AI-powered real estate platform for buying, renting, and investing in Costa del Sol and across Spain.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0F172A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "453x444",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/images/logo.png",
+      "sizes": "2081x444",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity", "real estate"],
+  "lang": "en",
+  "dir": "ltr"
+}

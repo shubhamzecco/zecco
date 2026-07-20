@@ -10,6 +10,7 @@ import {
   setLocationListWithLimit,
   setLocationListWithoutLimit,
   setPackageListWithLimit,
+  setPreferenceList,
   setPrivacyPolicy,
   setPropertyDetails,
   setPropertyListWithLimit,
@@ -19,6 +20,7 @@ import {
   setSearchByArea,
   setStoredAiInsightList,
   setTermsConditions,
+  setUpdatePropertyLike,
   setUserChatList,
   setUserChatMessages,
   setUserPackageList,
@@ -37,7 +39,7 @@ export const ws_response = (
     dispatch: any,
     getState: () => {
       (): any;
-      new (): any;
+      new(): any;
       adminReducers: { device_id: string; access_token: string };
     },
   ) => {
@@ -53,6 +55,22 @@ export const ws_response = (
         ) {
           if (ws_onmessage?.status === true) {
             toast.success(ws_onmessage?.msg);
+          }
+        }
+        if (
+          ws_onmessage?.request?.action === "removeFavorite" ||
+          ws_onmessage?.request?.action === "addFavorite"
+        ) {
+          if (ws_onmessage?.status === true) {
+            dispatch(
+              setUpdatePropertyLike({
+                property_id:
+                  ws_onmessage?.data?._id ??
+                  ws_onmessage?.request?.payload?.property_id,
+                isFavorite:
+                  ws_onmessage?.request?.action === "addFavorite",
+              }),
+            );
           }
         }
 
@@ -74,6 +92,13 @@ export const ws_response = (
           }
         }
 
+        if (ws_onmessage?.request?.action === "getPreferenceProperties") {
+          if (ws_onmessage?.status === true) {
+            dispatch(setPreferenceList(ws_onmessage?.data));
+          } else {
+            dispatch(setPreferenceList(ws_onmessage?.data));
+          }
+        }
         break;
 
       case "packageService":
@@ -228,7 +253,8 @@ export const ws_response = (
             if (ws_onmessage?.status === true) {
               toast.success(ws_onmessage?.msg);
             } else {
-              toast.error(ws_onmessage?.msg);}
+              toast.error(ws_onmessage?.msg);
+            }
           }
           if (ws_onmessage?.request?.action === "list") {
             if (ws_onmessage?.status === true) {

@@ -28,7 +28,7 @@ const PolicyPage = () => {
               {mainReducer?.privacy_policy?.title || "Privacy Policy"}
             </h1>
 
-            <div className="w-20 h-1 bg-[#136AED] rounded-full"></div>
+            <div className="w-20 h-1 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] rounded-full"></div>
           </div>
 
           <div

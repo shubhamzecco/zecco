@@ -1,11 +1,10 @@
 "use client";
 import { URL } from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
-import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useDispatch } from "react-redux";
 
 interface BlogItem {
   _id: string;
@@ -21,24 +20,9 @@ interface BlogCardsProps {
 
 const BlogCards: React.FC<BlogCardsProps> = ({ data = [], className = "" }) => {
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const handleNavigate = (blog: BlogItem) => {
-    dispatch(clearBreadcrumbs());
-    dispatch(
-      setBreadcrumbs([
-        { label: "Home", href: "/" },
-        {
-          label: "Blogs & Insights",
-          href: App_url.link.BLOGS,
-        },
-        {
-          label: blog?.name,
-          href: `${App_url.link.BLOGS}/${blog._id}`,
-        },
-      ]),
-    );
-    router.push(`${App_url.link.BLOGS}/${blog._id}`);
+    router.push(`${App_url.link.BLOGS}/${blog?._id}`);
   };
 
   return (
@@ -51,8 +35,8 @@ const BlogCards: React.FC<BlogCardsProps> = ({ data = [], className = "" }) => {
         >
           {/* IMAGE */}
           <Image
-            src={URL + blog.image}
-            alt={blog.name}
+            src={URL + blog?.image}
+            alt={blog?.name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -66,10 +50,10 @@ const BlogCards: React.FC<BlogCardsProps> = ({ data = [], className = "" }) => {
           />
           <div className="absolute bottom-0 p-6 text-center w-full">
             <h3 className="text-lg font-manrope font-semibold text-white mb-2">
-              {blog.name}
+              {blog?.name}
             </h3>
             <p className="text-sm text-center font-manrope font-normal max-w-[18rem] mx-auto text-white/60 leading-relaxed">
-              {blog.description}
+              {blog?.description}
             </p>
           </div>
         </div>

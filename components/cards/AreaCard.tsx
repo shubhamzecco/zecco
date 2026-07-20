@@ -1,14 +1,11 @@
 "use client";
 import { URL } from "@/api/rest/fetchData";
 import { App_url } from "@/constant/static";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs } from "@/redux/modules/main/action";
 import { citySlug } from "@/utils/common";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useDispatch } from "react-redux";
 
 interface AreaCardProps {
   id?: string;
@@ -28,19 +25,11 @@ const AreaCard = ({
   onNavigate,
 }: AreaCardProps) => {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const { mainReducer } = usePosterReducers();
   const handleClick = () => {
     if (onNavigate) {
       onNavigate();
     } else {
-      dispatch(
-        setBreadcrumbs([
-          ...mainReducer.breadcrumbs,
-          { label: name, href: `${App_url.link.COSTA_DEL_SOL}/${name_slug}` },
-        ]),
-      );
-      router.push(`${App_url.link.COSTA_DEL_SOL}/${citySlug(name_slug)}`);
+      router.push(`${App_url.link.COSTA_DEL_SOL}/properties?city=${citySlug(name_slug)}`);
     }
   };
 
@@ -78,7 +67,9 @@ const AreaCard = ({
           <h3 className="text-xl sm:text-2xl  mb-1 font-manrope font-semibold">
             {name}
           </h3>
-          <button className="text-white backdrop-blur-md bg-white/20 rounded-full p-2">
+          <button className="text-white backdrop-blur-md bg-white/20 rounded-full p-2"
+            aria-label="up"
+          >
             <ArrowUpRight size={20} />
           </button>
         </div>

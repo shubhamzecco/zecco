@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { ChevronDown, User } from 'lucide-react'
+import { ChevronDown, CircleUser, User } from 'lucide-react'
 
 type MenuItem = {
   label: string
@@ -40,11 +40,11 @@ export default function ImageDropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-3 rounded-full bg-[#136AED] px-2 py-2 text-sm font-semibold text-[#0F172A]"
+        className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] px-2 py-2 text-sm font-semibold text-[#0F172A]"
       >
-        <User size={20} className='text-white'/>
+        <CircleUser size={20} className='text-white'/>
 
-        <span className="hidden sm:block text-white font-inter">{name}</span>
+        <span className=" text-white font-inter">{name}</span>
 
         <ChevronDown
           size={16}

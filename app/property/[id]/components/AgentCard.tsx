@@ -18,9 +18,10 @@ interface AgentCardProps {
     user?: IUserTypes;
   };
   agent_details?: any;
+  property?: any;
 }
 
-export function AgentCard({ user_data, agent_details }: AgentCardProps) {
+export function AgentCard({ user_data, agent_details, property }: AgentCardProps) {
   const [contactMessage, setContactMessage] = useState("");
   const dispatch = useDispatch();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
@@ -52,14 +53,32 @@ export function AgentCard({ user_data, agent_details }: AgentCardProps) {
     }
   }, [lastEvent]);
 
+  const assignedAgent =
+    user_data?.user?.agent?.agent ||
+    property?.agent_assigned ||
+    property?.location?.agent_assigned ||
+    agent_details
+  null;
+
+  const appointedAgentName = assignedAgent
+    ? `${assignedAgent.first_name || ""} ${assignedAgent.last_name || ""}`.trim()
+    : ""
+
+  const appointedAgentContact = assignedAgent ? assignedAgent?.contact_no
+    : "";
+
+  const appointedAgentEmail = assignedAgent
+    ? assignedAgent?.email
+    : "";
+
   return (
     <div className="sticky top-24 bg-[#F7F8FC] border border-[#F3F4F6] rounded-lg p-6 mb-6 shadow-sm relative overflow-hidden">
       <div>
         <div className="flex items-center gap-3 mb-4">
           <div className="relative overflow-hidden  w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold">
             {isLoggedIn &&
-            (user_data?.user?.agent?.agent?.profile_image ||
-              agent_details?.profile_image) ? (
+              (user_data?.user?.agent?.agent?.profile_image ||
+                agent_details?.profile_image) ? (
               <Image
                 src={
                   agentAssign
@@ -84,31 +103,22 @@ export function AgentCard({ user_data, agent_details }: AgentCardProps) {
             </p>
 
             <p className="font-extrabold text-sm text-heading_text_color font-manrope">
-              {isLoggedIn
-                ? agentAssign
-                  ? `${user_data?.user?.agent?.agent?.first_name || ""} ${user_data?.user?.agent?.agent?.last_name || ""}`
-                  : `${agent_details?.first_name || ""} ${agent_details?.last_name || ""}`
-                : " Agent Not Found"}
+              {appointedAgentName}
             </p>
           </div>
         </div>
 
-        <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
-          <Phone className="w-4 h-4" />{" "}
-          {isLoggedIn
-            ? agentAssign
-              ? `${user_data?.user?.agent?.agent?.contact_no}`
-              : agent_details?.contact_no
-            : "+44*******789"}
-        </p>
+        <a
+          href={`tel:${appointedAgentContact}`}
+          className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2 hover:text-primary transition-colors"
+        >
+          <Phone className="w-4 h-4" />
+          {appointedAgentContact}
+        </a>
 
         <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
           <Mail className="w-4 h-4" />
-          {isLoggedIn
-            ? agentAssign
-              ? `${user_data?.user?.agent?.agent?.email || ""}`
-              : `${agent_details?.email}`
-            : "*******@gmail.com"}
+          {appointedAgentEmail}
         </p>
         {(!isLoggedIn || user_data?.user?.agent) && (
           <>
@@ -130,21 +140,17 @@ export function AgentCard({ user_data, agent_details }: AgentCardProps) {
               onClick={() =>
                 isLoggedIn ? handleCreateChat() : dispatch(setLoginPopup(true))
               }
-              className="w-full cursor-pointer bg-heading_text_color text-white font-semibold py-3 rounded-full transition mb-4"
+              className="w-full uppercase cursor-pointer bg-heading_text_color text-white bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] font-semibold py-3 rounded-full transition mb-4"
             >
-              SUBMIT
+              Chat with our agent
             </button>
           </>
         )}
 
         <button
           onClick={() => {
-            if (isLoggedIn) {
-              if (typeof window !== "undefined") {
-                window.location.href = `tel:${agent_details?.contact_no || user_data?.user?.agent?.agent?.contact_no}`;
-              }
-            } else {
-              dispatch(setLoginPopup(true));
+            if (typeof window !== "undefined") {
+              window.location.href = `tel:${agent_details?.contact_no || user_data?.user?.agent?.agent?.contact_no}`;
             }
           }}
           className="w-full cursor-pointer mb-5 border flex items-center gap-2 justify-center border-[#DDDFE3] text-heading_text_color font-semibold py-2 rounded-full bg-white transition"

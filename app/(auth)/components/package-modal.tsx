@@ -53,33 +53,68 @@ export default function PackagesModal({
         status: true
       },
     });
-  }, [isConnected]);
+  }, []);
 
   const createPayment = async (value: any) => {
-    localStorage.setItem("isRegister", "true");
-    const payload = {
-      package_id: value,
-      user_id: userId || user_data?.user?._id,
-      // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
-    };
-    CommonApiRequest(
-      "POST",
-      `${App_url.endpoint_url?.CREATE_PAYMENT}`,
-      payload,
-      {},
-      // true,
-    )?.then(async (response: any) => {
-      if (response?.status === 200) {
-        if (response.success) {
-          if (typeof window !== "undefined") {
-            window.location.href = response.data.checkoutUrl;
+    if (value) {
+      localStorage.setItem("isRegister", "true");
+      const payload = {
+        package_id: value,
+        user_id: userId || user_data?.user?._id,
+        cancelURL: window.location.href,
+        // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
+      };
+      CommonApiRequest(
+        "POST",
+        `${App_url.endpoint_url?.CREATE_PAYMENT}`,
+        payload,
+        {},
+        // true,
+      )?.then(async (response: any) => {
+        if (response?.status === 200) {
+          if (response?.success) {
+            if (typeof window !== "undefined") {
+              window.location.href = response?.data?.checkoutUrl;
+            }
           }
+        } else {
+          toast.error(response?.message);
         }
-      } else {
-        toast.error(response?.message);
-      }
-    });
+      })
+    }else{
+      toast.error("Please select a package before proceeding.");
+    }
   };
+
+  useEffect(() => {
+  const packages = mainReducer?.package_list_with_limit?.data;
+
+  if (packages?.length && !selectedPackage) {
+    const sortedPackages = [...packages].sort((a, b) => {
+      const getNumericPrice = (price: string) => {
+        const cleaned = price.replace(/[^\d]/g, "");
+        return cleaned ? Number(cleaned) : NaN;
+      };
+
+      const priceA = getNumericPrice(a.price);
+      const priceB = getNumericPrice(b.price);
+
+      const isANumber = !isNaN(priceA);
+      const isBNumber = !isNaN(priceB);
+
+      if (isANumber && isBNumber) return priceA - priceB;
+      if (isANumber && !isBNumber) return -1;
+      if (!isANumber && isBNumber) return 1;
+      return 0;
+    });
+
+    const firstPackage = sortedPackages[0];
+
+    setSelectedPackage(
+      firstPackage?.price === "VIP" ? "VIP" : firstPackage?._id
+    );
+  }
+}, [mainReducer?.package_list_with_limit?.data]);
 
   const icons = [
     <CircleUserRound className=" text-[#4A86E8]" size={20} />,
@@ -124,19 +159,19 @@ export default function PackagesModal({
             ?.map((plan: IPlan, index) => {
               return (
                 <SelectablePackage
-                  key={plan._id}
+                  key={plan?._id}
                   selected={selectedPackage === plan?._id}
                   onClick={() => {
                     if (plan?.price === "VIP") {
                       setSelectedPackage("VIP");
                     } else {
-                      setSelectedPackage(plan._id);
+                      setSelectedPackage(plan?._id);
                     }
                   }}
                   icon={icons[index]}
-                  title={plan.name}
-                  price={plan.price}
-                  desc={plan.description}
+                  title={plan?.name}
+                  price={plan?.price}
+                  desc={plan?.description}
                 />
               );
             })}
@@ -144,7 +179,10 @@ export default function PackagesModal({
 
         <div className="flex gap-3 border-t px-4 py-4">
           <button
-            onClick={onClose}
+            onClick={() => {
+             router.push( App_url.link.INITIAL_URL)
+              onClose?.()
+            }}
             className="flex-1 font-circular_std rounded-lg bg-[#000037] px-4 py-2.5 text-sm font-medium text-white"
           >
             Cancel
@@ -155,7 +193,8 @@ export default function PackagesModal({
                 ? router.push(App_url.link.CONTACT_US)
                 : createPayment(selectedPackage)
             }
-            className="flex-1 font-circular_std rounded-lg bg-[#0C87F1] px-4 py-2.5 text-sm font-medium text-white"
+            disabled={!selectedPackage}
+            className={`flex-1 font-circular_std rounded-lg  px-4 py-2.5 text-sm font-medium text-white ${selectedPackage ? 'bg-[#0C87F1]' : 'bg-blue-300 cursor-not-allowed '}`}
           >
             Apply Coupon
           </button>
@@ -193,18 +232,16 @@ function SelectablePackage({
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer rounded-xl p-[2px] transition ${
-        selected
+      className={`cursor-pointer rounded-xl p-[2px] transition ${selected
           ? "bg-gradient-to-r from-[#2563EB] via-[#92B1F5] to-[#2563EB]"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <div
-        className={`relative flex items-center justify-between gap-3 rounded-[10px] px-4 py-3 ${
-          selected
+        className={`relative flex items-center justify-between gap-3 rounded-[10px] px-4 py-3 ${selected
             ? "bg-white"
             : "bg-white border border-gray-200 hover:border-blue-300"
-        }`}
+          }`}
       >
         <div className="flex items-start gap-5">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600">

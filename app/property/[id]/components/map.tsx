@@ -1,18 +1,17 @@
 "use client";
 
-import {
-  getLocationCenter,
-  getPropertiesByLocation,
-  type Property,
-} from "@/lib/property-data";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { useEffect, useRef, useState } from "react";
 
 export function PropertyMap() {
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
+  const circleRef = useRef<any>(null);
 
-  const [selectedLocation] = useState("Marbella");
+  const { mainReducer } = usePosterReducers();
+  const [leaflet, setLeaflet] = useState<any>(null);
+
+  const selectedLocation = mainReducer?.property_details?.location;
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -35,6 +34,7 @@ export function PropertyMap() {
         shadowUrl:
           "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
+      setLeaflet(L);
 
       // Initialize map only once
       if (!map.current) {
@@ -46,62 +46,6 @@ export function PropertyMap() {
           maxZoom: 19,
         }).addTo(map.current);
       }
-
-      // Remove old markers
-      markersRef.current.forEach((marker: any) => {
-        marker.remove();
-      });
-
-      markersRef.current = [];
-
-      const locationProps = getPropertiesByLocation(selectedLocation);
-
-      const center = getLocationCenter(selectedLocation);
-
-      map.current.setView(
-        [center.lat, center.lng],
-        selectedLocation === "Marbella" ? 10 : 11,
-      );
-
-      // Add markers
-      locationProps.forEach((property: Property) => {
-        const iconHtml = `
-          <div class="flex items-center justify-center bg-blue-600 text-white rounded-full w-10 h-10 font-bold text-sm shadow-lg border-2 border-white">
-            ${property.priceFormatted.replace("€", "")}
-          </div>
-        `;
-
-        const marker = L.marker([property.lat, property.lng], {
-          icon: L.divIcon({
-            html: iconHtml,
-            className: "property-marker",
-            iconSize: [40, 40],
-            iconAnchor: [20, 20],
-          }),
-        })
-          .bindPopup(
-            `
-            <div class="p-3">
-              <h3 class="font-bold text-lg mb-2">${property.name}</h3>
-              <p class="text-sm text-gray-600 mb-1">
-                <strong>Price:</strong> ${property.priceFormatted}
-              </p>
-              <p class="text-sm text-gray-600 mb-1">
-                <strong>Type:</strong> ${property.type}
-              </p>
-              <p class="text-sm text-gray-600 mb-1">
-                <strong>Area:</strong> ${property.area} m²
-              </p>
-              <p class="text-sm text-gray-600">
-                <strong>Beds:</strong> ${property.beds}
-              </p>
-            </div>
-          `,
-          )
-          .addTo(map.current);
-
-        markersRef.current.push(marker);
-      });
     };
 
     initMap();
@@ -114,7 +58,29 @@ export function PropertyMap() {
         map.current = null;
       }
     };
-  }, [selectedLocation]);
+  }, []);
+
+  useEffect(() => {
+    if (!leaflet || !map.current || !selectedLocation?.point?.coordinates) return;
+
+    const [lng, lat] = selectedLocation.point.coordinates;
+    if (typeof lat !== "number" || typeof lng !== "number") return;
+
+    circleRef.current?.remove?.();
+    map.current.setView([lat, lng], 12);
+
+    circleRef.current = leaflet.circle([lat, lng], {
+      radius: 5000,
+      color: "#111827",
+      weight: 2,
+      fillColor: "#D9F99D",
+      fillOpacity: 0.2,
+    }).addTo(map.current);
+
+    map.current.fitBounds(circleRef.current.getBounds(), {
+      padding: [24, 24],
+    });
+  }, [leaflet, selectedLocation]);
 
   return (
     <div className="relative w-full h-96 overflow-hidden rounded-xl">

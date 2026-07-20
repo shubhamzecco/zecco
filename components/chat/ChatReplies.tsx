@@ -1,30 +1,38 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { ArrowUpRight, MapPin, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { useDispatch } from "react-redux";
 import { ChatMessage } from "./zecco-chat-modal";
+import { useRouter } from "next/navigation";
+import PropertyCarousel from "./PropertyCarousel";
 
 const QUICK_ACTIONS = [
-  "Find properties for buy in Spain.",
-  "Explore apartments and villas in Barcelona.",
-  "Search budget-friendly homes across Spain",
+  "Find properties for buy in Costa del Sol, Spain.",
+  "Explore apartments and villas in Marbella.",
+  "Search budget-friendly homes across Costa del Sol, Spain",
 ];
 
 type Props = {
   messages: ChatMessage[];
   isLoading: boolean;
   onQuickSend: (text: string) => void;
+  onSuggestionClick?: () => void;
 };
 
 export default function ChatReplies({
   messages,
   isLoading,
   onQuickSend,
+  onSuggestionClick,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const hasScrolledInitially = useRef(false);
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   /* ---------------- detect manual scroll ---------------- */
 
@@ -43,39 +51,76 @@ export default function ChatReplies({
 
   useEffect(() => {
     if (shouldAutoScroll) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      const behavior = hasScrolledInitially.current ? "smooth" : "auto";
+      bottomRef.current?.scrollIntoView({ behavior });
+      hasScrolledInitially.current = true;
     }
   }, [messages, isLoading, shouldAutoScroll]);
 
   /* ---------------- helpers ---------------- */
 
   const formatChatMessage = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    let formatted = text.replace(urlRegex, (url) => `[Click here](${url})`);
-    return formatted.replace(/\n{3,}/g, "\n\n");
+    return text
+      ?.replace(
+        /Details URL:\s*(\/property\/[a-zA-Z0-9]+)/g,
+        "Details URL: [Click here]($1)",
+      )
+      .replace(/\n{3,}/g, "\n\n");
   };
 
   const formatTime = (timestamp?: string | Date) =>
     timestamp
       ? new Date(timestamp).toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true,
-        })
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
       : "";
-  const getMarkdownComponents = (isUser: boolean) => ({
+
+  const getMarkdownComponents = (isUser: boolean, currentMsg: ChatMessage) => ({
     strong: ({ children }: any) => (
       <strong className="font-semibold text-[14px]">{children}</strong>
     ),
-    p: ({ children }: any) => (
-      <p
-        className={`text-[14px] leading-6 whitespace-pre-line ${
-          isUser ? "mb-1" : "mb-3"
-        }`}
-      >
-        {children}
-      </p>
-    ),
+    p: ({ children }: any) => {
+      // Safely join children into a cohesive string check to catch parsing fragmentation
+      const rawText = Array.isArray(children)
+        ? children
+          .map((c) => (typeof c === "string" ? c : c?.props?.children || ""))
+          .join("")
+        : typeof children === "string"
+          ? children
+          : "";
+
+      if (rawText.includes("[SHOW_BUTTON]")) {
+        const [before, after] = rawText.split("[SHOW_BUTTON]");
+
+        return (
+          <div className="mb-3">
+            {/* Context Text */}
+            {before && (
+              <p className="text-[14px] leading-6 whitespace-pre-line mb-2">
+                {before.trim()}
+              </p>
+            )}
+
+            {/* Next Follow-up Question */}
+            {after && (
+              <p className="text-[14px] leading-6 whitespace-pre-line mt-3">
+                {after.trim()}
+              </p>
+            )}
+          </div>
+        );
+      }
+
+      return (
+        <p
+          className={`text-[14px] leading-6 whitespace-pre-line ${isUser ? "mb-1" : "mb-3"}`}
+        >
+          {children}
+        </p>
+      );
+    },
     ul: ({ children }: any) => (
       <ul className="ml-4 mb-3 list-disc space-y-1">{children}</ul>
     ),
@@ -83,19 +128,22 @@ export default function ChatReplies({
       <li className="text-[14px] leading-6">{children}</li>
     ),
     a: ({ href, children }: any) => (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-600 underline hover:text-blue-700"
+      <button
+        onClick={() => {
+          if (href) {
+            router.push(href);
+          }
+        }}
+        className="text-blue-600 hover:underline hover:text-blue-700"
       >
         {children}
-      </a>
+      </button>
     ),
   });
 
-  /* ---------------- render ---------------- */
+  console.log("messages ::::", messages)
 
+  /* ---------------- render ---------------- */
   return (
     <div
       ref={containerRef}
@@ -143,9 +191,77 @@ export default function ChatReplies({
             className={`flex ${isUser ? "justify-end" : "justify-start"}`}
           >
             <div className={`chat-bubble ${isUser ? "sent" : "received"}`}>
-              <ReactMarkdown components={getMarkdownComponents(isUser)}>
+              <ReactMarkdown components={getMarkdownComponents(isUser, msg)}>
                 {formatChatMessage(msg?.text)}
               </ReactMarkdown>
+              {!isUser && msg?.suggestions && msg?.suggestions?.length > 0 && (
+                <div className="mt-4 animate-slide-up">
+                  <div className="flex items-center gap-2 mb-3">
+                    <MapPin className="w-4 h-4 text-blue-600" />
+                    <p className="text-sm font-semibold text-gray-700">
+                      Suggested Locations
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {msg.suggestions.map((s, i) => (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          onSuggestionClick?.();
+                          onQuickSend(s.text);
+                        }}
+                        style={{ animationDelay: `${i * 80}ms` }}
+                        className="
+            group
+            w-full
+            flex
+            items-center
+            justify-between
+            rounded-2xl
+            border
+            border-blue-100
+            bg-gradient-to-r
+            from-blue-50
+            to-white
+            px-4
+            py-3
+            text-left
+            transition-all
+            duration-300
+            hover:border-blue-300
+            hover:shadow-lg
+            hover:shadow-blue-100/60
+            hover:-translate-y-0.5
+            active:scale-[0.98]
+          "
+                      >
+                        <div className="flex items-center gap-3">
+                          <div>
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                              <MapPin className="w-5 h-5" />
+                            </div>
+                          </div>
+
+                          <div>
+                            <p className="font-medium text-gray-800 group-hover:text-blue-700">
+                              {s.text}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              Search properties in this area
+                            </p>
+                          </div>
+                        </div>
+
+                        <ArrowUpRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {!isUser && msg?.properties && msg?.properties.length > 0 && (
+                <PropertyCarousel properties={msg?.properties} />
+              )}
               <div className="text-[11px] opacity-70 text-right">
                 {formatTime(msg?.timestamp)}
               </div>

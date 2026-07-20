@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthReq } from "@/api/rest/fetchData";
+import Head from "next/head";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,23 +18,30 @@ import { setPropertyFilter } from "@/redux/modules/main/action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import * as z from "zod";
 import AuthLayout from "../layout/page";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
+  email: z.string().min(1, "Email address is required").email({ message: "Please enter a valid email address" }),
   password: z
-    .string({ required_error: "Password is required" })
-    .min(6, { message: "Password must be at least 6 characters" }),
+    .string()
+    .min(1, "Password is required.")
+    .min(6, "Password must be at least 6 characters long.")
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d).+$/,
+      "Password must contain both letters and numbers."
+    ),
 });
 
 const Signin = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,75 +49,88 @@ const Signin = () => {
       email: "",
       password: "",
     },
+    mode: "onChange"
   });
 
   useEffect(() => {
     dispatch(setPropertyFilter({}));
   }, []);
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    AuthReq(App_url.endpoint_url.USER_SIGN_IN, {
-      ...values,
-      user_type: "client",
-    })
-      .then((response) => {
-        if (response?.success) {
-          const payload = {
-            ...response?.data,
-            user: response.data.user,
-            access_token: response.data.accessToken,
-          };
-          localStorage.setItem("access_token", response.data.accessToken);
-          dispatch(setLogin(true));
-          dispatch(setAuthData(payload));
-          const redirectUrl = localStorage.getItem("redirect_after_login");
-          toast.success(response?.message);
-          if (redirectUrl) {
-            router.push(redirectUrl);
-            localStorage.removeItem("redirect_after_login");
-          } else {
-            router.push(App_url.link.INITIAL_URL);
-          }
-        } else {
-          toast.error(response?.message || "Login failed.");
-        }
-      })
-      .catch((error) => {
-        toast.error(
-          error?.response?.data?.error ||
-            error?.message ||
-            "An unexpected error occurred.",
-        );
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    setLoading(true);
+
+    try {
+      const response = await AuthReq(App_url.endpoint_url.USER_SIGN_IN, {
+        ...values,
+        user_type: "client",
       });
+
+      if (response?.success) {
+        const payload = {
+          ...response?.data,
+          user: response?.data?.user,
+          access_token: response?.data?.accessToken,
+        };
+        localStorage.setItem("access_token", response?.data?.accessToken || "");
+
+        dispatch(setLogin(true));
+        dispatch(setAuthData(payload));
+
+        const redirectUrl = localStorage.getItem("redirect_after_login");
+
+        toast.success(response.message);
+
+        if (redirectUrl) {
+          localStorage.removeItem("redirect_after_login");
+          router.push(redirectUrl);
+        } else {
+          router.push(App_url.link.INITIAL_URL);
+        }
+      } else {
+        toast.error(response?.message || "Login failed.");
+      }
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.error ||
+        error?.message ||
+        "An unexpected error occurred."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
       <AuthLayout
         heading="Welcome Back to Zecco!"
-        description=" Sign in to Your Account"
+        description="Sign in to Your Account"
+        backToHome
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-5 max-md:flex flex-col justify-center max-md:min-h-fit max-md:py-3"
+            className="space-y-5 max-md:flex max-md:flex-col max-md:justify-center max-md:min-h-fit max-md:py-3"
           >
             <FormField
               control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required className="font-semibold text-[#101828]">
-                    Your Email
+                  <FormLabel required className="font-semibold text-[#101828] max-md:text-white">
+                    Email Address
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter email"
-                      className="h-12 rounded-full bg-white border-[#D1D5DB]"
+                      placeholder="Email address"
+                      className="h-12 rounded-full bg-white border-[#D1D5DB] max-md:bg-white/90 max-md:text-black"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="max-md:text-red-300" />
                 </FormItem>
               )}
             />
@@ -119,25 +140,24 @@ const Signin = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel required className="font-semibold  text-[#101828]">
+                  <FormLabel required className="font-semibold text-[#101828] max-md:text-white">
                     Password
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="password"
-                      placeholder="Enter password"
-                      className="h-12 bg-white rounded-full border-[#D1D5DB]"
+                      placeholder="Password"
+                      className="h-12 bg-white rounded-full border-[#D1D5DB] max-md:bg-white/90 max-md:text-black"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="max-md:text-red-300" />
                 </FormItem>
               )}
             />
 
             {/* REMEMBER + FORGOT */}
             <div className="my-2 mt-5 flex items-center justify-between">
-              {/* Left: Remember Me */}
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -146,16 +166,15 @@ const Signin = () => {
                 />
                 <label
                   htmlFor="rememberMe"
-                  className="font-inter text-sm font-medium text-[#344054] cursor-pointer"
+                  className="font-inter text-sm font-medium text-[#344054] cursor-pointer max-md:text-white/80"
                 >
                   Remember me
                 </label>
               </div>
 
-              {/* Right: Forgot Password */}
               <Link
                 href={App_url?.link?.FORGET_PASSWORD}
-                className="font-inter text-sm font-medium text-[#9CA3AF] hover:underline"
+                className="font-inter text-sm font-medium text-[#9CA3AF] hover:underline max-md:text-white/70"
               >
                 Forgot password?
               </Link>
@@ -164,16 +183,18 @@ const Signin = () => {
             {/* BUTTON */}
             <Button
               type="submit"
-              className="w-full capitalize font-inter font-bold tracking-wider shadow-[#BFDBFE] bg-[#136AED] h-12 my-4 text-white border rounded-full shadow-md"
+              disabled={loading}
+              className="w-full capitalize font-inter font-bold tracking-wider  bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
             >
+              {loading && <Loader2 className="h-5 w-5 animate-spin mr-2" />}
               Login
             </Button>
           </form>
         </Form>
 
         {/* REGISTER */}
-        <div className="w-full my-3 font-inter font-medium text-center text-[#6B7280] text-md">
-          Don’t have an account?
+        <div className="w-full my-3 font-inter font-medium text-center text-[#6B7280] text-md max-md:text-white/70">
+          Don&apos;t have an account?
           <Link
             href={App_url.link.SIGN_UP}
             className="text-[#3B82F6] font-bold font-inter text-base ml-2"

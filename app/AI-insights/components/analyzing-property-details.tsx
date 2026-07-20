@@ -1,22 +1,24 @@
 "use client";
 
-import { Check, Clock } from "lucide-react";
+import CommonCard from "@/components/cards/common-card";
+import { Check, Clock, Sparkle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Props = {
   isCompleted: boolean;
   onComplete: () => void;
   heading?: string;
+  isPropertyDetail?: boolean
 };
 
 export default function AIProcessingCard({
   isCompleted,
   onComplete,
   heading,
+  isPropertyDetail
 }: Props) {
   const TOTAL_TIME = 50;
   const INTERVAL = 500;
-
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
 
@@ -69,90 +71,176 @@ export default function AIProcessingCard({
   }, [isCompleted]);
 
   return (
-    <section className="mb-6">
-      <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
-        {heading ? heading : "Analyzing Property Details"}
-      </h2>
+    isPropertyDetail ? (
+      <section className="mb-6">
+        <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
+          {heading ? heading : "Analyzing Property Details"}
+        </h2>
 
-      <div className="w-full mx-auto bg-white/90 rounded-2xl p-4 lg:p-14 border border-gray-100">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold tracking-wide text-blue-600 uppercase">
-            Processing...
-          </span>
-          <span className="text-xl font-manrope font-semibold text-gray-900">
-            {Math.round(progress)}%
-          </span>
-        </div>
+        <div className="w-full mx-auto bg-white/90 rounded-2xl p-4 lg:p-14 border border-gray-100">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs sm:text-sm font-semibold tracking-wide text-blue-600 uppercase">
+              Processing...
+            </span>
+            <span className="text-xs sm:text-xl font-manrope font-semibold text-gray-900">
+              {Math.round(progress)}%
+            </span>
+          </div>
 
-        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-6">
-          <div
-            className="h-full bg-blue-600 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
+          <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-6">
+            <div
+              className="h-full bg-blue-600 rounded-full transition-all duration-500"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
 
-        <div className="bg-white rounded-xl p-7 mt-10 border">
-          <p className="text-sm tracking-widest text-gray-400 font-semibold mb-4">
-            AI ANALYSIS STEPS
-          </p>
+          <div className="bg-white rounded-xl p-7 mt-10 border">
+            <p className="text-sm tracking-widest text-gray-400 font-semibold mb-4">
+              AI ANALYSIS STEPS
+            </p>
 
-          <div className="space-y-4">
-            {steps.map((step, index) => {
-              const isDone = index < activeStep;
-              const isActive = index === activeStep;
+            <div className="space-y-4">
+              {steps?.map((step, index) => {
+                const isDone = index < activeStep;
+                const isActive = index === activeStep;
 
-              return (
-                <div key={index} className="flex gap-3 items-start">
-                  <div className="mt-0.5 bg-indigo-50 rounded-full p-1">
-                    {isDone && (
-                      <span className="w-5 h-5 rounded-full text-green-500 border-2 border-green-500 p-[1px] flex items-center justify-center text-xs">
-                        <Check size={20} />
-                      </span>
-                    )}
+                return (
+                  <div key={index} className="flex gap-3 items-start">
+                    <div className="mt-0.5 bg-indigo-50 rounded-full p-1">
+                      {isDone && (
+                        <span className="w-5 h-5 rounded-full text-green-500 border-2 border-green-500 p-[1px] flex items-center justify-center text-xs">
+                          <Check size={20} />
+                        </span>
+                      )}
 
-                    {isActive && (
-                      <div className="relative w-5 h-5">
-                        <div className="absolute inset-0 rounded-full border-2 border-blue-600 opacity-30" />
-                        <div className="absolute inset-0 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
-                      </div>
-                    )}
+                      {isActive && (
+                        <div className="relative w-5 h-5">
+                          <div className="absolute inset-0 rounded-full border-2 border-blue-600 opacity-30" />
+                          <div className="absolute inset-0 rounded-full border-2 border-blue-600 border-t-transparent animate-spin" />
+                        </div>
+                      )}
 
-                    {!isDone && !isActive && (
-                      <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                        <Clock className="text-gray-300" size={20} />
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <p
-                      className={`text-lg font-manrope font-bold ${
-                        isActive
+                      {!isDone && !isActive && (
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center">
+                          <Clock className="text-gray-300" size={20} />
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <p
+                        className={`text-lg font-manrope font-bold ${isActive
                           ? "text-blue-600"
                           : isDone
                             ? "text-gray-600"
                             : "text-gray-200"
-                      }`}
-                    >
-                      {step.title}
-                    </p>
-                    <p
-                      className={`text-sm font-manrope font-semibold  leading-relaxed mt-0.5 ${
-                        isActive
+                          }`}
+                      >
+                        {step.title}
+                      </p>
+                      <p
+                        className={`text-sm font-manrope font-semibold  leading-relaxed mt-0.5 ${isActive
                           ? "text-gray-500"
                           : isDone
                             ? "text-gray-400"
                             : "text-gray-200"
-                      }`}
-                    >
-                      {step.desc}
-                    </p>
+                          }`}
+                      >
+                        {step.desc}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    ) : (
+      <CommonCard className="mt-5 px-3">
+        <h2 className="mb-2 font-manrope text-2xl text-center font-bold text-[#111827]">
+          Step 02 — AI Market Analysis
+        </h2>
+        <p className="font-manrope text-base text-center font-normal text-[#64748B]">Our AI engine is analysing comparable sales, rental trends, investment potential, and market demand...</p>
+
+        <div className="w-full mx-auto bg-white/90 rounded-2xl p-4 lg:p-14 border border-gray-100 mt-4">
+          <div className="border border-[#E6EBF4] bg-[#E6EBF44A] p-5 rounded-2xl">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs sm:text-sm font-manrope font-semibold tracking-wide text-blue-600 uppercase">
+                Processing...
+              </span>
+              <span className="text-xs sm:text-xl font-manrope font-semibold text-gray-900">
+                {Math.round(progress)}% Complete
+              </span>
+            </div>
+
+            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3">
+              <div
+                className="h-full bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] rounded-full transition-all duration-500"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-7 mt-10 border  !border-[#2F80FF]">
+            <p className="text-base flex items-center gap-2 w-full border-b border-[#2F80FF] pb-2 font-black font-manrope tracking-widest text-[#0F172A]  mb-4">
+             <Sparkle size={20} className="text-[#2F80FF]"/> AI ANALYSIS STEPS
+            </p>
+
+            <div className="space-y-4">
+              {steps?.map((step, index) => {
+                const isDone = index < activeStep;
+                const isActive = index === activeStep;
+
+                return (
+                  <div key={index} className="flex gap-3 items-start">
+                    <div className="mt-0.5 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] rounded-full p-1">
+                      {isDone && (
+                        <span className="w-5 h-5 rounded-full text-white bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] p-[1px] flex items-center justify-center text-xs">
+                          <Check size={20} strokeWidth={4} />
+                        </span>
+                      )}
+
+                      {isActive && (
+                        <div className="relative w-5 h-5">
+                          <div className="absolute inset-0 rounded-full border-2 border-white opacity-30" />
+                          <div className="absolute inset-0 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                        </div>
+                      )}
+
+                      {!isDone && !isActive && (
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center">
+                          <Clock className="text-gray-300" size={20} />
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <p
+                        className={`text-lg font-manrope font-bold ${isActive
+                          ? "text-blue-600"
+                          : isDone
+                            ? "text-gray-600"
+                            : "text-gray-200"
+                          }`}
+                      >
+                        {step.title}
+                      </p>
+                      <p
+                        className={`text-sm font-manrope font-semibold  leading-relaxed mt-0.5 ${isActive
+                          ? "text-gray-500"
+                          : isDone
+                            ? "text-gray-400"
+                            : "text-gray-200"
+                          }`}
+                      >
+                        {step.desc}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </CommonCard>
+    ));
 }

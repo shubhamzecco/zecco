@@ -15,9 +15,10 @@ import { formatEuro } from "@/utils/common";
 
 export interface IAiInsightProps {
   ai_insight: PropertyAnalysis;
+  isPropertyDetail?:boolean
 }
 
-export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
+export function AIMarketIntelligence({ ai_insight , isPropertyDetail}: IAiInsightProps) {
   const { mainReducer } = usePosterReducers();
   return (
     <div className={`mb-8 bg-[#fafafa] border border-[#F3F4F6] rounded-xl p-6`}>
@@ -46,7 +47,9 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
           </p>
           <p className="font-manrope font-medium text-[#9CA3AF] text-xs">
             Based on {ai_insight?.comparables_used} recent sales in{" "}
-            {ai_insight?.city}
+            {ai_insight?.city
+              ?.toLowerCase()
+              .replace(/\b\w/g, (char) => char?.toUpperCase())}
           </p>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-md border border-[#F3F4F6]">
@@ -60,7 +63,9 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
             {ai_insight?.investment_grade}
           </p>
           <p className="font-manrope font-medium text-[#9CA3AF] text-xs">
-            {ai_insight?.investment_opportunity} in {ai_insight?.city}
+            {ai_insight?.investment_opportunity} in  {ai_insight?.city
+              ?.toLowerCase()
+              .replace(/\b\w/g, (char) => char?.toUpperCase())}
           </p>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-md border border-[#F3F4F6]">
@@ -150,10 +155,10 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
         </ul>
       </div>
       {mainReducer?.ai_insight?.infrastructure &&
-        Object.keys(mainReducer.ai_insight.infrastructure).length > 0 && (
+        Object.keys(mainReducer?.ai_insight?.infrastructure || {}).length > 0 && (
           <NearByPlaces
             near_places={
-              mainReducer.ai_insight.infrastructure as Infrastructure
+              mainReducer?.ai_insight?.infrastructure as Infrastructure
             }
           />
         )}

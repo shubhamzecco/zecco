@@ -1,4 +1,3 @@
-"use client";
 import type { Metadata } from "next";
 import {
   Instrument_Sans,
@@ -10,9 +9,9 @@ import {
 import React from "react";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { URL } from "@/api/rest/fetchData";
 import { AppProviders } from "@/components/provider/provider";
 import { circular_std } from "@/lib/fonts";
+import { OrganizationJsonLd } from "@/components/seo/organization-jsonld";
 import "leaflet/dist/leaflet.css";
 import "../styles/globals.css";
 
@@ -48,8 +47,8 @@ export const publicSans = Public_Sans({
   display: "swap",
 });
 
-const metadata: Metadata = {
-  metadataBase: URL,
+export const metadata: Metadata = {
+  metadataBase: new URL("https://zecco.es"),
   title: {
     default: "Zecco Real Estate",
     template: "%s | Zecco Real Estate",
@@ -105,7 +104,7 @@ const metadata: Metadata = {
   },
 
   alternates: {
-    canonical: "https://zecco.es",
+    canonical: "/",
   },
 
   robots: {
@@ -132,6 +131,7 @@ export default function RootLayout({
       className={`${inter.variable} ${manrope.variable} ${instrumentSans.variable} ${poppins?.variable} ${circular_std?.variable} ${publicSans.variable} scrollbar-hide`}
     >
       <body className="bg-white text-gray-900 antialiased font-sans scrollbar-hide">
+        <OrganizationJsonLd />
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

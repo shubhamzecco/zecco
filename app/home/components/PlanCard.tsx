@@ -72,7 +72,7 @@ export default function PlanCard({
         >
           What's included
         </p>
-        {features.map((feature, index) => (
+        {features?.map((feature, index) => (
           <div key={index} className="flex items-start gap-3">
             <Check
               size={20}

@@ -36,15 +36,15 @@ export default function WhyChooseZecco() {
         </p>
 
         <div className="mt-14 grid grid-cols-1 md:grid-cols-4 gap-10">
-          {data.map((item, index) => {
+          {data?.map((item, index) => {
             const isFirst = index === 0;
-            const isLast = index === data.length - 1;
+            const isLast = index === data?.length - 1;
 
             return (
               <div key={index}>
                 <div className="flex items-center gap-3 mb-4">
                   <span className="text-4xl font-manrope font-bold text-[#333333] whitespace-nowrap">
-                    {item.title}
+                    {item?.title}
                   </span>
                   {!isLast && <div className="w-5 h-[2px] bg-gray-200"></div>}
 
@@ -57,10 +57,10 @@ export default function WhyChooseZecco() {
                 </div>
 
                 <h4 className="text-lg font-manrope font-bold text-[#333333]">
-                  {item.heading}
+                  {item?.heading}
                 </h4>
                 <p className="mt-2 font-manrope font-normal text-sm text-[#333333] leading-relaxed">
-                  {item.desc}
+                  {item?.desc}
                 </p>
               </div>
             );

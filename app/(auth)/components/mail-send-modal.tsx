@@ -19,6 +19,7 @@ export default function CheckInboxModal({
           <button
             onClick={onClose}
             className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-500 shadow hover:bg-gray-100"
+            aria-label="close"
           >
             <X size={16} />
           </button>
@@ -46,7 +47,7 @@ export default function CheckInboxModal({
           </p>
           <Button
             onClick={onReturn}
-            className="mt-8 w-full font-instrument_sans rounded-full bg-[#136AED] h-12  py-3.5 text-sm font-normal tracking-wider text-white shadow-lg transition"
+            className="mt-8 w-full font-instrument_sans rounded-full bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12  py-3.5 text-sm font-normal tracking-wider text-white shadow-lg transition"
           >
             Return to Homepage
           </Button>

@@ -2,13 +2,14 @@
 
 import {
   AIChatMessage,
-  BreadcrumbItem,
   IBlogsResponse,
   IChatMessage,
   IFavoriteProperty,
   IFeatures,
   IPackageResponse,
+  IPreferenceResponse,
   IPrivacyPolicy,
+  IProperty,
   IPropertyResponse,
   ISavedSearches,
   Property,
@@ -16,8 +17,6 @@ import {
 
 export const ActionTypes = {
   SET_CLEAR_REDUX: "SET_CLEAR_REDUX",
-  SET_BREADCRUMBS: "SET_BREADCRUMBS",
-  CLEAR_BREADCRUMBS: "CLEAR_BREADCRUMBS",
   SET_PACKAGE_LIST_WITH_LIMIT: "SET_PACKAGE_LIST_WITH_LIMIT",
   SET_LOCATION_LIST_WITH_LIMIT: "SET_LOCATION_LIST_WITH_LIMIT",
   SET_BLOGS_LIST_WITH_LIMIT: "SET_BLOGS_LIST_WITH_LIMIT",
@@ -48,6 +47,8 @@ export const ActionTypes = {
   SET_FEATURES: "SET_FEATURES",
   SET_PRIVACY_POLICY: "SET_PRIVACY_POLICY",
   SET_TERMS_CONDITIONS: "SET_TERMS_CONDITIONS",
+  SET_PREFERENCE_PROPERTY_LIST: "SET_PREFERENCE_PROPERTY_LIST",
+  SET_UPDATE_FAVIOURATE_LIKE: "SET_UPDATE_FAVIOURATE_LIKE"
 };
 
 export const setPropertyFilter = (payload: any) => {
@@ -169,6 +170,26 @@ export const setFavoriteList = (payload: IFavoriteProperty) => {
   };
 };
 
+export const setPreferenceList = (payload: IPreferenceResponse) => {
+  return {
+    type: ActionTypes.SET_PREFERENCE_PROPERTY_LIST,
+    payload,
+  };
+};
+export const setUpdatePropertyLike = (payload: {
+  property_id?: string | number;
+  _id?: string | number;
+  isFavorite?: boolean;
+}) => {
+  return {
+    type: ActionTypes.SET_UPDATE_FAVIOURATE_LIKE,
+    payload: {
+      property_id: payload.property_id ?? payload._id,
+      isFavorite: payload.isFavorite,
+    },
+  };
+};
+
 export const setAiInsight = (payload: IPropertyResponse) => {
   return {
     type: ActionTypes.SET_AI_INSIGHT,
@@ -237,15 +258,6 @@ export const setPackageListWithLimit = (payload: IPackageResponse) => {
 export const setChatBadgeOpen = (payload: boolean) => ({
   type: ActionTypes.AI_CHAT_BADGE_OPEN,
   payload,
-});
-
-export const setBreadcrumbs = (payload: BreadcrumbItem[]) => ({
-  type: ActionTypes.SET_BREADCRUMBS,
-  payload,
-});
-
-export const clearBreadcrumbs = () => ({
-  type: ActionTypes.CLEAR_BREADCRUMBS,
 });
 
 export const setReduxClear = () => ({

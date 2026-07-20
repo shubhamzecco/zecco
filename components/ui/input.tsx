@@ -52,6 +52,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 inset-y-0 flex items-center text-[#9CA3AF] hover:text-brand-blue"
+            aria-label="view"
           >
             {showPassword ? (
               <EyeOff className="w-5 h-5" />

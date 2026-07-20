@@ -34,24 +34,24 @@ export default function Operate() {
             <h2 className="text-3xl font-manrope sm:text-4xl font-semibold text-[#000000] mb-5">
               Where We Operate
             </h2>
-            <p className="text-slate_gray font-manrope font-normal max-w-lg mb-10">
+            <p className="text-slate_gray font-manrope font-normal lg:max-w-lg sm:w-full  mb-10">
               We specialize in the most sought-after locations along the
               southern coast of Spain, ensuring our clients have access to prime
               real estate in high-demand zones.
             </p>
 
             <div className="space-y-10">
-              {features.map((feature, index) => (
+              {features?.map((feature, index) => (
                 <div key={index} className="flex gap-4">
                   <div className="flex-shrink-0 bg-[#4A86E8] w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
-                    {feature.icon}
+                    {feature?.icon}
                   </div>
                   <div>
                     <h3 className="text-xl font-manrope font-medium text-[#000000] mb-2">
-                      {feature.title}
+                      {feature?.title}
                     </h3>
-                    <p className="text-slate_gray font-manrope font-normal max-w-sm">
-                      {feature.description}
+                    <p className="text-slate_gray font-manrope font-normal lg:max-w-lg sm:w-full">
+                      {feature?.description}
                     </p>
                   </div>
                 </div>

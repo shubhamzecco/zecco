@@ -31,11 +31,11 @@ export default function EssentialAspects() {
           <div>
             <h2 className="text-3xl font-manrope sm:text-4xl font-bold text-gray-900 mb-14">
               Essential Aspects
-              <br /> Driving Our Success
+              <br className="sm:hidden block"/> Driving Our Success
             </h2>
 
             <div className="space-y-10">
-              {features.map((feature, index) => (
+              {features?.map((feature, index) => (
                 <div key={index} className="flex gap-4">
                   <div className="flex-shrink-0 bg-[#4A86E8] w-16 h-16 rounded-xl flex justify-center items-center text-white shadow-xl">
                     <Image
@@ -49,7 +49,7 @@ export default function EssentialAspects() {
                     <h3 className="text-xl font-manrope font-medium text-[#000000] mb-2">
                       {feature.title}
                     </h3>
-                    <p className="text-slate_gray font-manrope font-normal max-w-sm">
+                    <p className="text-slate_gray font-manrope font-normal lg:max-w-sm">
                       {feature.description}
                     </p>
                   </div>

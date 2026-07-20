@@ -8,7 +8,6 @@ const initialState: IMainResponse = {
   package_list_with_limit: null,
   ai_chat_messages: [],
   ai_chat_loading: false,
-  breadcrumbs: [],
   ai_chat_badge_open: false,
   location_list_with_limit: null,
   location_list_without_limit: null,
@@ -35,6 +34,7 @@ const initialState: IMainResponse = {
   property_features_list: null,
   privacy_policy: null,
   terms_conditions: null,
+  preference_property_list: null,
 };
 
 const mainReducer = (
@@ -53,6 +53,16 @@ const mainReducer = (
       return {
         ...state,
         search_by_area: action.payload,
+      };
+    }
+
+    case ActionTypes.SET_PREFERENCE_PROPERTY_LIST: {
+      return {
+        ...state,
+        preference_property_list: {
+          data: action?.payload?.data,
+          pagination: action?.payload?.pagination,
+        },
       };
     }
 
@@ -195,6 +205,66 @@ const mainReducer = (
         },
       };
     }
+    case ActionTypes.SET_UPDATE_FAVIOURATE_LIKE: {
+      const propertyId = String(action.payload.property_id);
+
+      const resolveFavoriteState = (currentlyFavorite: boolean) =>
+        action.payload.isFavorite !== undefined
+          ? action.payload.isFavorite
+          : !currentlyFavorite;
+
+      const updateFavoriteList = (list: any) => {
+        if (!list) return list;
+
+        const favoriteProperty = list.favorite_property ?? [];
+        const currentlyFavorite = favoriteProperty.includes(propertyId);
+        const isFavorite = resolveFavoriteState(currentlyFavorite);
+
+        return {
+          ...list,
+          favorite_property: isFavorite
+            ? [...new Set([...favoriteProperty, propertyId])]
+            : favoriteProperty.filter((id: string) => id !== propertyId),
+
+          data: list.data?.map((item: any) =>
+            String(item._id) === propertyId
+              ? {
+                ...item,
+                favorite: isFavorite,
+              }
+              : item
+          ),
+        };
+      };
+
+      const updateFavoritePropertyList = () => {
+        const list = state.favorite_property_list;
+        if (!list) return list;
+
+        const currentlyFavorite = list.data.some(
+          (item) => String(item._id) === propertyId,
+        );
+        const isFavorite = resolveFavoriteState(currentlyFavorite);
+
+        if (isFavorite) {
+          return list;
+        }
+
+        return {
+          ...list,
+          data: list.data.filter((item) => String(item._id) !== propertyId),
+        };
+      };
+
+      return {
+        ...state,
+        property_list_with_limit: updateFavoriteList(
+          state.property_list_with_limit
+        ),
+        zecco_favorite: updateFavoriteList(state.zecco_favorite),
+        favorite_property_list: updateFavoritePropertyList(),
+      };
+    }
 
     case ActionTypes.SET_BLOGS_LIST_WITH_LIMIT: {
       return {
@@ -257,15 +327,6 @@ const mainReducer = (
         ai_chat_loading: false,
       };
     }
-
-    case ActionTypes.SET_BREADCRUMBS: {
-      return { ...state, breadcrumbs: action.payload };
-    }
-    case ActionTypes.CLEAR_BREADCRUMBS:
-      return {
-        ...state,
-        breadcrumbs: [],
-      };
 
     case ActionTypes.AI_CHAT_BADGE_OPEN: {
       return { ...state, ai_chat_badge_open: action.payload };

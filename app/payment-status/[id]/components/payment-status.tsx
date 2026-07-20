@@ -108,7 +108,7 @@ export function PaymentStatus({
   };
 
   const config = getStatusConfig(status);
-  const Icon = config.icon;
+  const Icon = config?.icon;
   const isAnimated = status === "open";
 
   return (
@@ -130,9 +130,9 @@ export function PaymentStatus({
         }`}
       >
         <div
-          className={`relative overflow-hidden rounded-2xl shadow-2xl ${config.cardBg} border-2 ${config.borderColor} backdrop-blur-sm`}
+          className={`relative overflow-hidden rounded-2xl shadow-2xl ${config?.cardBg} border-2 ${config?.borderColor} backdrop-blur-sm`}
         >
-          <div className={`h-2 bg-gradient-to-r ${config.bgGradient}`} />
+          <div className={`h-2 bg-gradient-to-r ${config?.bgGradient}`} />
 
           <div className="p-8">
             <div
@@ -141,7 +141,7 @@ export function PaymentStatus({
             >
               <div className="relative">
                 <div
-                  className={`absolute inset-0 rounded-full ${config.iconColor} opacity-20 ${isAnimated ? "animate-pulse" : "scale-0"}`}
+                  className={`absolute inset-0 rounded-full ${config?.iconColor} opacity-20 ${isAnimated ? "animate-pulse" : "scale-0"}`}
                   style={{
                     animation: isAnimated
                       ? "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
@@ -149,7 +149,7 @@ export function PaymentStatus({
                   }}
                 />
                 <Icon
-                  className={`w-16 h-16 ${config.iconColor} relative z-10 ${isAnimated ? "animate-spin" : ""} transition-transform`}
+                  className={`w-16 h-16 ${config?.iconColor} relative z-10 ${isAnimated ? "animate-spin" : ""} transition-transform`}
                   strokeWidth={1.5}
                   style={{
                     animationDuration: isAnimated ? "2s" : "0s",
@@ -162,17 +162,17 @@ export function PaymentStatus({
               className={`text-3xl font-bold text-center text-gray-900 dark:text-white mb-2 ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
               style={{ animationDuration: "0.6s", animationDelay: "0.2s" }}
             >
-              {config.title}
+              {config?.title}
             </h2>
             <p
               className={`text-center text-gray-600 dark:text-gray-300 mb-4 text-sm leading-relaxed ${isVisible ? "animate-in fade-in" : ""}`}
               style={{ animationDuration: "0.6s", animationDelay: "0.3s" }}
             >
-              {message || config.description}
+              {message || config?.description}
             </p>
             {typeof amount === "number" && (
               <div
-                className={`${config.detailBg} rounded-xl p-6 mb-4 border border-opacity-50 ${config.borderColor} transition-transform hover:scale-102 ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
+                className={`${config?.detailBg} rounded-xl p-6 mb-4 border border-opacity-50 ${config?.borderColor} transition-transform hover:scale-102 ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
                 style={{ animationDuration: "0.6s", animationDelay: "0.4s" }}
               >
                 <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 font-semibold">
@@ -180,7 +180,7 @@ export function PaymentStatus({
                 </p>
                 <p
                   className="text-4xl font-bold text-center"
-                  style={{ color: config.accentColor }}
+                  style={{ color: config?.accentColor }}
                 >
                   {currency} {amount.toFixed(2)}
                 </p>
@@ -188,7 +188,7 @@ export function PaymentStatus({
             )}
             {transactionId && (
               <div
-                className={`${config.detailBg} rounded-xl p-4 mb-4 border border-opacity-50 ${config.borderColor} transition-all hover:shadow-md ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
+                className={`${config?.detailBg} rounded-xl p-4 mb-4 border border-opacity-50 ${config?.borderColor} transition-all hover:shadow-md ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
                 style={{ animationDuration: "0.6s", animationDelay: "0.5s" }}
               >
                 <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2 font-semibold">
@@ -201,13 +201,13 @@ export function PaymentStatus({
             )}
             {status === "open" && (
               <div
-                className={`${config.detailBg} rounded-xl p-5 mb-4 border border-opacity-50 ${config.borderColor} backdrop-blur-sm ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
+                className={`${config?.detailBg} rounded-xl p-5 mb-4 border border-opacity-50 ${config?.borderColor} backdrop-blur-sm ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
                 style={{ animationDuration: "0.6s", animationDelay: "0.6s" }}
               >
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-1">
                     <Loader2
-                      className={`w-5 h-5 ${config.iconColor} animate-spin`}
+                      className={`w-5 h-5 ${config?.iconColor} animate-spin`}
                     />
                   </div>
                   <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -223,7 +223,7 @@ export function PaymentStatus({
 
             {status === "paid" && (
               <div
-                className={`${config.detailBg} rounded-xl p-5 mb-4 border border-opacity-50 ${config.borderColor} ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
+                className={`${config?.detailBg} rounded-xl p-5 mb-4 border border-opacity-50 ${config?.borderColor} ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
                 style={{ animationDuration: "0.6s", animationDelay: "0.6s" }}
               >
                 <p className="text-sm text-emerald-700 dark:text-emerald-300 text-center leading-relaxed">
@@ -235,7 +235,7 @@ export function PaymentStatus({
 
             {status === "failed" && (
               <div
-                className={`${config.detailBg} rounded-xl p-5 mb-4 border border-opacity-50 ${config.borderColor} ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
+                className={`${config?.detailBg} rounded-xl p-5 mb-4 border border-opacity-50 ${config?.borderColor} ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
                 style={{ animationDuration: "0.6s", animationDelay: "0.6s" }}
               >
                 <p className="text-sm text-red-700 dark:text-red-300 text-center leading-relaxed">
@@ -246,7 +246,7 @@ export function PaymentStatus({
 
             {status === "expired" && (
               <div
-                className={`${config.detailBg} rounded-xl p-5 mb-4 border border-opacity-50 ${config.borderColor} ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
+                className={`${config?.detailBg} rounded-xl p-5 mb-4 border border-opacity-50 ${config?.borderColor} ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
                 style={{ animationDuration: "0.6s", animationDelay: "0.6s" }}
               >
                 <p className="text-sm text-amber-700 dark:text-amber-300 text-center leading-relaxed">
@@ -257,7 +257,7 @@ export function PaymentStatus({
 
             {/* Action Button */}
             <button
-              className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 text-white shadow-lg hover:shadow-xl ${config.buttonColor} flex items-center justify-center gap-2 group ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
+              className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 text-white shadow-lg hover:shadow-xl ${config?.buttonColor} flex items-center justify-center gap-2 group ${isVisible ? "animate-in fade-in slide-in-from-up" : ""}`}
               style={{ animationDuration: "0.6s", animationDelay: "0.7s" }}
               onClick={() => {
                 if (status === "open") {
@@ -268,6 +268,7 @@ export function PaymentStatus({
                   const payload = {
                     package_id: package_id,
                     user_id: user_data?.user?._id,
+                    cancelURL: window.location.href,
                     // webhook_url: `https://living-sin-headlines-lucky.trycloudflare.com `,
                   };
                   CommonApiRequest(
@@ -278,8 +279,8 @@ export function PaymentStatus({
                     // true,
                   )?.then(async (response: any) => {
                     if (response?.status === 200) {
-                      if (response.success) {
-                        window.location.href = response.data.checkoutUrl;
+                      if (response?.success) {
+                        window.location.href = response?.data?.checkoutUrl;
                       }
                     } else {
                     }
@@ -288,7 +289,7 @@ export function PaymentStatus({
                   if (localStorage.getItem("isRegister") === "true") {
                     // setEmailVerificationPopup(true)
                     localStorage.removeItem("isRegister");
-                    router.push(App_url.link.SIGN_IN);
+                    router.push(App_url.link.INITIAL_URL);
                   } else {
                     CommonApiRequest(
                       "GET",

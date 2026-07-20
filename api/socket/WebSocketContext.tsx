@@ -66,7 +66,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
   const sendMessage = useCallback((event: string, data?: any) => {
     if (singletonSocket && singletonSocket.connected) {
-      // console.log('📤 Sending message:', event, data);
+      console.log('Send:', event, data);
       singletonSocket.emit(event, data);
     } else {
       console.log("⚠️ Socket not connected. Cannot send:", event, data);
@@ -110,6 +110,16 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     singletonSocket.on("connect_error", (err) => {
       console.error("🚨 Socket.IO connection error:", err);
       setIsConnected(false);
+      if (
+        err.message === "Unauthorized token" ||
+        err.message?.toLowerCase().includes("unauthorized")
+      ) {
+        dispatch(setLogout());
+        localStorage.clear();
+        dispatch(setAuthData({} as any));
+        dispatch(setReduxClear());
+        router.replace(App_url.link.INITIAL_URL);
+      }
     });
 
     singletonSocket.onAny((event, data) => {
