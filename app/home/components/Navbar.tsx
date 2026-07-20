@@ -39,10 +39,10 @@ export default function Navbar() {
   return (
     <nav className="absolute top-7 left-0 w-full z-50">
       {/* Top Bar */}
-      <div className="sm:mx-5 px-4 sm:px-6 lg:px-8">
+      <div className="sm:mx-5 px-4 sm:px-6 lg:px-8 ">
         {/* <div className="bg-white/20 border border-white/70 rounded-full"> */}
-          <div className="bg-[#e3dfdf5c] border border-[#b8dbf7] rounded-full">
-          <div className="max-sm:grid grid-cols-2 lg:grid sm:flex justify-between lg:grid-cols-[1fr_auto_1fr] items-center w-full h-[3.2rem] px-4">
+          <div className="bg-[#e3dfdf5c]  shadow-lg backdrop-blur-sm border border-[#b8dbf7] rounded-full">
+          <div className="max-sm:grid grid-cols-2 lg:grid sm:flex justify-between lg:grid-cols-[1fr_auto_1fr] items-center w-full h-[3.2rem] 2xl:h-[3.5rem] px-4">
             <Link href="/" className="flex items-center gap-2 w-[25%]">
               <Image
                 src={App_url.image.chat_logo}
@@ -58,7 +58,7 @@ export default function Navbar() {
                 <button
                   key={item?.label}
                   onClick={() => handleNavClick(item)}
-                  className={`relative ${isActive(item?.href) ? "text-[#1466EC]" : "text-[#0B5394]"} font-inter text-sm font-medium`}
+                  className={`relative ${isActive(item?.href) ? "text-[#1466EC]" : "text-[#1b3f5f]"} font-inter text-sm font-medium`}
                 >
                   {item?.label}
                   {isActive(item?.href) && (

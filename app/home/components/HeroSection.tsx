@@ -13,6 +13,7 @@ export default function HeroSection() {
         className="lg:object-fill max-md:object-cover mx-auto"
         priority
       />
+       <div className="absolute inset-0 rounded-b-[40px] bg-gradient-to-b from-white/20 via-white/20 to-transparent" />
       <div className="absolute top-[23%] lg:top-[23%] left-0 right-0 flex flex-col items-center text-center px-4 -translate-y-1/2">
         <Image
           src={App_url.image.logo}

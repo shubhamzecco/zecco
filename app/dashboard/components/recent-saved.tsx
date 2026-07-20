@@ -13,7 +13,7 @@ const RecentSaved = ({ properties }: any) => {
     return (
         <CommonCard className="max-2xl:p-5" heading={isEmpty ? undefined : 'Recent Saved Properties'} description={isEmpty ? undefined : 'Properties you saved recently'}>
             {isEmpty ? (
-                <div className="flex flex-col items-center justify-center h-[280px] lg:h-[365px] 2xl:h-[380px] px-4">
+                <div className="flex flex-col items-center justify-center h-[280px] lg:h-[365px] 2xl:h-[398px] px-4">
                     <div className="relative mb-6">
                         <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
                             <Heart size={30} className="text-red-400" strokeWidth={1.5} />

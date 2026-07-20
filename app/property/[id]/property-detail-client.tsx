@@ -54,6 +54,16 @@ export default function PropertyDetailClient() {
 
   useEffect(() => {
     if (
+      mainReducer?.ai_insight &&
+      Object.keys(mainReducer?.ai_insight || {}).length > 0
+    ) {
+      setStep('intro')
+      dispatch(setAiInsight({} as IPropertyResponse));
+    }
+  }, [])
+
+  useEffect(() => {
+    if (
       lastEvent?.data?.status &&
       lastEvent?.data?.request?.type === "userService" &&
       (lastEvent?.data?.request?.action === "addFavorite" ||
@@ -130,7 +140,6 @@ export default function PropertyDetailClient() {
     }
     : null;
 
-    console.log("mainReducer?.ai_insight ::: " , mainReducer?.ai_insight)
 
   return (
     <MainLayout isBreadcrumb isPropertyDetails chatBotWidget={true}>
@@ -173,7 +182,8 @@ export default function PropertyDetailClient() {
                 heading="AI Market Intelligence"
               />
             )}
-            {step === "complete" && mainReducer?.ai_insight && (
+            {step === "complete" &&  (mainReducer?.ai_insight &&
+             Object.keys(mainReducer?.ai_insight || {}).length > 0) && (
               <AIMarketIntelligence
                 isPropertyDetail
                 ai_insight={mainReducer?.ai_insight as PropertyAnalysis}

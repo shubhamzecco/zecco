@@ -1,12 +1,18 @@
 import { StatisticCard } from '@/components/cards/statistic-card'
 import { usePosterReducers } from '@/redux/getdata/usePostReducer'
 import { motion } from 'framer-motion'
-import { Heart, Home, TrendingUp } from 'lucide-react'
+import { Heart, Home, MessageCircle, Search, TrendingUp } from 'lucide-react'
 import RecentSaved from './recent-saved'
 import SavedSearches from './saved-searches'
 
 export const getGreeting = (): string => {
-    const hour = new Date().getHours();
+    const hour = Number(
+        new Intl.DateTimeFormat("en-US", {
+            hour: "numeric",
+            hour12: false,
+            timeZone: "Europe/Madrid",
+        }).format(new Date())
+    );
 
     if (hour >= 5 && hour < 12) {
         return "Good Morning";
@@ -32,9 +38,9 @@ const Greeting = () => {
     );
 
     const stats = [
-        { label: 'Saved Properties', value: mainReducer?.favorite_property_list?.data?.length ?? 0, change: '+2 this week' },
-        { label: 'Saved Searches', value: mainReducer?.saved_searches?.data?.length ?? 0, change: '+8 this week' },
-        { label: 'Messages', value: totalUnreadCount ?? 0, change: 'Unread' },
+        { label: 'Saved Properties', value: mainReducer?.favorite_property_list?.data?.length ?? 0 },
+        { label: 'Saved Searches', value: mainReducer?.saved_searches?.data?.length ?? 0 },
+        { label: 'Messages', value: totalUnreadCount ?? 0, change: 'New Message' },
     ]
 
     return (
@@ -50,15 +56,15 @@ const Greeting = () => {
                         <h1 className="text-2xl md:text-3xl font-bold font-manrope">
                             {getGreeting()}, {user_data?.user?.first_name} 👋
                         </h1>
-                        <p className="mt-2 text-white/60 font-manrope">
-                            You&apos;ve got 3 new messages and 5 new property matches today
+                        <p className="mt-2 text-white/60 font-manrope max-2xl:text-sm">
+                       Still wandering through your property search? Let the AI do the work for you. Use our AI Concierge.
                         </p>
                     </div>
                 </div>
             </motion.div>
 
             <div>
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-3 items-stretch h-full">
                     {stats?.map((stat, idx) => (
                         <motion.div
                             key={stat.label}
@@ -72,11 +78,11 @@ const Greeting = () => {
                                 change={stat.change}
                                 icon={
                                     idx === 0 ? (
-                                        <Home className="h-5 w-5 text-[#3b82f6]" />
-                                    ) : idx === 1 ? (
-                                        <TrendingUp className="h-5 w-5 text-[#3b82f6]" />
-                                    ) : (
                                         <Heart className="h-5 w-5 text-red-500" />
+                                    ) : idx === 1 ? (
+                                        <Search className="h-5 w-5 text-[#3b82f6]" />
+                                    ) : (
+                                        <MessageCircle className="h-5 w-5" />
                                     )
                                 }
                             />

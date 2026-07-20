@@ -120,7 +120,7 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
   return (
     <CommonCard className="max-2xl:p-5" heading={searches && searches.length > 0 ? "Saved Searches" : undefined} description={searches && searches.length > 0 ? "Recent saved searches" : undefined}>
       {!searches || searches.length === 0 ? (
-        <div className="flex flex-col items-center justify-center h-[280px] lg:h-[365px] 2xl:h-[380px] px-4">
+        <div className="flex flex-col items-center justify-center h-[280px] lg:h-[365px] 2xl:h-[398px] px-4">
           <div className="relative mb-6">
             <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center">
               <Search size={30} className="text-blue-400" strokeWidth={1.5} />
