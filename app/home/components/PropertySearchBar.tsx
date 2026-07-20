@@ -15,6 +15,48 @@ import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { citySlug } from "@/utils/common";
 
+const PREBUILT_SUGGESTIONS_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/search/prebuilt-suggestions`
+    : "http://localhost:8000/api/search/prebuilt-suggestions";
+
+let prebuiltSuggestionsPromise: Promise<any[]> | null = null;
+let prebuiltSuggestionsCache: any[] | null = null;
+
+async function loadPrebuiltSuggestions() {
+  if (prebuiltSuggestionsCache) {
+    return prebuiltSuggestionsCache;
+  }
+
+  if (!prebuiltSuggestionsPromise) {
+    prebuiltSuggestionsPromise = fetch(PREBUILT_SUGGESTIONS_URL, {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+      },
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error("Failed to load prebuilt suggestions");
+        }
+
+        const json = await res.json();
+        const suggestions = json?.data?.suggestions;
+        prebuiltSuggestionsCache = Array.isArray(suggestions) ? suggestions : [];
+        return prebuiltSuggestionsCache;
+      })
+      .catch(() => {
+        prebuiltSuggestionsCache = [];
+        return [];
+      })
+      .finally(() => {
+        prebuiltSuggestionsPromise = null;
+      });
+  }
+
+  return prebuiltSuggestionsPromise;
+}
+
 const PropertySearchBar = () => {
   const router = useRouter();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
@@ -31,6 +73,8 @@ const PropertySearchBar = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const [searchSuggestions, setSearchSuggestions] = useState<any[]>([]);
+  const [prebuiltSuggestions, setPrebuiltSuggestions] = useState<any[]>([]);
+  const autocompleteSuggestionsRef = useRef<any[]>([]);
 
   useEffect(() => {
     if (!isConnected) return;
@@ -116,30 +160,85 @@ const PropertySearchBar = () => {
   );
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     if (
       lastEvent?.data?.request?.type === "searchService" &&
       lastEvent?.data?.request?.action === "autocompleteSearch"
     ) {
-      setSearchSuggestions(lastEvent.data?.data?.suggestions || []);
+      autocompleteSuggestionsRef.current = lastEvent.data?.data?.suggestions || [];
+
+      const value = searchText.trim().toLowerCase();
+      const localMatches = prebuiltSuggestions.filter((item: any) =>
+        String(item?.title || "").toLowerCase().includes(value),
+      );
+
+      if (!value) {
+        setSearchSuggestions(prebuiltSuggestions);
+        return;
+      }
+
+      if (localMatches.length > 0) {
+        setSearchSuggestions(localMatches);
+        return;
+      }
+
+      setSearchSuggestions(autocompleteSuggestionsRef.current);
     }
-  }, [lastEvent]);
+  }, [lastEvent, prebuiltSuggestions, searchText]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    loadPrebuiltSuggestions().then((suggestions) => {
+      if (!isMounted) return;
+
+      setPrebuiltSuggestions(suggestions);
+
+      const value = searchText.trim().toLowerCase();
+      if (!value) {
+        setSearchSuggestions(suggestions);
+        return;
+      }
+
+      const localMatches = suggestions.filter((item: any) =>
+        String(item?.title || "").toLowerCase().includes(value),
+      );
+
+      if (localMatches.length > 0) {
+        setSearchSuggestions(localMatches);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      const normalizedValue = value.trim().toLowerCase();
+      const localMatches = prebuiltSuggestions.filter((item: any) =>
+        String(item?.title || "").toLowerCase().includes(normalizedValue),
+      );
+
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
 
       setSearchText(value);
       setSelectedLocation(null);
       setSearchDropdown(true);
       handleSearchFocus();
 
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
+      if (!value.trim()) {
+        setSearchSuggestions(prebuiltSuggestions);
+        return;
       }
 
-      if (!value.trim()) {
-        setSearchSuggestions([]);
+      if (localMatches.length > 0) {
+        setSearchSuggestions(localMatches);
         return;
       }
 
@@ -153,8 +252,16 @@ const PropertySearchBar = () => {
         });
       }, 300);
     },
-    [sendMessage]
+    [prebuiltSuggestions, sendMessage],
   );
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
 
   const handleSearchFocus = () => {
     if (!searchRef.current) return;

@@ -48,7 +48,7 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
   const [isLimitReached, setIsLimitReached] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
-  const { mainReducer, user_id } = usePosterReducers();
+  const { mainReducer, user_data } = usePosterReducers();
   const ai_chat_messages = mainReducer?.ai_chat_messages ?? [];
 
   const handleSend = async (text: string) => {
@@ -66,8 +66,8 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
     setIsLoading(true);
     try {
       const fpInfo = await getFingerprintDeviceInfo();
-      const sessionId = user_id ?? fpInfo?.deviceId!;
-      const res: ZeccoAIResponse = await sendZeccoAIMessage(text, sessionId, user_id);
+      const sessionId = user_data?.user?._id ?? fpInfo?.deviceId!;
+      const res: ZeccoAIResponse = await sendZeccoAIMessage(text, sessionId, user_data?.user?._id);
 
       const LIMIT_MARKER = "[LIMIT_REACHED]";
       const isLimit = res?.response?.includes(LIMIT_MARKER);
