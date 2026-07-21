@@ -19,7 +19,7 @@ type PropertyType = "buy" | "rent" | "new" | "all";
 
 const LIMIT = 18;
 
-function parseCSV(value: string): number[] {
+export function parseCSV(value: string): number[] {
   return value ? value.split(",").map(Number).filter((n) => !isNaN(n)) : [];
 }
 
