@@ -6,7 +6,6 @@ interface PropertyInfoProps {
   property: IProperty;
 }
 export function PropertyInfo({ property }: PropertyInfoProps) {
-  // console.log("property::", property)
   return (
     <div className="mb-5">
       <div className="flex flex-wrap gap-2 mb-2">

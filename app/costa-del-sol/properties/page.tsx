@@ -50,7 +50,7 @@ function readFilters(sp: URLSearchParams): UrlFilters {
     priceTo: sp.get("priceTo") || "",
     buildFrom: sp.get("buildFrom") || "",
     buildTo: sp.get("buildTo") || "",
-    types: sp.get("types") || "",
+    types: sp.get("types") || sp.get("propertyType") || "",
     features: sp.get("features") || "",
   };
 }
@@ -204,7 +204,6 @@ const Page = () => {
 
   const onAreaClick = useCallback(
     (item: any) => {
-      console.log("urlFilters::", urlFilters, "item::", item);
 
       const type = item?.type?.toLowerCase();
 
@@ -286,6 +285,8 @@ const Page = () => {
         search: searchValue,
         categories: urlFilters.categories || null,
         cities: urlFilters.city || null,
+        ...(urlFilters.types && { types: parseCSV(urlFilters.types) }),
+        ...(urlFilters.features && { features: parseCSV(urlFilters.features) }),
         ...(urlFilters.bedroomsFrom && { bedroomsFrom: Number(urlFilters.bedroomsFrom) }),
         ...(urlFilters.bedroomsTo && { bedroomsTo: Number(urlFilters.bedroomsTo) }),
         ...(urlFilters.priceFrom && { priceFrom: Number(urlFilters.priceFrom) }),
@@ -301,10 +302,10 @@ const Page = () => {
 
   const filterPanelFilters = useMemo(
     () => ({
-      categories: urlFilters.categories || null,
+      categories: urlFilters.categories || urlFilters.types || null,
       types: urlFilters.types
         ? Object.fromEntries(parseCSV(urlFilters.types).map((id) => [id, true]))
-        : {},
+        : urlFilters.types,
       features: urlFilters.features
         ? Object.fromEntries(parseCSV(urlFilters.features).map((id) => [id, true]))
         : {},

@@ -55,7 +55,6 @@ export default function MapSearchClient() {
   );
 
   const areas = useMemo(() => mainReducer?.all_location_list || [], [mainReducer?.all_location_list]);
-  console.log("areas", areas);
 
   useEffect(() => {
     if (!isConnected) return;

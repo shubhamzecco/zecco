@@ -107,33 +107,24 @@ const SavedSearches = () => {
   };
 
   const generateSearchTitle = (item: any) => {
-    const parts: string[] = [];
-    if (item?.categories && item?.types?.filter(Boolean)?.length === 0) {
-      const categoryName = propertyCategoryMap[item?.categories];
-      if (categoryName) {
-        parts.push(categoryName);
-      }
-    }
+    const categoryName = item?.categories && propertyCategoryMap[item?.categories];
 
-    // Property Types
-    if (item?.types?.filter(Boolean)?.length > 0) {
-      const types = (item?.types || [])
-        .filter(Boolean)
-        .map((type: number) => propertyTypeMap[type])
-        .filter(Boolean);
+    const types = (item?.types || [])
+      .filter(Boolean)
+      .map((type: number) => propertyTypeMap[type])
+      .filter(Boolean);
 
-      if (types.length > 0) {
-        parts.push(types.join(" & "));
-      }
-    }
+    const baseTitle = categoryName || (types.length > 0 ? types.join(" & ") : "Properties");
 
-    if (item?.search && (item?.search.toLowerCase() !== item?.city?.name?.toLowerCase())) {
-      parts.push(`in ${item?.search}, ${item?.city?.name}, Spain`);
+    if (item?.search && item?.search.toLowerCase() !== item?.city?.name?.toLowerCase()) {
+      return `${baseTitle} in ${item.search}, ${item.city.name}, spain`;
     } else if (item?.city?.name) {
-      parts.push(`in ${item?.city?.name}, Spain`);
+      return `${baseTitle} in ${item.city.name}, spain`;
     }
-    return parts?.join(" ");
+
+    return `${baseTitle} in Costa del sol`;
   };
+
 
   useEffect(() => {
     if (
@@ -181,10 +172,9 @@ const SavedSearches = () => {
           <div className="space-y-4 overflow-y-auto max-h-[100vh] scrollbar-hide">
             {mainReducer?.saved_searches?.data?.map((item: any) => {
               const title = generateSearchTitle(item);
-
               return (
                 <div key={item?.id} >
-                  <SavedSearchCard title={title} item={item} handleDelete={handleDelete}  onApplySearch={handleApplySearch} />
+                  <SavedSearchCard featureMap={featureMap} title={title} item={item} handleDelete={handleDelete}  onApplySearch={handleApplySearch} propertyTypeMap={propertyTypeMap} />
                 </div>
               );
             })}

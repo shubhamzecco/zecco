@@ -121,6 +121,7 @@ const PropertySearchBar = () => {
     router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
   }, [router, selected, searchText]);
 
+
   const callSearch = (data: any) => {
     const params = new URLSearchParams();
     const filters = data.filters || {};

@@ -121,7 +121,6 @@ const DropdownSelect: React.FC<DropdownProps> = ({
     }
 
     setSearchInput('');
-    // console.log("Keyvalue",Keyvalue)
     if (Keyvalue && setStatekay) {
       setStatekay(Keyvalue);
     }

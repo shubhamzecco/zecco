@@ -349,7 +349,7 @@ const OtpVerification = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-[80%] capitalize bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF]  h-12 my-4 text-white rounded-full shadow-md disabled:opacity-50"
+                  className="w-[80%] capitalize bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF]  h-12 my-4 text-white rounded-xl shadow-md disabled:opacity-50"
                 >
                   {loading && <Loader2 className="h-5 w-5 animate-spin" /> } Verify OTP
                 </Button>

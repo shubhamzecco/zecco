@@ -126,7 +126,7 @@ const Signin = () => {
                   <FormControl>
                     <Input
                       placeholder="Email address"
-                      className="h-12 rounded-full bg-white border-[#D1D5DB] max-md:bg-white/90 max-md:text-black"
+                      className="h-12 rounded-xl bg-white border-[#D1D5DB] max-md:bg-white/90 max-md:text-black"
                       {...field}
                     />
                   </FormControl>
@@ -147,7 +147,7 @@ const Signin = () => {
                     <Input
                       type="password"
                       placeholder="Password"
-                      className="h-12 bg-white rounded-full border-[#D1D5DB] max-md:bg-white/90 max-md:text-black"
+                      className="h-12 bg-white rounded-xl border-[#D1D5DB] max-md:bg-white/90 max-md:text-black"
                       {...field}
                     />
                   </FormControl>
@@ -184,7 +184,7 @@ const Signin = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full capitalize font-inter font-bold tracking-wider  bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50"
+              className="w-full capitalize font-inter font-bold tracking-wider  bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12 my-4 text-white border rounded-xl shadow-md disabled:opacity-50"
             >
               {loading && <Loader2 className="h-5 w-5 animate-spin mr-2" />}
               Login
