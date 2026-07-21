@@ -16,7 +16,7 @@ import PropertyInsights from "./components/property-insights";
 import { useRouter } from "next/navigation";
 import SavedAiInsights from "./components/savedaiInsights";
 import CommonCard from "@/components/cards/common-card";
-import { Sparkles, ArrowLeft, MousePointerClick, Brain, FileBarChart } from "lucide-react";
+import { Sparkles, ArrowLeft, MousePointerClick, Brain, FileBarChart, CheckCircle2 } from "lucide-react";
 
 const AIInsights = () => {
   const [step, setStep] = useState("intro");
@@ -66,21 +66,21 @@ const AIInsights = () => {
     {
       id: 1,
       title: "1. Select Property",
-      description: "Choose a property from your saved favorites list.",
+      description: "Choose a saved property to generate an AI investment analysis.",
       icon: MousePointerClick,
     },
     {
       id: 2,
-      title: "2. AI Analyzes",
+      title: "2. AI Analysis",
       description:
-        "Our AI evaluates market data, location, and property details.",
+        "AI evaluates pricing, market trends, rental yield, and growth potential.",
       icon: Brain,
     },
     {
       id: 3,
-      title: "3. Get Report",
+      title: "3. Investment Report",
       description:
-        "Receive your personalized AI investment report instantly.",
+        "Get a complete report with valuation, advantages, risks, and nearby infrastructure.",
       icon: FileBarChart,
     },
   ];
@@ -161,7 +161,7 @@ const AIInsights = () => {
           </div>
 
           <CommonCard className="!p-4 sm:!p-6">
-            <div className="text-center mb-4">
+            {/* <div className="text-center mb-4">
               <h2 className="font-manrope text-lg sm:text-xl font-bold text-[#0F172A] mb-1">
                 {step === "intro" && "Step 1 — Select a Property"}
                 {step === "processing" && "Step 2 — AI Analyzing"}
@@ -172,7 +172,7 @@ const AIInsights = () => {
                 {step === "processing" && "Our AI is analyzing the property data. This may take a moment."}
                 {step === "complete" && "Review your personalized AI investment analysis."}
               </p>
-            </div>
+            </div> */}
 
             <div className="flex justify-center">
               <div className="flex flex-col items-center w-full max-w-2xl px-6 lg:px-0">
@@ -230,9 +230,10 @@ function CircleStep({ step, activeStep }: { step: number; activeStep: number }) 
         }`}
     >
       {isCompleted ? (
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-        </svg>
+        // <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={5}>
+        //   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        // </svg>
+        <CheckCircle2 className="w-6 h-6"/>
       ) : (
         step
       )}
