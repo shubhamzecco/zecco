@@ -151,6 +151,8 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
                 if (item?.priceTo) params.set("priceTo", String(item.priceTo));
                 if (item?.buildFrom) params.set("buildFrom", String(item.buildFrom));
                 if (item?.buildTo) params.set("buildTo", String(item.buildTo));
+                if (item?.types?.length > 0) params.set("types", item.types.join(","));
+                if (item?.features?.length > 0) params.set("features", item.features.join(","));
                 router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
               }}
               className={`flex cursor-pointer justify-between !py-[8px] lg:!py-[2px] 2xl:!py-[9.5px] ${index !== searches.length - 1

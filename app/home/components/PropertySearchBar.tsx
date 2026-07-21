@@ -134,6 +134,15 @@ const PropertySearchBar = () => {
         params.set("bedroomsTo", String(value));
         return;
       }
+      if (key === "propertyType") {
+        const searchVal = String(value).toLowerCase().trim();
+        const matched = mainReducer?.property_type_list?.find((t: any) => {
+          const name = t.name?.toLowerCase().trim() || "";
+          return name === searchVal || name.includes(searchVal) || searchVal.includes(name);
+        });
+        if (matched?.id) params.set("categories", String(matched.id));
+        return;
+      }
 
       if (Array.isArray(value)) {
         value.forEach((v) => params.append(key, String(v)));
@@ -142,9 +151,9 @@ const PropertySearchBar = () => {
       }
     });
 
-    if (!params.has("city") && filters.cities) {
-      params.set("city", String(filters.cities));
-    }
+    // if (!params.has("city") && filters.cities) {
+    //   params.set("city", String(filters.cities));
+    // }
 
     router.push(
       `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
