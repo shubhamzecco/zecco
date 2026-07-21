@@ -5,9 +5,38 @@ import Image from "next/image";
 import Link from "next/link";
 import ProfileAvatar from "../profile";
 import CommonCard from "./common-card";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { App_url } from "@/constant/static";
 
 function AgentCard() {
     const { user_data } = usePosterReducers();
+    const {sendMessage , lastEvent , isConnected} = useWebSocket()
+    const router = useRouter()
+
+    const handleCreateChat = () => {
+        sendMessage("action", {
+            type: "chatService",
+            action: "create",
+            payload: {
+                participants: user_data?.user?.agent?.agent?._id ?? null,
+                property_id: null,
+                message: null,
+            },
+        });
+    };
+
+     useEffect(() => {
+        if (
+          lastEvent?.data?.status &&
+          lastEvent?.data?.request?.type === "chatService" &&
+          lastEvent?.data?.request?.action === "create"
+        ) {
+          router.push(`${App_url.link.MESSAGE}`);
+        }
+      }, [lastEvent]);
+
     return (
         <>
             <CommonCard className="max-2xl:p-3.5">
@@ -45,7 +74,7 @@ function AgentCard() {
                     </div>
                 </div>
                 <div className=" ">
-                     <div className="text-[#22C55E] sm:mt-3 2xl:hidden block text-xs mt-2 lg:mt-2 w-fit px-3 rounded-md py-1 bg-[#22C55E15] uppercase font-manrope font-bold tracking-wider">
+                    <div className="text-[#22C55E] sm:mt-3 2xl:hidden block text-xs mt-2 lg:mt-2 w-fit px-3 rounded-md py-1 bg-[#22C55E15] uppercase font-manrope font-bold tracking-wider">
                         Verified Agent
                     </div>
                     <div className="bg-[#edf0f7] p-2 my-2 rounded-2xl">
@@ -63,7 +92,7 @@ function AgentCard() {
                         </Link>
                     </div>
                     <button
-                        onClick={() => window.location.href = `tel:${user_data?.user?.agent?.agent?.contact_no}`}
+                        onClick={handleCreateChat}
                         className="relative w-full sm:mt-1 mt-4 lg:mt-4 my-5 py-3.5 px-10 rounded-2xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
                     >
                         Chat with an Agent

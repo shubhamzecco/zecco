@@ -22,6 +22,7 @@ interface MatchedPropertiesProps {
 const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
   const isEmpty = !properties || properties.length === 0;
 
+  console.log("properties ::: ", properties)
   return (
     <>
       <CommonCard className="!px-0 !pb-2">
@@ -75,6 +76,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                   <TableRow className="bg-[#F8FAFC] hover:bg-[#F8FAFC]">
                     <TableHead className="w-[60px] !pl-8">Thumbnail</TableHead>
                     <TableHead>Property Name & Location</TableHead>
+                    <TableHead>Property Type</TableHead>
                     <TableHead>Price</TableHead>
                     <TableHead className="text-center">Beds</TableHead>
                     <TableHead className="text-center">Baths</TableHead>
@@ -83,7 +85,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {properties.map((property: any) => (
+                  {properties?.map((property: any) => (
                     <TableRow
                       key={property?._id}
                       className="hover:bg-slate-50 transition-colors"
@@ -105,6 +107,11 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                         </p>
                         <p className="font-manrope text-xs text-[#64748B] mt-0.5">
                           {property?.locationSubarea || ""}{property?.locationSubarea && property?.locationArea ? ", " : ""}{property?.locationArea || ""}{(property?.locationSubarea || property?.locationArea) && property?.locationCity ? ", " : ""}{property?.locationCity || ""}
+                        </p>
+                      </TableCell>
+                      <TableCell>
+                        <p className="font-manrope font-black text-sm text-[#0F172A]">
+                          {property?.propertyCategory?.name ?? ""}
                         </p>
                       </TableCell>
                       <TableCell>

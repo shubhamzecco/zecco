@@ -13,7 +13,7 @@ const RecentSaved = ({ properties }: any) => {
     return (
         <CommonCard className="max-2xl:p-5" heading={isEmpty ? undefined : 'Recent Saved Properties'} description={isEmpty ? undefined : 'Properties you saved recently'}>
             {isEmpty ? (
-                <div className="flex flex-col items-center justify-center h-[280px] lg:h-[365px] 2xl:h-[398px] px-4">
+                <div className="flex flex-col items-center justify-center h-[280px] lg:h-[425px] 2xl:h-[398px] px-4">
                     <div className="relative mb-6">
                         <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
                             <Heart size={30} className="text-red-400" strokeWidth={1.5} />
@@ -40,7 +40,7 @@ const RecentSaved = ({ properties }: any) => {
                             <div
                                 key={item?._id || index}
                                 onClick={() => router.push(`${App_url.link.COSTA_DEL_SOL}/properties/${itemIdentifier}`)}
-                                className={`flex items-center cursor-pointer justify-between gap-3 px-2 py-[9px] lg:py-[6.5px] 2xl:py-[9px] ${index !== properties.length - 1
+                                className={`flex items-center cursor-pointer justify-between gap-3 px-2 py-[9px] lg:py-[5.8px] 2xl:py-[9px] ${index !== properties.length - 1
                                     ? "border-b border-[#F1F5F9]"
                                     : ""
                                     }`}
@@ -99,7 +99,7 @@ const RecentSaved = ({ properties }: any) => {
             )}
 
             {!isEmpty && (
-                <button onClick={() => router.push(App_url.link.FAVORITES)} className="mt-2 2xl:mt-6 text-[13px] px-2 font-semibold text-[#2563EB] transition hover:translate-x-1">
+                <button onClick={() => router.push(App_url.link.FAVORITES)} className="mt-2 lg:mt-3 2xl:mt-6 text-[13px] px-2 font-semibold text-[#2563EB] transition hover:translate-x-1">
                     View All Saved →
                 </button>
             )}
