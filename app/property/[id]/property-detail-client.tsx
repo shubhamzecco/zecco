@@ -205,7 +205,7 @@ export default function PropertyDetailClient() {
           </div>
 
           <div className="lg:col-span-1">
-            {mainReducer?.property_details?.agent_assigned && (
+            {(mainReducer?.property_details?.agent_assigned || user_data?.user?.agent?.agent)  && (
               <AgentCard
                 agent_details={mainReducer?.property_details?.agent_assigned}
                 user_data={user_data}

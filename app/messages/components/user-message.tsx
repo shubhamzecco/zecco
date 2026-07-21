@@ -324,7 +324,7 @@ const UserMessage = ({
                       <div>
                         {msg?.message && (
                           <div
-                            className="px-4 py-2.5 font-manrope bg-[#0F172A] rounded-2xl rounded-br-md text-sm shadow-md text-white  leading-relaxed"
+                            className="px-4 py-2.5 font-manrope bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] rounded-2xl rounded-br-md text-sm shadow-md text-white  leading-relaxed"
 
                           >
                             {msg?.message}
