@@ -151,9 +151,9 @@ const PropertySearchBar = () => {
       }
     });
 
-    // if (!params.has("city") && filters.cities) {
-    //   params.set("city", String(filters.cities));
-    // }
+    if (!params.has("city") && filters.cities) {
+      params.set("city", String(filters.cities));
+    }
 
     router.push(
       `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
