@@ -269,7 +269,17 @@ const AccountPackagePage = () => {
                                     ? formatDateMonth(new Date(item?.failedAt))
                                     : "-"}
                               </td>
-                              <td className="whitespace-nowrap px-6 py-3 text-base text-gray-700">{expiryDate}</td>
+                              <td className="whitespace-nowrap px-6 py-3">
+                                {expiryDate === "Active" ? (
+                                  <span className="text-gray-400">—</span>
+                                ) : expiryDate === "-" ? (
+                                  <span className="text-gray-400">—</span>
+                                ) : (
+                                  <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-600">
+                                    {expiryDate}
+                                  </span>
+                                )}
+                              </td>
                               <td className="whitespace-nowrap px-6 py-3">
                                 <span className={`inline-flex items-center rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-wide
                               ${item?.status === "paid" ? "bg-green-100 text-green-700"
@@ -364,7 +374,15 @@ const AccountPackagePage = () => {
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="w-[40%] text-sm font-semibold text-gray-500 font-manrope">Expiry Date</span>
-                            <span className="w-[60%] text-right text-sm font-bold text-[#0F172A] font-manrope">{expiryDate || "-"}</span>
+                            {expiryDate === "Active" ? (
+                              <span className="text-gray-400">—</span>
+                            ) : expiryDate === "-" ? (
+                              <span className="text-gray-400">—</span>
+                            ) : (
+                              <span className="inline-flex items-center rounded-full bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-600">
+                                {expiryDate}
+                              </span>
+                            )}
                           </div>
                           <div className="flex items-center justify-between">
                             <span className="w-[40%] text-sm font-semibold text-gray-500 font-manrope">Amount</span>

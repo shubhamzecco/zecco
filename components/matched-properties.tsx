@@ -22,7 +22,6 @@ interface MatchedPropertiesProps {
 const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
   const isEmpty = !properties || properties.length === 0;
 
-  console.log("properties ::: ", properties)
   return (
     <>
       <CommonCard className="!px-0 !pb-2">

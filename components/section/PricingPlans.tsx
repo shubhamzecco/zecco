@@ -59,7 +59,7 @@ export default function PricingPlans({ heading, description }: IPricePlans) {
   return (
     <section className="bg-[#F8FAFC] py-14">
       <div className="lg:mx-10 px-6">
-        <div className="flex flex-col md:flex-row md:justify-between mb-14">
+        <div className="flex flex-col lg:flex-row md:justify-between mb-14">
           <h2 className="text-3xl capitalize font-manrope font-bold text-[#000000]">
             {heading}
           </h2>

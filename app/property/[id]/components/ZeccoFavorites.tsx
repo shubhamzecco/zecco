@@ -22,7 +22,6 @@ export default function ZeccoFavorites({ property }: PropertyInfoProps) {
     router.push(`${App_url.link.ZECCO_FAVORITES}`);
   };
 
-  console.log("property ::: " , property)
 
   useEffect(() => {
     sendMessage("action", {

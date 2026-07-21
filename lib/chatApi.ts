@@ -7,7 +7,6 @@ export async function sendChatMessage(message: string, sessionId: string) {
     body: JSON.stringify({ message, sessionId }),
   });
 
-  console.log("res",res)
 
   if (!res.ok) {
     throw new Error("Chat API failed");

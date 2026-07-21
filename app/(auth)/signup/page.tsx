@@ -100,7 +100,7 @@ const SignUpPage = () => {
                     <FormItem>
                       <FormLabel required className="font-semibold font-inter text-[#101828] max-md:text-white">First Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="First name" className="rounded-full h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
+                        <Input placeholder="First name" className="rounded-xl h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
                       </FormControl>
                       <FormMessage className="max-md:text-red-300" />
                     </FormItem>
@@ -113,7 +113,7 @@ const SignUpPage = () => {
                     <FormItem>
                       <FormLabel required className="font-semibold font-inter text-[#101828] max-md:text-white">Last Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Last name" className="rounded-full h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
+                        <Input placeholder="Last name" className="rounded-xl h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
                       </FormControl>
                       <FormMessage className="max-md:text-red-300" />
                     </FormItem>
@@ -128,7 +128,7 @@ const SignUpPage = () => {
                   <FormItem>
                     <FormLabel required className="font-semibold font-inter text-[#101828] max-md:text-white">Mobile Number</FormLabel>
                     <FormControl>
-                      <Input placeholder="Mobile number" className="rounded-full h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
+                      <Input placeholder="Mobile number" className="rounded-xl h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
                     </FormControl>
                     <FormMessage className="max-md:text-red-300" />
                   </FormItem>
@@ -142,7 +142,7 @@ const SignUpPage = () => {
                   <FormItem>
                     <FormLabel required className="font-semibold font-inter text-[#101828] max-md:text-white">Email Address</FormLabel>
                     <FormControl>
-                      <Input placeholder="Email address" className="rounded-full h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
+                      <Input placeholder="Email address" className="rounded-xl h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
                     </FormControl>
                     <FormMessage className="max-md:text-red-300" />
                   </FormItem>
@@ -157,7 +157,7 @@ const SignUpPage = () => {
                     <FormItem>
                       <FormLabel required className="font-semibold font-inter text-[#101828] max-md:text-white">Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Password" className="rounded-full h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
+                        <Input type="password" placeholder="Password" className="rounded-xl h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
                       </FormControl>
                       <FormMessage className="max-md:text-red-300" />
                     </FormItem>
@@ -170,7 +170,7 @@ const SignUpPage = () => {
                     <FormItem>
                       <FormLabel required className="font-semibold font-inter text-[#101828] max-md:text-white">Confirm Password</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Confirm password" className="rounded-full h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
+                        <Input type="password" placeholder="Confirm password" className="rounded-xl h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
                       </FormControl>
                       <FormMessage className="max-md:text-red-300" />
                     </FormItem>
@@ -179,7 +179,7 @@ const SignUpPage = () => {
               </div>
             </div>
             <div className="flex items-center mt-2 gap-5">
-              <Button type="submit" disabled={signupLoading} className="w-full capitalize font-inter font-bold tracking-wider  bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12 my-4 text-white border rounded-full shadow-md disabled:opacity-50">
+              <Button type="submit" disabled={signupLoading} className="w-full rounded-xl capitalize font-inter font-bold tracking-wider  bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] h-12 my-4 text-white border  shadow-md disabled:opacity-50">
                 {signupLoading && <Loader2 className="h-5 w-5 animate-spin" />} Sign Up
               </Button>
             </div>

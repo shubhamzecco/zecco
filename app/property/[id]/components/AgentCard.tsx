@@ -5,7 +5,8 @@ import ProfileAvatar from "@/components/profile";
 import { App_url } from "@/constant/static";
 import { IUserTypes } from "@/redux/modules/common/user_data";
 import { setLoginPopup } from "@/redux/modules/main/action";
-import { Mail, Phone } from "lucide-react";
+import { HelpCircle, Mail, MessageSquare, Phone, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -72,13 +73,20 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
     : "";
 
   return (
-    <div className="sticky top-24 bg-[#F7F8FC] border border-[#F3F4F6] rounded-lg p-6 mb-6 shadow-sm relative overflow-hidden">
-      <div>
-        <div className="flex items-center gap-3 mb-4">
-          <div className="relative overflow-hidden  w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-white font-bold">
-            {isLoggedIn &&
-              (user_data?.user?.agent?.agent?.profile_image ||
-                agent_details?.profile_image) ? (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      className="sticky top-24 bg-white border border-[#F3F4F6] rounded-2xl mb-4 shadow-md hover:shadow-lg transition-all duration-300 relative overflow-hidden"
+    >
+      <div className="h-1 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF]" />
+      <div className="p-4 2xl:p-5">
+        <div className="flex items-center gap-3 2xl:gap-4 mb-3 2xl:mb-1">
+          <div className="relative flex-shrink-0 overflow-hidden rounded-full">
+            <div className="w-12 h-12 2xl:w-14 2xl:h-14 overflow-hidden rounded-full bg-gradient-to-br from-[#2563EB] to-[#2563EB]/70 flex items-center justify-center text-white font-bold">
+              {isLoggedIn &&
+                (user_data?.user?.agent?.agent?.profile_image ||
+                  agent_details?.profile_image) ? (
               <Image
                 src={
                   agentAssign
@@ -90,49 +98,65 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
                 priority
                 className="object-cover"
               />
-            ) : (
+              ) : (
               <ProfileAvatar
                 name={`${isLoggedIn ? user_data?.user?.agent?.agent?.first_name || agent_details?.first_name : "Agent"} ${isLoggedIn ? user_data?.user?.agent?.agent?.last_name || agent_details?.last_name : ""}`}
-                className="!w-12 !h-12 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
+                className="!w-12 !h-12 2xl:!w-14 2xl:!h-14 !text-xl 2xl:!text-2xl border-2 border-white !text-white !bg-[#2563EB]"
               />
-            )}
+              )}
+            </div>
           </div>
-          <div>
-            <p className="text-sm text-[#64748B] font-manrope font-extrabold">
+
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] 2xl:text-xs text-[#64748B] font-manrope font-semibold uppercase tracking-wider">
               Your appointed real estate agent
             </p>
-
-            <p className="font-extrabold text-sm text-heading_text_color font-manrope">
+            <p className="font-bold text-base 2xl:text-lg text-[#0F172A] font-manrope truncate leading-tight mt-0.5">
               {appointedAgentName}
             </p>
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-2xl bg-[#22C55E15] text-[#22C55E] text-[9px] 2xl:text-xs font-manrope font-semibold tracking-wider uppercase mt-0.5">
+              <ShieldCheck className="w-2.5 h-2.5 2xl:w-3 2xl:h-3" />
+              Verified Agent
+            </span>
           </div>
         </div>
 
-        <a
-          href={`tel:${appointedAgentContact}`}
-          className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2 hover:text-primary transition-colors"
-        >
-          <Phone className="w-4 h-4" />
-          {appointedAgentContact}
-        </a>
+        <div className="bg-[#F8FAFC] rounded-xl p-2.5 2xl:p-3 mb-3 2xl:mb-4 space-y-1">
+          <a
+            href={`tel:${appointedAgentContact}`}
+            className="text-xs 2xl:text-sm text-[#0F172A] font-manrope font-medium flex items-center gap-2.5 hover:bg-white hover:shadow-sm rounded-lg px-2 py-1.5 transition-all duration-200 group"
+          >
+            <span className="flex-shrink-0 w-7 h-7 2xl:w-8 2xl:h-8 rounded-lg bg-[#2563EB]/10 flex items-center justify-center group-hover:bg-[#2563EB]/20 transition-colors">
+              <Phone className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 text-[#2563EB]" />
+            </span>
+            {appointedAgentContact}
+          </a>
 
-        <p className="text-sm text-heading_text_color font-inter mb-4 flex items-center gap-2">
-          <Mail className="w-4 h-4" />
-          {appointedAgentEmail}
-        </p>
+          <a
+            href={`mailto:${appointedAgentEmail}`}
+            className="text-xs 2xl:text-sm text-[#0F172A] font-manrope font-medium flex items-center gap-2.5 hover:bg-white hover:shadow-sm rounded-lg px-2 py-1.5 transition-all duration-200 group"
+          >
+            <span className="flex-shrink-0 w-7 h-7 2xl:w-8 2xl:h-8 rounded-lg bg-[#2563EB]/10 flex items-center justify-center group-hover:bg-[#2563EB]/20 transition-colors">
+              <Mail className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 text-[#2563EB]" />
+            </span>
+            <span className="truncate">{appointedAgentEmail}</span>
+          </a>
+        </div>
+
         {(!isLoggedIn || user_data?.user?.agent) && (
           <>
-            <div className="mb-4">
-              <p className="text-lg font-semibold font-manrope text-heading_text_color mb-3">
-                Ask to real estate agent
-              </p>
+            <div className="mb-3 2xl:mb-4">
+              <label className="flex items-center gap-1.5 text-xs 2xl:text-sm font-semibold font-manrope text-[#0F172A] mb-1.5">
+                <MessageSquare className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 text-[#64748B]" />
+                Ask your real estate agent
+              </label>
 
               <textarea
                 value={contactMessage}
                 onChange={(e) => setContactMessage(e.target.value)}
                 placeholder="State your strategic interest for personal acquisition..."
-                className="w-full p-3 border border-border rounded-lg placeholder:font-manrope placeholder:font-medium placeholder:text-[#64748B] text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-                rows={4}
+                className="w-full p-2.5 2xl:p-3 border border-[#E2E8F0] rounded-xl placeholder:font-manrope placeholder:font-medium placeholder:text-[#94A3B8] text-xs 2xl:text-sm text-[#0F172A] resize-none focus:outline-none focus:ring-2 focus:ring-[#2563EB]/30 focus:border-[#2563EB] transition-all duration-200"
+                rows={3}
               />
             </div>
 
@@ -140,8 +164,9 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
               onClick={() =>
                 isLoggedIn ? handleCreateChat() : dispatch(setLoginPopup(true))
               }
-              className="w-full uppercase cursor-pointer bg-heading_text_color text-white bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] font-semibold py-3 rounded-full transition mb-4"
+              className="w-full uppercase cursor-pointer text-white bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] font-manrope font-semibold text-xs 2xl:text-sm py-2.5 2xl:py-3 rounded-xl hover:shadow-lg hover:shadow-blue-500/25 active:scale-[0.98] transition-all duration-200 mb-3 2xl:mb-4 flex items-center justify-center gap-1.5"
             >
+              <MessageSquare className="w-3.5 h-3.5 2xl:w-4 2xl:h-4" />
               Chat with our agent
             </button>
           </>
@@ -153,18 +178,22 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
               window.location.href = `tel:${agent_details?.contact_no || user_data?.user?.agent?.agent?.contact_no}`;
             }
           }}
-          className="w-full cursor-pointer mb-5 border flex items-center gap-2 justify-center border-[#DDDFE3] text-heading_text_color font-semibold py-2 rounded-full bg-white transition"
+          className="w-full cursor-pointer border border-[#E2E8F0] text-[#0F172A] font-manrope font-semibold text-xs 2xl:text-sm py-2 2xl:py-2.5 rounded-xl bg-white hover:bg-[#F8FAFC] hover:border-[#2563EB] transition-all duration-200 flex items-center gap-1.5 justify-center mb-3 2xl:mb-4"
         >
-          <Phone className="w-4 h-4" /> CALL ADVISOR
+          <Phone className="w-3.5 h-3.5 2xl:w-4 2xl:h-4 text-[#2563EB]" />
+          CALL ADVISOR
         </button>
 
-        <Link
-          href={App_url.link.CONTACT_US}
-          className="text-center flex justify-center items-center font-manrope font-medium underline text-xs text-muted-foreground hover:text-primary cursor-pointer transition"
-        >
-          CONTACT SUPPORT
-        </Link>
+        <div className="border-t border-[#F3F4F6] pt-2.5 2xl:pt-3">
+          <Link
+            href={App_url.link.CONTACT_US}
+            className="text-center flex justify-center items-center gap-1 font-manrope font-medium text-[11px] 2xl:text-xs text-[#94A3B8] hover:text-[#2563EB] cursor-pointer transition-colors duration-200"
+          >
+            <HelpCircle className="w-3 h-3 2xl:w-3.5 2xl:h-3.5" />
+            CONTACT SUPPORT
+          </Link>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

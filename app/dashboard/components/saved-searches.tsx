@@ -79,27 +79,22 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
 
 
   const generateSearchTitle = (item: any) => {
-    const parts: string[] = [];
-    if (item?.types?.filter(Boolean)?.length > 0) {
-      const types = (item?.types || [])
-        .filter(Boolean)
-        .map((type: number) => propertyTypeMap[type])
-        .filter(Boolean);
+    const categoryName = item?.categories && propertyCategoryMap[item?.categories];
 
-      if (types?.length > 0) {
-        parts.push(types.join(" & "));
-      }
-    }
+    const types = (item?.types || [])
+      .filter(Boolean)
+      .map((type: number) => propertyTypeMap[type])
+      .filter(Boolean);
 
-    if (
-      item?.search &&
-      item?.search.toLowerCase() !== item?.city?.name?.toLowerCase()
-    ) {
-      parts.push(`in ${item?.search}, ${item?.city?.name}, Spain`);
+    const baseTitle = categoryName || (types.length > 0 ? types.join(" & ") : "Properties");
+
+    if (item?.search && item?.search.toLowerCase() !== item?.city?.name?.toLowerCase()) {
+      return `${baseTitle} in ${item.search}, ${item.city.name}, Spain`;
     } else if (item?.city?.name) {
-      parts.push(`in ${item?.city.name}, Spain`);
+      return `${baseTitle} in ${item.city.name}, Spain`;
     }
-    return parts.join(" ");
+
+    return `${baseTitle} in Costa del sol`;
   };
 
   useEffect(() => {

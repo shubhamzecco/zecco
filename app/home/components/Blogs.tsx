@@ -33,12 +33,12 @@ export default function Blogs() {
     <section className="py-14 bg-white">
       <div className="lg:mx-10 px-6">
         {/* HEADER */}
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-12">
+        <div className="flex flex-col lg:flex-row md:justify-between lg:items-center mb-12">
           <h2 className="text-3xl font-manrope font-bold text-[#000000]">
             Blogs & Insights
           </h2>
 
-          <div className="gap-2 hidden sm:flex items-center">
+          <div className="gap-2 hidden sm:flex lg:items-center sm:items-start">
             <p className="text-slate_gray font-medium font-manrope text-md max-w-lg">
               Stay informed with Spain’s property trends, legal updates, and
               investment guides.

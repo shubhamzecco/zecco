@@ -120,6 +120,7 @@ const Breadcrumb = () => {
   }
 
   const shouldCollapseMobile = breadcrumbs.length > 2;
+  const shouldCollapseTablet = breadcrumbs.length > 3;
   const shouldCollapseDesktop = breadcrumbs.length > 4;
 
   const visibleBreadcrumbsMobile = shouldCollapseMobile
@@ -127,6 +128,13 @@ const Breadcrumb = () => {
     : breadcrumbs;
   const hiddenBreadcrumbsMobile = shouldCollapseMobile
     ? breadcrumbs.slice(1, -1)
+    : [];
+
+  const visibleBreadcrumbsTablet = shouldCollapseTablet
+    ? [breadcrumbs[0], ...breadcrumbs.slice(-2)]
+    : breadcrumbs;
+  const hiddenBreadcrumbsTablet = shouldCollapseTablet
+    ? breadcrumbs.slice(1, -2)
     : [];
 
   const visibleBreadcrumbsDesktop = shouldCollapseDesktop
@@ -160,7 +168,7 @@ const Breadcrumb = () => {
       className="min-h-12 flex items-center gap-1 text-md font-manrope font-normal text-[#666666]"
     >
       {/* Desktop view */}
-      <div className="hidden md:flex items-center gap-1">
+      <div className="hidden lg:flex items-center gap-1">
         {shouldCollapseDesktop ? (
           <>
             {renderCrumb(visibleBreadcrumbsDesktop[0], false)}
@@ -195,6 +203,84 @@ const Breadcrumb = () => {
               const isLast = realIndex === visibleBreadcrumbsDesktop.length - 1;
               return (
                 <span key={`desktop-${i}`} className="flex items-center gap-1">
+                  {!isLast && item.href ? (
+                    <button
+                      onClick={() => router.push(item.href!)}
+                      className="capitalize transition hover:text-black"
+                    >
+                      {item.label}
+                    </button>
+                  ) : (
+                    <span className="capitalize text-[#000000]">{item.label}</span>
+                  )}
+                  {!isLast && (
+                    <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
+                  )}
+                </span>
+              );
+            })}
+          </>
+        ) : (
+          breadcrumbs.map((item, index) => {
+            const isLast = index === breadcrumbs.length - 1;
+            return (
+              <span key={index} className="flex items-center gap-1">
+                {!isLast && item.href ? (
+                  <button
+                    onClick={() => router.push(item.href!)}
+                    className="capitalize transition hover:text-black"
+                  >
+                    {item.label}
+                  </button>
+                ) : (
+                  <span className="capitalize text-[#000000]">{item.label}</span>
+                )}
+                {!isLast && (
+                  <ChevronsRight size={20} className="mt-[2px] text-[#000000]" />
+                )}
+              </span>
+            );
+          })
+        )}
+      </div>
+
+      {/* Tablet view */}
+      <div className="hidden md:flex lg:hidden items-center gap-1 flex-wrap">
+        {shouldCollapseTablet ? (
+          <>
+            {renderCrumb(visibleBreadcrumbsTablet[0], false)}
+            <Popover open={mobileOpen} onOpenChange={setMobileOpen}>
+              <PopoverTrigger asChild>
+                <button className="capitalize transition hover:text-black px-1">
+                  ...
+                </button>
+              </PopoverTrigger>
+              <PopoverContent side="bottom" className="max-w-xs w-auto p-2">
+                <div className="flex flex-col gap-1">
+                  {hiddenBreadcrumbsTablet.map((item, i) =>
+                    item.href ? (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          router.push(item.href!);
+                          setMobileOpen(false);
+                        }}
+                        className="text-sm capitalize text-left hover:underline hover:text-black transition"
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <span key={i} className="text-sm capitalize">{item.label}</span>
+                    )
+                  )}
+                </div>
+              </PopoverContent>
+            </Popover>
+            {visibleBreadcrumbsTablet.slice(1).map((item, i) => {
+              const realIndex = i + 1;
+              const isLast = realIndex === visibleBreadcrumbsTablet.length - 1;
+              return (
+                <span key={`tablet-${i}`} className="flex items-center gap-1">
                   {!isLast && item.href ? (
                     <button
                       onClick={() => router.push(item.href!)}

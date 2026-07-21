@@ -5,7 +5,7 @@ import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setLoginPopup } from "@/redux/modules/main/action";
 import { IImage } from "@/redux/modules/main/types";
-import { GalleryThumbnails, Heart, X } from "lucide-react";
+import { GalleryThumbnails, Heart, X, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -141,7 +141,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
   return (
     <>
       {/* ================= DESKTOP (UNCHANGED) ================= */}
-      <div className="hidden md:grid grid-cols-[2.5fr_1.2fr_1.2fr] gap-3 h-[450px] mb-8">
+      <div className="hidden lg:grid grid-cols-[2.5fr_1.2fr_1.2fr] gap-3 h-[450px] mb-8">
         <div
           className="rounded-2xl overflow-hidden cursor-pointer relative"
           onClick={() => {
@@ -221,7 +221,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
         </div>
       </div>
 
-      <div className="md:hidden mb-6">
+      <div className="lg:hidden mb-6">
         <div className="relative rounded-xl overflow-hidden mb-3">
           <img
             onClick={() => openGallery(0)}
@@ -283,7 +283,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
           </div>
 
           <div
-            className="w-full h-full flex items-center justify-center"
+            className="w-full h-full flex items-center justify-center relative"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -292,6 +292,26 @@ export default function PropertyGallery({ property }: PropertyStats) {
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
           >
+            {active > 0 && (
+              <button
+                onClick={() => setActive((p) => p - 1)}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow hover:bg-white z-30"
+                aria-label="previous"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+            )}
+
+            {active < images.length - 1 && (
+              <button
+                onClick={() => setActive((p) => p + 1)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow hover:bg-white z-30"
+                aria-label="next"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            )}
+
             {popupType === "gallery" && (
               <img
                 style={{

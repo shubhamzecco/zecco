@@ -7,13 +7,27 @@ interface SavedSearchCardProps {
     title?: string
     onApplySearch: (item: any) => void;
     handleDelete: (item: any) => void;
-
+    propertyTypeMap: any;
+    featureMap : any;
 }
 
-export default function SavedSearchCard({ item, title, onApplySearch, handleDelete }: SavedSearchCardProps) {
+export default function SavedSearchCard({ item, title, featureMap, onApplySearch, handleDelete, propertyTypeMap }: SavedSearchCardProps) {
+
     const chips: string[] = [];
 
     if (item?.city?.name) chips.push(item?.city?.name);
+
+    if (item?.types?.length > 0) {
+        chips.push(
+            ...item?.types?.map((typeId: number) => propertyTypeMap[typeId]).filter(Boolean)
+        );
+    }
+
+    if (item?.features?.length > 0) {
+        chips.push(
+            ...item?.features?.map((typeId: number) => featureMap[typeId]).filter(Boolean)
+        );
+    }
 
     if (item?.priceFrom || item?.priceTo) {
         chips.push(
@@ -25,10 +39,6 @@ export default function SavedSearchCard({ item, title, onApplySearch, handleDele
         chips.push(
             `${item?.bedroomsFrom ?? "Any"} - ${item?.bedroomsTo ?? "+"} Bedrooms`
         );
-    }
-
-    if (item?.types?.length) {
-        chips.push(...item.types);
     }
 
     if (item?.forSale) chips.push("For Sale");
@@ -46,7 +56,7 @@ export default function SavedSearchCard({ item, title, onApplySearch, handleDele
                     </h3>
 
                     <div className="mt-2 flex flex-wrap gap-2">
-                        {chips.map((chip, index) => (
+                        {chips?.map((chip, index) => (
                             <span
                                 key={index}
                                 className="rounded-md border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-medium font-manrope text-slate-600"
