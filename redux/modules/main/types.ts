@@ -833,4 +833,5 @@ export interface IMainResponse {
   privacy_policy: IPrivacyPolicy | null;
   terms_conditions: IPrivacyPolicy | null;
   preference_property_list: IPreferenceResponse | null;
+  ai_selected_property: IProperty | null;
 }

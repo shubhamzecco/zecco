@@ -24,6 +24,39 @@ import { useState } from "react";
 import AuthLayout from "../layout/page";
 import { Loader2 } from "lucide-react";
 
+const getPasswordStrength = (password: string) => {
+  if (!password) return { text: "", color: "bg-gray-200", width: "0%", level: 0 };
+
+  let types = 0;
+  if (/[a-z]/.test(password)) types++;
+  if (/[A-Z]/.test(password)) types++;
+  if (/[0-9]/.test(password)) types++;
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) types++;
+
+  if (types <= 1)
+    return {
+      text: "Weak",
+      color: "bg-red-500",
+      width: "33%",
+      level: 1,
+    };
+
+  if (types === 2)
+    return {
+      text: "Medium",
+      color: "bg-amber-500",
+      width: "66%",
+      level: 2,
+    };
+
+  return {
+    text: "Strong",
+    color: "bg-green-500",
+    width: "100%",
+    level: 3,
+  };
+};
+
 const formSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
@@ -59,6 +92,9 @@ const SignUpPage = () => {
     },
     mode: "onChange"
   });
+
+  const password = form.watch("password");
+  const strength = getPasswordStrength(password || "");
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setSignupLoading(true);
@@ -150,19 +186,47 @@ const SignUpPage = () => {
               />
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel required className="font-semibold font-inter text-[#101828] max-md:text-white">Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" placeholder="Password" className="rounded-xl h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
-                      </FormControl>
-                      <FormMessage className="max-md:text-red-300" />
-                    </FormItem>
-                  )}
-                />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel required className="font-semibold font-inter text-[#101828] max-md:text-white">Password</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="Password" className="rounded-xl h-12 bg-white border-[#D1D5DB] text-black max-md:bg-white/90" {...field} />
+                    </FormControl>
+                    {password?.trim() !== '' && (
+                      <div className="flex gap-1 mt-3">
+                        <div
+                          className={`h-1 flex-1 rounded-full transition-all duration-500 overflow-hidden ${password.length > 0 ? "bg-red-500" : "bg-gray-200"
+                            }`}
+                        >
+                          {password.length > 0 && (
+                            <div className="h-full w-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                          )}
+                        </div>
+                        <div
+                          className={`h-1 flex-1 rounded-full transition-all duration-500 overflow-hidden ${strength.level >= 2 ? "bg-amber-500" : "bg-gray-200"
+                            }`}
+                        >
+                          {strength.level >= 2 && (
+                            <div className="h-full w-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                          )}
+                        </div>
+                        <div
+                          className={`h-1 flex-1 rounded-full transition-all duration-500 overflow-hidden ${strength.level >= 3 ? "bg-green-500" : "bg-gray-200"
+                            }`}
+                        >
+                          {strength.level >= 3 && (
+                            <div className="h-full w-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    <FormMessage className="max-md:text-red-300" />
+                  </FormItem>
+                )}
+              />
                 <FormField
                   control={form.control}
                   name="confirm_password"

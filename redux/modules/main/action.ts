@@ -48,7 +48,8 @@ export const ActionTypes = {
   SET_PRIVACY_POLICY: "SET_PRIVACY_POLICY",
   SET_TERMS_CONDITIONS: "SET_TERMS_CONDITIONS",
   SET_PREFERENCE_PROPERTY_LIST: "SET_PREFERENCE_PROPERTY_LIST",
-  SET_UPDATE_FAVIOURATE_LIKE: "SET_UPDATE_FAVIOURATE_LIKE"
+  SET_UPDATE_FAVIOURATE_LIKE: "SET_UPDATE_FAVIOURATE_LIKE",
+  SET_AI_SELECTED_PROPERTY: "SET_AI_SELECTED_PROPERTY"
 };
 
 export const setPropertyFilter = (payload: any) => {
@@ -196,6 +197,11 @@ export const setAiInsight = (payload: IPropertyResponse) => {
     payload,
   };
 };
+
+export const setAiSelectedProperty = (payload: IProperty | null) => ({
+  type: ActionTypes.SET_AI_SELECTED_PROPERTY,
+  payload,
+});
 
 export const setPropertyDetails = (payload: Property | unknown) => {
   return {

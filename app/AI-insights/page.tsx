@@ -30,6 +30,14 @@ const AIInsights = () => {
   const route = useRouter();
 
   useEffect(() => {
+    if (mainReducer?.ai_selected_property) {
+      setShowNewInsight(true);
+      setStep("intro");
+      setSelectedProperty(mainReducer.ai_selected_property);
+    }
+  }, [mainReducer?.ai_selected_property]);
+
+  useEffect(() => {
     const firstProperty = mainReducer?.favorite_property_list?.data?.[0];
 
     if (firstProperty) {

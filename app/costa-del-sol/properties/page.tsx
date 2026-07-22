@@ -5,10 +5,10 @@ import PropertyCard from "@/components/cards/PropertyCard";
 import MainLayout from "@/components/layouts/main-layout";
 import LoginPopup from "@/components/login-popup";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setAiInsight, setLoginPopup, setPropertyDetails } from "@/redux/modules/main/action";
-import { IPropertyResponse } from "@/redux/modules/main/types";
+import { setAiInsight, setAiSelectedProperty, setLoginPopup, setPropertyDetails, setUpdatePropertyLike } from "@/redux/modules/main/action";
+import { IProperty, IPropertyResponse } from "@/redux/modules/main/types";
 import { citySlug } from "@/utils/common";
-import { SearchX, SlidersHorizontal, X } from "lucide-react";
+import { SearchX, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -75,6 +75,8 @@ const Page = () => {
   const searchValue = urlFilters.area || urlFilters.subarea;
 
   const search_by_area = mainReducer?.search_by_area;
+  const isAiSelectMode = searchParams.get("select") === "true";
+  const aiSelectedProperty = mainReducer?.ai_selected_property;
   const hasCity = !!urlFilters.city;
   const filtersArea = hasCity
     ? search_by_area?.data?.filter(
@@ -273,6 +275,24 @@ const Page = () => {
     }
   }, [isConnected, sendMessage]);
 
+  const handleAiSelect = useCallback((property: IProperty) => {
+    if (!user_data?.access_token) {
+      dispatch(setLoginPopup(true));
+      return;
+    }
+    sendMessage("action", {
+      type: "userService",
+      action: "addFavorite",
+      payload: { property_id: property?._id },
+    });
+    dispatch(setUpdatePropertyLike({
+      property_id: property?._id,
+      isFavorite: true,
+    }));
+    dispatch(setAiSelectedProperty(property));
+    router.push("/AI-insights");
+  }, [sendMessage, dispatch, router, user_data]);
+
   const handleSavedSearches = useCallback(() => {
     if (!user_data?.access_token) {
       dispatch(setLoginPopup(true));
@@ -368,6 +388,14 @@ const Page = () => {
           </div>
 
           <div className="w-full">
+            {isAiSelectMode && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-2">
+                <Sparkles size={18} className="text-[#2563EB] shrink-0" />
+                <p className="text-sm font-manrope text-[#2563EB]">
+                  Select a property to add to favorites and use for AI Insights
+                </p>
+              </div>
+            )}
             {loading ? (
               <div
                 ref={gridRef}
@@ -383,7 +411,13 @@ const Page = () => {
                 className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
               >
                 {properties?.map((p) => (
-                  <PropertyCard key={p._id} property={p} {...p} />
+                  <PropertyCard
+                    key={p._id}
+                    property={p}
+                    {...p}
+                    isSelected={isAiSelectMode && aiSelectedProperty?._id === p._id}
+                    onSelect={isAiSelectMode ? handleAiSelect : undefined}
+                  />
                 ))}
               </div>
             ) : (

@@ -50,37 +50,6 @@ const UserList: React.FC<UserListProps> = ({
 
   return (
     <div className="flex flex-col h-full border-r bg-[#F8F9FA] overflow-hidden max-lg:rounded-2xl rounded-bl-2xl rounded-tl-2xl">
-      {/* Header */}
-      {/* <div className="">
-        <div className="relative">
-          <Search
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
-            size={16}
-          />
-          <input
-            placeholder="Search conversations..."
-            className="w-full bg-[#F1F5F9] h-10 pl-10 pr-10 rounded-xl text-sm outline-none font-manrope placeholder:text-gray-400 focus:ring-2 focus:ring-[#2F80FF]/30 focus:bg-white transition-all"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSearch();
-            }}
-          />
-          {search && (
-            <button
-              onClick={() => {
-                setSearch("");
-                handleSearch();
-              }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <X size={14} />
-            </button>
-          )}
-        </div>
-      </div> */}
-
-
       {/* User list */}
       <div className="flex-1 overflow-y-auto px-4 py-3">
       <div className=" border-b mb-3 pb-2">
@@ -140,7 +109,7 @@ const UserList: React.FC<UserListProps> = ({
                     }`}
                   />
                 )}
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full" />
+                {/* <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full" /> */}
               </div>
 
               {/* Info */}

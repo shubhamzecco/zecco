@@ -71,9 +71,9 @@ const MessagePage = () => {
       <Head>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <section className="h-full">
-        <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0]">
-          <div className="hidden lg:grid grid-cols-[0.6fr_1.2fr] gap-3">
+      <section className="lg:h-[calc(100vh-130px)] h-[calc(100vh-220px)]">
+        <div className="bg-white rounded-2xl shadow-sm border border-[#E2E8F0] h-full overflow-hidden">
+          <div className="hidden lg:grid grid-cols-[0.6fr_1.2fr] gap-3 h-full">
             <UserList
               selectedUser={selectedUser}
               userList={mainReducer?.chat_user_list ?? []}
@@ -114,7 +114,7 @@ const MessagePage = () => {
             )}
           </div>
 
-          <div className="lg:hidden">
+          <div className="lg:hidden h-full">
             {!selectedUser ? (
               <UserList
                 selectedUser={selectedUser}
