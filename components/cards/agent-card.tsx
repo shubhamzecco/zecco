@@ -46,7 +46,7 @@ function AgentCard() {
         }
     }, [lastEvent]);
 
-    console.log("user_data?.user?.agent?.agent?.profile_image ::: ", user_data?.user?.agent?.agent?.profile_image)
+    //   console.log("user_data?.user?.agent?.agent?.profile_image ::: " , user_data?.user?.agent?.agent?.profile_image)
 
     return (
         <>

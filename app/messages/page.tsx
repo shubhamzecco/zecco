@@ -25,11 +25,6 @@ const MessagePage = () => {
         },
       });
     }
-    sendMessage("action", {
-      type: "chatService",
-      action: "list",
-      payload: {},
-    });
     const userFind = mainReducer?.chat_user_list?.find((user) => {
       return user?._id === user_data?.user?.chatId;
     });
@@ -56,11 +51,6 @@ const MessagePage = () => {
         payload: {
           chat_id: selectedUser?._id,
         },
-      });
-      sendMessage("action", {
-        type: "chatService",
-        action: "list",
-        payload: {},
       });
     }
   }, [lastEvent]);

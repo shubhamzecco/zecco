@@ -36,6 +36,8 @@ const DashboardPage = () => {
     });
   }, [])
 
+  console.log("user_data ::: " , user_data)
+
   return (
     <SidebarLayout>
       <Head>
