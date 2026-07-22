@@ -19,7 +19,7 @@ export default function AiExpertise() {
     <section>
       <div className="bg-[#F8FAFC] w-full">
         <div className="lg:mx-10 px-4 sm:px-6 lg:px-8">
-          <div className="max-lg:grid lg:flex max-lg:grid-cols-1 gap-5 items-stretch py-14">
+          <div className="max-lg:grid lg:flex landscape:sm:grid-cols-2 max-lg:grid-cols-1 gap-5 items-stretch py-14">
             <div
               className="w-full  lg:w-[40%]  rounded-2xl p-6 sm:p-8 lg:p-10
               bg-gradient-to-b
