@@ -120,9 +120,14 @@ const Page = () => {
         ...(urlFilters.types && { types: parseCSV(urlFilters.types) }),
         ...(urlFilters.features && { features: parseCSV(urlFilters.features) }),
       };
+      const areaPayload = {
+        ...payload,
+        page: 1,
+        limit: 18
+      }
 
       sendMessage("action", { type: "propertyService", action: "list", payload });
-      sendMessage("action", { type: "locationService", action: "areas_list", payload });
+      sendMessage("action", { type: "locationService", action: "areas_list", areaPayload });
     },
     [isConnected, loading, propertyType, urlFilters, searchValue],
   );
