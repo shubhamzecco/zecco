@@ -172,6 +172,11 @@ const DropdownSelect: React.FC<DropdownProps> = ({
       ...provided,
       borderRadius: '10px',
       overflow: 'hidden',
+      zIndex: 9999,
+    }),
+    menuPortal: (provided: any) => ({
+      ...provided,
+      zIndex: 9999,
     }),
     option: (provided: any) => ({
       ...provided,
@@ -267,6 +272,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
               components={{ IndicatorSeparator: null }}
               menuShouldScrollIntoView={false}
               menuPosition="fixed"
+              menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
               classNames={classNames}
             />
           ) : (
@@ -296,6 +302,7 @@ const DropdownSelect: React.FC<DropdownProps> = ({
               isSearchable
               menuShouldScrollIntoView={false}
               menuPosition="fixed"
+              menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
               isClearable={isClearable}
             />
           )}
