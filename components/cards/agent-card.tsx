@@ -12,8 +12,17 @@ import { App_url } from "@/constant/static";
 
 function AgentCard() {
     const { user_data } = usePosterReducers();
-    const {sendMessage , lastEvent , isConnected} = useWebSocket()
+    const { sendMessage, lastEvent, isConnected } = useWebSocket()
     const router = useRouter()
+
+    useEffect(() => {
+        const payload = {
+            type: "userService",
+            action: "get",
+            payload: {},
+        };
+        sendMessage("action", payload)
+    }, [])
 
     const handleCreateChat = () => {
         sendMessage("action", {
@@ -27,17 +36,17 @@ function AgentCard() {
         });
     };
 
-     useEffect(() => {
+    useEffect(() => {
         if (
-          lastEvent?.data?.status &&
-          lastEvent?.data?.request?.type === "chatService" &&
-          lastEvent?.data?.request?.action === "create"
+            lastEvent?.data?.status &&
+            lastEvent?.data?.request?.type === "chatService" &&
+            lastEvent?.data?.request?.action === "create"
         ) {
-          router.push(`${App_url.link.MESSAGE}`);
+            router.push(`${App_url.link.MESSAGE}`);
         }
-      }, [lastEvent]);
+    }, [lastEvent]);
 
-      console.log("user_data?.user?.agent?.agent?.profile_image ::: " , user_data?.user?.agent?.agent?.profile_image)
+    //   console.log("user_data?.user?.agent?.agent?.profile_image ::: " , user_data?.user?.agent?.agent?.profile_image)
 
     return (
         <>
