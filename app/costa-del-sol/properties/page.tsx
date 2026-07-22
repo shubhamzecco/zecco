@@ -23,6 +23,41 @@ export function parseCSV(value: string): number[] {
   return value ? value.split(",").map(Number).filter((n) => !isNaN(n)) : [];
 }
 
+function resolveItems(
+  value: string,
+  itemList: any[],
+  nameKey = "name",
+  idKey = "id",
+): number[] {
+  if (!value) return [];
+  const ids = parseCSV(value);
+  if (ids.length === value.split(",").filter(Boolean).length) return ids;
+  const parts = value.split(",").filter(Boolean);
+  const result: number[] = [...ids];
+  parts.forEach((part) => {
+    const num = Number(part);
+    if (!isNaN(num)) return;
+    const match = (itemList || []).find(
+      (item) => String(item[nameKey] || "").toLowerCase() === part.toLowerCase(),
+    );
+    if (match && !result.includes(match[idKey])) result.push(match[idKey]);
+  });
+  return result;
+}
+
+function resolveCategory(
+  value: string,
+  typeList: any[],
+): string {
+  if (!value) return "";
+  const num = Number(value);
+  if (!isNaN(num)) return value;
+  const match = (typeList || []).find(
+    (t) => String(t.name || "").toLowerCase() === value.toLowerCase(),
+  );
+  return match ? String(match.id) : value;
+}
+
 type UrlFilters = {
   city: string;
   area: string;
@@ -51,7 +86,7 @@ function readFilters(sp: URLSearchParams): UrlFilters {
     buildFrom: sp.get("buildFrom") || "",
     buildTo: sp.get("buildTo") || "",
     types: sp.get("types") || sp.get("propertyType") || "",
-    features: sp.get("features") || "",
+    features: sp.get("features") || sp.get("feature") || "",
   };
 }
 
@@ -71,8 +106,12 @@ const Page = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  console.log("searchParams::", searchParams)
+
   const urlFilters = useMemo(() => readFilters(searchParams), [searchParams]);
   const searchValue = urlFilters.area || urlFilters.subarea;
+
+  console.log('urlFilters::', urlFilters)
 
   const search_by_area = mainReducer?.search_by_area;
   const isAiSelectMode = searchParams.get("select") === "true";
@@ -112,15 +151,22 @@ const Page = () => {
         cities: urlFilters.city || undefined,
         ...(searchValue && { search: searchValue }),
         forAll: propertyType === "all",
-        categories: urlFilters.categories ? Number(urlFilters.categories) : undefined,
+        categories: resolveCategory(urlFilters.categories, mainReducer?.property_type_list as any)
+          ? Number(resolveCategory(urlFilters.categories, mainReducer?.property_type_list as any))
+          : undefined,
         ...(urlFilters.bedroomsFrom && { bedroomsFrom: Number(urlFilters.bedroomsFrom) }),
         ...(urlFilters.bedroomsTo && { bedroomsTo: Number(urlFilters.bedroomsTo) }),
         ...(urlFilters.priceFrom && { priceFrom: Number(urlFilters.priceFrom) }),
         ...(urlFilters.priceTo && { priceTo: Number(urlFilters.priceTo) }),
         ...(urlFilters.buildFrom && { buildFrom: Number(urlFilters.buildFrom) }),
         ...(urlFilters.buildTo && { buildTo: Number(urlFilters.buildTo) }),
-        ...(urlFilters.types && { types: parseCSV(urlFilters.types) }),
-        ...(urlFilters.features && { features: parseCSV(urlFilters.features) }),
+        ...(urlFilters.types && {
+          types: resolveItems(urlFilters.types, [
+            ...(mainReducer?.property_type_list || []),
+            ...(mainReducer?.property_subtype_list || []),
+          ])
+        }),
+        ...(urlFilters.features && { features: resolveItems(urlFilters.features, mainReducer?.property_features_list || []) }),
       };
       const areaPayload = {
         ...payload,
@@ -131,7 +177,7 @@ const Page = () => {
       sendMessage("action", { type: "propertyService", action: "list", payload });
       sendMessage("action", { type: "locationService", action: "areas_list", areaPayload });
     },
-    [isConnected, loading, propertyType, urlFilters, searchValue],
+    [isConnected, loading, propertyType, urlFilters, searchValue, mainReducer?.property_type_list, mainReducer?.property_subtype_list, mainReducer?.property_features_list],
   );
 
   useEffect(() => {
@@ -308,10 +354,15 @@ const Page = () => {
       action: "add",
       payload: {
         search: searchValue,
-        categories: urlFilters.categories || null,
+        categories: resolveCategory(urlFilters.categories, mainReducer?.property_type_list as any) || null,
         cities: urlFilters.city || null,
-        ...(urlFilters.types && { types: parseCSV(urlFilters.types) }),
-        ...(urlFilters.features && { features: parseCSV(urlFilters.features) }),
+        ...(urlFilters.types && {
+          types: resolveItems(urlFilters.types, [
+            ...(mainReducer?.property_type_list || []),
+            ...(mainReducer?.property_subtype_list || []),
+          ])
+        }),
+        ...(urlFilters.features && { features: resolveItems(urlFilters.features, mainReducer?.property_features_list || []) }),
         ...(urlFilters.bedroomsFrom && { bedroomsFrom: Number(urlFilters.bedroomsFrom) }),
         ...(urlFilters.bedroomsTo && { bedroomsTo: Number(urlFilters.bedroomsTo) }),
         ...(urlFilters.priceFrom && { priceFrom: Number(urlFilters.priceFrom) }),
@@ -323,16 +374,29 @@ const Page = () => {
         ...(propertyType === "new" && { isNewDev: true, rented: false, sold: false }),
       },
     });
-  }, [user_data, dispatch, searchValue, urlFilters, propertyType]);
+  }, [user_data, dispatch, searchValue, urlFilters, propertyType, mainReducer?.property_type_list, mainReducer?.property_subtype_list, mainReducer?.property_features_list]);
 
   const filterPanelFilters = useMemo(
     () => ({
-      categories: urlFilters.categories || urlFilters.types || null,
+      categories: resolveCategory(urlFilters.categories, mainReducer?.property_type_list as any) || null,
       types: urlFilters.types
-        ? Object.fromEntries(parseCSV(urlFilters.types).map((id) => [id, true]))
-        : urlFilters.types,
+        ? Object.fromEntries(
+          resolveItems(
+            urlFilters.types,
+            [
+              ...(mainReducer?.property_type_list || []),
+              ...(mainReducer?.property_subtype_list || []),
+            ],
+          ).map((id) => [id, true]),
+        )
+        : {},
       features: urlFilters.features
-        ? Object.fromEntries(parseCSV(urlFilters.features).map((id) => [id, true]))
+        ? Object.fromEntries(
+          resolveItems(
+            urlFilters.features,
+            mainReducer?.property_features_list || [],
+          ).map((id) => [id, true]),
+        )
         : {},
       bedroomsFrom: urlFilters.bedroomsFrom ? Number(urlFilters.bedroomsFrom) : null,
       bedroomsTo: urlFilters.bedroomsTo ? Number(urlFilters.bedroomsTo) : null,
@@ -346,7 +410,12 @@ const Page = () => {
       multimedia: {},
       publicationDate: {},
     }),
-    [urlFilters],
+    [
+      urlFilters,
+      mainReducer?.property_type_list,
+      mainReducer?.property_subtype_list,
+      mainReducer?.property_features_list,
+    ],
   );
 
 
