@@ -21,7 +21,7 @@ const AboutZecco = () => {
     <MainLayout chatBotWidget={false}>
       <section className="py-10 -mt-7 bg-white">
         <div className="lg:mx-10 px-6">
-          <div className="flex flex-col md:flex-row md:justify-between mb-7">
+          <div className="flex flex-col lg:flex-row lg:justify-between mb-7">
             <div className="">
               <p className="font-manrope font-medium text-[#000000] uppercase flex items-center gap-1 mb-5">
                 {" "}
@@ -30,19 +30,19 @@ const AboutZecco = () => {
               </p>
               <h2 className="text-3xl capitalize font-manrope font-semibold text-[#000000]">
                 Smarter Buying.
-                <br />
+                <br  className="sm:hidden lg:block block"/>
                 Confidence Built-in.
               </h2>
             </div>
             <div className="">
-              <p className="text-slate_gray font-normal font-manrope text-md max-w-xl mt-4 md:mt-0">
+              <p className="text-slate_gray font-normal font-manrope text-md lg:max-w-xl mt-4 lg:mt-0">
                 We bridge the gap between AI-driven intelligence and local
                 expertise to simplify your property journey in the Costa del
                 Sol.
               </p>
               <button
                 onClick={handleNavigate}
-                className="w-fit px-10 max-sm:mt-6 mt-10 tracking-wider shadow-md my-4 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-[15px] py-2.5 rounded-full font-inter font-semibold flex items-center gap-2"
+                className="w-fit px-10 max-lg:mt-6 mt-10 tracking-wider shadow-md my-4 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-[15px] py-2.5 rounded-full font-inter font-semibold flex items-center gap-2"
               >
                 Explore properties
               </button>

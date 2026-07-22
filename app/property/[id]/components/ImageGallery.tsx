@@ -178,7 +178,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               setActive(1);
               setOpen(true);
             }}
-            className="flex-1 h-1/2 object-cover cursor-pointer"
+            className="flex-1 h-1/2 object-cover cursor-pointer rounded-xl"
           />
           <img
             src={images?.[2]?.url}
@@ -186,7 +186,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               setActive(2);
               setOpen(true);
             }}
-            className="flex-1 h-1/2 object-cover cursor-pointer"
+            className="flex-1 h-1/2 object-cover cursor-pointer rounded-xl"
           />
         </div>
 
@@ -197,7 +197,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               setActive(3);
               setOpen(true);
             }}
-            className="flex-1  object-cover cursor-pointer"
+            className="flex-1  object-cover cursor-pointer rounded-xl"
           />
 
           <div

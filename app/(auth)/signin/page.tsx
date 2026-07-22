@@ -197,7 +197,7 @@ const Signin = () => {
           Don&apos;t have an account?
           <Link
             href={App_url.link.SIGN_UP}
-            className="text-[#3B82F6] font-bold font-inter text-base ml-2"
+            className="max-sm:text-white text-[#3B82F6] font-bold font-inter text-base ml-2"
           >
             Register
           </Link>
