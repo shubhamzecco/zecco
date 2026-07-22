@@ -10,15 +10,15 @@ const LoginPopup = () => {
   const router = useRouter();
   const isLoggedIn = !!user_data?.access_token;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50  flex items-center justify-center">
       <div
-        className="absolute inset-0 bg-black/20 backdrop-blur-xsm"
+        className="absolute inset-0 bg-black/10 backdrop-blur-xsm"
         onClick={(e) => {
           e.stopPropagation();
           dispatch(setLoginPopup(false));
         }}
       />
-      <div className="relative z-10 max-sm:m-3 w-full max-w-md bg-white rounded-2xl shadow-xl p-6 animate-scaleIn">
+      <div className="relative z-10 max-sm:m-3 w-full max-w-md bg-white rounded-2xl  p-6 animate-scaleIn">
         <div className="flex items-center justify-center w-14 h-14 mx-auto bg-red-100 rounded-full mb-4">
           <span className="text-2xl">🔒</span>
         </div>
