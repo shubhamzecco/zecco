@@ -52,11 +52,22 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
 
   useEffect(() => {
     sendMessage("action", { type: "propertyService", action: "features", payload: {} });
+    if (filters?.categories) {
+      sendMessage("action", {
+        type: "propertyService", action: "propertyTypes",
+        payload: { id: Number(filters?.categories), is_subtype: true },
+      });
+    }
   }, []);
 
   const { mainReducer } = usePosterReducers();
   const propertyTypeList = mainReducer?.property_type_list || [];
-  const propertySubtypeList = mainReducer?.property_subtype_list || [];
+  const propertySubtypeList = (mainReducer?.property_subtype_list || []).filter(
+    (item: any) => filters.categories ? item?.external_property_type_id === Number(filters.categories) : true
+  );
+  console.log("propertySubtypeList ::: ", propertySubtypeList)
+  console.log("mainReducer?.property_subtype_list ::: ", mainReducer?.property_subtype_list)
+  console.log("filters.categories ::: ", filters.categories)
   const propertyFeaturesList = (mainReducer?.property_features_list || []).filter(
     (item: any) => {
       const itemName = item.name.toLowerCase();

@@ -49,6 +49,16 @@ export const PreferenceSection = (props?: any) => {
       action: "propertyTypes",
       payload: {},
     });
+    const payload = {
+      "type": "userService",
+      "action": "getPreferenceProperties",
+      "payload": {
+        "limit": 0,
+        "page": 1,
+        "status": true
+      }
+    }
+    sendMessage("action", payload);
   }, [isConnected]);
 
 

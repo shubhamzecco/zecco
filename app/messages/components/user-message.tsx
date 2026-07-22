@@ -114,8 +114,10 @@ const UserMessage = ({
 
   useEffect(() => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop =
-        messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTo({
+        top: messagesContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
       sendMessage("action", {
         type: "chatService",
         action: "mark_as_read",
@@ -251,15 +253,15 @@ const UserMessage = ({
                 className="!w-11 !h-11 !text-base !font-bold !text-white !bg-[#2F80FF] border-2 border-[#EFF6FF]"
               />
             )}
-            <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-white rounded-full" />
+            {/* <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-white rounded-full" /> */}
           </div>
 
           <div className="flex-1 min-w-0">
             <h2 className="font-semibold text-[#0F172A] text-[15px] font-manrope truncate">
               {findParticipant?.first_name} {findParticipant?.last_name}
             </h2>
-            <p className="text-[11px] text-emerald-500 font-manrope font-medium">
-              Online
+            <p className="text-[11px] text-gray-400 font-manrope font-medium">
+              {findParticipant?.email}
             </p>
           </div>
 
@@ -281,66 +283,62 @@ const UserMessage = ({
         {/* Messages area */}
         <div
           ref={messagesContainerRef}
-          className="flex-1 overflow-y-auto min-h-[60vh] max-h-[100vh] px-4 lg:px-6 py-5 space-y-3 scroll-smooth"
+          className="flex-1 overflow-y-auto min-h-0 px-4 lg:px-6 py-5 space-y-3 scroll-smooth"
           style={{
             // backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%232F80FF' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
             // backgroundColor: "#F8FAFC",
           }}
         >
-          {mainReducer?.chat_messages_by_user?.map(
-            (msg: any, index: number) => {
-              const isSender = msg?.sender?._id === user_data?.user?._id;
-              const showAvatar =
-                index === 0 ||
-                mainReducer?.chat_messages_by_user?.[index - 1]?.sender?._id !==
-                msg?.sender?._id;
+          {Array.isArray(mainReducer?.chat_messages_by_user) && mainReducer?.chat_messages_by_user?.length > 0 ? (
+            mainReducer?.chat_messages_by_user?.map(
+              (msg: any, index: number) => {
+                const isSender = msg?.sender?._id === user_data?.user?._id;
+                const showAvatar =
+                  index === 0 ||
+                  mainReducer?.chat_messages_by_user?.[index - 1]?.sender?._id !==
+                  msg?.sender?._id;
 
-              return (
-                <div key={index}>
-                  {!isSender ? (
-                    <div className="flex items-end gap-2 max-w-[80%]">
-                      {/* {!showAvatar ? (
-                        <div className="w-8 shrink-0" />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-[#F1F5F9] text-[#2F80FF] flex items-center justify-center font-bold text-xs shrink-0 font-manrope">
-                          {msg?.sender?.first_name?.[0]}
-                          {msg?.sender?.last_name?.[0]}
+                return (
+                  <div key={index}>
+                    {!isSender ? (
+                      <div className="flex items-end gap-2 max-w-[80%]">
+                        <div className="max-w-[80%]">
+                          {msg?.message && (
+                            <div className="bg-[#F1F5F9] px-4 py-2.5 rounded-2xl rounded-bl-md text-sm shadow-sm border border-gray-100/80 text-[#374151] font-manrope leading-relaxed break-words">
+                              {msg?.message}
+                              <p className="text-[10px] text-[#64748B] mt-1 ml-1 font-manrope">
+                                {formatTime(msg?.createdAt)}
+                              </p>
+                            </div>
+                          )}
+                          {renderAttachment(msg, false)}
                         </div>
-                      )} */}
-                      <div className="max-w-[80%]">
-                        {msg?.message && (
-                          <div className="bg-[#F1F5F9] px-4 py-2.5 rounded-2xl rounded-bl-md text-sm shadow-sm border border-gray-100/80 text-[#374151] font-manrope leading-relaxed">
-                            {msg?.message}
-                            <p className="text-[10px] text-[#64748B] mt-1 ml-1 font-manrope">
-                              {formatTime(msg?.createdAt)}
-                            </p>
-                          </div>
-                        )}
-                        {renderAttachment(msg, false)}
                       </div>
-                    </div>
-                  ) : (
-                    <div className="flex justify-end max-w-[80%] ml-auto">
-                      <div>
-                        {msg?.message && (
-                          <div
-                            className="px-4 py-2.5 font-manrope bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] rounded-2xl rounded-br-md text-sm shadow-md text-white  leading-relaxed"
-
-                          >
-                            {msg?.message}
+                    ) : (
+                      <div className="flex justify-end max-w-[80%] ml-auto">
+                        <div>
+                          {msg?.message && (
+                            <div
+                              className="px-4 py-2.5 font-manrope bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] rounded-2xl rounded-br-md text-sm shadow-md text-white leading-relaxed break-words"
+                            >
+                              {msg?.message}
                               <p className="text-[10px] text-white/50 mt-1 ml-1 font-manrope">
-                              {formatTime(msg?.createdAt)}
-                            </p>
-                          </div>
-                        )}
-                        {renderAttachment(msg, true)}
-                       
+                                {formatTime(msg?.createdAt)}
+                              </p>
+                            </div>
+                          )}
+                          {renderAttachment(msg, true)}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              );
-            },
+                    )}
+                  </div>
+                );
+              },
+            )
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-400 font-manrope text-sm">
+              No messages yet. Start a conversation!
+            </div>
           )}
         </div>
 

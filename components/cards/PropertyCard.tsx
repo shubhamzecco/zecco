@@ -11,6 +11,7 @@ import { formatEuro } from "@/utils/common";
 import {
   Bath,
   BedSingle,
+  Check,
   ChevronLeft,
   ChevronRight,
   Expand,
@@ -32,13 +33,17 @@ interface PropertyCardProps {
   property: IProperty;
   onLikeToggle?: () => void;
   onNavigate?: (property: IProperty) => void;
-  type?: string
+  type?: string;
+  isSelected?: boolean;
+  onSelect?: (property: IProperty) => void;
 }
 const PropertyCard = ({
   aiInsights = false,
   property,
   onNavigate,
-  type
+  type,
+  isSelected = false,
+  onSelect,
 }: PropertyCardProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -120,9 +125,11 @@ const PropertyCard = ({
 
   const handleCardClick = () => {
     if (!isSwiping) {
-      if (onNavigate) {
+      if (onSelect) {
+        onSelect(property);
+      } else if (onNavigate) {
         onNavigate(property);
-      } else handleNavigate(); // tap only
+      } else handleNavigate();
     }
   };
 
@@ -170,7 +177,7 @@ const PropertyCard = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white shadow-md border rounded-2xl overflow-hidden transition-all`}
+      className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white shadow-md border rounded-2xl overflow-hidden transition-all ${isSelected ? "ring-2 ring-[#2563EB] ring-offset-2" : ""}`}
     >
       <div className="relative h-64 rounded-t-2xl bg-gray-200 overflow-hidden">
         <div
@@ -245,6 +252,12 @@ const PropertyCard = ({
             );
           })}
         </div>
+
+        {isSelected && (
+          <div className="absolute top-4 right-14 z-10 w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center shadow-md shadow-blue-500/30">
+            <Check size={16} strokeWidth={3} />
+          </div>
+        )}
 
         <button
           onClick={(e) => {

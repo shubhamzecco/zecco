@@ -40,7 +40,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
           })
           : null}
       </div>
-      <h1 className="text-3xl font-manrope text-heading_text_color font-semibold  mb-2">
+      <h1 className="max-sm:text-xl text-3xl font-manrope text-heading_text_color font-semibold  mb-2">
         {property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""}{" "}
         {property?.propertyType
           ? property?.propertyType?.name
@@ -58,7 +58,7 @@ export function PropertyInfo({ property }: PropertyInfoProps) {
         {property?.locationCity}, {property?.locationCountry}
       </h1>
       <div className="flex items-baseline gap-3 mb-4">
-        <span className="text-3xl font-manrope font-bold text-heading_text_color">
+        <span className="max-sm:text-lg text-3xl font-manrope font-bold text-heading_text_color">
           {formatEuro(property?.salePrice ?? 0)}
         </span>
         {/* <span className="text-md text-[#4B5563] font-manrope  line-through">

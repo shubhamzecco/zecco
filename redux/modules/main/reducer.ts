@@ -35,6 +35,7 @@ const initialState: IMainResponse = {
   privacy_policy: null,
   terms_conditions: null,
   preference_property_list: null,
+  ai_selected_property: null,
 };
 
 const mainReducer = (
@@ -263,6 +264,13 @@ const mainReducer = (
         ),
         zecco_favorite: updateFavoriteList(state.zecco_favorite),
         favorite_property_list: updateFavoritePropertyList(),
+      };
+    }
+
+    case ActionTypes.SET_AI_SELECTED_PROPERTY: {
+      return {
+        ...state,
+        ai_selected_property: action.payload,
       };
     }
 
