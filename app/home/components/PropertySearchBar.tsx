@@ -9,7 +9,7 @@ import React, {
 } from "react";
 
 import { useRouter } from "next/navigation";
-import { ChevronDown, MapPlus, Search, SearchIcon } from "lucide-react";
+import { ChevronDown, Loader2, MapPlus, Search, SearchIcon } from "lucide-react";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
@@ -19,6 +19,11 @@ const PREBUILT_SUGGESTIONS_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL
     ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/search/prebuilt-suggestions`
     : "http://localhost:8000/api/search/prebuilt-suggestions";
+
+const PARSE_FILTERS_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/search/parse-filters`
+    : "http://localhost:8000/api/search/parse-filters";
 
 let prebuiltSuggestionsPromise: Promise<any[]> | null = null;
 let prebuiltSuggestionsCache: any[] | null = null;
@@ -57,6 +62,65 @@ async function loadPrebuiltSuggestions() {
   return prebuiltSuggestionsPromise;
 }
 
+async function parseSearchQuery(query: string): Promise<Record<string, any>> {
+  const res = await fetch(PARSE_FILTERS_URL, {
+    method: "POST",
+    headers: {
+      accept: "*/*",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  });
+  if (!res.ok) throw new Error("Failed to parse search query");
+  const json = await res.json();
+  return json?.data?.filters || {};
+}
+
+function applyFiltersToParams(
+  filters: Record<string, any>,
+  propertyTypeList: any[],
+  selectedCategoryId?: number | string | null,
+): URLSearchParams {
+  const params = new URLSearchParams();
+
+  if (selectedCategoryId) {
+    params.set("categories", String(selectedCategoryId));
+  }
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+
+    if (key === "bedrooms") {
+      params.set("bedroomsFrom", String(value));
+      params.set("bedroomsTo", String(value));
+      return;
+    }
+
+    if (key === "propertyType") {
+      const searchVal = String(value).toLowerCase().trim();
+      const matched = propertyTypeList?.find((t: any) => {
+        const name = t.name?.toLowerCase().trim() || "";
+        return name === searchVal || name.includes(searchVal) || searchVal.includes(name);
+      });
+      if (matched?.id) params.set("categories", String(matched.id));
+      return;
+    }
+
+    if (key === "cities") {
+      params.set("city", String(value));
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => params.append(key, String(v)));
+    } else {
+      params.set(key, String(value));
+    }
+  });
+
+  return params;
+}
+
 const PropertySearchBar = () => {
   const router = useRouter();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
@@ -69,6 +133,7 @@ const PropertySearchBar = () => {
   const [selected, setSelected] = useState<any>(propertyTypes?.[0] || null);
   const [dropdownPosition, setDropdownPosition] = useState<"top" | "bottom">("bottom");
   const [propertyDropdownPosition, setPropertyDropdownPosition] = useState<"top" | "bottom">("bottom");
+  const [isSearching, setIsSearching] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -114,12 +179,22 @@ const PropertySearchBar = () => {
   }, []);
 
 
-  const handleSearch = useCallback(() => {
-    const params = new URLSearchParams();
-    if (selected?.id) params.set("categories", String(selected.id));
-    if (searchText) params.set("city", citySlug(searchText));
-    router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
-  }, [router, selected, searchText]);
+  const handleSearch = useCallback(async () => {
+    if (isSearching || !searchText.trim()) return;
+    setIsSearching(true);
+    try {
+      const filters = await parseSearchQuery(searchText);
+      const params = applyFiltersToParams(filters, propertyTypes, selected?.id);
+      router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+    } catch {
+      const params = new URLSearchParams();
+      if (selected?.id) params.set("categories", String(selected.id));
+      if (searchText) params.set("city", citySlug(searchText));
+      router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+    } finally {
+      setIsSearching(false);
+    }
+  }, [router, selected, searchText, propertyTypes, isSearching]);
 
 
   const callSearch = (data: any) => {
@@ -278,7 +353,7 @@ const PropertySearchBar = () => {
 
     const rect = searchRef.current.getBoundingClientRect();
 
-    const dropdownHeight = 320; // approximate height
+    const dropdownHeight = 320;
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
 
@@ -309,6 +384,12 @@ const PropertySearchBar = () => {
     setOpen((prev) => !prev);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
 
 
   return (
@@ -398,8 +479,13 @@ const PropertySearchBar = () => {
               value={searchText}
               onFocus={handleSearchFocus}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               className="w-full bg-transparent text-md text-dark-navy placeholder-slate-gray outline-none"
             />
+
+            {isSearching && (
+              <Loader2 size={18} className="text-slate-gray shrink-0 animate-spin" />
+            )}
           </div>
 
           {searchDropdown && (
@@ -459,6 +545,7 @@ const PropertySearchBar = () => {
 
           <button
             onClick={handleSearch}
+            disabled={isSearching}
             className="
               sm:w-[30%]
               whitespace-nowrap
@@ -468,10 +555,15 @@ const PropertySearchBar = () => {
               px-9 py-4
               text-sm font-semibold text-white
               hover:opacity-90 transition
+              disabled:opacity-60 disabled:cursor-not-allowed
             "
           >
-            <SearchIcon size={16} />
-            Search
+            {isSearching ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <SearchIcon size={16} />
+            )}
+            {isSearching ? "Searching..." : "Search"}
           </button>
         </div>
       </div>
