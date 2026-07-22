@@ -4,7 +4,7 @@ import PropertySearchBar from "./PropertySearchBar";
 
 export default function HeroSection() {
   return (
-    <div className="relative h-[80vh] sm:h-[60vh] landscape:sm:h-[80vh]   lg:h-[100vh] w-full  bg-gradient-to-b from-sky-600/20  via-white to-white">
+    <div className="relative h-[80vh] sm:h-[60vh] landscape:max-lg:h-[80vh]   lg:h-[100vh] w-full  bg-gradient-to-b from-sky-600/20  via-white to-white">
       {/* Background Image */}
       <Image
         src={App_url.image.home}

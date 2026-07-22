@@ -132,7 +132,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           {},
           user_data?.access_token,
         )?.then((response: any) => {
-          console.log("response", response);
+          console.log("response-websocket", response);
           if (response?.status === 200) {
             const payload = {
               user: response.data,

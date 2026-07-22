@@ -1,15 +1,14 @@
 "use client";
 
 import { useWebSocket } from "@/api/socket/WebSocketContext";
-import Head from "next/head";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import Head from "next/head";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import UserList from "./components/user-list";
 import UserMessage from "./components/user-message";
-import Image from "next/image";
-import { MessageCircle, Home, Send, Building2 } from "lucide-react";
 
 const MessagePage = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -17,7 +16,7 @@ const MessagePage = () => {
   const { mainReducer, user_data } = usePosterReducers();
 
   useEffect(() => {
-    if (!user_data?.user?.chatId && user_data?.user?.agent?.agent?._id) {
+    if ( user_data?.user?.chatId === undefined && user_data?.user?.agent?.agent?._id) {
       sendMessage("action", {
         type: "chatService",
         action: "create",
@@ -65,6 +64,8 @@ const MessagePage = () => {
       });
     }
   }, [lastEvent]);
+
+  
 
   return (
     <SidebarLayout>

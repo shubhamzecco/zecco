@@ -227,7 +227,7 @@ const UserMessage = ({
     <>
       <div className="flex flex-col h-full bg-white rounded-2xl overflow-hidden">
         {/* Header */}
-        <div className="hidden max-lg:flex items-center gap-3 px-4 lg:px-5 py-3 bg-white border-b border-gray-100 shrink-0">
+        <div className="flex items-center gap-3 px-4 lg:px-5 py-3 bg-white border-b border-gray-100 shrink-0">
           {isMobile && (
             <button
               onClick={onBack}
@@ -389,9 +389,9 @@ const UserMessage = ({
               }}
             />
 
-            <button className="w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-amber-500 hover:bg-amber-50 transition-all">
+            {/* <button className="w-9 h-9 flex items-center justify-center rounded-full text-gray-400 hover:text-amber-500 hover:bg-amber-50 transition-all">
               <Smile size={20} />
-            </button>
+            </button> */}
 
             <button
               onClick={handleSend}

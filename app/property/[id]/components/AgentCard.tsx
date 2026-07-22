@@ -32,6 +32,15 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
   const agentAssign = user_data?.user?.agent;
   const router = useRouter();
 
+  useEffect(() => {
+    const payload = {
+      type: "userService",
+      action: "get",
+      payload: {},
+    };
+    sendMessage("action", payload)
+  }, [])
+
   const handleCreateChat = () => {
     sendMessage("action", {
       type: "chatService",
@@ -87,22 +96,22 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
               {isLoggedIn &&
                 (user_data?.user?.agent?.agent?.profile_image ||
                   agent_details?.profile_image) ? (
-              <Image
-                src={
-                  agentAssign
-                    ? URL + (user_data?.user?.agent?.agent?.profile_image ?? "")
-                    : URL + (agent_details?.profile_image ?? "")
-                }
-                alt="Agent Profile"
-                fill
-                priority
-                className="object-cover"
-              />
+                <Image
+                  src={
+                    agentAssign
+                      ? URL + (user_data?.user?.agent?.agent?.profile_image ?? "")
+                      : URL + (agent_details?.profile_image ?? "")
+                  }
+                  alt="Agent Profile"
+                  fill
+                  priority
+                  className="object-cover"
+                />
               ) : (
-              <ProfileAvatar
-                name={`${isLoggedIn ? user_data?.user?.agent?.agent?.first_name || agent_details?.first_name : "Agent"} ${isLoggedIn ? user_data?.user?.agent?.agent?.last_name || agent_details?.last_name : ""}`}
-                className="!w-12 !h-12 2xl:!w-14 2xl:!h-14 !text-xl 2xl:!text-2xl border-2 border-white !text-white !bg-[#2563EB]"
-              />
+                <ProfileAvatar
+                  name={`${isLoggedIn ? user_data?.user?.agent?.agent?.first_name || agent_details?.first_name : "Agent"} ${isLoggedIn ? user_data?.user?.agent?.agent?.last_name || agent_details?.last_name : ""}`}
+                  className="!w-12 !h-12 2xl:!w-14 2xl:!h-14 !text-xl 2xl:!text-2xl border-2 border-white !text-white !bg-[#2563EB]"
+                />
               )}
             </div>
           </div>
