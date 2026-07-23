@@ -65,9 +65,7 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
   const propertySubtypeList = (mainReducer?.property_subtype_list || []).filter(
     (item: any) => filters.categories ? item?.external_property_type_id === Number(filters.categories) : true
   );
-  // console.log("propertySubtypeList ::: ", propertySubtypeList)
-  // console.log("mainReducer?.property_subtype_list ::: ", mainReducer?.property_subtype_list)
-  // console.log("filters.categories ::: ", filters.categories)
+
   const propertyFeaturesList = (mainReducer?.property_features_list || []).filter(
     (item: any) => {
       const itemName = item.name.toLowerCase();

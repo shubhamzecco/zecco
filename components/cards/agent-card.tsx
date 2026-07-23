@@ -46,8 +46,6 @@ function AgentCard() {
         }
     }, [lastEvent]);
 
-    //   console.log("user_data?.user?.agent?.agent?.profile_image ::: " , user_data?.user?.agent?.agent?.profile_image)
-
     return (
         <>
             <CommonCard className="max-2xl:p-3.5">

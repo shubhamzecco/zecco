@@ -55,8 +55,7 @@ export default function Footer() {
             </div>
 
             <p className="text-md leading-relaxed mb-6 font-manrope font-medium text-slate_gray ">
-              The proper footer or proper time can preserve your protection. We
-              assist you make sure everybody forward.
+              Smart property search powered by AI and guided by local experts, making buying and selling in the Costa del Sol simple and transparent.
             </p>
 
             {/* SOCIAL ICONS */}

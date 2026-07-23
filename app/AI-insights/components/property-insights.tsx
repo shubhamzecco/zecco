@@ -40,7 +40,7 @@ export default function PropertyInsights() {
               {mainReducer?.ai_insight?.growth_label}
             </p>
 
-            <p className="text-sm tracking-wider font-manrope font-bold text-[#64748B] mb-2">
+            {/* <p className="text-sm tracking-wider font-manrope font-bold text-[#64748B] mb-2">
               Rental Yield Potential
             </p>
             <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden mb-4">
@@ -54,9 +54,9 @@ export default function PropertyInsights() {
             <p className="text-sm font-manrope font-semibold text-heading_text_color mb-5">
               {mainReducer?.ai_insight?.rental_yield} / 10 -{" "}
               {mainReducer?.ai_insight?.rental_yield_label}
-            </p>
+            </p> */}
 
-            <div className="pt-4 border-t">
+            <div className="pt-5 border-t">
               <p className="text-sm tracking-wider font-manrope font-bold text-heading_text_color mb-2">
                 Recommendation:
               </p>
@@ -105,14 +105,14 @@ export default function PropertyInsights() {
                 </span>
               </div>
 
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <span className="text-[#64748B] font-manrope font-semibold">
                   Average Rent:
                 </span>
                 <span className="font-bold text-heading_text_color font-manrope">
                   {formatEuro(mainReducer?.ai_insight?.average_rent_monthly || 0)}
                 </span>
-              </div>
+              </div> */}
               <div className="flex justify-between">
                 <span className="text-[#64748B] font-manrope font-semibold">
                   Future Growth 5 Years:
