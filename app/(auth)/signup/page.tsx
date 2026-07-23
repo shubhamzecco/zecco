@@ -252,7 +252,7 @@ const SignUpPage = () => {
           <div className="flex items-center px-8">
             <Link href={App_url?.link?.SIGN_IN} className="w-full whitespace-nowrap font-inter font-medium text-center text-[#6B7280] text-md max-md:text-white/70">
               Already have an account?
-              <span className="max-sm:text-white text-[#3B82F6] font-bold font-inter text-base "> Log In</span>
+              <span className="max-lg:text-white text-[#3B82F6] font-bold font-inter text-base "> Log In</span>
             </Link>
           </div>
         </Form>
