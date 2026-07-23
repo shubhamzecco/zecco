@@ -68,6 +68,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                   property={property}
                   key={property?._id}
                   {...property}
+                  onNavigate={(property) => router.push(`${App_url.link.COSTA_DEL_SOL}/properties/${property?._id ?? property?.slug}`)}
                 />
               ))}
             </div>
@@ -131,7 +132,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                         {property?.mtsBuild || 0} m²
                       </TableCell>
                       <TableCell className="text-right pr-8">
-                        <Button onClick={() => router.push(`${App_url.link.PROPERTY_DETAILS}/${property?._id ?? property?.slug }`)} size="sm" className="relative w-fit mx-auto py-3.5 px-3 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50">
+                        <Button  onClick={() => router.push(`${App_url.link.COSTA_DEL_SOL}/properties/${property?._id ?? property?.slug}`)}  size="sm" className="relative w-fit mx-auto py-3.5 px-3 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50">
                           View
                         </Button>
                       </TableCell>

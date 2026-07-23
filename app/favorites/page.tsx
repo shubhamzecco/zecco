@@ -55,7 +55,7 @@ const FavoritesPage = () => {
       <Head>
         <meta name="robots" content="noindex,nofollow" />
       </Head>
-      <CommonCard heading={mainReducer?.favorite_property_list?.data?.length > 0 ? "Favorite Properties" : undefined} description={mainReducer?.favorite_property_list?.data?.length > 0 ? "Properties you save as favorites will appear here for quick access." : undefined} className="min-h-[calc(100vh-130px)]">
+      <CommonCard heading={(mainReducer?.favorite_property_list?.data?.length ?? 0) > 0 ? "Favorite Properties" : undefined} description={(mainReducer?.favorite_property_list?.data?.length ?? 0) > 0 ? "Properties you save as favorites will appear here for quick access." : undefined} className="min-h-[calc(100vh-130px)]">
         <div className="">
           {!mainReducer?.favorite_property_list ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
