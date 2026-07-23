@@ -101,6 +101,10 @@ function applyFiltersToParams(
       params.set("city", String(value));
       return;
     }
+    if (key === "areas") {
+      params.set("area", String(value));
+      return;
+    }
 
     if (Array.isArray(value)) {
       value.forEach((v) => params.append(key, String(v)));
