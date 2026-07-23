@@ -29,6 +29,11 @@ const MessagePage = () => {
       return user?._id === user_data?.user?.chatId;
     });
     setSelectedUser(userFind);
+     sendMessage("action", {
+        type: "chatService",
+        action: "list",
+        payload: {},
+      });
   }, [isConnected]);
 
   useEffect(() => {

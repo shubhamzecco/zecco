@@ -63,7 +63,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
           <>
             {/* Mobile cards */}
             <div className="md:hidden grid grid-cols-1 gap-4 px-4 mb-6">
-              {properties.slice(0, 4).map((property: any) => (
+              {properties?.map((property: any) => (
                 <PropertyCard
                   property={property}
                   key={property?._id}
@@ -144,13 +144,13 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
           </>
         )}
       </CommonCard>
-      {properties.length > 4 && (
+      {/* {properties.length > 4 && (
         <div className="md:hidden px-4 pb-4 mt-5">
           <button className="w-full py-3 rounded-xl border-2 border-[#2F80FF] text-[#2F80FF] font-manrope font-bold text-sm hover:bg-[#EFF6FF] transition-colors">
             View More Properties
           </button>
         </div>
-      )}
+      )} */}
     </>
   );
 };
