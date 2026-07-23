@@ -21,6 +21,7 @@ const AiInsights = ({ onGetStarted }: AiInsightsProps) => {
   const [property, setProperty] = useState<any>()
   const router = useRouter()
 
+
   return (
     <CommonCard className="mt-5 px-3">
       <h2 className="mb-2 font-manrope text-2xl text-center font-bold text-[#111827]">

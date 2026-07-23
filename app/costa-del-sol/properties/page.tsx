@@ -106,12 +106,9 @@ const Page = () => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  console.log("searchParams::", searchParams)
-
   const urlFilters = useMemo(() => readFilters(searchParams), [searchParams]);
   const searchValue = urlFilters.area || urlFilters.subarea;
 
-  console.log('urlFilters::', urlFilters)
 
   const search_by_area = mainReducer?.search_by_area;
   const isAiSelectMode = searchParams.get("select") === "true";

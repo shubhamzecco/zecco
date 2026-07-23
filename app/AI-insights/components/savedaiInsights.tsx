@@ -12,7 +12,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
-const SavedAiInsights = () => {
+interface SavedAiInsightsProps {
+  onSelectInsight?: (property: any, aiData: any) => void;
+}
+
+const SavedAiInsights = ({ onSelectInsight }: SavedAiInsightsProps) => {
   const { mainReducer } = usePosterReducers();
   const router = useRouter();
   const dispatch = useDispatch();
@@ -37,6 +41,11 @@ const SavedAiInsights = () => {
   }, [isConnected]);
 
   const handlePropertyNavigation = (property: any, aiData?: any) => {
+    if (onSelectInsight) {
+      onSelectInsight(property, aiData);
+      return;
+    }
+
     if (aiData) {
       dispatch(setAiInsight(aiData));
     }

@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { Check, Heart } from "lucide-react";
 
 type AiInsightsProps = {
-  onGetStarted: (property: IProperty) => void;
+  onGetStarted: (property: IProperty | null) => void;
 };
 
 const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
@@ -61,7 +61,7 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
                   key={property._id}
                   onClick={() => {
                     setSelectedId(isSelected ? null : property._id)
-                    onGetStarted(property)
+                    onGetStarted(isSelected ? null : property)
                   }}
                   className={`relative cursor-pointer rounded-xl transition-all duration-200 ${isSelected
                     ? "ring-2 ring-[#2563EB] ring-offset-2"

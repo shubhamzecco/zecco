@@ -17,7 +17,7 @@ import {
   PropertyAnalysis,
 } from "@/redux/modules/main/types";
 import { useParams, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { AIMarketIntelligence } from "./components/AIMarketIntelligence";
@@ -42,6 +42,15 @@ export default function PropertyDetailClient() {
   const isLoggedIn = !!user_data?.access_token;
   const propertyDetails = mainReducer?.property_details
 
+  const ai_insight = useMemo(() => {
+    return mainReducer?.stored_aiInsight?.data?.find(
+      (item) => item?.property?._id === propertyDetails?._id
+    );
+  }, [
+    mainReducer?.stored_aiInsight?.data,
+    propertyDetails?._id,
+  ]);
+
   useEffect(() => {
     if (!isConnected || !propertyId) return;
     sendMessage("action", {
@@ -54,13 +63,15 @@ export default function PropertyDetailClient() {
   }, [isConnected, propertyId]);
 
   useEffect(() => {
-    if (
-      mainReducer?.ai_insight &&
-      Object.keys(mainReducer?.ai_insight || {}).length > 0 && !pathname?.startsWith(App_url.link.AI_INSIGHTS)
-    ) {
-      setStep('intro')
-      dispatch(setAiInsight({} as IPropertyResponse));
-    }
+    sendMessage("action", {
+      type: "aiInsightService",
+      action: "list",
+      payload: {
+        search: "",
+        limit: 0,
+        page: 1,
+      },
+    });
   }, [])
 
   useEffect(() => {
@@ -81,14 +92,15 @@ export default function PropertyDetailClient() {
   }, [lastEvent]);
 
   useEffect(() => {
-    if (
-      mainReducer?.ai_insight &&
-      Object.keys(mainReducer?.ai_insight || {}).length > 0
-    ) {
+    if (mainReducer?.ai_insight && Object.keys(mainReducer?.ai_insight || {}).length > 0) {
       setStep("complete");
       setIsCompleted(true);
+    } else if (ai_insight) {
+      setStep("complete");
+      setIsCompleted(true);
+      dispatch(setAiInsight(ai_insight?.data as unknown as IPropertyResponse));
     }
-  }, [mainReducer?.ai_insight]);
+  }, [mainReducer?.ai_insight, ai_insight]);
 
   const handleAIInsight = () => {
     setStep("processing");
@@ -183,13 +195,13 @@ export default function PropertyDetailClient() {
                 heading="AI Market Intelligence"
               />
             )}
-            {step === "complete" &&  (mainReducer?.ai_insight &&
-             Object.keys(mainReducer?.ai_insight || {}).length > 0) && (
-              <AIMarketIntelligence
-                isPropertyDetail
-                ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
-              />
-            )}
+            {step === "complete" && (mainReducer?.ai_insight &&
+              Object.keys(mainReducer?.ai_insight || {}).length > 0) && (
+                <AIMarketIntelligence
+                  isPropertyDetail
+                  ai_insight={mainReducer?.ai_insight as PropertyAnalysis}
+                />
+              )}
             <PropertyDescription
               propertyDescriptions={
                 mainReducer?.property_details
@@ -205,7 +217,7 @@ export default function PropertyDetailClient() {
           </div>
 
           <div className="lg:col-span-1">
-            {(mainReducer?.property_details?.agent_assigned || user_data?.user?.agent?.agent)  && (
+            {(mainReducer?.property_details?.agent_assigned || user_data?.user?.agent?.agent) && (
               <AgentCard
                 agent_details={mainReducer?.property_details?.agent_assigned}
                 user_data={user_data}

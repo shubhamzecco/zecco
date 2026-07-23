@@ -45,6 +45,15 @@ const AIInsights = () => {
     }
   }, [mainReducer?.favorite_property_list]);
 
+  const handleSavedInsightClick = (property: any, aiData: any) => {
+    if (aiData) {
+      dispatch(setAiInsight(aiData));
+    }
+    setSelectedProperty(property);
+    setShowNewInsight(true);
+    setStep("complete");
+  };
+
   const handleStarted = (property: IProperty) => {
     if (!property?._id) return;
     setStep("processing");
@@ -149,7 +158,7 @@ const AIInsights = () => {
         </CommonCard>
       )}
 
-      {!showNewInsight && <SavedAiInsights />}
+      {!showNewInsight && <SavedAiInsights onSelectInsight={handleSavedInsightClick} />}
 
 
       {showNewInsight && (
