@@ -132,7 +132,7 @@ const UserList: React.FC<UserListProps> = ({
                       </span>
                     )}
                     {(findParticipant?.active_status !== undefined && findParticipant?.active_status !== "active") && (
-                      <span className="absolute -top-1 -right-1 bg-black text-white text-xs font-bold font-manrope px-1 py-0.5 rounded-md shadow-sm">
+                      <span className="absolute -top-1  -right-1 px-2 bg-black/20 text-black text-xs font-bold font-manrope  py-0.5 rounded-md shadow-sm">
                         Archived
                       </span>
                     )}

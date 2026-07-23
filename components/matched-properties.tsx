@@ -14,6 +14,8 @@ import { Home } from "lucide-react";
 import Image from "next/image";
 import CommonCard from "./cards/common-card";
 import PropertyCard from "./cards/PropertyCard";
+import { useRouter } from "next/navigation";
+import { App_url } from "@/constant/static";
 
 interface MatchedPropertiesProps {
   properties?: any[];
@@ -21,6 +23,7 @@ interface MatchedPropertiesProps {
 
 const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
   const isEmpty = !properties || properties.length === 0;
+  const router = useRouter()
 
   return (
     <>
@@ -128,7 +131,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                         {property?.mtsBuild || 0} m²
                       </TableCell>
                       <TableCell className="text-right pr-8">
-                        <Button size="sm" className="relative w-fit mx-auto py-3.5 px-3 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50">
+                        <Button onClick={() => router.push(`${App_url.link.PROPERTY_DETAILS}/${property?._id ?? property?.slug }`)} size="sm" className="relative w-fit mx-auto py-3.5 px-3 rounded-[10px] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50">
                           View
                         </Button>
                       </TableCell>

@@ -275,12 +275,8 @@ const PropertyCard = ({
         </button>
 
         <div className="absolute bottom-4 left-3 bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915] font-manrope">
-          {property?.isSale && property?.isRent
-            ? "Rent / Sale"
-            : property?.isSale
+          {property?.isSale
               ? "For Sale"
-              : property?.isRent
-                ? "For Rent"
                 : ""}
         </div>
         {property?.propertyImages?.length > 1 && (
@@ -324,7 +320,7 @@ const PropertyCard = ({
                   <p className="text-md font-manrope font-bold text-[#727272]">
                     Sale : {formatEuro(property?.salePrice ?? 0)}
                   </p>
-                  <p className="text-md font-manrope font-bold text-[#727272]">
+                  {/* <p className="text-md font-manrope font-bold text-[#727272]">
                     Rent :{" "}
                     {formatEuro(
                       property?.rentalPrice ??
@@ -332,20 +328,23 @@ const PropertyCard = ({
                       property?.rentalPriceShort ??
                       0,
                     )}
-                  </p>
+                  </p> */}
                 </div>
               ) : null}
             </div>
           ) : (
             <p className="text-md font-manrope font-black text-[#0F172A]">
-              {property?.isRent
+              {/* {property?.isRent
                 ? formatEuro(
                   property?.rentalPrice ??
                   property?.rentalPriceLong ??
                   property?.rentalPriceShort ??
                   0,
                 )
-                : formatEuro(property?.salePrice ?? 0)}
+                : */}
+                { formatEuro(property?.salePrice ?? 0)}
+                 {/* } */}
+
             </p>
           )}
           {aiInsights && (
