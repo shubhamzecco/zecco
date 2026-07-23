@@ -72,7 +72,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
               ))}
             </div>
             {/* Tablet/Desktop table */}
-            <div className="hidden md:block overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-[#F8FAFC] hover:bg-[#F8FAFC]">
@@ -90,7 +90,7 @@ const MatchedProperties = ({ properties = [] }: MatchedPropertiesProps) => {
                   {properties?.map((property: any) => (
                     <TableRow
                       key={property?._id}
-                      className="hover:bg-slate-50 transition-colors"
+                      className=""
                     >
                       <TableCell className="pl-8">
                         <div className="w-14 h-14 rounded-lg overflow-hidden bg-gray-100 shrink-0">
