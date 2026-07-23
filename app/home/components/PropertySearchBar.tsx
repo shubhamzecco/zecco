@@ -83,10 +83,6 @@ function applyFiltersToParams(
 ): URLSearchParams {
   const params = new URLSearchParams();
 
-  if (selectedCategoryId) {
-    params.set("categories", String(selectedCategoryId));
-  }
-
   Object.entries(filters).forEach(([key, value]) => {
     if (value === undefined || value === null || value === "") return;
 
@@ -97,12 +93,7 @@ function applyFiltersToParams(
     }
 
     if (key === "propertyType") {
-      const searchVal = String(value).toLowerCase().trim();
-      const matched = propertyTypeList?.find((t: any) => {
-        const name = t.name?.toLowerCase().trim() || "";
-        return name === searchVal || name.includes(searchVal) || searchVal.includes(name);
-      });
-      if (matched?.id) params.set("categories", String(matched.id));
+      params.set("categories", value);
       return;
     }
 
@@ -117,6 +108,10 @@ function applyFiltersToParams(
       params.set(key, String(value));
     }
   });
+
+  if (!params.has("categories") && selectedCategoryId) {
+    params.set("categories", String(selectedCategoryId));
+  }
 
   return params;
 }
