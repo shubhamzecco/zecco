@@ -75,11 +75,10 @@ const UserList: React.FC<UserListProps> = ({
               <div
                 key={user?._id}
                 onClick={() => handleCallBack(user)}
-                className={`flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition-all duration-200 mb-0.5 group ${
-                  isSelected
+                className={`flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition-all duration-200 mb-0.5 group ${isSelected
                     ? "bg-[#F0FDFA] border border-[#99F6E4]"
                     : "hover:bg-[#F1F5F9]"
-                }`}
+                  }`}
               >
                 {/* Avatar */}
                 <div className="relative shrink-0">
@@ -96,14 +95,13 @@ const UserList: React.FC<UserListProps> = ({
                   ) : (
                     <ProfileAvatar
                       name={`${findParticipant?.first_name} ${findParticipant?.last_name}`}
-                      className={`!w-12 !h-12 !text-lg !font-bold border-2 ${
-                        isSelected
+                      className={`!w-12 !h-12 !text-lg !font-bold border-2 ${isSelected
                           ? "!text-[#0F172A] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] border-white"
                           : "!text-white !bg-[#2F80FF] border-[#EFF6FF]"
-                      }`}
+                        }`}
                     />
                   )}
-                  {findParticipant?.active_status !== undefined && (
+                  {/* {findParticipant?.active_status !== undefined && (
                     <span
                       className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${
                         findParticipant?.active_status === "active"
@@ -111,42 +109,44 @@ const UserList: React.FC<UserListProps> = ({
                           : "bg-red-500"
                       }`}
                     />
-                  )}
+                  )} */}
                 </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between relative">
                     <h3 className="text-sm font-bold font-manrope truncate text-[#0F172A]">
                       {findParticipant?.first_name}{" "}
                       {findParticipant?.last_name}
                     </h3>
                     {user?.unread_count > 0 && (
                       <span
-                        className={`ml-2 text-[10px] font-bold min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center shrink-0 ${
-                          isSelected
+                        className={`ml-2 text-[10px] font-bold min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center shrink-0 ${isSelected
                             ? "bg-white text-[#2F80FF]"
                             : "bg-[#2F80FF] text-white"
-                        }`}
+                          }`}
                       >
                         {user?.unread_count > 99
                           ? "99+"
                           : user?.unread_count}
                       </span>
                     )}
+                    {(findParticipant?.active_status !== undefined && findParticipant?.active_status !== "active") && (
+                      <span className="absolute -top-1 -right-1 bg-black text-white text-xs font-bold font-manrope px-1 py-0.5 rounded-md shadow-sm">
+                        Archived
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <p
-                      className={`text-xs truncate font-manrope ${
-                        isSelected ? "text-[#64748B]" : "text-gray-400"
-                      }`}
+                      className={`text-xs truncate font-manrope ${isSelected ? "text-[#64748B]" : "text-gray-400"
+                        }`}
                     >
                       {user?.message || "Start a conversation..."}
                     </p>
                     <span
-                      className={`text-[10px] font-manrope shrink-0 ml-2 ${
-                        isSelected ? "text-[#64748B]" : "text-gray-400"
-                      }`}
+                      className={`text-[10px] font-manrope shrink-0 ml-2 ${isSelected ? "text-[#64748B]" : "text-gray-400"
+                        }`}
                     >
                       {formatTime(user?.updatedAt)}
                     </span>

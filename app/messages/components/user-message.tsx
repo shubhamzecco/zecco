@@ -45,6 +45,10 @@ const UserMessage = ({
     (p: any) => p?._id !== user_data?.user?._id,
   );
 
+  const isParticipantInactive =
+    findParticipant?.active_status !== undefined &&
+    findParticipant?.active_status !== "active";
+
   const getIcon = (type: string) => {
     switch (type) {
       case "pdf":
@@ -344,6 +348,11 @@ const UserMessage = ({
 
         {/* Input area */}
         <div className="border-t border-gray-100 bg-white px-4 lg:px-5 py-3 shrink-0">
+          {isParticipantInactive ? (
+            <div className="text-center text-xs text-gray-400 font-manrope py-2">
+              This agent is currently inactive. Messaging is disabled.
+            </div>
+          ) : (
           <div className="flex items-center gap-2 border border-[#E2E8F0] bg-[#F1F5F9] rounded-2xl px-3 py-1">
             <button
               onClick={() => document.getElementById("fileUpload")?.click()}
@@ -407,6 +416,7 @@ const UserMessage = ({
               <Send size={20} className="-rotate-80" />
             </button>
           </div>
+          )}
         </div>
       </div>
 

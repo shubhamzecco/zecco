@@ -36,7 +36,6 @@ const DashboardPage = () => {
     });
   }, [])
 
-  console.log("user_data ::: " , user_data)
 
   return (
     <SidebarLayout>
@@ -50,7 +49,7 @@ const DashboardPage = () => {
         <div className="lg:w-[30%] lg:block max-lg:mt-5 sm:grid grid-cols-2 items-stretch gap-5">
           <div>
             <CommonCard heading="AI Concierge" className="max-lg:h-full 2xl:h-[27vh] !py-4 max-2xl:!px-[14.3px]">
-              <p className="bg-[#edf0f7] p-[14.5px]  2xl:my-3  tracking-wide  rounded-xl font-manrope text-[#64748B] font-medium max-sm:text-xs sm:text-[15px] lg:text-xs xl:text-sm">
+              <p className="bg-[#edf0f7] p-[14.5px] lg:my-2.5 xl:my-1 2xl:my-3  tracking-wide  rounded-xl font-manrope text-[#64748B] font-medium max-sm:text-xs sm:text-[15px] lg:text-[12.6px] xl:text-sm">
                Your personal AI property assistant is always searching for homes that fit your preferences. Discover curated recommendations, market insights, and new listings tailored just for you.
               </p>
               <button

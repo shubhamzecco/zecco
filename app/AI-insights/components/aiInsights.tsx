@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import FavoritesPage from "./favorites";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type AiInsightsProps = {
   onGetStarted: (property: IProperty) => void;
@@ -17,8 +18,8 @@ type AiInsightsProps = {
 
 const AiInsights = ({ onGetStarted }: AiInsightsProps) => {
   const { mainReducer } = usePosterReducers();
-  const { sendMessage, isConnected } = useWebSocket();
   const [property, setProperty] = useState<any>()
+  const router = useRouter()
 
   return (
     <CommonCard className="mt-5 px-3">
@@ -39,6 +40,13 @@ const AiInsights = ({ onGetStarted }: AiInsightsProps) => {
             Select the property to generate AI reports
           </button>
           <p className="font-normal text-xs sm:text-sm mb-4 font-manrope text-[#64748B] text-center">⚡ Powered by Zecco AI · Free for Premium Members</p>
+
+          <button
+            onClick={() => router.push("/costa-del-sol/properties?select=true")}
+            className="relative w-fit mx-auto mt-8 text-xs sm:text-sm whitespace-nowrap my-5 py-3.5 px-4 sm:px-10 rounded-full flex items-center bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white font-manrope font-medium shadow-md disabled:opacity-50 "
+          >
+            Browse Properties
+          </button>
         </>
       )}
 

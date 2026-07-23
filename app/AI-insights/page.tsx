@@ -125,12 +125,11 @@ const AIInsights = () => {
                   <div className="rounded-full bg-blue-100 flex items-center justify-center mb-2 p-2.5">
                     <Icon className="text-[#2563EB] w-5 h-5 lg:w-6 lg:h-6 2xl:w-8 2xl:h-8" />
                   </div>
-
-                  <h3 className="font-manrope text-base font-bold text-[#0F172A] mb-1">
+                  <h3 className="font-manrope text-base 2xl:text-lg font-bold text-[#0F172A] mb-1">
                     {step.title}
                   </h3>
 
-                  <p className="font-manrope text-sm text-[#64748B]">
+                  <p className="font-manrope text-sm 2xl:text-base text-[#64748B]">
                     {step.description}
                   </p>
                 </div>

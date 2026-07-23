@@ -264,13 +264,13 @@ const PropertyCard = ({
             e.stopPropagation();
             handleFavoriteAdd?.();
           }}
-          className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/80 rounded-full flex items-center justify-center hover:bg-red-50"
+          className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/90 rounded-full flex items-center justify-center hover:bg-red-50"
           aria-label="up"
         >
           {isFavorite ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
-            <Heart size={20} className="text-white hover:text-red-500" />
+            <Heart size={20} className=" text-red-500" />
           )}
         </button>
 
