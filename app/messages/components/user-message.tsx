@@ -336,9 +336,9 @@ const UserMessage = ({
               },
             )
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-400 font-manrope text-sm">
-              No messages yet. Start a conversation!
-            </div>
+              <div className="flex items-center justify-center h-full text-black font-manrope text-sm">
+                No messages found
+              </div>
           )}
         </div>
 

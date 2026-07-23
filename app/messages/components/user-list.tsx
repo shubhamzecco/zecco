@@ -12,6 +12,7 @@ export interface IParticipant {
   first_name: string;
   last_name: string;
   profile_image?: string;
+  active_status?: string;
 }
 
 export interface IChat {
@@ -109,7 +110,15 @@ const UserList: React.FC<UserListProps> = ({
                     }`}
                   />
                 )}
-                {/* <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full" /> */}
+                {findParticipant?.active_status !== undefined && (
+                  <span
+                    className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${
+                      findParticipant?.active_status === "active"
+                        ? "bg-emerald-400"
+                        : "bg-gray-400"
+                    }`}
+                  />
+                )}
               </div>
 
               {/* Info */}
@@ -120,22 +129,6 @@ const UserList: React.FC<UserListProps> = ({
                   >
                     {findParticipant?.first_name} {findParticipant?.last_name}
                   </h3>
-                  <span
-                    className={`text-[10px] font-manrope shrink-0 ml-2 ${
-                      isSelected ? "text-[#64748B]" : "text-gray-400"
-                    }`}
-                  >
-                    {formatTime(user?.updatedAt)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between mt-0.5">
-                  <p
-                    className={`text-xs truncate font-manrope ${
-                      isSelected ? "text-[#64748B]" : "text-gray-400"
-                    }`}
-                  >
-                    {user?.message || "Start a conversation..."}
-                  </p>
                   {user?.unread_count > 0 && (
                     <span
                       className={`ml-2 text-[10px] font-bold min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center shrink-0 ${
@@ -147,6 +140,22 @@ const UserList: React.FC<UserListProps> = ({
                       {user?.unread_count > 99 ? "99+" : user?.unread_count}
                     </span>
                   )}
+                </div>
+                <div className="flex items-center justify-between mt-0.5">
+                  <p
+                    className={`text-xs truncate font-manrope ${
+                      isSelected ? "text-[#64748B]" : "text-gray-400"
+                    }`}
+                  >
+                    {user?.message || "Start a conversation..."}
+                  </p>
+                  <span
+                    className={`text-[10px] font-manrope shrink-0 ml-2 ${
+                      isSelected ? "text-[#64748B]" : "text-gray-400"
+                    }`}
+                  >
+                    {formatTime(user?.updatedAt)}
+                  </span>
                 </div>
               </div>
             </div>
