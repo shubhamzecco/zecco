@@ -33,7 +33,7 @@ type WebSocketContextType = {
 
 export const WebSocketContext = createContext<WebSocketContextType>({
   socket: null,
-  sendMessage: () => {},
+  sendMessage: () => { },
   isConnected: false,
   lastEvent: null,
 });
@@ -152,6 +152,36 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         });
         return;
       }
+
+      if (event === "delete_agent") {
+        CommonApiRequest(
+          "GET",
+          `${App_url.endpoint_url?.GET_AUTH_USER}/${user_data?.user?.email}`,
+          {},
+          {},
+          user_data?.access_token,
+        )?.then((response: any) => {
+          console.log("response-websocket", response);
+          if (response?.status === 200) {
+            const payload = {
+              user: response.data,
+              access_token: user_data?.access_token,
+            };
+            localStorage.setItem("access_token", user_data?.access_token);
+            dispatch(setLogin(true));
+            dispatch(setAuthData(payload as any));
+            toast.info(
+              `${response?.data?.agent?.agent?.first_name} ${response?.data?.agent?.agent?.last_name} has been assigned as your agent.`,
+            );
+          } else {
+            localStorage.clear();
+            dispatch(setLogin(false));
+            dispatch(setAuthData({} as any));
+          }
+        });
+        return;
+      }
+
       if (event === "unauthorized") {
         dispatch(setLogout());
         localStorage.clear();
