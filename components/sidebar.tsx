@@ -27,6 +27,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import ProfileAvatar from "./profile";
 import { useEffect, useRef, useState } from "react";
+import ConfirmPopup from "./ui/confirm-popup";
 
 const allMenuItems = [
   { name: "Dashboard", href: App_url.link.DASHBOARD, icon: Home },
@@ -67,6 +68,7 @@ export default function Sidebar({ isOpen, onClose, desktopOnly, mobileOnly }: Si
   const dispatch = useDispatch();
   const router = useRouter();
   const [showMore, setShowMore] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -148,7 +150,7 @@ export default function Sidebar({ isOpen, onClose, desktopOnly, mobileOnly }: Si
 
           <div className="mt-2">
             <button
-              onClick={handleLogout}
+              onClick={() => setShowLogoutConfirm(true)}
               className="group w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-colors hover:bg-red-50"
             >
               <LogOut className="w-5 h-5 text-red-500 group-hover:text-red-600" />
@@ -227,7 +229,7 @@ export default function Sidebar({ isOpen, onClose, desktopOnly, mobileOnly }: Si
                     <button
                       onClick={() => {
                         setShowMore(false);
-                        handleLogout();
+                        setShowLogoutConfirm(true);
                       }}
                       className="flex items-center gap-3 px-4 py-2.5 text-sm font-manrope font-semibold text-red-500 hover:bg-red-50 w-full"
                     >
@@ -269,6 +271,15 @@ export default function Sidebar({ isOpen, onClose, desktopOnly, mobileOnly }: Si
           </div>
         </nav>
       )}
+
+      <ConfirmPopup
+        open={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={() => {
+          setShowLogoutConfirm(false);
+          handleLogout();
+        }}
+      />
     </>
   );
 }
