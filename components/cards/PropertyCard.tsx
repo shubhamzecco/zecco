@@ -276,8 +276,8 @@ const PropertyCard = ({
 
         <div className="absolute bottom-4 left-3 bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915] font-manrope">
           {property?.isSale
-              ? "For Sale"
-                : ""}
+            ? "For Sale"
+            : ""}
         </div>
         {property?.propertyImages?.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
@@ -342,8 +342,8 @@ const PropertyCard = ({
                   0,
                 )
                 : */}
-                { formatEuro(property?.salePrice ?? 0)}
-                 {/* } */}
+              {formatEuro(property?.salePrice ?? 0)}
+              {/* } */}
 
             </p>
           )}
@@ -373,21 +373,28 @@ const PropertyCard = ({
         </h3>
 
         <div className="flex gap-5 justify-between items-center pt-2.5 text-sm border-t">
-          {property?.mtsBuild !== null && property?.mtsBuild !== undefined && (
+          {(!!property?.mtsBuild && property?.mtsBuild !== null && property?.mtsBuild !== undefined) ? (
             <div className="flex font-manrope font-normal items-center gap-1">
               <Expand size={18} className="text-gray-400" />
               <span>{property?.mtsBuild} m²</span>
             </div>
-          )}
+          ) : property?.mtsPlot !== null && property?.mtsPlot !== undefined ? (
+            <div className="flex font-manrope font-normal items-center gap-1">
+              <Expand size={18} className="text-gray-400" />
+              <span>{property?.mtsPlot} m²</span>
+            </div>
+          ) : ('')}
 
-          {property?.bedrooms !== null && property?.bedrooms !== undefined && (
+
+
+          {property?.bedrooms !== 0 && property?.bedrooms !== null && property?.bedrooms !== undefined && (
             <div className="flex font-manrope font-normal items-center gap-1">
               <BedSingle size={18} className="text-gray-400" />
               <span>{property?.bedrooms} Bed</span>
             </div>
           )}
 
-          {property?.bathrooms !== null &&
+          {property?.bathrooms !== 0 && property?.bathrooms !== null &&
             property?.bathrooms !== undefined && (
               <div className="flex font-manrope font-normal items-center gap-1">
                 <Bath size={18} className="text-gray-400" />
