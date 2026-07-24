@@ -171,8 +171,6 @@ const PropertyCard = ({
     });
   };
 
-  console.log("property?.mtsBuild  :::: ", property)
-
   return (
     <div
       onClick={handleCardClick}
