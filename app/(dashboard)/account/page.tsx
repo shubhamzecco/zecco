@@ -1,5 +1,4 @@
 "use client";
-import Head from "next/head";
 import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import SidebarLayout from "@/components/layouts/sidebar-layout";
@@ -7,10 +6,23 @@ import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { formatDateMonth, formatEuro } from "@/utils/common";
 import axios from "axios";
-import { Check, CloudUpload, Crown, FileUp, ShieldCheck, Zap, SquareArrowRight, Star, Package } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Check, CircleStar, CircleUserRound, Crown, Gem, Package, Zap } from "lucide-react";
+import Head from "next/head";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
+const packageIconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  "Zecco Free": CircleUserRound,
+  "Zecco Go": CircleStar,
+  "Zecco Plus": Gem,
+  "Zecco VIP": Crown,
+};
+
+const getPackageIcon = (name?: string, size = 20, className = "text-[#4A86E8]") => {
+  const Icon = name ? packageIconMap[name] : undefined;
+  return Icon ? <Icon size={size} className={className} /> : <Package size={size} className={className} />;
+};
 
 const AccountPackagePage = () => {
   const { user_data, mainReducer } = usePosterReducers();
@@ -86,36 +98,14 @@ const AccountPackagePage = () => {
           </div>
         ) : (
           <>
-            {/* <div className="flex justify-between items-center mb-1">
-          <h2 className="font-bold text-lg mb-4 font-inter text-[#111827]">
-            Account Protocol
-          </h2>
-          <button
-            type="button"
-            onClick={handleExport}
-            className={`w-fit px-4 border border-[#1466EC] hover:bg-[#1466EC] hover:text-white text-[#1466EC] text-[12px] py-2.5 rounded-[10px] font-manrope font-extrabold`}
-          >
-            <div className="flex items-center">
-              <SquareArrowRight size={18} className="mr-2 inline" />
-              Export
-              {exportLoading && (
-                <div className="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              )}
-            </div>
-          </button>
-        </div> */}
             <div className="mb-8 w-full rounded-2xl bg-gradient-to-r from-[#2F80FF] from-[20%] to-[#5DAEFF] p-4 lg:p-8">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between w-full">
                 <div className="flex items-start gap-4 sm:items-center lg:gap-6">
                   <div className="flex items-center justify-center rounded-2xl border-2 border-white/30 bg-white/20 p-3 lg:p-4 shrink-0">
-                    <Star
-                      size={32}
-                      className="text-white lg:w-12 lg:h-12"
-                    />
+                    {getPackageIcon(user_data?.user?.package?.name, 32, "text-white lg:w-12 lg:h-12")}
                   </div>
                   <div className="flex items-start flex-col">
-                    <div className="flex w-fit items-center gap-2 rounded-full px-3 py-1 text-[10px] shadow-md lg:text-sm font-bold tracking-wide text-white bg-gradient-to-b from-[#FF9E2E] to-[#DB8727]" 
-                    // style={{ background: "linear-gradient(to bottom, #FF4A4A, #FF8A33)", boxShadow: "inset 0 -6px 12px rgba(255,255,255,0.5)" }}
+                    <div className="flex w-fit items-center gap-2 rounded-full px-3 py-1 text-[10px] shadow-md lg:text-sm font-bold tracking-wide text-white bg-gradient-to-b from-[#FF9E2E] to-[#DB8727]"
                     >
                       <Zap size={18} className="text-white fill-white" />
                       Active Package
@@ -249,7 +239,7 @@ const AccountPackagePage = () => {
                               <td className="whitespace-nowrap px-6 py-3">
                                 <div className="flex items-center gap-3">
                                   <div className="bg-blue-100 p-2 rounded-lg">
-                                    <Crown className="text-blue-600" size={16} />
+                                    {getPackageIcon(item?.packageData?.name, 16, "text-blue-600")}
                                   </div>
                                   <div>
                                     <p className="font-semibold text-base text-gray-900">{item?.packageData?.name}</p>
