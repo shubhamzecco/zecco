@@ -360,13 +360,9 @@ const PropertyCard = ({
             ? property?.propertyType?.name
             : property?.propertyCategory?.name}{" "}
           for{" "}
-          {property?.isSale && property?.isRent
-            ? "Sale or Rent"
-            : property?.isSale
-              ? "Sale"
-              : property?.isRent
-                ? "Rent"
-                : ""}{" "}
+          {property?.isSale
+            ? "Sale"
+            : ""}{" "}
           in {property?.locationSubarea ? `${property?.locationSubarea},` : ""}{" "}
           {property?.locationArea ? `${property?.locationArea},` : ""}{" "}
           {property?.locationCity}, {property?.locationCountry}
@@ -381,7 +377,7 @@ const PropertyCard = ({
           ) : property?.mtsPlot !== null && property?.mtsPlot !== undefined ? (
             <div className="flex font-manrope font-normal items-center gap-1">
               <p className="text-xs font-manrope font-semibold text-[#6B7280] uppercase">
-                Plot area : 
+                Plot area :
               </p>
               <span>{property?.mtsPlot} m²</span>
             </div>
