@@ -50,7 +50,7 @@ const UserList: React.FC<UserListProps> = ({
   return (
     <div className="flex flex-col h-full border-r bg-[#F8F9FA] overflow-hidden max-lg:rounded-2xl rounded-bl-2xl rounded-tl-2xl">
       {/* User list */}
-      <div className="flex-1 overflow-y-auto px-4 py-3">
+      <div className="flex-1 overflow-y-auto min-h-0 px-4 py-3">
         <div className="border-b mb-3 pb-2">
           <h1 className="font-bold font-manrope text-[#64748B]">
             Recent Conversations

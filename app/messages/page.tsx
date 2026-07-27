@@ -40,6 +40,17 @@ const MessagePage = () => {
   }, [user_data?.user?.agent?.agent?._id])
 
   useEffect(() => {
+    if (selectedUser?._id && mainReducer?.chat_user_list) {
+      const updated = mainReducer?.chat_user_list?.find(
+        (u: any) => u?._id === selectedUser?._id,
+      );
+      if (updated) {
+        setSelectedUser(updated);
+      }
+    }
+  }, [mainReducer?.chat_user_list]);
+
+  useEffect(() => {
     if (
       lastEvent?.data?.status &&
       lastEvent?.data?.request?.type === "chatService" &&
@@ -68,6 +79,55 @@ const MessagePage = () => {
         action: "list",
         payload: {},
       });
+      if (selectedUser?._id) {
+        sendMessage("action", {
+          type: "chatService",
+          action: "get_messages",
+          payload: {
+            chat_id: selectedUser?._id,
+          },
+        });
+      }
+
+      const payload = {
+        type: "userService",
+        action: "get",
+        payload: {},
+      };
+      sendMessage("action", payload)
+
+      if (user_data?.user?.chatId === undefined && user_data?.user?.agent?.agent?._id) {
+        sendMessage("action", {
+          type: "chatService",
+          action: "create",
+          payload: {
+            participants: user_data?.user?.agent?.agent?._id,
+          },
+        });
+      }
+    }
+
+    if (lastEvent?.event === "delete_agent") {
+      sendMessage("action", {
+        type: "chatService",
+        action: "list",
+        payload: {},
+      });
+      if (selectedUser?._id) {
+        sendMessage("action", {
+          type: "chatService",
+          action: "get_messages",
+          payload: {
+            chat_id: selectedUser?._id,
+          },
+        });
+      }
+      const payload = {
+        type: "userService",
+        action: "get",
+        payload: {},
+      };
+      sendMessage("action", payload)
     }
   }, [lastEvent]);
 

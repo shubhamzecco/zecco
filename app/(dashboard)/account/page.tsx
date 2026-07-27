@@ -30,7 +30,6 @@ const AccountPackagePage = () => {
   const purchaseDate = user_data?.user?.package?.purchasedAt
     ? new Date(user_data?.user?.package?.purchasedAt)
     : undefined;
-  const [showPackageInfo, setShowPackageInfo] = useState(false);
   const [exportLoading, setExportLoading] = useState(false);
   const router = useRouter()
 
