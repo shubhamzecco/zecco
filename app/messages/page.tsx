@@ -16,7 +16,7 @@ const MessagePage = () => {
   const { mainReducer, user_data } = usePosterReducers();
 
   useEffect(() => {
-    if ( user_data?.user?.chatId === undefined && user_data?.user?.agent?.agent?._id) {
+    if (user_data?.user?.chatId === undefined && user_data?.user?.agent?.agent?._id) {
       sendMessage("action", {
         type: "chatService",
         action: "create",
@@ -29,12 +29,15 @@ const MessagePage = () => {
       return user?._id === user_data?.user?.chatId;
     });
     setSelectedUser(userFind);
-     sendMessage("action", {
-        type: "chatService",
-        action: "list",
-        payload: {},
-      });
   }, [isConnected]);
+
+  useEffect(() => {
+    sendMessage("action", {
+      type: "chatService",
+      action: "list",
+      payload: {},
+    });
+  }, [user_data?.user?.agent?.agent?._id])
 
   useEffect(() => {
     if (
@@ -58,9 +61,17 @@ const MessagePage = () => {
         },
       });
     }
+
+    if (lastEvent?.event === "agent_assigned") {
+      sendMessage("action", {
+        type: "chatService",
+        action: "list",
+        payload: {},
+      });
+    }
   }, [lastEvent]);
 
-  
+
 
   return (
     <SidebarLayout>

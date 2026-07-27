@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { setReduxClear } from "@/redux/modules/main/action";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import ImageDropdown from "@/components/ui/image-dropdown";
+import ConfirmPopup from "@/components/ui/confirm-popup";
 import { setAuthData } from "@/redux/modules/common/user_data/action";
 import { setLogout } from "@/redux/actions/action";
 import { toast } from "react-toastify";
@@ -18,6 +19,7 @@ import { toast } from "react-toastify";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -31,6 +33,15 @@ export default function Navbar() {
   useEffect(() => {
     setMounted(true);
   }, [])
+
+  const handleLogout = () => {
+    dispatch(setLogout());
+    localStorage.clear();
+    dispatch(setAuthData({} as any));
+    dispatch(setReduxClear());
+    router.push(App_url.link.INITIAL_URL);
+    toast.success("Logout successfully");
+  };
 
   const handleNavClick = (item: any) => {
     router.push(item?.href);
@@ -81,14 +92,7 @@ export default function Navbar() {
                       { label: "Dashboard", path: App_url.link.DASHBOARD },
                       {
                         label: "Logout",
-                        onClick: () => {
-                          dispatch(setLogout());
-                          localStorage.clear();
-                          dispatch(setAuthData({} as any));
-                          dispatch(setReduxClear());
-                          router.push(App_url.link.INITIAL_URL);
-                          toast.success("Logout successfully");
-                        },
+                        onClick: () => setShowLogoutConfirm(true),
                       },
                     ]}
                   />
@@ -129,18 +133,10 @@ export default function Navbar() {
                   items={[
                     { label: "Profile", path: App_url?.link.PROFILE },
                     { label: "Dashboard", path: App_url.link.DASHBOARD },
-                    {
-                      label: "Logout",
-                      onClick: () => {
-                        dispatch(setLogout());
-                        localStorage.clear();
-                        dispatch(setAuthData({} as any));
-                        dispatch(setReduxClear());
-                        router.push(App_url.link.INITIAL_URL);
-                        toast.success("Logout successfully");
-                        setIsOpen(false);
+                      {
+                        label: "Logout",
+                        onClick: () => setShowLogoutConfirm(true),
                       },
-                    },
                   ]}
                 />
               )}
@@ -191,6 +187,15 @@ export default function Navbar() {
           </div>
         )}
       </div>
+
+      <ConfirmPopup
+        open={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={() => {
+          setShowLogoutConfirm(false);
+          handleLogout();
+        }}
+      />
     </nav>
   );
 }

@@ -18,6 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import ImageDropdown from "./ui/image-dropdown";
+import ConfirmPopup from "./ui/confirm-popup";
 import { URL } from "@/api/rest/fetchData";
 
 type HeaderProps = {
@@ -26,6 +27,7 @@ type HeaderProps = {
 
 export default function Header({ onProfileClick }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const pathname = usePathname();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -36,11 +38,19 @@ export default function Header({ onProfileClick }: HeaderProps) {
     return pathname === href || pathname.startsWith(`${href}/`);
   };
 
+  const handleLogout = () => {
+    dispatch(setLogout());
+    localStorage.clear();
+    dispatch(setAuthData({} as any));
+    dispatch(setReduxClear());
+    router.push(App_url.link.INITIAL_URL);
+  };
+
   const handleNavClick = (item: any) => {
     dispatch(setPropertyFilter({}));
     dispatch(setAiInsight({} as IPropertyResponse));
     router.push(item.href);
-    setIsOpen(false); // ✅ close menu on click
+    setIsOpen(false);
   };
 
   return (
@@ -86,13 +96,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
                     { label: "Dashboard", path: App_url.link.DASHBOARD },
                     {
                       label: "Logout",
-                      onClick: () => {
-                        dispatch(setLogout());
-                        localStorage.clear();
-                        dispatch(setAuthData({} as any));
-                        dispatch(setReduxClear());
-                        router.push(App_url.link.INITIAL_URL);
-                      },
+                      onClick: () => setShowLogoutConfirm(true),
                     },
                   ]}
                 />
@@ -131,13 +135,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
                       { label: "Dashboard", path: App_url.link.DASHBOARD },
                       {
                         label: "Logout",
-                        onClick: () => {
-                          dispatch(setLogout());
-                          localStorage.clear();
-                          dispatch(setAuthData({} as any));
-                          dispatch(setReduxClear());
-                          router.push(App_url.link.INITIAL_URL);
-                        },
+                        onClick: () => setShowLogoutConfirm(true),
                       },
                     ]}
                   />
@@ -181,13 +179,7 @@ export default function Header({ onProfileClick }: HeaderProps) {
                   { label: "Dashboard", path: App_url.link.DASHBOARD },
                   {
                     label: "Logout",
-                    onClick: () => {
-                      dispatch(setLogout());
-                      localStorage.clear();
-                      dispatch(setAuthData({} as any));
-                      dispatch(setReduxClear());
-                      router.push(App_url.link.INITIAL_URL);
-                    },
+                    onClick: () => setShowLogoutConfirm(true),
                   },
                 ]}
               />
@@ -210,6 +202,15 @@ export default function Header({ onProfileClick }: HeaderProps) {
           )}
         </div>
       </div>
+
+      <ConfirmPopup
+        open={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={() => {
+          setShowLogoutConfirm(false);
+          handleLogout();
+        }}
+      />
     </>
   );
 }

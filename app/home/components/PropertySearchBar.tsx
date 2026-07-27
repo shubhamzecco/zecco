@@ -120,6 +120,22 @@ function applyFiltersToParams(
   return params;
 }
 
+const getPropertyType = (
+  search: string,
+  propertyTypes: any[]
+) => {
+  const text = search.toLowerCase();
+
+  return propertyTypes.find((item) => {
+    const name = item.name.toLowerCase();
+
+    return (
+      text.includes(name) ||
+      text.includes(name.replace(/s$/, "")) // apartment -> apartments
+    );
+  });
+};
+
 const PropertySearchBar = () => {
   const router = useRouter();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
@@ -129,7 +145,7 @@ const PropertySearchBar = () => {
   const [searchDropdown, setSearchDropdown] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
-  const [selected, setSelected] = useState<any>(propertyTypes?.[0] || null);
+  const [selected, setSelected] = useState<any>('');
   const [dropdownPosition, setDropdownPosition] = useState<"top" | "bottom">("bottom");
   const [propertyDropdownPosition, setPropertyDropdownPosition] = useState<"top" | "bottom">("bottom");
   const [isSearching, setIsSearching] = useState(false);
@@ -142,7 +158,6 @@ const PropertySearchBar = () => {
 
   useEffect(() => {
     if (!isConnected) return;
-
     sendMessage("action", {
       type: "propertyService",
       action: "propertyTypes",
@@ -151,11 +166,11 @@ const PropertySearchBar = () => {
   }, [isConnected, sendMessage]);
 
 
-  useEffect(() => {
-    if (propertyTypes?.length > 0 && !selected) {
-      setSelected(propertyTypes[0]);
-    }
-  }, [propertyTypes, selected]);
+  // useEffect(() => {
+  //   if (propertyTypes?.length > 0 && !selected) {
+  //     setSelected(propertyTypes[0]);
+  //   }
+  // }, [propertyTypes, selected]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -177,24 +192,76 @@ const PropertySearchBar = () => {
     };
   }, []);
 
+  // const handleSearch = useCallback(async () => {
+  //   if (isSearching || !searchText.trim()) return;
+  //   setIsSearching(true);
+  //   try {
+  //     const filters = await parseSearchQuery(searchText);
+  //     console.log("filters ::: " , filters)
+  //     console.log("propertyTypes ::: " , propertyTypes)
+  //     const params = applyFiltersToParams(filters, propertyTypes, selected?.id);
+  //     // router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+  //   } catch {
+  //     const params = new URLSearchParams();
+  //     if (selected?.id) params.set("categories", String(selected.id));
+  //     if (searchText) params.set("city", citySlug(searchText));
+  //     router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+  //   } finally {
+  //     setIsSearching(false);
+  //   }
+  // }, [router, selected, searchText, propertyTypes, isSearching]);
+
 
   const handleSearch = useCallback(async () => {
     if (isSearching || !searchText.trim()) return;
+
     setIsSearching(true);
+
     try {
+      const matchedType = getPropertyType(searchText, propertyTypes);
+
+      // Update selected dropdown
+      if (matchedType) {
+        setSelected(matchedType);
+      }
+
       const filters = await parseSearchQuery(searchText);
-      const params = applyFiltersToParams(filters, propertyTypes, selected?.id);
-      router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+
+      const params = applyFiltersToParams(
+        filters,
+        propertyTypes,
+        matchedType?.id || selected?.id
+      );
+      if (matchedType) {
+        params.set("categories", String(matchedType?.id));
+      }
+      router.push(
+        `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+      );
     } catch {
+      const matchedType = getPropertyType(searchText, propertyTypes);
+
+      if (matchedType) {
+        setSelected(matchedType);
+      }
+
       const params = new URLSearchParams();
-      if (selected?.id) params.set("categories", String(selected.id));
-      if (searchText) params.set("city", citySlug(searchText));
-      router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+
+      if (selected?.id) {
+        params.set("categories", String(selected.id));
+      }
+
+      if (searchText) {
+        params.set("city", citySlug(searchText));
+      }
+
+      router.push(
+        `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+      );
     } finally {
       setIsSearching(false);
     }
   }, [router, selected, searchText, propertyTypes, isSearching]);
-
 
   const callSearch = (data: any) => {
     const params = new URLSearchParams();
@@ -208,12 +275,15 @@ const PropertySearchBar = () => {
         params.set("bedroomsTo", String(value));
         return;
       }
+      console.log("key :::: ", key)
       if (key === "propertyType") {
         const searchVal = String(value).toLowerCase().trim();
         const matched = mainReducer?.property_type_list?.find((t: any) => {
           const name = t.name?.toLowerCase().trim() || "";
           return name === searchVal || name.includes(searchVal) || searchVal.includes(name);
         });
+        console.log("searchVal :::: ",)
+        console.log("matched :::: ", matched)
         if (matched?.id) params.set("categories", String(matched.id));
         return;
       }
@@ -421,7 +491,7 @@ const PropertySearchBar = () => {
                 onClick={handlePropertyDropdown}
                 className="flex items-center justify-center w-full sm:w-[130px] truncate gap-2 rounded-full px-3 py-2 text-sm font-semibold sm:min-w-[120px]"
               >
-                <span className="truncate">{selected?.name}</span>
+                <span className="truncate">{selected ? selected?.name : propertyTypes?.[0]?.name}</span>
 
                 <ChevronDown
                   size={14}
