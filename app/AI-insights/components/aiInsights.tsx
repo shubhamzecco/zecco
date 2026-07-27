@@ -40,7 +40,7 @@ const AiInsights = ({ onGetStarted }: AiInsightsProps) => {
             <Sparkles size={18} className="mr-2" />
             Generate AI reports
           </button>
-          <p className="font-normal text-xs sm:text-sm mb-4 font-manrope text-[#64748B] text-center">⚡ Powered by Zecco AI · Free for Premium Members</p>
+          <p className="font-normal text-xs sm:text-sm mb-4 font-manrope text-[#64748B] text-center">⚡ Powered by Zecco AI</p>
 
           <button
             onClick={() => router.push("/costa-del-sol/properties?select=true")}
