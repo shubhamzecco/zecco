@@ -21,8 +21,8 @@ const PREBUILT_SUGGESTIONS_URL =
     : "http://localhost:8000/api/search/prebuilt-suggestions";
 
 const PARSE_FILTERS_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL
-    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/search/parse-filters`
+  process.env.NEXT_PUBLIC_ENDPOINT_API_URL
+    ? `${process.env.NEXT_PUBLIC_ENDPOINT_API_URL}/api/search/parse-filters`
     : "http://localhost:8000/api/search/parse-filters";
 
 let prebuiltSuggestionsPromise: Promise<any[]> | null = null;
