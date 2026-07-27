@@ -61,6 +61,14 @@ const MessagePage = () => {
         },
       });
     }
+
+    if (lastEvent?.event === "agent_assigned") {
+      sendMessage("action", {
+        type: "chatService",
+        action: "list",
+        payload: {},
+      });
+    }
   }, [lastEvent]);
 
 
