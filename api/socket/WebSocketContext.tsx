@@ -170,9 +170,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
             localStorage.setItem("access_token", user_data?.access_token);
             dispatch(setLogin(true));
             dispatch(setAuthData(payload as any));
-            toast.info(
-              `${response?.data?.agent?.agent?.first_name} ${response?.data?.agent?.agent?.last_name} has been assigned as your agent.`,
-            );
+            toast.info("Your assigned agent has been removed.");
           } else {
             localStorage.clear();
             dispatch(setLogin(false));

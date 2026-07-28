@@ -29,7 +29,8 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
   const { id } = useParams();
 
   const isLoggedIn = !!user_data?.access_token;
-  const agentAssign = user_data?.user?.agent;
+  // const agentAssign = user_data?.user?.agent;
+  const [agentAssign , setAgentAssign] = useState(user_data?.user?.agent)
   const router = useRouter();
   const [imgError, setImgError] = useState(false);
   const currentProfileImage = agentAssign
@@ -47,7 +48,8 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
       payload: {},
     };
     sendMessage("action", payload)
-  }, [])
+    setAgentAssign(user_data?.user?.agent)
+  }, [user_data])
 
   const handleCreateChat = () => {
     sendMessage("action", {

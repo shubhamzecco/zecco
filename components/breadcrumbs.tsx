@@ -19,6 +19,7 @@ function buildFilterBreadcrumbs(
   bedroomsFrom: string,
   bedroomsTo: string,
   lastClickable = false,
+  extraParams: Record<string, string> = {},
 ) {
   const crumbs: { label: string; href?: string }[] = [
     { label: "Home", href: "/" },
@@ -30,12 +31,18 @@ function buildFilterBreadcrumbs(
   const subareaLabel = subarea ? slugToLabel(subarea) : "";
   const levels: { label: string; href?: string }[] = [];
 
+  const buildUrl = (params: Record<string, string>) => {
+    const p = new URLSearchParams(params);
+    Object.entries(extraParams).forEach(([k, v]) => { if (v) p.set(k, v); });
+    return `/costa-del-sol/properties?${p.toString()}`;
+  };
+
   if (city) {
     const deeper = !!(area || subarea);
     const extra = !!(area || subarea || bedroomText);
     levels.push({
       label: `Properties in ${cityLabel}${extra ? " City" : ""}`,
-      href: deeper ? `/costa-del-sol/properties?city=${city}` : undefined,
+      href: deeper ? buildUrl({ city }) : undefined,
     });
   }
 
@@ -43,7 +50,7 @@ function buildFilterBreadcrumbs(
     const deeper = !!subarea;
     levels.push({
       label: `Properties in ${areaLabel}${deeper ? " Area" : ""}`,
-      href: deeper ? `/costa-del-sol/properties?city=${city}&area=${area}` : undefined,
+      href: deeper ? buildUrl({ city, area }) : undefined,
     });
   }
 
@@ -58,13 +65,13 @@ function buildFilterBreadcrumbs(
   }
 
   if (lastClickable && levels.length > 0) {
-    const params = new URLSearchParams();
-    if (city) params.set("city", city);
-    if (area) params.set("area", area);
-    if (subarea) params.set("subarea", subarea);
-    if (bedroomsFrom) params.set("bedroomsFrom", bedroomsFrom);
-    if (bedroomsTo) params.set("bedroomsTo", bedroomsTo);
-    levels[levels.length - 1].href = `/costa-del-sol/properties?${params.toString()}`;
+    const params: Record<string, string> = {};
+    if (city) params.city = city;
+    if (area) params.area = area;
+    if (subarea) params.subarea = subarea;
+    if (bedroomsFrom) params.bedroomsFrom = bedroomsFrom;
+    if (bedroomsTo) params.bedroomsTo = bedroomsTo;
+    levels[levels.length - 1].href = buildUrl(params);
   }
 
   crumbs.push(...levels);
@@ -87,7 +94,23 @@ const Breadcrumb = () => {
   const subarea = searchParams.get("subarea") || "";
   const bedroomsFrom = searchParams.get("bedroomsFrom") || "";
   const bedroomsTo = searchParams.get("bedroomsTo") || "";
-  const hasFilters = city || area || subarea || bedroomsFrom || bedroomsTo;
+  const categories = searchParams.get("categories") || "";
+  const types = searchParams.get("types") || "";
+  const features = searchParams.get("features") || "";
+  const priceFrom = searchParams.get("priceFrom") || "";
+  const priceTo = searchParams.get("priceTo") || "";
+  const buildFrom = searchParams.get("buildFrom") || "";
+  const buildTo = searchParams.get("buildTo") || "";
+  const hasFilters = city || area || subarea || bedroomsFrom || bedroomsTo || categories || types || features || priceFrom || priceTo || buildFrom || buildTo;
+
+  const extraParams: Record<string, string> = {};
+  if (categories) extraParams.categories = categories;
+  if (types) extraParams.types = types;
+  if (features) extraParams.features = features;
+  if (priceFrom) extraParams.priceFrom = priceFrom;
+  if (priceTo) extraParams.priceTo = priceTo;
+  if (buildFrom) extraParams.buildFrom = buildFrom;
+  if (buildTo) extraParams.buildTo = buildTo;
 
   const bedroomText = (() => {
     if (!bedroomsFrom && !bedroomsTo) return "";
@@ -108,13 +131,13 @@ const Breadcrumb = () => {
 
   if (isDetailPage) {
     if (hasFilters) {
-      breadcrumbs = buildFilterBreadcrumbs(city, area, subarea, bedroomText, bedroomsFrom, bedroomsTo, true);
+      breadcrumbs = buildFilterBreadcrumbs(city, area, subarea, bedroomText, bedroomsFrom, bedroomsTo, true, extraParams);
       breadcrumbs.push({ label: propertyTitle || "Property Details" });
     } else {
       breadcrumbs = sanitizeBreadcrumbs(generateBreadcrumbs(pathname, propertyDetails));
     }
   } else if (hasFilters) {
-    breadcrumbs = buildFilterBreadcrumbs(city, area, subarea, bedroomText, bedroomsFrom, bedroomsTo, false);
+    breadcrumbs = buildFilterBreadcrumbs(city, area, subarea, bedroomText, bedroomsFrom, bedroomsTo, false, extraParams);
   } else {
     breadcrumbs = sanitizeBreadcrumbs(generateBreadcrumbs(pathname, propertyDetails));
   }
