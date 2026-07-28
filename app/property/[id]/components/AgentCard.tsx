@@ -31,6 +31,14 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
   const isLoggedIn = !!user_data?.access_token;
   const agentAssign = user_data?.user?.agent;
   const router = useRouter();
+  const [imgError, setImgError] = useState(false);
+  const currentProfileImage = agentAssign
+    ? user_data?.user?.agent?.agent?.profile_image
+    : agent_details?.profile_image;
+
+  useEffect(() => {
+    setImgError(false);
+  }, [currentProfileImage]);
 
   useEffect(() => {
     const payload = {
@@ -95,7 +103,8 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
             <div className="w-12 h-12 2xl:w-14 2xl:h-14 overflow-hidden rounded-full bg-gradient-to-br from-[#2563EB] to-[#2563EB]/70 flex items-center justify-center text-white font-bold">
               {isLoggedIn &&
                 (user_data?.user?.agent?.agent?.profile_image ||
-                  agent_details?.profile_image) ? (
+                  agent_details?.profile_image) &&
+                !imgError ? (
                 <Image
                   src={
                     agentAssign
@@ -105,6 +114,7 @@ export function AgentCard({ user_data, agent_details, property }: AgentCardProps
                   alt="Agent Profile"
                   fill
                   priority
+                  onError={() => setImgError(true)}
                   className="object-cover"
                 />
               ) : (
