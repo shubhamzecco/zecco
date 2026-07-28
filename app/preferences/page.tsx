@@ -230,12 +230,12 @@ export const PreferenceSection = (props?: any) => {
                     options={bedroomRanges}
                     className="!flex items-center gap-4 flex-wrap" />
 
-                  <MultiSelectButtonGroup
+                  {/* <MultiSelectButtonGroup
                     control={preferenceForm.control}
                     name="investmentType"
                     label="Investment Type"
                     options={investmentType}
-                    className="!flex items-center gap-4 flex-wrap" />
+                    className="!flex items-center gap-4 flex-wrap" /> */}
 
                   <MultiSelectButtonGroup
                     control={preferenceForm.control}
