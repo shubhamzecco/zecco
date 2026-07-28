@@ -21,8 +21,8 @@ const PREBUILT_SUGGESTIONS_URL =
     : "http://localhost:8000/api/search/prebuilt-suggestions";
 
 const PARSE_FILTERS_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL
-    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/search/parse-filters`
+  process.env.NEXT_PUBLIC_ENDPOINT_API_URL
+    ? `${process.env.NEXT_PUBLIC_ENDPOINT_API_URL}/api/search/parse-filters`
     : "http://localhost:8000/api/search/parse-filters";
 
 let prebuiltSuggestionsPromise: Promise<any[]> | null = null;
@@ -83,10 +83,6 @@ function applyFiltersToParams(
 ): URLSearchParams {
   const params = new URLSearchParams();
 
-  if (selectedCategoryId) {
-    params.set("categories", String(selectedCategoryId));
-  }
-
   Object.entries(filters).forEach(([key, value]) => {
     if (value === undefined || value === null || value === "") return;
 
@@ -97,17 +93,16 @@ function applyFiltersToParams(
     }
 
     if (key === "propertyType") {
-      const searchVal = String(value).toLowerCase().trim();
-      const matched = propertyTypeList?.find((t: any) => {
-        const name = t.name?.toLowerCase().trim() || "";
-        return name === searchVal || name.includes(searchVal) || searchVal.includes(name);
-      });
-      if (matched?.id) params.set("categories", String(matched.id));
+      params.set("categories", value);
       return;
     }
 
     if (key === "cities") {
       params.set("city", String(value));
+      return;
+    }
+    if (key === "areas") {
+      params.set("area", String(value));
       return;
     }
 
@@ -117,6 +112,10 @@ function applyFiltersToParams(
       params.set(key, String(value));
     }
   });
+
+  if (!params.has("categories") && selectedCategoryId) {
+    params.set("categories", String(selectedCategoryId));
+  }
 
   return params;
 }
