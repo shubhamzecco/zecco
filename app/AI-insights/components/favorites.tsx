@@ -22,6 +22,7 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
     mainReducer?.ai_selected_property?._id || null,
   );
   const [activeIndex, setActiveIndex] = useState(0);
+  const [cardsPerPage, setCardsPerPage] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -31,6 +32,8 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
       dispatch(setAiSelectedProperty(null));
     }
   }, [mainReducer?.ai_selected_property]);
+
+  const properties = mainReducer?.favorite_property_list?.data;
 
   useEffect(() => {
     if (isConnected) {
@@ -42,11 +45,37 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
     }
   }, [isConnected]);
 
-  const properties = mainReducer?.favorite_property_list?.data;
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const update = () => {
+      const w = container.clientWidth;
+      if (w >= 1024) setCardsPerPage(3);
+      else if (w >= 640) setCardsPerPage(2);
+      else setCardsPerPage(1);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, [properties?.length]);
 
   const handleScroll = () => {
     const container = scrollRef.current;
     if (!container || !properties?.length) return;
+
+    const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+    if (atEnd) {
+      setActiveIndex(properties.length - 1);
+      return;
+    }
+
+    const atStart = container.scrollLeft <= 1;
+    if (atStart) {
+      setActiveIndex(0);
+      return;
+    }
+
     const center = container.scrollLeft + container.clientWidth / 2;
     let closestIdx = 0;
     let closestDist = Infinity;
@@ -62,14 +91,18 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
     setActiveIndex(closestIdx);
   };
 
-  const scrollToIndex = (idx: number) => {
+  const totalPages = Math.ceil((properties?.length ?? 0) / cardsPerPage);
+  const activePage = Math.min(Math.floor(activeIndex / cardsPerPage), totalPages - 1);
+
+  const scrollToPage = (pageIdx: number) => {
     const container = scrollRef.current;
     if (!container) return;
     const card = container.children[0] as HTMLElement;
     if (!card) return;
     const cardWidth = card.offsetWidth + 16;
-    container.scrollTo({ left: cardWidth * idx, behavior: "smooth" });
-    setActiveIndex(idx);
+    const targetIdx = Math.min(cardsPerPage * pageIdx, (properties?.length ?? 1) - 1);
+    container.scrollTo({ left: cardWidth * targetIdx, behavior: "smooth" });
+    setActiveIndex(targetIdx);
   };
 
   const cardContent = (property: IProperty) => {
@@ -121,13 +154,13 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
             })}
           </div>
 
-          {properties && properties.length > 1 && (
+          {properties && totalPages > 1 && (
             <div className="flex justify-center gap-2 mt-5">
-              {properties.map((_, idx) => (
+              {Array.from({ length: totalPages }).map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => scrollToIndex(idx)}
-                  className={`rounded-full transition-all duration-300 ${idx === activeIndex
+                  onClick={() => scrollToPage(idx)}
+                  className={`rounded-full transition-all duration-300 ${idx === activePage
                     ? "w-7 h-2.5 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] shadow-[0_0_8px_#5DAEFF]"
                     : "w-2.5 h-2.5 bg-gray-300 hover:bg-gray-400"
                     }`}
