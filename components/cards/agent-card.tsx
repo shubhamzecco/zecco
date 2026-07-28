@@ -25,15 +25,19 @@ function AgentCard() {
     }, [])
 
     const handleCreateChat = () => {
-        sendMessage("action", {
-            type: "chatService",
-            action: "create",
-            payload: {
-                participants: user_data?.user?.agent?.agent?._id ?? null,
-                property_id: null,
-                message: null,
-            },
-        });
+        if (user_data?.user?.chatId === undefined && user_data?.user?.agent?.agent?._id) {
+            router.push(`${App_url.link.MESSAGE}`);
+        } else {
+            sendMessage("action", {
+                type: "chatService",
+                action: "create",
+                payload: {
+                    participants: user_data?.user?.agent?.agent?._id ?? null,
+                    property_id: null,
+                    message: null,
+                },
+            });
+         }
     };
 
     useEffect(() => {
