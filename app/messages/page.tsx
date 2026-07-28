@@ -29,7 +29,7 @@ const MessagePage = () => {
       return user?._id === user_data?.user?.chatId;
     });
     setSelectedUser(userFind);
-  }, [isConnected]);
+  }, [isConnected, user_data]);
 
   useEffect(() => {
     sendMessage("action", {
@@ -88,6 +88,17 @@ const MessagePage = () => {
           },
         });
       }
+      // if (user_data?.user?.chatId !== undefined && user_data?.user?.agent?.agent?._id) {
+      //   sendMessage("action", {
+      //     type: "chatService",
+      //     action: "create",
+      //     payload: {
+      //       participants: user_data?.user?.agent?.agent?._id ?? null,
+      //       property_id: null,
+      //       message: null,
+      //     },
+      //   });
+      // }
 
       const payload = {
         type: "userService",
@@ -95,16 +106,6 @@ const MessagePage = () => {
         payload: {},
       };
       sendMessage("action", payload)
-
-      if (user_data?.user?.chatId === undefined && user_data?.user?.agent?.agent?._id) {
-        sendMessage("action", {
-          type: "chatService",
-          action: "create",
-          payload: {
-            participants: user_data?.user?.agent?.agent?._id,
-          },
-        });
-      }
     }
 
     if (lastEvent?.event === "delete_agent") {
@@ -130,7 +131,6 @@ const MessagePage = () => {
       sendMessage("action", payload)
     }
   }, [lastEvent]);
-
 
 
   return (
