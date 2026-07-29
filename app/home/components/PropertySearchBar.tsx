@@ -232,9 +232,9 @@ const PropertySearchBar = () => {
         propertyTypes,
         matchedType?.id || selected?.id
       );
-      if (matchedType) {
-        params.set("categories", String(matchedType?.id));
-      }
+      // if (matchedType) {
+      //   params.set("categories", String(matchedType?.id));
+      // }
       router.push(
         `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
       );
