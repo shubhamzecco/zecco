@@ -75,7 +75,17 @@ const UserList: React.FC<UserListProps> = ({
             </p>
           </div>
         ) : (
-          userList?.map((user: any) => {
+          [...(userList || [])]?.sort((a: any, b: any) => {
+            const aParticipant = a?.participants?.find(
+              (p: any) => p?._id !== user_data?.user?._id,
+            );
+            const bParticipant = b?.participants?.find(
+              (p: any) => p?._id !== user_data?.user?._id,
+            );
+            const aActive = aParticipant?.active_status === "active" ? 1 : 0;
+            const bActive = bParticipant?.active_status === "active" ? 1 : 0;
+            return bActive - aActive;
+          })?.map((user: any) => {
             const findParticipant = user?.participants?.find(
               (p: any) => p?._id !== user_data?.user?._id,
             );
@@ -123,28 +133,30 @@ const UserList: React.FC<UserListProps> = ({
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between relative">
-                    <h3 className="text-sm font-bold font-manrope truncate text-[#0F172A]">
+                  <div className="flex items-start justify-between">
+                    <h3 className="text-sm font-bold font-manrope truncate text-[#0F172A] min-w-0">
                       {findParticipant?.first_name}{" "}
                       {findParticipant?.last_name}
                     </h3>
-                    {user?.unread_count > 0 && (
-                      <span
-                        className={`ml-2 text-[10px] font-bold min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center shrink-0 ${isSelected
-                          ? "bg-white text-[#2F80FF]"
-                          : "bg-[#2F80FF] text-white"
-                          }`}
-                      >
-                        {user?.unread_count > 99
-                          ? "99+"
-                          : user?.unread_count}
-                      </span>
-                    )}
-                    {(findParticipant?.active_status !== undefined && findParticipant?.active_status !== "active") && (
-                      <span className="absolute -top-1  -right-1 px-2 bg-black/20 text-black text-xs font-bold font-manrope  py-0.5 rounded-md shadow-sm">
-                        Archived
-                      </span>
-                    )}
+                    <div className="flex flex-col items-end gap-0.5 shrink-0 ml-2">
+                      {(findParticipant?.active_status !== undefined && findParticipant?.active_status !== "active") && (
+                        <span className="px-2 bg-black/20 text-black text-xs font-bold font-manrope py-0.5 rounded-md shadow-sm whitespace-nowrap">
+                          Archived
+                        </span>
+                      )}
+                      {user?.unread_count > 0 && (
+                        <span
+                          className={`text-[10px] font-bold min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center ${isSelected
+                            ? "bg-white text-[#2F80FF]"
+                            : "bg-[#2F80FF] text-white"
+                            }`}
+                        >
+                          {user?.unread_count > 99
+                            ? "99+"
+                            : user?.unread_count}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="flex items-center justify-between mt-0.5">
                     <p
