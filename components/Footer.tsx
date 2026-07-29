@@ -145,7 +145,7 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               {[
                 // { title: "FAQs", link: "#" },
-                { title: "Supports", link: App_url.link.CONTACT_US },
+                { title: "Support", link: App_url.link.CONTACT_US },
               ].map((item, i) => (
                 <Link
                   key={i}
