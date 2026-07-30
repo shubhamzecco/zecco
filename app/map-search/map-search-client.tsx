@@ -250,7 +250,7 @@ export default function MapSearchClient() {
               `<span class="pin-tooltip-name">${city.name}</span><span class="pin-tooltip-type">${count} properties</span>`,
               { direction: "top", offset: [0, -38], opacity: 1, className: "map-search-pin-tooltip" },
             )
-          // boundary polygon is visual only, no click
+            .on("click", () => navigateToArea(city))
             .addTo(featureGroup);
           markersRef.current.push(cityPin);
           allBounds.push(leaflet.latLngBounds([[clat, clng], [clat, clng]]));
