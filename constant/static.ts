@@ -28,7 +28,8 @@ export const App_url = {
     away_icon: "/assets/images/away.svg",
     footer: "/assets/images/footer.svg",
     profile: "/assets/images/dev/profile.png",
-    chat_image : "/assets/images/chat-image.webp"
+    chat_image: "/assets/images/chat-image.webp",
+    map_pin: '/assets/images/map-pin.gif'
   },
   link: {
     INITIAL_URL: "/",

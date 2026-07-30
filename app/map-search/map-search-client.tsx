@@ -54,7 +54,15 @@ export default function MapSearchClient() {
       : "Choose how you want to search on the map.",
   );
 
-  const areas = useMemo(() => mainReducer?.all_location_list || [], [mainReducer?.all_location_list]);
+  const allLocations = useMemo(() => mainReducer?.all_location_list || [], [mainReducer?.all_location_list]);
+
+  const cities = useMemo(() => {
+    const data = mainReducer?.search_by_area?.data;
+    if (!Array.isArray(data)) return [];
+    return data;
+  }, [mainReducer?.search_by_area]);
+
+  const getCount = (item: any): number => item?.all_count ?? item?.property_count ?? 0;
 
   useEffect(() => {
     if (!isConnected) return;
@@ -62,6 +70,11 @@ export default function MapSearchClient() {
       type: "locationService",
       action: "searchLocationArea",
       payload: {},
+    });
+    sendMessage("action", {
+      type: "locationService",
+      action: "areas_list",
+      payload: { search: "", limit: 200, page: 1 },
     });
   }, [isConnected, sendMessage]);
 
@@ -77,6 +90,7 @@ export default function MapSearchClient() {
         iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
         shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
+      ensureTooltipStyles();
       setLeaflet(L);
     };
     init();
@@ -195,37 +209,116 @@ export default function MapSearchClient() {
     }
   }, [currentLocation, leaflet]);
 
-  const areaOptions: any = useMemo(
-    () =>
-      areas
-        .map((item: any) => item?.name)
-        .filter((name: string, index: number, arr: string[]) => name && arr.indexOf(name) === index)
-        .slice(0, 24),
-    [areas],
-  );
+  useEffect(() => {
+    if (!leaflet || !mapRef.current) return;
+
+    markersRef.current.forEach((m: any) => m.remove());
+    markersRef.current = [];
+    const featureGroup = new leaflet.FeatureGroup();
+    const allBounds: any[] = [];
+
+    cities.forEach((city: any) => {
+      // --- draw city boundary polygon (dotted) ---
+      if (city?.boundryCordinates?.length >= 3) {
+        const latLngs = city.boundryCordinates.map(
+          (c: number[]) => [c[1], c[0]] as [number, number],
+        );
+        const polygon = leaflet
+          .polygon(latLngs, {
+            color: PIN_COLOR,
+            weight: 2,
+            dashArray: "6 6",
+            fillColor: PIN_COLOR,
+            fillOpacity: 0.04,
+          })
+          .addTo(featureGroup);
+        markersRef.current.push(polygon);
+        allBounds.push(polygon.getBounds());
+      }
+
+      // --- city pin ---
+      const cityCoords = city?.point?.coordinates;
+      if (cityCoords?.length >= 2) {
+        const [clng, clat] = cityCoords;
+        if (typeof clat === "number" && typeof clng === "number") {
+          const count = getCount(city);
+          const cityPin = leaflet
+            .marker([clat, clng], {
+              icon: createPinIcon(leaflet, true),
+            })
+            .bindTooltip(
+              `<span class="pin-tooltip-name">${city.name}</span><span class="pin-tooltip-type">${count} properties</span>`,
+              { direction: "top", offset: [0, -38], opacity: 1, className: "map-search-pin-tooltip" },
+            )
+          // boundary polygon is visual only, no click
+            .addTo(featureGroup);
+          markersRef.current.push(cityPin);
+          allBounds.push(leaflet.latLngBounds([[clat, clng], [clat, clng]]));
+        }
+      }
+
+      // --- area pins within the city ---
+      (city?.areas || []).forEach((area: any) => {
+        const count = getCount(area);
+        const areaCoords = area?.point?.coordinates;
+        if (!areaCoords || areaCoords.length < 2) return;
+        const [alng, alat] = areaCoords;
+        if (typeof alat !== "number" || typeof alng !== "number") return;
+
+        const areaPin = leaflet
+          .marker([alat, alng], {
+            icon: createPinIcon(leaflet, false),
+          })
+          .bindTooltip(
+            `<span class="pin-tooltip-name">${area.name}</span><span class="pin-tooltip-type">${count} properties</span>`,
+            { direction: "top", offset: [0, -38], opacity: 1, className: "map-search-pin-tooltip" },
+          )
+          .on("click", () => navigateToArea({ ...area, city_name: city.name }))
+          .addTo(featureGroup);
+        markersRef.current.push(areaPin);
+        allBounds.push(leaflet.latLngBounds([[alat, alng], [alat, alng]]));
+      });
+    });
+
+    featureGroup.addTo(mapRef.current);
+
+    if (allBounds.length > 0) {
+      const combined = allBounds.reduce(
+        (acc, b) => acc.extend(b),
+        leaflet.latLngBounds(allBounds[0]),
+      );
+      mapRef.current.fitBounds(combined, { padding: [48, 48], animate: false });
+    }
+  }, [leaflet, cities]);
+
+  const groupedLocations = useMemo(() => {
+    return cities
+      .map((city: any) => ({
+        city,
+        count: getCount(city),
+        areas: (city?.areas || []).map((area: any) => ({ area, count: getCount(area) })),
+      }))
+      .sort((a: any, b: any) => b.count - a.count);
+  }, [cities]);
+
+  console.log("groupedLocations ::: " , groupedLocations)
 
   const findNearestArea = (lat: number, lng: number) => {
     let nearest = null;
     let minDistance = Infinity;
 
-    for (const area of areas) {
+    for (const area of allLocations) {
       const coords = area?.point?.coordinates;
-
       if (!coords) continue;
-
       const [areaLng, areaLat] = coords;
-
       const distance = Math.sqrt(
-        Math.pow(areaLat - lat, 2) +
-        Math.pow(areaLng - lng, 2)
+        Math.pow(areaLat - lat, 2) + Math.pow(areaLng - lng, 2),
       );
-
       if (distance < minDistance) {
         minDistance = distance;
         nearest = area;
       }
     }
-
     return nearest;
   };
 
@@ -269,56 +362,96 @@ export default function MapSearchClient() {
     return { lat: clampedLat, lng: clampedLng };
   };
 
+  const PIN_COLOR = "#2563EB";
+  const PIN_COLOR_DARK = "#1D4ED8";
+
+  function createPinIcon(L: any, isCity: boolean) {
+    const w = isCity ? 34 : 28;
+    const h = isCity ? 46 : 38;
+    const html = `
+      <div style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35));">
+        <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+          <path d="${isCity
+            ? "M17 0C7.6 0 0 7.6 0 17c0 11.9 17 29 17 29s17-17.1 17-29C34 7.6 26.4 0 17 0z"
+            : "M14 0C6.268 0 0 6.268 0 14c0 9.8 14 24 14 24s14-14.2 14-24C28 6.268 21.732 0 14 0z"}"
+                fill="${PIN_COLOR}" stroke="${PIN_COLOR_DARK}" stroke-width="1"/>
+          <circle cx="${isCity ? 17 : 14}" cy="${isCity ? 17 : 14}" r="${isCity ? 6.5 : 5}" fill="#ffffff"/>
+        </svg>
+      </div>
+    `;
+    return L.divIcon({
+      html,
+      className: "",
+      iconSize: [w, h],
+      iconAnchor: [w / 2, h],
+      popupAnchor: [0, -(h - 4)],
+    });
+  }
+
+  function ensureTooltipStyles() {
+    if (typeof document === "undefined") return;
+    if (document.getElementById("map-search-pin-styles")) return;
+    const style = document.createElement("style");
+    style.id = "map-search-pin-styles";
+    style.textContent = `
+      .map-search-pin-tooltip {
+        background: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 6px 10px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+        font-family: inherit;
+      }
+      .map-search-pin-tooltip::before {
+        border-top-color: #ffffff;
+      }
+      .map-search-pin-tooltip .pin-tooltip-name {
+        display: block;
+        font-weight: 600;
+        font-size: 12px;
+        color: #0f172a;
+        text-align: center;
+        white-space: nowrap;
+      }
+      .map-search-pin-tooltip .pin-tooltip-type {
+        display: block;
+        font-weight: 700;
+        font-size: 10px;
+        color: #2563EB;
+        text-align: center;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const navigateToArea = (area: any) => {
+    if (!area) return;
+    const type = area?.type?.toLowerCase();
+    let url = `${App_url.link.COSTA_DEL_SOL}/properties?`;
+
+    switch (type) {
+      case "city":
+        url += `city=${citySlug(area?.name_slug || area.name)}`;
+        break;
+      case "area":
+        url += `city=${citySlug(area?.city_name)}&area=${citySlug(area?.name_slug || area.name)}`;
+        break;
+      case "subarea":
+        url += `city=${citySlug(area?.city_name)}&area=${citySlug(area?.area_name)}&subarea=${citySlug(area?.name_slug || area.name)}`;
+        break;
+      default:
+        url += `city=${citySlug(area.name)}`;
+    }
+
+    router.push(url);
+  };
+
   const centerOnArea = async (areaName: string) => {
     if (!leaflet || !mapRef.current) return;
-
     clearMapSelection();
-    const area = areas.find((item: any) => item?.name === areaName);
+    const area = allLocations.find((item: any) => item?.name === areaName);
     setSelectedArea(area || { name: areaName });
-    const point = getAreaPoint(area);
-    const center = point || currentLocation || DEFAULT_CENTER;
-    const centerLat = Array.isArray(center)
-      ? center[0]
-      : typeof center === "object" && center
-        ? (center as any).lat
-        : DEFAULT_CENTER[0];
-    const centerLng = Array.isArray(center)
-      ? center[1]
-      : typeof center === "object" && center
-        ? (center as any).lng
-        : DEFAULT_CENTER[1];
-
-    if (point) {
-      circleRef.current = leaflet.circle([point.lat, point.lng], {
-        radius: getAreaRadius(area),
-        color: "#111827",
-        weight: 2,
-        fillColor: "#D9F99D",
-        fillOpacity: 0.35,
-      }).addTo(mapRef.current);
-
-      // Keep fitBounds within Costa del Sol for a consistent UX.
-      const bounds = circleRef.current.getBounds();
-      const sw = bounds.getSouthWest();
-      const ne = bounds.getNorthEast();
-      const clampedSW = clampToCostaDelSolBounds(sw.lat, sw.lng);
-      const clampedNE = clampToCostaDelSolBounds(ne.lat, ne.lng);
-
-      mapRef.current.fitBounds(
-        leaflet.latLngBounds(
-          [clampedSW.lat, clampedSW.lng],
-          [clampedNE.lat, clampedNE.lng],
-        ),
-        {
-          padding: [24, 24],
-          animate: false,
-        },
-      );
-    } else {
-      const { lat, lng } = clampToCostaDelSolBounds(centerLat, centerLng);
-      mapRef.current.setView([lat, lng], currentLocation ? 13 : 10);
-    }
-    setMessage(`Selected ${areaName}. Apply to continue.`);
+    navigateToArea(area);
   };
 
   const requestLocation = () => {
@@ -348,67 +481,121 @@ export default function MapSearchClient() {
     const drawn = drawnLayerRef.current?.getLayers?.()?.[0];
 
     if (selectedArea?.name) {
-      router.push(
-        `${App_url.link.COSTA_DEL_SOL}/properties?city=${citySlug(selectedArea?.city_name || selectedArea.name)}`
-      );
+      navigateToArea(selectedArea);
       return;
     }
 
     if (drawn && drawn.getLatLngs) {
-      const latLngs = drawn.getLatLngs?.()[0]?.map((point: any) => [point.lat, point.lng]) || [];
       const center = drawn.getBounds().getCenter();
       const nearestArea = findNearestArea(center.lat, center.lng);
-      router.push(
-        `${App_url.link.COSTA_DEL_SOL}/properties?city=${citySlug(nearestArea?.name || "marbella")}`
-      );
+      navigateToArea(nearestArea);
       return;
     }
   };
   return (
     <MainLayout>
-      <div className="min-h-screen bg-[#F3F7FB] mt-[-30px]">
-        <div className="mx-auto grid w-full gap-4 px-4 py-4 lg:grid-cols-[320px_1fr]">
-          <aside className="space-y-4 rounded-3xl border bg-white p-4 shadow-sm">
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-sm font-semibold text-slate-500">Status</p>
-              <p className="mt-1 text-sm text-slate-700">{message}</p>
+      <div className="h-screen bg-[#F3F7FB] mt-[-30px]">
+        <div className="mx-auto grid h-full w-full gap-4 px-4 py-4 lg:grid-cols-[320px_1fr]">
+          <aside className="flex flex-col gap-3 rounded-3xl border bg-white p-4 shadow-sm overflow-hidden">
+            <div className="flex-shrink-0 rounded-2xl bg-gradient-to-br from-slate-50 to-white p-4 shadow-sm">
+              <div className="flex items-center gap-2">
+                <div className={`h-2 w-2 rounded-full ${cities.length > 0 ? "bg-green-400" : "bg-slate-300"} animate-pulse`} />
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Status</p>
+              </div>
+              <p className="mt-2 text-sm font-medium text-slate-700">{message}</p>
             </div>
 
-            <div className="space-y-2">
-              <button onClick={requestLocation} className="flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left hover:bg-slate-50">
-                <span className="flex items-center gap-2 font-semibold text-slate-800">
-                  <LocateFixed size={16} />
+            {selectedArea && getAreaPoint(selectedArea) && (
+              <div className="flex-shrink-0 overflow-hidden rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-white p-3 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100">
+                    <MapPin size={14} className="text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-blue-500">Selected Area</p>
+                    <p className="text-sm font-bold text-blue-900">{selectedArea.name}</p>
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center gap-3 text-xs text-blue-600">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-blue-100 px-2 py-0.5 font-mono font-medium">
+                    {getAreaPoint(selectedArea)!.lat.toFixed(4)}, {getAreaPoint(selectedArea)!.lng.toFixed(4)}
+                  </span>
+                  {getCount(selectedArea) > 0 && (
+                    <span className="inline-flex items-center gap-1 rounded-md bg-green-100 px-2 py-0.5 font-semibold text-green-700">
+                      {getCount(selectedArea)} properties
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <div className="flex-shrink-0">
+              <button onClick={requestLocation} className="flex w-full items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3 text-left shadow-sm transition-all hover:border-blue-200 hover:bg-blue-50 hover:shadow-md">
+                <span className="flex items-center gap-2 font-semibold text-slate-700">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-100">
+                    <LocateFixed size={14} className="text-blue-600" />
+                  </div>
                   Use My Location
                 </span>
-                <span className="text-xs text-slate-500">{geoStatus === "granted" ? "Allowed" : geoStatus === "denied" ? "Denied" : "Optional"}</span>
+                <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
+                  geoStatus === "granted" ? "bg-green-100 text-green-700" :
+                  geoStatus === "denied" ? "bg-red-100 text-red-600" :
+                  "bg-slate-100 text-slate-500"
+                }`}>
+                  {geoStatus === "granted" ? "Allowed" : geoStatus === "denied" ? "Denied" : "Optional"}
+                </span>
               </button>
             </div>
 
-            <div>
-              <div className="mb-3 flex items-center gap-2">
-                <MapPin size={16} className="text-slate-600" />
-                <h2 className="font-semibold text-slate-900">Select Area</h2>
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="flex-shrink-0 mb-3 flex items-center gap-2 border-b border-slate-100 pb-3">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-600">
+                  <MapPin size={14} className="text-white" />
+                </div>
+                <h2 className="text-sm font-bold text-slate-800">Select Area</h2>
+                <span className="ml-auto rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500">
+                  {groupedLocations.length} cities
+                </span>
               </div>
-              <div className="flex max-h-[480px] flex-col gap-2 overflow-auto pr-1">
-                {areas.length > 0 && areaOptions?.map((name: any) => (
-                  <button
-                    key={name}
-                    onClick={() => centerOnArea(name)}
-                    className={`rounded-2xl border px-4 py-3 text-left text-sm ${selectedArea?.name === name ? "border-sky-500 bg-sky-50 text-sky-900" : "hover:bg-slate-50"}`}
-                  >
-                    <div className="flex items-center justify-between gap-3">
-                      <span className="font-medium">{name}</span>
-                      {selectedArea?.name === name && <Check size={14} className="text-sky-600" />}
-                    </div>
-                  </button>
+              <div className="flex-1 overflow-y-auto pr-1 scrollbar-thin space-y-1">
+                {groupedLocations.length > 0 && groupedLocations?.map((group: any) => (
+                  <div key={group.city.name} className="rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <button onClick={() => navigateToArea(group.city)} className="w-full">
+                      <div className="flex items-center justify-between bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] px-3.5 py-2.5 rounded-t-xl">
+                        <span className="text-sm font-bold text-white">{group.city.name}</span>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-semibold text-white backdrop-blur-sm">
+                          {group.count}
+                        </span>
+                      </div>
+                    </button>
+
+                    {group.areas.length > 0 && (
+                      <div className="border-t border-slate-100">
+                        {group.areas.map((ag: any, idx: number) => (
+                          <button
+                            key={ag.area._id || idx}
+                            onClick={() => navigateToArea({ ...ag.area, city_name: group.city.city_name || group.city.name })}
+                            className="flex w-full items-center justify-between px-3.5 py-2.5 text-left transition-colors hover:bg-blue-50 border-b border-slate-50 last:border-b-0"
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
+                              <span className="text-xs font-medium text-slate-700">{ag.area.name}</span>
+                            </div>
+                            <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-600 whitespace-nowrap ml-2">
+                              {ag.count}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
           </aside>
 
-          <section className="overflow-hidden rounded-3xl border bg-white shadow-sm">
-            <div ref={mapContainerRef} className="h-[75vh] w-full" />
-
+          <section className="flex flex-col overflow-hidden rounded-3xl border bg-white shadow-sm h-full">
+            <div ref={mapContainerRef} className="flex-1 w-full min-h-0" />
             <div className="flex items-center justify-between border-t px-4 py-3">
               <p className="text-sm text-slate-600">
                 {mode === "select"
