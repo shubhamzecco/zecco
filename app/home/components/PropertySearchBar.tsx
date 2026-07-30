@@ -73,6 +73,7 @@ async function parseSearchQuery(query: string): Promise<Record<string, any>> {
   });
   if (!res.ok) throw new Error("Failed to parse search query");
   const json = await res.json();
+  console.log("json ::: " , json)
   return json?.data?.filters || {};
 }
 
@@ -225,7 +226,11 @@ const PropertySearchBar = () => {
         setSelected(matchedType);
       }
 
+      console.log("matchedType :::: " , matchedType)
+
       const filters = await parseSearchQuery(searchText);
+
+      console.log("filters :::: " , filters)
 
       const params = applyFiltersToParams(
         filters,
@@ -552,9 +557,9 @@ const PropertySearchBar = () => {
               className="w-full bg-transparent text-md text-dark-navy placeholder-slate-gray outline-none"
             />
 
-            {isSearching && (
+            {/* {isSearching && (
               <Loader2 size={18} className="text-slate-gray shrink-0 animate-spin" />
-            )}
+            )} */}
           </div>
 
           {searchDropdown && (
