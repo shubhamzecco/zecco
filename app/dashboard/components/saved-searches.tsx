@@ -113,7 +113,7 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
   }, [lastEvent]);
 
   return (
-    <CommonCard className="max-2xl:p-5" heading={searches && searches.length > 0 ? "Saved Searches" : undefined} description={searches && searches.length > 0 ? "Recent saved searches" : undefined}>
+    <CommonCard className="max-2xl:p-5" heading={searches && searches.length > 0 ? "Recent Saved Searches" : undefined} description={searches && searches.length > 0 ? "Recent saved searches" : undefined}>
       {!searches || searches.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-[280px] lg:h-[425px] 2xl:h-[398px] px-4">
           <div className="relative mb-6">
