@@ -308,3 +308,15 @@ export const formatMessageDate = (dateString: string) => {
 
   return new Intl.DateTimeFormat("en-US", options).format(date);
 };
+
+
+export const normalize = (value?: string): string => {
+  return (value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[-_]/g, ' ')
+    .replace(/[.,]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+};

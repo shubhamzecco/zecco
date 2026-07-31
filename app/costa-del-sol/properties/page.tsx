@@ -7,7 +7,7 @@ import LoginPopup from "@/components/login-popup";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAiInsight, setAiSelectedProperty, setLoginPopup, setPropertyDetails, setUpdatePropertyLike } from "@/redux/modules/main/action";
 import { IProperty, IPropertyResponse } from "@/redux/modules/main/types";
-import { citySlug } from "@/utils/common";
+import { citySlug, normalize } from "@/utils/common";
 import { SearchX, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -116,12 +116,11 @@ const Page = () => {
   const hasCity = !!urlFilters.city;
   const filtersArea = hasCity
     ? search_by_area?.data?.filter(
-      (i: any) => i.name?.toLowerCase() === urlFilters.city.toLowerCase(),
+      (i: any) => i.name?.toLowerCase() === normalize(urlFilters.city),
     )
     : [];
   const areas = hasCity ? filtersArea?.[0]?.areas : search_by_area?.data;
   const parentArea = hasCity ? filtersArea?.[0] : null;
-
   const buildUniqueKey = (currentPage: number) =>
     JSON.stringify({ page: currentPage, propertyType, ...urlFilters });
 

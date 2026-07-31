@@ -301,8 +301,6 @@ export default function MapSearchClient() {
       .sort((a: any, b: any) => b.count - a.count);
   }, [cities]);
 
-  console.log("groupedLocations ::: " , groupedLocations)
-
   const findNearestArea = (lat: number, lng: number) => {
     let nearest = null;
     let minDistance = Infinity;

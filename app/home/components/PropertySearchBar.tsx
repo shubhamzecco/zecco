@@ -73,7 +73,6 @@ async function parseSearchQuery(query: string): Promise<Record<string, any>> {
   });
   if (!res.ok) throw new Error("Failed to parse search query");
   const json = await res.json();
-  console.log("json ::: " , json)
   return json?.data?.filters || {};
 }
 
@@ -226,11 +225,7 @@ const PropertySearchBar = () => {
         setSelected(matchedType);
       }
 
-      console.log("matchedType :::: " , matchedType)
-
       const filters = await parseSearchQuery(searchText);
-
-      console.log("filters :::: " , filters)
 
       const params = applyFiltersToParams(
         filters,
@@ -280,15 +275,12 @@ const PropertySearchBar = () => {
         params.set("bedroomsTo", String(value));
         return;
       }
-      console.log("key :::: ", key)
       if (key === "propertyType") {
         const searchVal = String(value).toLowerCase().trim();
         const matched = mainReducer?.property_type_list?.find((t: any) => {
           const name = t.name?.toLowerCase().trim() || "";
           return name === searchVal || name.includes(searchVal) || searchVal.includes(name);
         });
-        console.log("searchVal :::: ",)
-        console.log("matched :::: ", matched)
         if (matched?.id) params.set("categories", String(matched.id));
         return;
       }
