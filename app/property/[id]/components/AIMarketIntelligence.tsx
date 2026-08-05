@@ -1,25 +1,24 @@
 "use client";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { Infrastructure, PropertyAnalysis } from "@/redux/modules/main/types";
 import {
-  AlertCircle,
   Check,
-  CheckCircle,
   Landmark,
   Map,
   ThumbsDown,
   ThumbsUp,
-  TrendingUp,
+  TrendingUp
 } from "lucide-react";
 import PricingChart from "./Chart";
-import { Infrastructure, PropertyAnalysis } from "@/redux/modules/main/types";
 import NearByPlaces from "./near-by-palces";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { Button } from "@/components/ui/button";
+import { formatEuro } from "@/utils/common";
 
 export interface IAiInsightProps {
   ai_insight: PropertyAnalysis;
+  isPropertyDetail?:boolean
 }
 
-export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
+export function AIMarketIntelligence({ ai_insight , isPropertyDetail}: IAiInsightProps) {
   const { mainReducer } = usePosterReducers();
   return (
     <div className={`mb-8 bg-[#fafafa] border border-[#F3F4F6] rounded-xl p-6`}>
@@ -41,14 +40,16 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
             Sub-district avg
           </p>
           <p className="text-2xl font-bold text-heading_text_color flex items-center gap-1 mb-1">
-            €{ai_insight?.city_avg_price_sqm}{" "}
+            {formatEuro(ai_insight?.city_avg_price_sqm)}{" "}
             <span className="text-[15px] mt-[6px] text-[#9CA3AF] font-manrope font-bold">
-              /m²
+              m²
             </span>
           </p>
           <p className="font-manrope font-medium text-[#9CA3AF] text-xs">
-            Based on {ai_insight?.city_properties_used} recent sales in{" "}
-            {ai_insight?.city}
+            Based on {ai_insight?.comparables_used} recent sales in{" "}
+            {ai_insight?.city
+              ?.toLowerCase()
+              .replace(/\b\w/g, (char) => char?.toUpperCase())}
           </p>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-md border border-[#F3F4F6]">
@@ -62,7 +63,9 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
             {ai_insight?.investment_grade}
           </p>
           <p className="font-manrope font-medium text-[#9CA3AF] text-xs">
-            {ai_insight?.investment_opportunity} in {ai_insight?.city}
+            {ai_insight?.investment_opportunity} in  {ai_insight?.city
+              ?.toLowerCase()
+              .replace(/\b\w/g, (char) => char?.toUpperCase())}
           </p>
         </div>
         <div className="bg-white p-4 rounded-xl shadow-md border border-[#F3F4F6]">
@@ -73,10 +76,10 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
             Area Demand
           </p>
           <p className="text-2xl font-bold text-heading_text_color flex items-center gap-1 mb-2">
-            Extreme
+            {ai_insight?.growth_label}
           </p>
           <p className="font-manrope font-medium text-[#9CA3AF] text-xs">
-            Avg. time on market: 12 days
+            Fast-moving market
           </p>
         </div>
       </div>
@@ -151,10 +154,14 @@ export function AIMarketIntelligence({ ai_insight }: IAiInsightProps) {
           })}
         </ul>
       </div>
-
-      <NearByPlaces
-        near_places={mainReducer?.ai_insight?.infrastructure as Infrastructure}
-      />
+      {mainReducer?.ai_insight?.infrastructure &&
+        Object.keys(mainReducer?.ai_insight?.infrastructure || {}).length > 0 && (
+          <NearByPlaces
+            near_places={
+              mainReducer?.ai_insight?.infrastructure as Infrastructure
+            }
+          />
+        )}
     </div>
   );
 }

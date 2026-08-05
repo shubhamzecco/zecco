@@ -1,22 +1,15 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import {
-  Box,
-  GalleryThumbnails,
-  Heart,
-  LayoutPanelLeft,
-  Play,
-  X,
-} from "lucide-react";
-import { App_url } from "@/constant/static";
-import Image from "next/image";
-import { IImage, IProperty, Property } from "@/redux/modules/main/types";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { useDispatch } from "react-redux";
-import { setLoginPopup } from "@/redux/modules/main/action";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
+import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setLoginPopup } from "@/redux/modules/main/action";
+import { IImage } from "@/redux/modules/main/types";
+import { GalleryThumbnails, Heart, X, ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 
 type PopupType = "gallery" | "video" | "plan" | "3d";
 
@@ -25,8 +18,10 @@ interface PropertyStats {
 }
 
 export default function PropertyGallery({ property }: PropertyStats) {
+  // Avoid non-deterministic ordering (Math.random) during the initial render/hydration.
+  // We keep the incoming order for SSR/first client render.
   const shuffleArray = (array: IImage[] = []) => {
-    return [...array].sort(() => Math.random() - 0.5);
+    return [...array];
   };
 
   const [images, setImages] = useState<IImage[]>([]);
@@ -110,11 +105,11 @@ export default function PropertyGallery({ property }: PropertyStats) {
     setImages(updated);
   };
 
-  const openGallery = () => {
+  const openGallery = (value: number) => {
     setPopupType("gallery");
     setOpen(true);
+    setActive(value);
   };
-
 
   const handleFavoriteAdd = () => {
     if (!user_data?.access_token) {
@@ -146,7 +141,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
   return (
     <>
       {/* ================= DESKTOP (UNCHANGED) ================= */}
-      <div className="hidden md:grid grid-cols-[2.5fr_1.2fr_1.2fr] gap-3 h-[450px] mb-8">
+      <div className="hidden lg:grid grid-cols-[2.5fr_1.2fr_1.2fr] gap-3 h-[450px] mb-8">
         <div
           className="rounded-2xl overflow-hidden cursor-pointer relative"
           onClick={() => {
@@ -156,7 +151,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
         >
           <img
             src={images?.[0]?.url}
-            className="lg:w-[650px] lg:h-[460px] object-cover rounded-xl"
+            className="lg:w-[47vw] lg:h-[460px] object-cover rounded-xl"
           />
 
           <button
@@ -165,32 +160,15 @@ export default function PropertyGallery({ property }: PropertyStats) {
               // onLikeToggle?.();
               handleFavoriteAdd?.();
             }}
-            className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
+            className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/90 rounded-full flex items-center justify-center hover:bg-red-50"
+            aria-label="close"
           >
             {mainReducer?.property_details?.favorite ? (
               <Heart size={20} className="text-red-500 fill-red-500" />
             ) : (
-              <Heart size={20} className="text-white hover:text-red-500" />
+              <Heart size={20} className=" text-red-500" />
             )}
           </button>
-
-          {/* <div className="absolute bottom-4 left-4 flex gap-2">
-            <ActionBtn icon={<Play size={14} />} label="Watch Video"
-              onClick={() => {
-                setOpen(true)
-                setPopupType("video")
-              }} />
-            <ActionBtn icon={<LayoutPanelLeft size={14} />} label="Floor Plan"
-              onClick={() => {
-                setOpen(true)
-                setPopupType("plan")
-              }} />
-            <ActionBtn icon={<Box size={14} />} label="3D Virtual Tour"
-              onClick={() => {
-                setOpen(true)
-                setPopupType("3d")
-              }} />
-          </div> */}
         </div>
 
         <div className="flex flex-col gap-3 lg:h-[460px]">
@@ -200,7 +178,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               setActive(1);
               setOpen(true);
             }}
-            className="flex-1 h-1/2 object-cover cursor-pointer"
+            className="flex-1 h-1/2 object-cover cursor-pointer rounded-xl"
           />
           <img
             src={images?.[2]?.url}
@@ -208,7 +186,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               setActive(2);
               setOpen(true);
             }}
-            className="flex-1 h-1/2 object-cover cursor-pointer"
+            className="flex-1 h-1/2 object-cover cursor-pointer rounded-xl"
           />
         </div>
 
@@ -219,7 +197,7 @@ export default function PropertyGallery({ property }: PropertyStats) {
               setActive(3);
               setOpen(true);
             }}
-            className="flex-1  object-cover cursor-pointer"
+            className="flex-1  object-cover cursor-pointer rounded-xl"
           />
 
           <div
@@ -243,50 +221,23 @@ export default function PropertyGallery({ property }: PropertyStats) {
         </div>
       </div>
 
-      <div className="md:hidden mb-6">
+      <div className="lg:hidden mb-6">
         <div className="relative rounded-xl overflow-hidden mb-3">
           <img
-            onClick={openGallery}
+            onClick={() => openGallery(0)}
             src={images?.[0]?.url}
             className="w-full h-[260px] object-cover"
           />
 
-          <button className="absolute top-3 right-3 bg-white p-2 rounded-full shadow">
+          <button className="absolute top-3 right-3 bg-white p-2 rounded-full shadow" aria-label="close">
             <Heart className="w-4 h-4 text-red-500 fill-red-500" />
           </button>
-
-          {/* <div className="absolute bottom-3 left-3 flex gap-2">
-            <ActionBtn
-              icon={<Play size={14} />}
-              label="Video"
-              onClick={() => {
-                setOpen(true);
-                setPopupType("video");
-              }}
-            />
-            <ActionBtn
-              icon={<LayoutPanelLeft size={14} />}
-              label="Plan"
-              onClick={() => {
-                setOpen(true);
-                setPopupType("plan");
-              }}
-            />
-            <ActionBtn
-              icon={<Box size={14} />}
-              label="3D"
-              onClick={() => {
-                setOpen(true);
-                setPopupType("3d");
-              }}
-            />
-          </div> */}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <img
             src={images?.[1]?.url}
-            onClick={openGallery}
+            onClick={() => openGallery(1)}
             className="h-32 w-full object-cover rounded-lg cursor-pointer"
           />
 
@@ -315,39 +266,24 @@ export default function PropertyGallery({ property }: PropertyStats) {
           <button
             className="absolute top-6 right-6 text-white z-50"
             onClick={() => setOpen(false)}
+            aria-label="close"
           >
             <X size={28} />
           </button>
-
-          {/* <div className="absolute top-7 left-1/2 -translate-x-1/2 flex gap-2 z-40">
+          <div className="absolute top-7 left-1/2 -translate-x-1/2 flex gap-2 z-40">
             <ActionBtn
               icon={<GalleryThumbnails size={14} />}
               label="Gallery"
               onClick={() => setPopupType("gallery")}
               isActivate={popupType === "gallery"}
             />
-            <ActionBtn
-              icon={<Play size={14} />}
-              label="Video"
-              onClick={() => setPopupType("video")}
-              isActivate={popupType === "video"}
-            />
-            <ActionBtn
-              icon={<LayoutPanelLeft size={14} />}
-              label="Plan"
-              onClick={() => setPopupType("plan")}
-              isActivate={popupType === "plan"}
-            />
-            <ActionBtn
-              icon={<Box size={14} />}
-              label="3D"
-              onClick={() => setPopupType("3d")}
-              isActivate={popupType === "3d"}
-            />
-          </div> */}
+            {/* <ActionBtn icon={<Play size={14} />} label="Video" onClick={() => setPopupType("video")} isActivate={popupType === 'video'} />
+            <ActionBtn icon={<LayoutPanelLeft size={14} />} label="Plan" onClick={() => setPopupType("plan")} isActivate={popupType === 'plan'} />
+            <ActionBtn icon={<Box size={14} />} label="3D" onClick={() => setPopupType("3d")} isActivate={popupType === '3d'} /> */}
+          </div>
 
           <div
-            className="w-full h-full flex items-center justify-center"
+            className="w-full h-full flex items-center justify-center relative"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -356,6 +292,26 @@ export default function PropertyGallery({ property }: PropertyStats) {
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
           >
+            {active > 0 && (
+              <button
+                onClick={() => setActive((p) => p - 1)}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow hover:bg-white z-30"
+                aria-label="previous"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+            )}
+
+            {active < images.length - 1 && (
+              <button
+                onClick={() => setActive((p) => p + 1)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow hover:bg-white z-30"
+                aria-label="next"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            )}
+
             {popupType === "gallery" && (
               <img
                 style={{
@@ -451,6 +407,7 @@ function ActionBtn({
       ${isActivate ? "bg-[#0A96F4] text-white" : "bg-white/90 text-[#111827]"} backdrop-blur 
       px-3 py-1.5 rounded-lg text-xs
       border border-white/40`}
+      aria-label="close"
     >
       {icon}
       {label}

@@ -1,26 +1,31 @@
 "use client";
 
 import { useWebSocket } from "@/api/socket/WebSocketContext";
-import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setBreadcrumbs, setLoginPopup } from "@/redux/modules/main/action";
-import { IProperty, Property } from "@/redux/modules/main/types";
-import { handleProtectedRoute } from "@/utils/common";
+import {
+  setLoginPopup,
+  setUpdatePropertyLike,
+} from "@/redux/modules/main/action";
+import { IProperty } from "@/redux/modules/main/types";
+import { formatEuro } from "@/utils/common";
 import {
   Bath,
   BedSingle,
+  Check,
   ChevronLeft,
   ChevronRight,
   Expand,
   Heart,
   ShieldCheck,
   Sparkles,
+  Tag,
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import LoginPopup from "../login-popup";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface PropertyCardProps {
   featured?: boolean;
@@ -28,9 +33,22 @@ interface PropertyCardProps {
   isLiked?: boolean;
   property: IProperty;
   onLikeToggle?: () => void;
+  onNavigate?: (property: IProperty) => void;
+  type?: string;
+  isSelected?: boolean;
+  onSelect?: (property: IProperty) => void;
 }
-const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
+const PropertyCard = ({
+  aiInsights = false,
+  property,
+  onNavigate,
+  type,
+  isSelected = false,
+  onSelect,
+}: PropertyCardProps) => {
   const router = useRouter();
+  const pathname = usePathname();
+  const isZeccoFaviourite = pathname === "/zecco-favorites"
   const dispatch = useDispatch();
   const { mainReducer, user_data } = usePosterReducers();
   const { sendMessage, lastEvent } = useWebSocket();
@@ -39,43 +57,63 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
   const [isSwiping, setIsSwiping] = useState(false);
 
-  const handleNavigate = () => {
-    dispatch(
-      setBreadcrumbs([
-        ...mainReducer?.breadcrumbs,
-        {
-          label: `${
-            property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""
-          }${" "}
-                            ${property?.propertyCategory?.name} for${" "}
-                            ${
-                              property?.isSale && property?.isRent
-                                ? "Sale or Rent"
-                                : property?.isSale
-                                  ? "Sale"
-                                  : property?.isRent
-                                    ? "Rent"
-                                    : ""
-                            }${" "}
-                            in${""}
-                            ${
-                              property?.locationSubarea
-                                ? `${property?.locationSubarea?.name},`
-                                : ""
-                            }${" "}
-                            ${
-                              property?.locationArea
-                                ? `${property?.locationArea?.name},`
-                                : ""
-                            }${" "}
-                            ${property?.locationCity?.name},${" "}
-                            ${property?.locationCountry?.name}`,
-          href: `${App_url.link.PROPERTY_DETAILS}/${property?.id}`,
-        },
-      ]),
+  const getIsFavoriteFromStore = () =>
+    mainReducer?.property_list_with_limit?.favorite_property?.includes(
+      String(property?._id),
+    ) ||
+    mainReducer?.zecco_favorite?.favorite_property?.includes(
+      String(property?._id),
+    ) ||
+    mainReducer?.favorite_property_list?.data?.some(
+      (item) => String(item._id) === String(property?._id),
     );
-    router.push(`${App_url.link.PROPERTY_DETAILS}/${property?.id}`);
+
+  const [isFavorite, setIsFavorite] = useState(getIsFavoriteFromStore);
+
+  useEffect(() => {
+    setIsFavorite(getIsFavoriteFromStore());
+  }, [
+    mainReducer?.property_list_with_limit?.favorite_property,
+    mainReducer?.zecco_favorite?.favorite_property,
+    mainReducer?.favorite_property_list?.data,
+    property?._id,
+    property?.favorite,
+  ]);
+
+  const propertyIdentifier = property?.slug || property?._id;
+
+  const currentPath = window.location.pathname;
+  const searchParams = window.location.search;
+
+  const propertyDetailUrl = `${(
+    currentPath === "/" || type === "zecco-favorites"
+      ? "/zecco-favorites"
+      : currentPath.replace(/\/$/, "")
+  )}/${propertyIdentifier}${type === "zecco-favorites" ? "" : searchParams}`;
+
+  const handleNavigate = () => {
+    router.push(propertyDetailUrl);
   };
+
+  const propertyTitle = `${property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""} ${
+    property?.propertyType
+      ? property?.propertyType?.name
+      : property?.propertyCategory?.name
+  } for ${property?.isSale ? "Sale" : ""} in ${
+    property?.locationSubarea ? `${property?.locationSubarea},` : ""
+  } ${property?.locationArea ? `${property?.locationArea},` : ""} ${
+    property?.locationCity
+  }, ${property?.locationCountry}`;
+
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const [isTitleTruncated, setIsTitleTruncated] = useState(false);
+
+  useEffect(() => {
+    const el = titleRef.current;
+    if (el) {
+      setIsTitleTruncated(el.scrollHeight > el.clientHeight);
+    }
+  }, [propertyTitle]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.touches[0].clientX);
@@ -108,21 +146,25 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
 
   const handleCardClick = () => {
     if (!isSwiping) {
-      handleNavigate(); // tap only
+      if (onSelect) {
+        onSelect(property);
+      } else if (onNavigate) {
+        onNavigate(property);
+      } else handleNavigate();
     }
   };
 
   const nextSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === property?.propertyImages.length - 1 ? 0 : prev + 1,
+      prev === property?.propertyImages?.length - 1 ? 0 : prev + 1,
     );
   };
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === 0 ? property?.propertyImages.length - 1 : prev - 1,
+      prev === 0 ? property?.propertyImages?.length - 1 : prev - 1,
     );
   };
 
@@ -130,32 +172,24 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
     if (!user_data?.access_token) {
       dispatch(setLoginPopup(true));
       return;
-    } else {
-      if (
-        mainReducer?.property_list_with_limit?.favorite_property?.includes(
-          String(property?._id),
-        ) ||
-        mainReducer?.zecco_favorite?.favorite_property?.includes(
-          String(property?._id),
-        )
-      ) {
-        sendMessage("action", {
-          type: "userService",
-          action: "removeFavorite",
-          payload: {
-            property_id: property?._id,
-          },
-        });
-      } else {
-        sendMessage("action", {
-          type: "userService",
-          action: "addFavorite",
-          payload: {
-            property_id: property?._id,
-          },
-        });
-      }
     }
+
+    const nextFavorite = !isFavorite;
+    setIsFavorite(nextFavorite);
+    dispatch(
+      setUpdatePropertyLike({
+        property_id: property?._id,
+        isFavorite: nextFavorite,
+      }),
+    );
+
+    sendMessage("action", {
+      type: "userService",
+      action: nextFavorite ? "addFavorite" : "removeFavorite",
+      payload: {
+        property_id: property?._id,
+      },
+    });
   };
 
   return (
@@ -164,9 +198,9 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white overflow-hidden shadow-card transition-all`}
+      className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white shadow-md border rounded-2xl overflow-hidden transition-all flex flex-col ${isSelected ? "ring-2 ring-[#2563EB] ring-offset-2" : ""}`}
     >
-      <div className="relative h-64 rounded-lg bg-gray-200 overflow-hidden">
+      <div className="relative h-64 rounded-t-2xl bg-gray-200 overflow-hidden">
         <div
           className="flex h-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
@@ -192,6 +226,7 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           <button
             onClick={prevSlide}
             className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 opacity-0 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:pointer-events-auto"
+            aria-label="up"
           >
             <ChevronLeft size={18} />
           </button>
@@ -201,51 +236,69 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           <button
             onClick={nextSlide}
             className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 text-white p-2 rounded-full hover:bg-black/60 opacity-0 pointer-events-none transition-all duration-300 group-hover:opacity-100 group-hover:pointer-events-auto"
+            aria-label="up"
           >
             <ChevronRight size={18} />
           </button>
         )}
 
-        <div className="absolute top-4 left-4 flex gap-2">
-          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#1466EC] text-white text-[11px] font-manrope">
-            <Sparkles size={12} />
-            AI Verified
-          </div>
+        <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+          {property?.property_tags?.map((tag: any) => {
+            const tagName = tag?.name?.trim() || "";
+            const normalizedTag = tagName?.toLowerCase();
 
-          <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#5BA55A] text-white text-[11px] font-manrope">
-            <ShieldCheck size={12} />
-            Verified Seller
-          </div>
+            let Icon = null;
+            let className =
+              "inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-white text-[11px] font-manrope";
+
+            if (["ai verified"].includes(normalizedTag)) {
+              Icon = Sparkles;
+              className += " bg-[#1466EC]";
+            } else if (["verified seller"].includes(normalizedTag)) {
+              Icon = ShieldCheck;
+              className += " bg-[#5BA55A]";
+            } else if (["zecco favourites"].includes(normalizedTag)) {
+              Icon = Heart;
+              className += " bg-[#F59E0B]";
+            } else {
+              Icon = Tag;
+              className += " bg-gray-500";
+            }
+
+            return (
+              <div key={tag?._id} className={className}>
+                <Icon size={12} />
+                <span>{tagName}</span>
+              </div>
+            );
+          })}
         </div>
+
+        {isSelected && (
+          <div className="absolute top-4 right-14 z-10 w-7 h-7 rounded-full bg-[#2563EB] text-white flex items-center justify-center shadow-md shadow-blue-500/30">
+            <Check size={16} strokeWidth={3} />
+          </div>
+        )}
 
         <button
           onClick={(e) => {
-            e.stopPropagation(); // prevent navigation
-            // onLikeToggle?.();
+            e.stopPropagation();
             handleFavoriteAdd?.();
           }}
-          className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/30 rounded-full flex items-center justify-center hover:bg-red-50"
+          className="absolute top-4 right-4 w-10 h-10 backdrop-blur-md bg-white/90 rounded-full flex items-center justify-center hover:bg-red-50"
+          aria-label="up"
         >
-          {mainReducer?.property_list_with_limit?.favorite_property?.includes(
-            String(property?._id),
-          ) ||
-          mainReducer?.zecco_favorite?.favorite_property?.includes(
-            String(property?._id),
-          ) ? (
+          {isFavorite ? (
             <Heart size={20} className="text-red-500 fill-red-500" />
           ) : (
-            <Heart size={20} className="text-white hover:text-red-500" />
+            <Heart size={20} className=" text-red-500" />
           )}
         </button>
 
         <div className="absolute bottom-4 left-3 bg-white/90 px-3 py-1 rounded-lg text-sm text-[#0A0915] font-manrope">
-          {property?.isSale && property?.isRent
-            ? "Rent / Sale"
-            : property?.isSale
-              ? "For Sale"
-              : property?.isRent
-                ? "For Rent"
-                : ""}
+          {property?.isSale
+            ? "For Sale"
+            : ""}
         </div>
         {property?.propertyImages?.length > 1 && (
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
@@ -253,9 +306,8 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
               {property?.propertyImages?.slice(0, 3).map((_, i) => (
                 <span
                   key={i}
-                  className={`h-2 rounded-full transition-all ${
-                    i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
-                  }`}
+                  className={`h-2 rounded-full transition-all ${i === currentIndex ? "w-4 bg-white" : "w-2 bg-white/50"
+                    }`}
                 />
               ))}
             </div>
@@ -265,41 +317,55 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           property?.zeccoSold ||
           property?.isRented ||
           property?.zeccoRented) && (
-          <>
-            <div className="absolute inset-0 bg-black/45 z-20" />
-            <div className="absolute inset-0 z-30 flex items-center justify-center">
-              <div className="relative w-full flex items-center justify-center">
-                <div className="absolute w-full h-[2px]" />
-                <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
-                  {property?.isSold || property?.zeccoSold
-                    ? "Sold Out"
-                    : "Rent Out"}
+            <>
+              <div className="absolute inset-0 bg-black/45" />
+              <div className="absolute inset-0 z-30 flex items-center justify-center">
+                <div className="relative w-full flex items-center justify-center">
+                  <div className="absolute w-full h-[2px]" />
+                  <div className="relative w-full text-center px-8 py-3 bg-white/20 text-white text-xl font-bold tracking-[0.3em] uppercase rounded-sm shadow-2xl">
+                    {property?.isSold || property?.zeccoSold
+                      ? "Sold Out"
+                      : "Rent Out"}
+                  </div>
                 </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
       </div>
-      <div className="space-y-1 py-3">
+      <div className="space-y-1 py-3 px-4 flex flex-col flex-1">
         <div className="flex items-center justify-between">
           {property?.isSale && property?.isRent ? (
             <div className="text-md font-manrope font-bold text-[#727272] w-full">
               {property?.isSale && property?.isRent ? (
-                <div className="flex justify-between items-center w-full">
+                <div className="items-center w-full">
                   <p className="text-md font-manrope font-bold text-[#727272]">
-                    Sale : €{property?.salePrice}
+                    Sale : {formatEuro(property?.salePrice ?? 0)}
                   </p>
-                  <p className="text-md font-manrope font-bold text-[#727272]">
-                    Rent : €{property?.rentalPrice ?? property?.rentalPriceLong}
-                  </p>
+                  {/* <p className="text-md font-manrope font-bold text-[#727272]">
+                    Rent :{" "}
+                    {formatEuro(
+                      property?.rentalPrice ??
+                      property?.rentalPriceLong ??
+                      property?.rentalPriceShort ??
+                      0,
+                    )}
+                  </p> */}
                 </div>
               ) : null}
             </div>
           ) : (
-            <p className="text-md font-manrope font-bold text-[#727272]">
-              {property?.isRent
-                ? "€" + (property?.rentalPrice ?? property?.rentalPriceLong)
-                : "€" + property?.salePrice}
+            <p className="text-md font-manrope font-black text-[#0F172A]">
+              {/* {property?.isRent
+                ? formatEuro(
+                  property?.rentalPrice ??
+                  property?.rentalPriceLong ??
+                  property?.rentalPriceShort ??
+                  0,
+                )
+                : */}
+              {formatEuro(property?.salePrice ?? 0)}
+              {/* } */}
+
             </p>
           )}
           {aiInsights && (
@@ -309,39 +375,51 @@ const PropertyCard = ({ aiInsights = false, property }: PropertyCardProps) => {
           )}
         </div>
 
-        <h3 className="text-[0.9rem] text-[#0A0915] font-manrope font-medium max-w-[85%]">
-          {property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""}{" "}
-          {property?.propertyCategory?.name} for{" "}
-          {property?.isSale && property?.isRent
-            ? "Sale or Rent"
-            : property?.isSale
-              ? "Sale"
-              : property?.isRent
-                ? "Rent"
-                : ""}{" "}
-          in{" "}
-          {property?.locationSubarea
-            ? `${property?.locationSubarea?.name},`
-            : ""}{" "}
-          {property?.locationArea ? `${property?.locationArea?.name},` : ""}{" "}
-          {property?.locationCity?.name}, {property?.locationCountry?.name}
-        </h3>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <h3
+                ref={titleRef}
+                className="text-[0.9rem] leading-[1.35rem] text-[#0A0915] font-manrope font-medium max-w-[85%] pb-1 line-clamp-2 h-[2.7rem] overflow-hidden"
+              >
+                {propertyTitle}
+              </h3>
+            </TooltipTrigger>
+            {isTitleTruncated && (
+              <TooltipContent side="top" className="max-w-[280px] text-[0.8rem]">
+                {propertyTitle}
+              </TooltipContent>
+            )}
+          </Tooltip>
+        </TooltipProvider>
 
-        <div className="flex gap-5 items-center pt-4 text-sm">
-          <div className="flex font-manrope font-normal items-center gap-1">
-            <Expand size={18} className="text-gray-400" />
-            <span>{property?.mtsBuild} /m²</span>
-          </div>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-2.5 text-sm border-t mt-auto">
+          {property?.mtsBuild ? (
+            <div className="flex font-manrope font-normal items-center gap-1">
+              <Expand size={18} className="text-gray-400 shrink-0" />
+              <span className="whitespace-nowrap">{property?.mtsBuild} m²</span>
+            </div>
+          ) : property?.mtsPlot ? (
+            <div className="flex font-manrope font-normal items-center gap-1">
+              <Expand size={18} className="text-gray-400 shrink-0" />
+              <span className="whitespace-nowrap">{property?.mtsPlot} m²</span>
+            </div>
+          ) : null}
 
-          <div className="flex font-manrope font-normal items-center gap-1">
-            <BedSingle size={18} className="text-gray-400" />
-            <span>{property?.bedrooms} Bed</span>
-          </div>
+          {property?.bedrooms !== 0 && property?.bedrooms !== null && property?.bedrooms !== undefined && (
+            <div className="flex font-manrope font-normal items-center gap-1">
+              <BedSingle size={18} className="text-gray-400 shrink-0" />
+              <span className="whitespace-nowrap">{property?.bedrooms} Bed</span>
+            </div>
+          )}
 
-          <div className="flex font-manrope font-normal items-center gap-1">
-            <Bath size={18} className="text-gray-400" />
-            <span>{property?.bathrooms} Bath</span>
-          </div>
+          {property?.bathrooms !== 0 && property?.bathrooms !== null &&
+            property?.bathrooms !== undefined && (
+              <div className="flex font-manrope font-normal items-center gap-1">
+                <Bath size={18} className="text-gray-400 shrink-0" />
+                <span className="whitespace-nowrap">{property?.bathrooms} Bath</span>
+              </div>
+            )}
         </div>
       </div>
 

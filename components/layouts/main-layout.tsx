@@ -1,14 +1,18 @@
 "use client";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
-import { ChevronDown, Search, Share2, TriangleAlert } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setPropertyFilter } from "@/redux/modules/main/action";
+import { cityName, citySlug } from "@/utils/common";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import Footer from "../Footer";
 import Header from "../Header";
 import Breadcrumb from "../breadcrumbs";
 import ChatbotWidget from "../chat/chatbot-widget";
-import { useWebSocket } from "@/api/socket/WebSocketContext";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import DropdownSelect from "../ui/DropSelect";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 interface MainLayoutProps {
@@ -24,11 +28,14 @@ interface MainLayoutProps {
   chatBotWidget?: boolean;
   callBackPropertyType?: (value: string) => void; // callback
   propertyTypes?: string; // property types value
-  handleSearch?: (value: string) => void;
+  handleSearch?: (value: any) => void;
   savedSearch?: boolean;
   savedSearches?: () => void;
   placeholder?: string;
   filteredLocations?: any[];
+  searchValueProp?: string;
+  propertyPage?: boolean;
+  isLocationDropdown?: boolean;
 }
 
 const HEADER_HEIGHT = 100; // h-16 (64px) + top spacing
@@ -39,32 +46,40 @@ const MainLayout = ({
   children,
   isBreadcrumb = false,
   isFilter = false,
-  isPropertyDetails = false,
   isPropertyType = false,
-  isProperty = false,
   propertyCount = 0,
   onPropertyTypeChange,
   propertyType,
-  propertyTypes,
-  callBackPropertyType,
   chatBotWidget = true,
-  handleSearch,
   savedSearch,
   savedSearches,
-  placeholder,
   filteredLocations = [],
+  searchValueProp,
 }: MainLayoutProps) => {
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
+  const dispatch = useDispatch()
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
-  const [searchValue, setSearchValue] = useState("");
-  const [searchDropdown, setSearchDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const city = searchParams.get("city") || "";
+  const area = searchParams.get("area") || "";
+  const subarea = searchParams.get("subarea") || "";
+  const searchval = searchValueProp || subarea || area || city
+  const updatedSearchVal = cityName(searchval)
 
-  const searchedLocations = filteredLocations?.filter((item: any) =>
-    item?.name?.toLowerCase()?.includes(searchValue.toLowerCase()),
-  );
+  const { control, reset } = useForm({
+    defaultValues: {
+      location: updatedSearchVal
+    }
+  })
+
+  useEffect(() => {
+    reset({
+      location: updatedSearchVal,
+    });
+  }, [updatedSearchVal]);
+
 
   useEffect(() => {
     if (!isPropertyType) return;
@@ -83,26 +98,51 @@ const MainLayout = ({
   const TABS: { label: string; value: PropertyType }[] = [
     { label: "All", value: "all" },
     { label: "Buy", value: "buy" },
-    { label: "Rent", value: "rent" },
     { label: "New", value: "new" },
   ];
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setSearchDropdown(false);
-      }
-    };
+  const callLocationSelect = (data: any) => {
+    dispatch(
+      setPropertyFilter({
+        ...mainReducer?.propertyFilter,
+        cities: data?.city,
+      })
+    );
+    const type=data?.type || "city"
 
-    document.addEventListener("mousedown", handleClickOutside);
+    const params = new URLSearchParams(window.location.search);
+    if(type === 'city'){
+      params.delete("area");
+      params.delete("subarea");
+    }
+    if(type === 'area' || type === "subarea"){
+      params.delete("city");
+      params.set('city', citySlug(data?.city || ""));
+    }
+    params.delete("cities");
+    params.set(type, citySlug(data?.label || data?.value || ""));
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    router.push(
+      `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+    );
+  };
+
+//   {
+//     "id": "6a212988be616682e93b6102",
+//     "type": "city",
+//     "name": "Benadalid",
+//     "name_slug": "benadalid",
+//     "city_name": "benadalid",
+//     "area_name": null,
+//     "subarea_name": null,
+//     "point": {
+//         "type": "Point",
+//         "coordinates": [
+//             -5.268939,
+//             36.605768
+//         ]
+//     }
+// }
 
   return (
     <main className="w-full bg-white">
@@ -115,60 +155,24 @@ const MainLayout = ({
           </div>
         )}
         {isFilter && (
-          <div className="flex max-md:flex-col max-md:w-full justify-between items-start mb-8 mt-8 gap-4">
+          <div className="flex max-md:flex-col max-md:w-full justify-between items-start mb-8 mt-3 gap-4">
             <div className=" flex-1  lg:flex  items-center gap-3 max-md:w-full lg:w-[70%]  rounded-[7px]">
-              <div
-                ref={dropdownRef}
-                className="flex lg:w-[327px] relative items-center gap-3 max-md:mb-2"
-              >
-                <Search
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"
-                  size={18}
+              <div className="lg:w-[327px] max-md:mb-2">
+                <DropdownSelect
+                  placeholder="All Area"
+                  onSelect={callLocationSelect}
+                  options={filteredLocations?.map((location) => ({
+                    value: location?.name_slug,
+                    label: location?.name,
+                    key: location?.id,
+                    type:location?.type,
+                    city:location?.city_name
+                  })) || []}
+                  control={control}
+                  name="location"
+                  formClassName="rounded-xl"
+                  labelClassName="font-bold"
                 />
-                <input
-                  type="text"
-                  value={searchValue}
-                  placeholder={`Search by ${placeholder ? placeholder : "area"}`}
-                  className="w-full lg:max-w-[27rem] bg-[#fcfcfc] placeholder:font-manrope font-normal placeholder:text-[#999999] h-9 pl-10 pr-4 rounded-[7px] border border-gray-300 
-                                     focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  //   onKeyDown={(e) => {
-                  //     if (e.key === "Enter") {
-                  //       handleSearch?.(searchValue);
-                  //       setSearchDropdown(false);
-                  //     }
-                  //   }}
-                  onChange={(e) => {
-                    setSearchValue(e.target.value);
-                  }}
-                  onFocus={() => setSearchDropdown(true)}
-                />
-                {searchDropdown && (
-                  <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[300px] overflow-y-auto scrollbar-hide">
-                    {searchedLocations?.length > 0 ? (
-                      <ul className="py-1 text-sm text-slate-700">
-                        {searchedLocations.map((item: any, index: number) => (
-                          <li key={item?.id || index}>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setSearchValue(item?.name);
-                                handleSearch?.(item?.name);
-                                setSearchDropdown(false);
-                              }}
-                              className="w-full px-4 py-3 text-left hover:bg-slate-100 transition"
-                            >
-                              {item?.name}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div className="px-4 py-3 text-sm text-gray-500">
-                        No locations found
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
               {propertyCount !== 0 && (
                 <div className="">
@@ -178,54 +182,35 @@ const MainLayout = ({
                 </div>
               )}
             </div>
-            <div className="flex max-md:items-center justify-between max-md:w-full gap-5">
-              {/* {savedSearch && (
-                                <button
-                                    onClick={savedSearches}
-                                    className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md bg-blue_color text-white`}
-                                >
-                                    Save Searches
-                                </button>
-                            )} */}
+            <div className="flex max-md:flex-col lg:justify-between max-md:w-full gap-5">
+              {savedSearch && (
+                <button
+                  onClick={savedSearches}
+                  className={`px-4 py-1.5 max-md:py-2.5 font-manrope font-semibold  max-md:w-full uppercase text-xs rounded-md bg-blue_color text-white`}
+                >
+                  Save Searches
+                </button>
+              )}
               {isPropertyType && (
-                <div className="inline-flex gap-1 rounded-lg bg-[#E5E7EB] p-1 shrink-0">
+                <div className="inline-flex gap-1 rounded-lg max-md:w-fit bg-[#E5E7EB] p-1 shrink-0">
                   {TABS?.map((tab, i) => (
                     <button
-                      onClick={() =>
-                        onPropertyTypeChange && onPropertyTypeChange(tab?.value)
-                      }
+                      onClick={() => {
+                        onPropertyTypeChange &&
+                          onPropertyTypeChange(tab?.value);
+                      }}
                       key={i}
                       className={`px-4 py-1.5 font-manrope font-semibold uppercase text-xs rounded-md
-                                        ${
-                                          tab?.value === propertyType
-                                            ? "bg-white text-black"
-                                            : "text-[#6B7280] hover:bg-slate-100"
-                                        }`}
+                                        ${tab?.value === propertyType
+                          ? "bg-white text-black"
+                          : "text-[#6B7280] hover:bg-slate-100"
+                        }`}
                     >
                       {tab?.value}
                     </button>
                   ))}
                 </div>
               )}
-
-              {/* {isProperty && (
-                <div className="space-y-3">
-                  <div className="relative">
-                    <select
-                      value={propertyTypes}
-                      onChange={(e) => callBackPropertyType?.(e.target.value)}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg appearance-none bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                    >
-                      {mainReducer?.property_type_list?.map((type) => (
-                        <option key={type.id} value={type?.name}>
-                          {type.name}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-3 w-4 h-4 text-gray-400 pointer-events-none" />
-                  </div>
-                </div>
-              )} */}
             </div>
           </div>
         )}

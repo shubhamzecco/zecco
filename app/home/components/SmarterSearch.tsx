@@ -1,10 +1,12 @@
-import Image from 'next/image'
-import { Check, Zap } from 'lucide-react'
-import { App_url } from '@/constant/static'
-import { useRouter } from 'next/navigation'
+import { App_url } from "@/constant/static";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { Check, Zap } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function SmarterSearch() {
-  const router = useRouter()
+  const router = useRouter();
+  const {user_data} = usePosterReducers()
   return (
     <section className="relative overflow-hidden bg-[#0B1220]">
       <div className="absolute inset-0 bg-gradient-to-br from-[#0B1220] via-[#0E1B3C] to-[#1A140E]" />
@@ -25,14 +27,16 @@ export default function SmarterSearch() {
           <h1 className="text-4xl lg:text-4xl font-manrope font-semibold leading-loose lg:mb-4">
             A Smarter Way To
           </h1>
-          <h1 className="text-4xl lg:text-4xl font-manrope font-semibold leading-loose mb-6">Manage Your Search</h1>
+          <h1 className="text-4xl lg:text-4xl font-manrope font-semibold leading-loose mb-6">
+            Manage Your Search
+          </h1>
 
           <ul className="space-y-4 text-cool_gray mb-8">
             {[
-              'Curate your own shortlist of dream homes.',
-              'Get instant alerts for specific criteria.',
-              'Smart matching based on your behavior.',
-              'Secure documents and personal details.',
+              "Curate your own shortlist of dream homes.",
+              "Get instant alerts for specific criteria.",
+              "Smart matching based on your behavior.",
+              "Secure documents and personal details.",
             ].map((text, i) => (
               <li key={i} className="flex items-start gap-3">
                 <span className="mt-1 flex h-5 w-5 items-center justify-center rounded-full bg-white/10">
@@ -45,11 +49,17 @@ export default function SmarterSearch() {
 
           {/* BUTTONS */}
           <div className="flex gap-4">
-            <button onClick={() => router.push(App_url.link.SIGN_UP)} className="bg-[#2563EB] hover:bg-[#1D4ED8] transition text-white text-sm font-medium px-6 py-3 rounded-full">
+            <button
+              onClick={() => user_data?.access_token ? router.push(App_url.link.INITIAL_URL) : router.push(App_url.link.SIGN_UP)}
+              className="bg-[#2563EB] hover:bg-[#1D4ED8] transition text-white text-sm font-medium px-6 py-3 rounded-full"
+            >
               Register Free
             </button>
 
-            <button onClick={() => router.push(App_url.link.SIGN_IN)} className="bg-white/10 hover:bg-white/20 transition text-white text-sm font-medium px-6 py-3 rounded-full">
+            <button
+              onClick={() => user_data?.access_token ? router.push(App_url.link.INITIAL_URL) : router.push(App_url.link.SIGN_IN)}
+              className="bg-white/10 hover:bg-white/20 transition text-white text-sm font-medium px-6 py-3 rounded-full"
+            >
               Login to Portal
             </button>
           </div>
@@ -71,7 +81,7 @@ export default function SmarterSearch() {
           </div>
 
           {/* FLOATING CARD */}
-          <div className="absolute max-md:-bottom-16 lg:bottom-0 lg:-left-6 bg-white rounded-2xl shadow-xl p-5 w-[290px]">
+          <div className="absolute max-sm:-bottom-16 sm:bottom-0 lg:bottom-0 lg:-left-6 bg-white rounded-2xl shadow-xl p-5 w-[290px]">
             <div className="flex items-start gap-3">
               <div className="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
                 <Zap size={18} className="text-[#D97706]" />
@@ -100,5 +110,5 @@ export default function SmarterSearch() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-"use client"
-import { App_url } from '@/constant/static'
-import { setChatBadgeOpen } from '@/redux/modules/main/action'
+"use client";
+import { App_url } from "@/constant/static";
+import { setChatBadgeOpen } from "@/redux/modules/main/action";
 import {
   ArrowRight,
   Headphones,
@@ -8,19 +8,18 @@ import {
   ShieldCheck,
   Users,
   Zap,
-} from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useDispatch } from 'react-redux'
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
 
 export default function AiExpertise() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   return (
     <section>
       <div className="bg-[#F8FAFC] w-full">
         <div className="lg:mx-10 px-4 sm:px-6 lg:px-8">
-          <div className="max-md:grid lg:flex max-md:grid-cols-1 gap-5 items-stretch py-14">
-
+          <div className="max-lg:grid lg:flex landscape:sm:grid-cols-2 max-lg:grid-cols-1 gap-5 items-stretch py-14">
             <div
               className="w-full  lg:w-[40%]  rounded-2xl p-6 sm:p-8 lg:p-10
               bg-gradient-to-b
@@ -30,18 +29,18 @@ export default function AiExpertise() {
             >
               <div className="flex items-center gap-2 mb-6">
                 <span className="w-3 h-3 rounded-full bg-[#00FFFF] animate-pulse" />
-                <span className="text-sm tracking-wide font-inter font-semibold text-[#00FFFF]">
+                <span className="text-xs tracking-wide font-inter font-semibold text-[#00FFFF]">
                   ZECCO.ES AI ONLINE
                 </span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-extrabold font-manrope leading-snug mb-8">
-                Your AI Property <br /> Specialist
+              <h2 className="text-xl sm:text-3xl font-extrabold font-manrope leading-snug mb-8">
+                Your AI Property <br className="max-sm:hidden"/> Specialist
               </h2>
 
-              <div className="relative w-28 h-28 sm:w-32 sm:h-32 mb-8">
+              <div className="relative w-28 h-28 sm:w-32 sm:h-32 mb-8 max-sm:left-1/4">
                 <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-indigo-500 opacity-30 blur-md" />
-                <div className="relative w-full h-full rounded-full p-[3px] bg-gradient-to-r from-[#4F46E5] to-[#34D399]">
+                <div className="relative  w-full h-full rounded-full p-[3px] bg-gradient-to-r from-[#4F46E5] to-[#34D399]">
                   <div className="w-full h-full rounded-full bg-[#00004B] flex items-center justify-center">
                     <Image
                       src={App_url.image.chat_logo}
@@ -57,13 +56,13 @@ export default function AiExpertise() {
                 </div>
               </div>
 
-              <p className="text-lg sm:text-xl font-manrope font-medium leading-relaxed mb-auto">
+              <p className="text-sm sm:text-xl font-manrope font-medium leading-relaxed mb-auto">
                 Meet Zecco – your AI search agent, working for you to find the
                 best property listings that match your criteria.
               </p>
 
               <button
-              onClick={() => dispatch(setChatBadgeOpen(true))}
+                onClick={() => dispatch(setChatBadgeOpen(true))}
                 className="mt-8 w-full sm:max-w-[70%]
                 bg-white text-[#00004B]
                 py-4 rounded-xl
@@ -97,13 +96,19 @@ export default function AiExpertise() {
                   </p>
 
                   <div className="flex gap-4 flex-wrap">
-                    <Link href={App_url.link.CONTACT_US} className="px-6 py-3 font-manrope font-bold flex items-center gap-4 bg-[#F9FAFB] text-heading_text_color rounded-xl text-sm">
+                    <Link
+                      href={App_url.link.CONTACT_US}
+                      className="px-6 py-3 font-manrope font-bold flex items-center gap-4 bg-[#F9FAFB] text-heading_text_color rounded-xl text-sm"
+                    >
                       <Headphones size={22} className="text-blue_color" />
                       Talk to Advisor
                       <ArrowRight size={22} />
                     </Link>
 
-                    <Link href={App_url.link.CONTACT_US} className="px-6 py-3 font-manrope font-bold flex items-center gap-4 bg-[#F9FAFB] text-heading_text_color rounded-xl text-sm">
+                    <Link
+                      href={App_url.link.CONTACT_US}
+                      className="px-6 py-3 font-manrope font-bold flex items-center gap-4 bg-[#F9FAFB] text-heading_text_color rounded-xl text-sm"
+                    >
                       <MapPin size={22} className="text-emerald_green" />
                       Area Specialist
                       <ArrowRight size={22} />
@@ -158,14 +163,12 @@ export default function AiExpertise() {
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             </section>
-
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

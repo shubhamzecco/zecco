@@ -1,5 +1,10 @@
 "use client";
 
+import { App_url } from "@/constant/static";
+import { setLogout } from "@/redux/actions/action";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setAuthData, setLogin } from "@/redux/modules/common/user_data/action";
+import { setReduxClear } from "@/redux/modules/main/action";
 import { useRouter } from "next/navigation";
 import React, {
   createContext,
@@ -10,15 +15,10 @@ import React, {
   useState,
 } from "react";
 import { useDispatch } from "react-redux";
-import { io, Socket } from "socket.io-client";
-import { ws_response } from "./ws_response";
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import CommonApiRequest from "../rest/fetchData";
-import { App_url } from "@/constant/static";
-import { setAuthData, setLogin } from "@/redux/modules/common/user_data/action";
 import { toast } from "react-toastify";
-import { setLogout } from "@/redux/actions/action";
-import { setReduxClear } from "@/redux/modules/main/action";
+import { io, Socket } from "socket.io-client";
+import CommonApiRequest from "../rest/fetchData";
+import { ws_response } from "./ws_response";
 
 // Singleton socket reference
 let singletonSocket: Socket | null = null;
@@ -33,7 +33,7 @@ type WebSocketContextType = {
 
 export const WebSocketContext = createContext<WebSocketContextType>({
   socket: null,
-  sendMessage: () => {},
+  sendMessage: () => { },
   isConnected: false,
   lastEvent: null,
 });
@@ -66,7 +66,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
   const sendMessage = useCallback((event: string, data?: any) => {
     if (singletonSocket && singletonSocket.connected) {
-      // console.log('📤 Sending message:', event, data);
+      console.log('Send:', event, data);
       singletonSocket.emit(event, data);
     } else {
       console.log("⚠️ Socket not connected. Cannot send:", event, data);
@@ -110,6 +110,16 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     singletonSocket.on("connect_error", (err) => {
       console.error("🚨 Socket.IO connection error:", err);
       setIsConnected(false);
+      if (
+        err.message === "Unauthorized token" ||
+        err.message?.toLowerCase().includes("unauthorized")
+      ) {
+        dispatch(setLogout());
+        localStorage.clear();
+        dispatch(setAuthData({} as any));
+        dispatch(setReduxClear());
+        router.replace(App_url.link.INITIAL_URL);
+      }
     });
 
     singletonSocket.onAny((event, data) => {
@@ -122,7 +132,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           {},
           user_data?.access_token,
         )?.then((response: any) => {
-          console.log("response", response);
+          console.log("response-websocket", response);
           if (response?.status === 200) {
             const payload = {
               user: response.data,
@@ -142,6 +152,34 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
         });
         return;
       }
+
+      if (event === "delete_agent") {
+        CommonApiRequest(
+          "GET",
+          `${App_url.endpoint_url?.GET_AUTH_USER}/${user_data?.user?.email}`,
+          {},
+          {},
+          user_data?.access_token,
+        )?.then((response: any) => {
+          console.log("response-websocket", response);
+          if (response?.status === 200) {
+            const payload = {
+              user: response.data,
+              access_token: user_data?.access_token,
+            };
+            localStorage.setItem("access_token", user_data?.access_token);
+            dispatch(setLogin(true));
+            dispatch(setAuthData(payload as any));
+            toast.info("Your assigned agent has been removed.");
+          } else {
+            localStorage.clear();
+            dispatch(setLogin(false));
+            dispatch(setAuthData({} as any));
+          }
+        });
+        return;
+      }
+
       if (event === "unauthorized") {
         dispatch(setLogout());
         localStorage.clear();

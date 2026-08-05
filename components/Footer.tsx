@@ -1,18 +1,18 @@
-import Link from 'next/link'
-import { Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin, ArrowLeft, ChevronRight } from 'lucide-react'
-import Image from 'next/image'
-import { App_url } from '@/constant/static'
+import { App_url } from "@/constant/static";
+import {
+  ChevronRight,
+  Facebook,
+  Instagram,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
+} from "lucide-react";
+import App from "next/app";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear()
-
-  const links = {
-    Company: ['About Us', 'Blog', 'Careers', 'Press', 'Contact'],
-    Properties: ['Buy', 'Rent', 'Invest', 'Commercial', 'Residential'],
-    Resources: ['FAQ', 'Support', 'Documentation', 'API Docs', 'Terms'],
-    Legal: ['Privacy Policy', 'Terms of Service', 'Cookie Policy', 'Disclaimer'],
-  }
-
   return (
     <footer className="relative overflow-hidden bg-[#0B1220] text-slate-300">
       {/* GRADIENT */}
@@ -38,7 +38,7 @@ export default function Footer() {
       </div>
 
       <div className="relative lg:mx-10 px-6 pt-12 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* BRAND */}
           <div>
             <div className="flex items-center gap-2 mb-4">
@@ -55,8 +55,7 @@ export default function Footer() {
             </div>
 
             <p className="text-md leading-relaxed mb-6 font-manrope font-medium text-slate_gray ">
-              The proper footer or proper time can preserve your protection. We
-              assist you make sure everybody forward.
+              Smart property search powered by AI and guided by local experts, making buying and selling in the Costa del Sol simple and transparent.
             </p>
 
             {/* SOCIAL ICONS */}
@@ -98,25 +97,29 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               {/* "Home", "About us", "Privacy Policy", "Terms & Conditions" */}
               {[
-                { title: 'Home', link: '/' },
-                { title: 'About Us', link: App_url.link.ABOUT_ZECCO },
-                { title: 'Privacy Policy', link: '#' },
-                { title: 'Terms & Conditions', link: '#' }
-              ].map(
-                (item, i) => (
-                  <Link
-                    key={i}
-                    href={item?.link}
-                    className="hover:text-white font-manrope font-medium text-white/50 flex items-center gap-1 transition cursor-pointer"
-                  >
-                    <ChevronRight /> {item?.title}
-                  </Link>
-                ),
-              )}
+                { title: "Home", link: "/" },
+                { title: "About Us", link: App_url.link.ABOUT_ZECCO },
+                {
+                  title: "Privacy Policy",
+                  link: App_url?.link?.PRIVACY_POLICY,
+                },
+                {
+                  title: "Terms & Conditions",
+                  link: App_url?.link?.TERMS_CONDITION,
+                },
+              ].map((item, i) => (
+                <Link
+                  key={i}
+                  href={item?.link}
+                  className="hover:text-white font-manrope font-medium text-white/50 flex items-center gap-1 transition cursor-pointer"
+                >
+                  <ChevronRight /> {item?.title}
+                </Link>
+              ))}
             </ul>
           </div>
 
-          {/* HELP */}
+          
           <div>
             <div className="mb-3 ml-2">
               <h4 className="text-white font-instrument_sans text-md font-medium ">
@@ -141,8 +144,8 @@ export default function Footer() {
             </div>
             <ul className="space-y-3 text-sm">
               {[
-                { title: 'FAQs', link: '#' },
-                { title: 'Supports', link: App_url.link.CONTACT_US },
+                // { title: "FAQs", link: "#" },
+                { title: "Support", link: App_url.link.CONTACT_US },
               ].map((item, i) => (
                 <Link
                   key={i}

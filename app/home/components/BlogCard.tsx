@@ -1,16 +1,22 @@
-import Image from 'next/image'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 interface BlogCardProps {
-  id: string
-  title: string
-  excerpt: string
-  image: string
-  date: string
-  category: string
+  id: string;
+  title: string;
+  excerpt: string;
+  image: string;
+  date: string;
+  category: string;
 }
 
-export default function BlogCard({ title, excerpt, image, date, category }: BlogCardProps) {
+export default function BlogCard({
+  title,
+  excerpt,
+  image,
+  date,
+  category,
+}: BlogCardProps) {
   return (
     <div className="group bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-lg transition-all cursor-pointer">
       {/* Image */}
@@ -27,7 +33,9 @@ export default function BlogCard({ title, excerpt, image, date, category }: Blog
       <div className="p-6">
         {/* Category and Date */}
         <div className="flex justify-between items-center mb-3">
-          <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">{category}</span>
+          <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider">
+            {category}
+          </span>
           <span className="text-xs text-gray-500">{date}</span>
         </div>
 
@@ -46,5 +54,5 @@ export default function BlogCard({ title, excerpt, image, date, category }: Blog
         </div>
       </div>
     </div>
-  )
+  );
 }

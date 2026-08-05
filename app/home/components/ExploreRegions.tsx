@@ -1,13 +1,12 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { clearBreadcrumbs, setBreadcrumbs } from "@/redux/modules/main/action";
+import { citySlug } from "@/utils/common";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
 
-type ListingType = "buy" | "rent" | "new";
+type ListingType = "all" | "buy" | "rent" | "new";
 
 const LIMIT = 10;
 
@@ -15,11 +14,9 @@ const LIMIT = 10;
 const REGIONS_PER_CARD = 2;
 
 export default function ExploreRegions() {
-  const [selectedButton, setSelectedButton] = useState<ListingType>("buy");
+  const [selectedButton, setSelectedButton] = useState<ListingType>("all");
 
   const { sendMessage } = useWebSocket();
-
-  const dispatch = useDispatch();
 
   const { mainReducer } = usePosterReducers();
 
@@ -33,10 +30,13 @@ export default function ExploreRegions() {
 
   const [isHovered, setIsHovered] = useState(false);
 
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+
   const [areasData, setAreasData] = useState<any[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const totalPages = Math.ceil(totalCount / LIMIT);
   const loadedPages = useRef<Record<ListingType, Set<number>>>({
+    all: new Set(),
     buy: new Set(),
     rent: new Set(),
     new: new Set(),
@@ -45,36 +45,24 @@ export default function ExploreRegions() {
   // =========================
   // FETCH AREAS
   // =========================
-  const fetchAreas = (nextPage: number, selectedButtonType: ListingType) => {
+  const fetchAreas = (nextPage: number) => {
     if (nextPage > totalPages && totalPages !== 0) {
       return;
     }
 
-    if (loading || loadedPages.current[selectedButtonType].has(nextPage)) {
+    if (loading || loadedPages.current[selectedButton].has(nextPage)) {
       return;
     }
 
     setLoading(true);
 
-    loadedPages.current[selectedButtonType].add(nextPage);
+    loadedPages.current[selectedButton].add(nextPage);
 
     const requestPayload: any = {
       search: "",
       limit: LIMIT,
       page: nextPage,
     };
-
-    if (selectedButtonType === "buy") {
-      requestPayload.forSale = true;
-    }
-
-    if (selectedButtonType === "rent") {
-      requestPayload.forRent = true;
-    }
-
-    if (selectedButtonType === "new") {
-      requestPayload.isNewDev = true;
-    }
 
     sendMessage("action", {
       type: "locationService",
@@ -85,15 +73,10 @@ export default function ExploreRegions() {
     setPage(nextPage);
   };
 
-  // =========================
-  // TAB CHANGE
-  // =========================
-
   useEffect(() => {
-    setAreasData([]);
-
     setPage(1);
     loadedPages.current = {
+      all: new Set(),
       buy: new Set(),
       rent: new Set(),
       new: new Set(),
@@ -104,12 +87,8 @@ export default function ExploreRegions() {
       behavior: "smooth",
     });
 
-    fetchAreas(1, selectedButton);
+    fetchAreas(1);
   }, [selectedButton]);
-
-  // =========================
-  // API RESPONSE
-  // =========================
 
   useEffect(() => {
     const latestData = mainReducer?.search_by_area?.data || [];
@@ -118,8 +97,8 @@ export default function ExploreRegions() {
       setAreasData((prev) => {
         const existingIds = new Set(prev.map((item: any) => item?.name));
 
-        const newItems = latestData.filter(
-          (item: any) => !existingIds.has(item?.name),
+        const newItems = latestData?.filter(
+          (item: any) => !existingIds?.has(item?.name),
         );
 
         return [...prev, ...newItems];
@@ -131,41 +110,60 @@ export default function ExploreRegions() {
     setLoading(false);
   }, [mainReducer?.search_by_area?.data]);
 
-  // =========================
-  // GROUP CARDS (STRATIFIED PACKING)
-  // =========================
+  const getCountKey = () => {
+    switch (selectedButton) {
+      case "all":
+        return "all_count";
+      case "buy":
+        return "sale_count";
+      case "rent":
+        return "rent_count";
+      case "new":
+        return "newDev_count";
+      default:
+        return "property_count";
+    }
+  };
+
+  const filteredAreasData = useMemo(() => {
+    const countKey = getCountKey();
+
+    return areasData?.map((city: any) => ({
+      ...city,
+      property_count: city[countKey] || 0,
+
+      areas:
+        city?.areas
+          ?.filter((area: any) => (area[countKey] || 0) > 0)
+          ?.map((area: any) => ({
+            ...area,
+            property_count: area[countKey] || 0,
+          })) || [],
+    }))?.filter((city: any) => city?.property_count > 0 && city?.areas?.length > 0);
+  }, [areasData, selectedButton]);
 
   const groupedCards = useMemo(() => {
     const cards: any[][] = [];
-
-    // 1. Separate cities based on whether they have exactly 5 areas
-    const exactFiveAreaCities = areasData.filter(
+    const exactFiveAreaCities = filteredAreasData?.filter(
       (region) => Math.min(region?.areas?.length || 0, 5) === 5,
     );
-    const remainingCities = areasData.filter(
+    const remainingCities = filteredAreasData?.filter(
       (region) => Math.min(region?.areas?.length || 0, 5) < 5,
     );
 
-    // 2. First Phase: Force exactly 5-area cities into cards of 2
-    for (let i = 0; i < exactFiveAreaCities.length; i += 2) {
+    for (let i = 0; i < exactFiveAreaCities?.length; i += 2) {
       const pair = exactFiveAreaCities.slice(i, i + 2);
       cards.push(pair);
     }
 
-    // 3. Second Phase: Run layout packing calculations on the remaining smaller cities
     let currentCard: any[] = [];
     let currentCardSlotCount = 0;
 
-    // Total virtual slots allowed for smaller cities per card
     const MAX_SLOTS_PER_CARD = 12;
 
-    remainingCities.forEach((region) => {
+    remainingCities?.forEach((region) => {
       const activeAreasCount = Math.min(region?.areas?.length || 0, 5);
-
-      // Cost calculation: 2 slots for headers/spacing + area list length
       const regionSlotCost = 2 + activeAreasCount;
-
-      // If it overflows the card capacity, push current card container and reset
       if (
         currentCardSlotCount + regionSlotCost > MAX_SLOTS_PER_CARD &&
         currentCard.length > 0
@@ -178,18 +176,13 @@ export default function ExploreRegions() {
       currentCard.push(region);
       currentCardSlotCount += regionSlotCost;
     });
-
-    // Push any remaining small cities left over in the loop
     if (currentCard.length > 0) {
       cards.push(currentCard);
     }
 
     return cards;
-  }, [areasData]);
+  }, [filteredAreasData]);
 
-  // =========================
-  // AUTO SCROLL
-  // =========================
 
   useEffect(() => {
     const container = scrollRef.current;
@@ -209,7 +202,7 @@ export default function ExploreRegions() {
 
       // fetch more
       if (maxScrollLeft - container.scrollLeft < container.clientWidth * 1.5) {
-        fetchAreas(page + 1, selectedButton);
+        fetchAreas(page + 1);
       }
 
       // reset to first
@@ -218,72 +211,77 @@ export default function ExploreRegions() {
           left: 0,
           behavior: "smooth",
         });
+        setActiveCardIndex(0);
       } else {
         // move full card
         container.scrollBy({
           left: cardWidth,
           behavior: "smooth",
         });
+        setActiveCardIndex((prev) => Math.min(prev + 1, groupedCards.length - 1));
       }
     }, 3000);
 
     return () => clearInterval(interval);
   }, [page, isHovered, selectedButton]);
 
-  // =========================
-  // MANUAL SCROLL
-  // =========================
+  const updateActiveCardIndex = () => {
+    const container = scrollRef.current;
+    const card = container?.querySelector<HTMLElement>(".region-card");
+    if (!container || !card) return;
+
+    const cardWidth = card.offsetWidth + 24;
+    const index = Math.round(container.scrollLeft / cardWidth);
+    setActiveCardIndex(Math.min(index, groupedCards.length - 1));
+  };
+
+  const scrollToCard = (index: number) => {
+    const container = scrollRef.current;
+    const card = container?.querySelector<HTMLElement>(".region-card");
+    if (!container || !card) return;
+
+    const cardWidth = card.offsetWidth + 24;
+    container.scrollTo({
+      left: cardWidth * index,
+      behavior: "smooth",
+    });
+    setActiveCardIndex(index);
+  };
 
   const handleScroll = () => {
     const container = scrollRef.current;
 
     if (!container || loading) return;
 
+    updateActiveCardIndex();
+
     const maxScrollLeft = container.scrollWidth - container.clientWidth;
 
     const remaining = maxScrollLeft - container.scrollLeft;
 
     if (remaining <= container.clientWidth * 1.2) {
-      fetchAreas(page + 1, selectedButton);
+      fetchAreas(page + 1);
     }
   };
 
-  // =========================
-  // NAVIGATION
-  // =========================
-
-  const handleNavigate = (region: string) => {
-    dispatch(clearBreadcrumbs());
-
-    dispatch(
-      setBreadcrumbs([
-        {
-          label: "Home",
-          href: "/",
-        },
-        {
-          label: "Costa del Sol areas and Cities",
-          href: App_url.link.COSTA_DEL_SOL,
-        },
-        {
-          label: region,
-          href: `${App_url.link.COSTA_DEL_SOL}/${region}`,
-        },
-      ]),
-    );
-
-    router.push(`${App_url.link.COSTA_DEL_SOL}/${region}`);
+  const handleNavigate = (region: any) => {
+    if (!region) return;
+    router.push(`${App_url.link.COSTA_DEL_SOL}/properties?city=${citySlug(region?.name)}`);
   };
 
   const TABS = [
     {
+      label: "All",
+      value: "all",
+    },
+    {
       label: "Buy",
       value: "buy",
     },
-    {
-      label: "Rent",
-      value: "rent",
-    },
+    // {
+    //   label: "Rent",
+    //   value: "rent",
+    // },
     {
       label: "New",
       value: "new",
@@ -313,11 +311,10 @@ export default function ExploreRegions() {
             <button
               key={i}
               onClick={() => setSelectedButton(tab?.value)}
-              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md transition-all duration-300 ${
-                tab?.value === selectedButton
+              className={`px-4 py-2 font-manrope font-bold uppercase text-sm rounded-md transition-all duration-300 ${tab?.value === selectedButton
                   ? "bg-[#0F172A] text-white"
                   : "text-slate-500 hover:bg-slate-100"
-              }`}
+                }`}
             >
               {tab?.label}
             </button>
@@ -354,7 +351,7 @@ export default function ExploreRegions() {
             >
               {/* Changed gap-6 to justify-between or smaller gap to maximize space */}
               <div className="flex flex-col h-full gap-4 justify-start">
-                {card.map((region: any, regionIndex: number) => (
+                {card?.map((region: any, regionIndex: number) => (
                   <div
                     key={regionIndex}
                     className="
@@ -365,15 +362,15 @@ export default function ExploreRegions() {
             "
                   >
                     <h3 className="font-manrope font-extrabold text-lg text-[#111827] mb-1">
-                      {region.name}
+                      {region?.name}
                     </h3>
 
                     <div className="flex justify-between items-center gap-2 my-2">
                       <h2 className="inline-block text-xs font-medium text-[#64748B] tracking-wider uppercase bg-[#F3F4F6] px-3 py-1 rounded-md">
-                        {region.property_count} PROPERTIES
+                        {region?.property_count} PROPERTIES
                       </h2>
                       <button
-                        onClick={() => handleNavigate(region?.name)}
+                        onClick={() => handleNavigate(region)}
                         className="text-[#4A86E8] font-manrope font-bold text-sm transition hover:opacity-90"
                       >
                         View
@@ -407,6 +404,22 @@ export default function ExploreRegions() {
                 ))}
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* DOT INDICATORS - Mobile only */}
+        <div className="flex md:hidden justify-center gap-2 mt-4">
+          {groupedCards.map((_: any, index: number) => (
+            <button
+              key={index}
+              onClick={() => scrollToCard(index)}
+              className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                index === activeCardIndex
+                  ? "bg-[#0F172A] w-6"
+                  : "bg-slate-300"
+              }`}
+              aria-label={`Go to card ${index + 1}`}
+            />
           ))}
         </div>
       </div>

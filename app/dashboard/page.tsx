@@ -1,24 +1,75 @@
-import SidebarLayout from '@/components/layouts/sidebar-layout'
-import React from 'react'
-import DashboardCard from './components/dashboard-cards'
-import Favorite from './components/favorite'
-import AiInsights from './components/aiInsights'
-import SavedSearches from './components/saved-searches'
+"use client";
+import { useWebSocket } from "@/api/socket/WebSocketContext";
+import AgentCard from "@/components/cards/agent-card";
+import CommonCard from "@/components/cards/common-card";
+import ChatbotWidget from "@/components/chat/chatbot-widget";
+import SidebarLayout from "@/components/layouts/sidebar-layout";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setChatBadgeOpen } from "@/redux/modules/main/action";
+import { ArrowRight } from "lucide-react";
+import Head from "next/head";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import Greeting from "./components/greating";
 
 const DashboardPage = () => {
-    return (
-        <SidebarLayout>
-            <div className="px-5 lg:px-12  pt-12 pb-4 mb-10
-                            bg-gradient-to-r
-                        from-[#60A5FA]/10
-                        via-[#fafafa] via-[70%]
-                        to-[#fafafa] to-[100%]">
-                <SavedSearches/>
-                <Favorite/>
-                <AiInsights/>
-            </div>
-        </SidebarLayout>
-    )
-}
+  const { user_data } = usePosterReducers();
+  const { sendMessage, isConnected } = useWebSocket();
+  const dispatch = useDispatch()
 
-export default DashboardPage
+  useEffect(() => {
+    if (!isConnected) return
+    sendMessage("action", {
+      type: "savedSearchService",
+      action: "list",
+      payload: {},
+    });
+    sendMessage("action", {
+      type: "userService",
+      action: "favoritePropertyList",
+      payload: {},
+    });
+    sendMessage("action", {
+      type: "chatService",
+      action: "list",
+      payload: {},
+    });
+  }, [])
+
+
+  return (
+    <SidebarLayout>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <div className="lg:flex items-start gap-3  ">
+        <div className="lg:w-[70%]">
+          <Greeting />
+        </div>
+        <div className="lg:w-[30%] lg:block max-lg:mt-5 sm:grid grid-cols-2 items-stretch gap-5">
+          <div>
+            <CommonCard heading="AI Concierge" className="max-lg:h-full 2xl:h-[27vh] !py-4 max-2xl:!px-[14.3px]">
+              <p className="bg-[#edf0f7] p-[14.5px] lg:my-2.5 xl:my-1 2xl:my-3  tracking-wide  rounded-xl font-manrope text-[#64748B] font-medium max-sm:text-xs sm:text-[15px] lg:text-[12.6px] xl:text-sm">
+               Your personal AI property assistant is always searching for homes that fit your preferences. Discover curated recommendations, market insights, and new listings tailored just for you.
+              </p>
+              <button
+                onClick={() => dispatch(setChatBadgeOpen(true))}
+                className="relative justify-center flex items-center gap-2 w-full mt-[16px] sm:mt-7 lg:mt-2 2xl:mt-[16px]  py-3.5 px-10 rounded-2xl bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] text-white text-sm font-manrope font-extrabold shadow-md disabled:opacity-50"
+              >
+                Chat with AI <ArrowRight className="w-4 h-4" />
+              </button>
+            </CommonCard>
+          </div>
+          <div className="lg:mt-4 max-sm:mt-5">
+            {user_data?.user?.agent?.agent && (
+              <AgentCard />
+            )}
+          </div>
+        </div>
+      </div>
+     <ChatbotWidget />
+    </SidebarLayout>
+  );
+};
+
+export default DashboardPage;

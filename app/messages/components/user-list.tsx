@@ -1,17 +1,18 @@
 import { URL } from "@/api/rest/fetchData";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import ProfileAvatar from "@/components/profile";
-import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { formatTime } from "@/utils/common";
 import { Search } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export interface IParticipant {
   _id: string;
   first_name: string;
   last_name: string;
   profile_image?: string;
+  active_status?: string;
 }
 
 export interface IChat {
@@ -36,97 +37,149 @@ const UserList: React.FC<UserListProps> = ({
 }) => {
   const { user_data } = usePosterReducers();
   const { sendMessage } = useWebSocket();
-  const [search, setSearch] = useState("");
 
-  const handleSearch = () => {
+  const handleCallBack = (user: any) => {
+    onSelect?.(user);
     sendMessage("action", {
       type: "chatService",
-      action: "list",
-      payload: {
-        search: search,
-      },
+      action: "mark_as_read",
+      payload: { chat_id: user?._id },
     });
   };
 
+  useEffect(() => {
+    sendMessage("action", {
+      type: "chatService",
+      action: "list",
+      payload: {},
+    });
+  }, [user_data])
+
+  
   return (
-    <div className="bg-[#F5F7FA] p-4 px-6 rounded-lg h-full">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="font-bold text-md text-[#111827]">Messages</h2>
-      </div>
-
-      <div className="relative mb-4">
-        <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          size={18}
-        />
-        <input
-          placeholder="Search"
-          className="w-full bg-white h-11 pl-10 pr-4 rounded-xl text-sm outline-none"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearch();
-            }
-          }}
-        />
-      </div>
-
-      {userList?.map((user: any) => {
-        const findParticipant = user.participants.find(
-          (p: any) => p._id !== user_data?.user?._id,
-        );
-        return (
-          <div
-            key={user._id}
-            onClick={() => {
-              onSelect?.(user);
-              sendMessage("action", {
-                type: "chatService",
-                action: "mark_as_read",
-                payload: {
-                  chat_id: user?._id,
-                },
-              });
-            }}
-            className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer ${selectedUser?._id === user._id ? "bg-white hover:bg-blue-100" : "hover:bg-white"} hover:bg-white transition mt-3`}
-          >
-            <div className="relative w-12 h-12">
-              {findParticipant?.profile_image ? (
-                <Image
-                  src={URL + findParticipant.profile_image}
-                  alt={findParticipant?.first_name}
-                  width={48}
-                  height={48}
-                  className="rounded-full h-full w-full object-cover"
-                />
-              ) : (
-                <>
-                  <ProfileAvatar
-                    name={`${findParticipant?.first_name}  ${findParticipant?.last_name}`}
-                    className="!w-12 !h-12 !text-2xl border-4 border-[#EFF6FF] !text-white !bg-[#2563EB]"
-                  />
-                </>
-              )}
-              {/* <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" /> */}
+    <div className="flex flex-col h-[80vh] border-r bg-[#F8F9FA] overflow-hidden max-lg:rounded-2xl rounded-bl-2xl rounded-tl-2xl">
+      {/* User list */}
+      <div className="flex-1 overflow-y-auto min-h-0 px-4 py-3">
+        <div className="border-b mb-3 pb-2">
+          <h1 className="font-bold font-manrope text-[#64748B]">
+            Recent Conversations
+          </h1>
+        </div>
+        {userList?.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="w-16 h-16 rounded-full bg-[#EFF6FF] flex items-center justify-center mb-3">
+              <Search className="w-7 h-7 text-[#2F80FF]" />
             </div>
-            <div>
-              <h3 className="text-sm font-semibold text-[#111827]">
-                {findParticipant?.first_name} {findParticipant?.last_name}
-              </h3>
-              <p className="text-xs text-gray-400">{user?.message}</p>
-            </div>
-
-            {user.unread_count > 0 && (
-              <span className="ml-auto bg-[#111827] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">
-                {user.unread_count}
-              </span>
-            )}
+            <p className="text-sm font-manrope font-medium text-gray-500">
+              No conversations yet
+            </p>
           </div>
-        );
-      })}
+        ) : (
+          [...(userList || [])]?.sort((a: any, b: any) => {
+            const aParticipant = a?.participants?.find(
+              (p: any) => p?._id !== user_data?.user?._id,
+            );
+            const bParticipant = b?.participants?.find(
+              (p: any) => p?._id !== user_data?.user?._id,
+            );
+            const aActive = aParticipant?.active_status === "active" ? 1 : 0;
+            const bActive = bParticipant?.active_status === "active" ? 1 : 0;
+            return bActive - aActive;
+          })?.map((user: any) => {
+            const findParticipant = user?.participants?.find(
+              (p: any) => p?._id !== user_data?.user?._id,
+            );
+            const isSelected = selectedUser?._id === user?._id;
+            return (
+              <div
+                key={user?._id}
+                onClick={() => handleCallBack(user)}
+                className={`flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition-all duration-200 mb-0.5 group ${isSelected
+                  ? "bg-[#F0FDFA] border border-[#99F6E4]"
+                  : "hover:bg-[#F1F5F9]"
+                  }`}
+              >
+                {/* Avatar */}
+                <div className="relative shrink-0">
+                  {findParticipant?.profile_image ? (
+                    <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-white shadow-sm">
+                      <Image
+                        src={URL + findParticipant?.profile_image}
+                        alt={findParticipant?.first_name}
+                        width={48}
+                        height={48}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <ProfileAvatar
+                      name={`${findParticipant?.first_name} ${findParticipant?.last_name}`}
+                      className={`!w-12 !h-12 !text-lg !font-bold border-2 ${isSelected
+                        ? "!text-[#0F172A] bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] border-white"
+                        : "!text-white !bg-[#2F80FF] border-[#EFF6FF]"
+                        }`}
+                    />
+                  )}
+                  {/* {findParticipant?.active_status !== undefined && (
+                    <span
+                      className={`absolute bottom-0 right-0 w-3 h-3 border-2 border-white rounded-full ${
+                        findParticipant?.active_status === "active"
+                          ? "bg-emerald-400"
+                          : "bg-red-500"
+                      }`}
+                    />
+                  )} */}
+                </div>
+
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between">
+                    <h3 className="text-sm font-bold font-manrope truncate text-[#0F172A] min-w-0">
+                      {findParticipant?.first_name}{" "}
+                      {findParticipant?.last_name}
+                    </h3>
+                    <div className="flex flex-col items-end gap-0.5 shrink-0 ml-2">
+                      {(findParticipant?.active_status !== undefined && findParticipant?.active_status !== "active") && (
+                        <span className="px-2 bg-black/20 text-black text-xs font-bold font-manrope py-0.5 rounded-md shadow-sm whitespace-nowrap">
+                          Archived
+                        </span>
+                      )}
+                      {user?.unread_count > 0 && (
+                        <span
+                          className={`text-[10px] font-bold min-w-[20px] h-5 px-1.5 rounded-full flex items-center justify-center ${isSelected
+                            ? "bg-white text-[#2F80FF]"
+                            : "bg-[#2F80FF] text-white"
+                            }`}
+                        >
+                          {user?.unread_count > 99
+                            ? "99+"
+                            : user?.unread_count}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-0.5">
+                    <p
+                      className={`text-xs truncate font-manrope ${isSelected ? "text-[#64748B]" : "text-gray-400"
+                        }`}
+                    >
+                      {user?.message || "Start a conversation..."}
+                    </p>
+                    <span
+                      className={`text-[10px] font-manrope shrink-0 ml-2 ${isSelected ? "text-[#64748B]" : "text-gray-400"
+                        }`}
+                    >
+                      {formatTime(user?.updatedAt)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 };
 
-export default UserList;
+export default React.memo(UserList);

@@ -4,213 +4,459 @@ import React, {
   memo,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
 
 import { useRouter } from "next/navigation";
-import { useDispatch, shallowEqual } from "react-redux";
-
-import { ChevronDown, Search, SearchIcon, Sparkles } from "lucide-react";
-
+import { ChevronDown, Loader2, MapPlus, Search, SearchIcon } from "lucide-react";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import {
-  setBreadcrumbs,
-  setPropertyFilter,
-} from "@/redux/modules/main/action";
+import { citySlug } from "@/utils/common";
+
+const PREBUILT_SUGGESTIONS_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL
+    ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/search/prebuilt-suggestions`
+    : "http://localhost:8000/api/search/prebuilt-suggestions";
+
+const PARSE_FILTERS_URL =
+  process.env.NEXT_PUBLIC_ENDPOINT_API_URL
+    ? `${process.env.NEXT_PUBLIC_ENDPOINT_API_URL}/api/search/parse-filters`
+    : "http://localhost:8000/api/search/parse-filters";
+
+let prebuiltSuggestionsPromise: Promise<any[]> | null = null;
+let prebuiltSuggestionsCache: any[] | null = null;
+
+async function loadPrebuiltSuggestions() {
+  if (prebuiltSuggestionsCache) {
+    return prebuiltSuggestionsCache;
+  }
+
+  if (!prebuiltSuggestionsPromise) {
+    prebuiltSuggestionsPromise = fetch(PREBUILT_SUGGESTIONS_URL, {
+      method: "GET",
+      headers: {
+        accept: "*/*",
+      },
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error("Failed to load prebuilt suggestions");
+        }
+
+        const json = await res.json();
+        const suggestions = json?.data?.suggestions;
+        prebuiltSuggestionsCache = Array.isArray(suggestions) ? suggestions : [];
+        return prebuiltSuggestionsCache;
+      })
+      .catch(() => {
+        prebuiltSuggestionsCache = [];
+        return [];
+      })
+      .finally(() => {
+        prebuiltSuggestionsPromise = null;
+      });
+  }
+
+  return prebuiltSuggestionsPromise;
+}
+
+async function parseSearchQuery(query: string): Promise<Record<string, any>> {
+  const res = await fetch(PARSE_FILTERS_URL, {
+    method: "POST",
+    headers: {
+      accept: "*/*",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  });
+  if (!res.ok) throw new Error("Failed to parse search query");
+  const json = await res.json();
+  return json?.data?.filters || {};
+}
+
+function applyFiltersToParams(
+  filters: Record<string, any>,
+  propertyTypeList: any[],
+  selectedCategoryId?: number | string | null,
+): URLSearchParams {
+  const params = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+
+    if (key === "bedrooms") {
+      params.set("bedroomsFrom", String(value));
+      params.set("bedroomsTo", String(value));
+      return;
+    }
+
+    if (key === "propertyType") {
+      params.set("categories", value);
+      return;
+    }
+
+    if (key === "cities") {
+      params.set("city", String(value));
+      return;
+    }
+    if (key === "areas") {
+      params.set("area", String(value));
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => params.append(key, String(v)));
+    } else {
+      params.set(key, String(value));
+    }
+  });
+
+  if (!params.has("categories") && selectedCategoryId) {
+    params.set("categories", String(selectedCategoryId));
+  }
+
+  return params;
+}
+
+const getPropertyType = (
+  search: string,
+  propertyTypes: any[]
+) => {
+  const text = search.toLowerCase();
+
+  return propertyTypes.find((item) => {
+    const name = item.name.toLowerCase();
+
+    return (
+      text.includes(name) ||
+      text.includes(name.replace(/s$/, "")) // apartment -> apartments
+    );
+  });
+};
 
 const PropertySearchBar = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
-
-  const { sendMessage, isConnected } =
-    useWebSocket();
-
-  const {
-    mainReducer,
-  } = usePosterReducers();
-
-  const propertyTypes =
-    mainReducer?.property_type_list || [];
-
-  const locations =
-    mainReducer?.location_list_without_limit
-      ?.data || [];
-
-  const [buttonActivate, setButtonActivate] =
-    useState<"buy" | "rent">("buy");
-
+  const { sendMessage, isConnected, lastEvent } = useWebSocket();
+  const { mainReducer } = usePosterReducers();
+  const propertyTypes = mainReducer?.property_type_list || [];
   const [open, setOpen] = useState(false);
+  const [searchDropdown, setSearchDropdown] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState<any>(null);
+  const [selected, setSelected] = useState<any>('');
+  const [dropdownPosition, setDropdownPosition] = useState<"top" | "bottom">("bottom");
+  const [propertyDropdownPosition, setPropertyDropdownPosition] = useState<"top" | "bottom">("bottom");
+  const [isSearching, setIsSearching] = useState(false);
 
-  const [searchDropdown, setSearchDropdown] =
-    useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const [searchSuggestions, setSearchSuggestions] = useState<any[]>([]);
+  const [prebuiltSuggestions, setPrebuiltSuggestions] = useState<any[]>([]);
+  const autocompleteSuggestionsRef = useRef<any[]>([]);
 
-  const [searchText, setSearchText] =
-    useState("");
-
-  const [selectedLocation, setSelectedLocation] =
-    useState<any>(null);
-
-  const [selected, setSelected] = useState<any>(
-    propertyTypes?.[0] || null
-  );
-
-  const dropdownRef =
-    useRef<HTMLDivElement>(null);
-
-  const searchRef =
-    useRef<HTMLDivElement>(null);
-
-  // =========================
-  // INITIAL DATA FETCH
-  // =========================
   useEffect(() => {
     if (!isConnected) return;
-
     sendMessage("action", {
       type: "propertyService",
       action: "propertyTypes",
       payload: {},
     });
-
-    sendMessage("action", {
-      type: "locationService",
-      action: "list",
-      payload: {
-        search: "",
-        limit: 0,
-        page: 1,
-        status: true,
-      },
-    });
   }, [isConnected, sendMessage]);
 
-  // =========================
-  // DEFAULT PROPERTY TYPE
-  // =========================
-  useEffect(() => {
-    if (
-      propertyTypes?.length > 0 &&
-      !selected
-    ) {
-      setSelected(propertyTypes[0]);
-    }
-  }, [propertyTypes, selected]);
 
-  // =========================
-  // OUTSIDE CLICK
-  // =========================
-  useEffect(() => {
-    const handleClickOutside = (
-      event: MouseEvent
-    ) => {
-      const target =
-        event.target as Node;
+  // useEffect(() => {
+  //   if (propertyTypes?.length > 0 && !selected) {
+  //     setSelected(propertyTypes[0]);
+  //   }
+  // }, [propertyTypes, selected]);
 
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(target)
-      ) {
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      if (dropdownRef.current && !dropdownRef.current.contains(target)) {
         setOpen(false);
       }
 
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(target)
-      ) {
+      if (searchRef.current && !searchRef.current.contains(target)) {
         setSearchDropdown(false);
       }
     };
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  // =========================
-  // FILTERED LOCATIONS
-  // =========================
-  const filteredLocations = useMemo(() => {
-    if (!searchText.trim()) {
-      return locations;
+  // const handleSearch = useCallback(async () => {
+  //   if (isSearching || !searchText.trim()) return;
+  //   setIsSearching(true);
+  //   try {
+  //     const filters = await parseSearchQuery(searchText);
+  //     console.log("filters ::: " , filters)
+  //     console.log("propertyTypes ::: " , propertyTypes)
+  //     const params = applyFiltersToParams(filters, propertyTypes, selected?.id);
+  //     // router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+  //   } catch {
+  //     const params = new URLSearchParams();
+  //     if (selected?.id) params.set("categories", String(selected.id));
+  //     if (searchText) params.set("city", citySlug(searchText));
+  //     router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
+  //   } finally {
+  //     setIsSearching(false);
+  //   }
+  // }, [router, selected, searchText, propertyTypes, isSearching]);
+
+
+  const handleSearch = useCallback(async () => {
+    if (isSearching || !searchText.trim()) return;
+
+    setIsSearching(true);
+
+    try {
+      const matchedType = getPropertyType(searchText, propertyTypes);
+
+      // Update selected dropdown
+      if (matchedType) {
+        setSelected(matchedType);
+      }
+
+      const filters = await parseSearchQuery(searchText);
+
+      const params = applyFiltersToParams(
+        filters,
+        propertyTypes,
+        matchedType?.id || selected?.id
+      );
+      // if (matchedType) {
+      //   params.set("categories", String(matchedType?.id));
+      // }
+      router.push(
+        `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+      );
+    } catch {
+      const matchedType = getPropertyType(searchText, propertyTypes);
+
+      if (matchedType) {
+        setSelected(matchedType);
+      }
+
+      const params = new URLSearchParams();
+
+      if (selected?.id) {
+        params.set("categories", String(selected.id));
+      }
+
+      if (searchText) {
+        params.set("city", citySlug(searchText));
+      }
+
+      router.push(
+        `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+      );
+    } finally {
+      setIsSearching(false);
+    }
+  }, [router, selected, searchText, propertyTypes, isSearching]);
+
+  const callSearch = (data: any) => {
+    const params = new URLSearchParams();
+    const filters = data.filters || {};
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === "") return;
+
+      if (key === "bedrooms") {
+        params.set("bedroomsFrom", String(value));
+        params.set("bedroomsTo", String(value));
+        return;
+      }
+      if (key === "propertyType") {
+        const searchVal = String(value).toLowerCase().trim();
+        const matched = mainReducer?.property_type_list?.find((t: any) => {
+          const name = t.name?.toLowerCase().trim() || "";
+          return name === searchVal || name.includes(searchVal) || searchVal.includes(name);
+        });
+        if (matched?.id) params.set("categories", String(matched.id));
+        return;
+      }
+
+      if (Array.isArray(value)) {
+        value.forEach((v) => params.append(key, String(v)));
+      } else {
+        params.set(key, String(value));
+      }
+    });
+
+    if (!params.has("city") && filters.cities) {
+      params.set("city", String(filters.cities));
     }
 
-    const lower =
-      searchText.toLowerCase();
-
-    return locations.filter((item: any) =>
-      item?.name
-        ?.toLowerCase()
-        ?.includes(lower)
-    );
-  }, [locations, searchText]);
-
-  // =========================
-  // HANDLERS
-  // =========================
-  const handleSearch = useCallback(() => {
-    if (!selectedLocation) return;
-
-    dispatch(setPropertyFilter({
-      propertyTypes: selected?.id,
-      propertyType: buttonActivate
-    }))
-
-    dispatch(
-      setBreadcrumbs([
-        ...mainReducer.breadcrumbs,
-        {
-          label:
-            "Costa del Sol areas and Cities",
-          href: `${App_url.link.COSTA_DEL_SOL}/${selected?.id}`,
-        },
-        {
-          label: selectedLocation?.name,
-          href: `${App_url.link.COSTA_DEL_SOL}/${selectedLocation?.id}`,
-        },
-      ])
-    );
-
     router.push(
-      `${App_url.link.COSTA_DEL_SOL}/${selectedLocation?.id}`
+      `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
     );
-  }, [
-    dispatch,
-    mainReducer?.breadcrumbs,
-    router,
-    selected,
-    selectedLocation,
-  ]);
+  };
 
-  const handleLocationSelect =
-    useCallback((item: any) => {
-      setSelectedLocation(item);
-      setSearchText(item?.name);
+
+  const openMapSearch = useCallback(
+    (mode: "draw" | "select" = "draw") => {
       setSearchDropdown(false);
-    }, []);
+      router.push(`/map-search?mode=${mode}`);
+    },
+    [router],
+  );
 
-  const handleInputChange =
-    useCallback(
-      (
-        e: React.ChangeEvent<HTMLInputElement>
-      ) => {
-        setSearchText(e.target.value);
-        setSelectedLocation(null);
-        setSearchDropdown(true);
-      },
-      []
-    );
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    if (
+      lastEvent?.data?.request?.type === "searchService" &&
+      lastEvent?.data?.request?.action === "autocompleteSearch"
+    ) {
+      autocompleteSuggestionsRef.current = lastEvent.data?.data?.suggestions || [];
+
+      const value = searchText.trim().toLowerCase();
+      const localMatches = prebuiltSuggestions.filter((item: any) =>
+        String(item?.title || "").toLowerCase().includes(value),
+      );
+
+      if (!value) {
+        setSearchSuggestions(prebuiltSuggestions);
+        return;
+      }
+
+      if (localMatches.length > 0) {
+        setSearchSuggestions(localMatches);
+        return;
+      }
+
+      setSearchSuggestions(autocompleteSuggestionsRef.current);
+    }
+  }, [lastEvent, prebuiltSuggestions, searchText]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    loadPrebuiltSuggestions().then((suggestions) => {
+      if (!isMounted) return;
+
+      setPrebuiltSuggestions(suggestions);
+
+      const value = searchText.trim().toLowerCase();
+      if (!value) {
+        setSearchSuggestions(suggestions);
+        return;
+      }
+
+      const localMatches = suggestions.filter((item: any) =>
+        String(item?.title || "").toLowerCase().includes(value),
+      );
+
+      if (localMatches.length > 0) {
+        setSearchSuggestions(localMatches);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      const normalizedValue = value.trim().toLowerCase();
+      const localMatches = prebuiltSuggestions.filter((item: any) =>
+        String(item?.title || "").toLowerCase().includes(normalizedValue),
+      );
+
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+
+      setSearchText(value);
+      setSelectedLocation(null);
+      setSearchDropdown(true);
+      handleSearchFocus();
+
+      if (!value.trim()) {
+        setSearchSuggestions(prebuiltSuggestions);
+        return;
+      }
+
+      if (localMatches.length > 0) {
+        setSearchSuggestions(localMatches);
+        return;
+      }
+
+      debounceRef.current = setTimeout(() => {
+        sendMessage("action", {
+          type: "searchService",
+          action: "autocompleteSearch",
+          payload: {
+            query: value,
+          },
+        });
+      }, 300);
+    },
+    [prebuiltSuggestions, sendMessage],
+  );
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
+  const handleSearchFocus = () => {
+    if (!searchRef.current) return;
+
+    const rect = searchRef.current.getBoundingClientRect();
+
+    const dropdownHeight = 320;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+      setDropdownPosition("top");
+    } else {
+      setDropdownPosition("bottom");
+    }
+
+    setSearchDropdown(true);
+  };
+
+  const handlePropertyDropdown = () => {
+    if (!dropdownRef.current) return;
+
+    const rect = dropdownRef.current.getBoundingClientRect();
+
+    const dropdownHeight = 250;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+      setPropertyDropdownPosition("top");
+    } else {
+      setPropertyDropdownPosition("bottom");
+    }
+
+    setOpen((prev) => !prev);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+
 
   return (
     <div className="w-full max-w-[52rem] mx-auto">
@@ -220,83 +466,65 @@ const PropertySearchBar = () => {
           sm:items-center
           gap-3 sm:gap-2
           rounded-full
-          lg:border border-border-gray
-          lg:bg-white
+          sm:border border-border-gray
+          sm:bg-white
           px-2 py-3 sm:py-1.5
           shadow-sm
         "
       >
-        <div className="flex gap-5 max-md:bg-white max-md:rounded-full max-md:p-1">
+        <div className="flex max-sm:gap-1 gap-2 max-md:bg-white max-md:rounded-full max-md:p-1">
           {/* BUY / RENT */}
-          <div className="flex items-center rounded-full bg-[#D6E0EC] p-1 gap-2 w-full sm:w-auto">
+          <div className="flex items-center rounded-full bg-[#D6E0EC] p-1 w-full sm:w-auto">
             <button
-              onClick={() =>
-                setButtonActivate("buy")
-              }
-              className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 ${buttonActivate === "buy"
-                  ? "bg-sky_blue_color text-white"
-                  : "text-[#0F172A]"
-                }`}
+              className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 bg-[#D6E0EC] text-black`}
             >
               Buy
             </button>
-
-            <button
-              onClick={() =>
-                setButtonActivate("rent")
-              }
-              className={`flex-1 sm:flex-none rounded-full font-manrope font-semibold text-sm px-5 py-3 ${buttonActivate === "rent"
-                  ? "bg-sky_blue_color text-white"
-                  : "text-[#0F172A]"
-                }`}
-            >
-              Rent
-            </button>
           </div>
 
-          {/* PROPERTY TYPE */}
           <div className="flex items-center rounded-full bg-[#D6E0EC] p-2 w-full sm:w-auto">
-            <div
-              ref={dropdownRef}
-              className="relative"
-            >
+            <div ref={dropdownRef} className="relative w-full sm:w-auto">
               <button
-                onClick={() =>
-                  setOpen((prev) => !prev)
-                }
-                className="flex items-center w-[130px] truncate justify-between gap-2 rounded-full px-3 py-2 text-sm font-semibold min-w-[120px]"
+                onClick={handlePropertyDropdown}
+                className="flex items-center justify-center w-full sm:w-[130px] truncate gap-2 rounded-full px-3 py-2 text-sm font-semibold sm:min-w-[120px]"
               >
-                {selected?.name}
+                <span className="truncate">{selected ? selected?.name : propertyTypes?.[0]?.name}</span>
 
                 <ChevronDown
                   size={14}
-                  className={`transition-transform duration-200 ${open ? "rotate-180" : ""
+                  className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""
                     }`}
                 />
               </button>
 
               {open && (
-                <div className="absolute left-0 mt-2 w-44 rounded-xl bg-white shadow-lg border border-slate-200 z-50">
+                <div
+                  className={`
+                            absolute left-0 w-44 rounded-xl bg-white shadow-lg border
+                            border-slate-200 z-50 max-h-[300px] overflow-y-auto
+                            ${propertyDropdownPosition === "bottom"
+                      ? "top-full mt-2"
+                      : "bottom-full mb-2"
+                    }
+                          `}
+                >
                   <ul className="py-1 text-sm text-slate-700">
-                    {propertyTypes.map(
-                      (item: any) => (
-                        <li key={item?.id}>
-                          <button
-                            onClick={() => {
-                              setSelected(item);
-                              setOpen(false);
-                            }}
-                            className={`w-full px-4 py-2 text-left transition ${selected?.id ===
-                                item?.id
-                                ? "bg-slate-100 font-semibold"
-                                : "hover:bg-slate-100"
-                              }`}
-                          >
-                            {item?.name}
-                          </button>
-                        </li>
-                      )
-                    )}
+                    {propertyTypes?.map((item: any) => (
+                      <li key={item?.id}>
+                        <button
+                          onClick={() => {
+                            setSelected(item);
+                            setOpen(false);
+                          }}
+                          className={`w-full px-4 py-2 text-center transition ${selected?.id === item?.id
+                            ? "bg-slate-100 font-semibold"
+                            : "hover:bg-slate-100"
+                            }`}
+                        >
+                          {item?.name}
+                        </button>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               )}
@@ -304,74 +532,104 @@ const PropertySearchBar = () => {
           </div>
         </div>
 
-        {/* SEARCH */}
         <div
           ref={searchRef}
-          className="flex max-md:bg-white max-md:rounded-full max-md:p-[2px] lg:w-full relative"
+          className="flex max-md:bg-white max-md:rounded-full max-md:p-[2px] sm:w-full relative"
         >
           <div className="flex max-md:flex-1 items-center gap-2 px-3 max-md:my-3 w-full">
-            <Search
-              size={18}
-              className="text-slate-gray shrink-0"
-            />
+            <Search size={18} className="text-slate-gray shrink-0" />
 
             <input
               type="text"
               placeholder="Search in Spain..."
               value={searchText}
-              onFocus={() =>
-                setSearchDropdown(true)
-              }
+              onFocus={handleSearchFocus}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
               className="w-full bg-transparent text-md text-dark-navy placeholder-slate-gray outline-none"
             />
+
+            {/* {isSearching && (
+              <Loader2 size={18} className="text-slate-gray shrink-0 animate-spin" />
+            )} */}
           </div>
 
           {searchDropdown && (
-            <div className="absolute left-0 top-full mt-2 w-full rounded-xl bg-white shadow-lg border border-slate-200 z-50 max-h-[300px] overflow-y-auto">
-              {filteredLocations.length >
-                0 ? (
-                <ul className="py-1 text-sm text-slate-700">
-                  {filteredLocations.map(
-                    (item: any) => (
-                      <li key={item?.id}>
-                        <button
-                          onClick={() =>
-                            handleLocationSelect(
-                              item
-                            )
-                          }
-                          className="w-full px-4 py-3 text-left hover:bg-slate-100 transition"
-                        >
-                          {item?.name}
-                        </button>
-                      </li>
-                    )
+            <div
+              className={`
+                  absolute left-0 w-full rounded-xl bg-white shadow-lg border
+                  border-slate-200 z-50 max-h-[300px] overflow-y-auto
+                  ${dropdownPosition === "bottom"
+                  ? "top-full mt-2"
+                  : "bottom-full mb-2"
+                }
+                `}
+            >
+              <ul className="py-1 text-sm text-slate-700">
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      openMapSearch("draw");
+                    }}
+                    className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-slate-100 transition font-medium"
+                  >
+                    <MapPlus size={18} className="shrink-0" />
+                    <span>Draw your area</span>
+                  </button>
+                </li>
+
+                {searchSuggestions?.map((item: any, index) => (
+                  <li key={index}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        callSearch(item)
+                      }}
+                      className="w-full px-4 py-3 text-left hover:bg-slate-100 transition"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span>{item.title}</span>
+
+                        <span className="text-xs text-gray-500">
+                          {item.count} properties
+                        </span>
+                      </div>
+                    </button>
+                  </li>
+                ))}
+
+                {searchText &&
+                  searchSuggestions.length === 0 && (
+                    <li className="px-4 py-3 text-gray-500">
+                      No suggestions found
+                    </li>
                   )}
-                </ul>
-              ) : (
-                <div className="px-4 py-3 text-sm text-gray-500">
-                  No locations found
-                </div>
-              )}
+              </ul>
             </div>
           )}
 
           <button
             onClick={handleSearch}
+            disabled={isSearching}
             className="
-              lg:w-[30%]
+              sm:w-[30%]
               whitespace-nowrap
               flex items-center justify-center gap-2
               rounded-full
-              bg-sky_blue_color
+              bg-[#0a6fd1]
               px-9 py-4
               text-sm font-semibold text-white
               hover:opacity-90 transition
+              disabled:opacity-60 disabled:cursor-not-allowed
             "
           >
-            <SearchIcon size={16} />
-            Search
+            {isSearching ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <SearchIcon size={16} />
+            )}
+            {isSearching ? "Searching..." : "Search"}
           </button>
         </div>
       </div>

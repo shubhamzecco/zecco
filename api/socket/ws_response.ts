@@ -1,14 +1,17 @@
-import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAuthData } from "@/redux/modules/common/user_data/action";
 import { IUserRes } from "@/redux/modules/common/user_data/types";
 import {
+  setAllLocationList,
   setBlogDetails,
   setBlogListWithLimit,
   setFavoriteList,
+  setFeatures,
   setLocationAreaList,
   setLocationListWithLimit,
   setLocationListWithoutLimit,
   setPackageListWithLimit,
+  setPreferenceList,
+  setPrivacyPolicy,
   setPropertyDetails,
   setPropertyListWithLimit,
   setPropertySubtypeList,
@@ -16,6 +19,8 @@ import {
   setSavedSearchesList,
   setSearchByArea,
   setStoredAiInsightList,
+  setTermsConditions,
+  setUpdatePropertyLike,
   setUserChatList,
   setUserChatMessages,
   setUserPackageList,
@@ -34,7 +39,7 @@ export const ws_response = (
     dispatch: any,
     getState: () => {
       (): any;
-      new (): any;
+      new(): any;
       adminReducers: { device_id: string; access_token: string };
     },
   ) => {
@@ -50,6 +55,22 @@ export const ws_response = (
         ) {
           if (ws_onmessage?.status === true) {
             toast.success(ws_onmessage?.msg);
+          }
+        }
+        if (
+          ws_onmessage?.request?.action === "removeFavorite" ||
+          ws_onmessage?.request?.action === "addFavorite"
+        ) {
+          if (ws_onmessage?.status === true) {
+            dispatch(
+              setUpdatePropertyLike({
+                property_id:
+                  ws_onmessage?.data?._id ??
+                  ws_onmessage?.request?.payload?.property_id,
+                isFavorite:
+                  ws_onmessage?.request?.action === "addFavorite",
+              }),
+            );
           }
         }
 
@@ -71,6 +92,13 @@ export const ws_response = (
           }
         }
 
+        if (ws_onmessage?.request?.action === "getPreferenceProperties") {
+          if (ws_onmessage?.status === true) {
+            dispatch(setPreferenceList(ws_onmessage?.data));
+          } else {
+            dispatch(setPreferenceList(ws_onmessage?.data));
+          }
+        }
         break;
 
       case "packageService":
@@ -111,6 +139,13 @@ export const ws_response = (
               dispatch(setLocationAreaList(ws_onmessage?.data));
             } else {
               dispatch(setLocationAreaList(ws_onmessage?.data));
+            }
+          }
+          if (ws_onmessage?.request?.action === "searchLocationArea") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setAllLocationList(ws_onmessage?.data));
+            } else {
+              dispatch(setAllLocationList(ws_onmessage?.data));
             }
           }
         }
@@ -154,6 +189,13 @@ export const ws_response = (
               dispatch(setPropertyDetails(ws_onmessage?.data));
             } else {
               dispatch(setPropertyDetails(ws_onmessage?.data));
+            }
+          }
+          if (ws_onmessage?.request?.action === "features") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setFeatures(ws_onmessage?.data));
+            } else {
+              dispatch(setFeatures(ws_onmessage?.data));
             }
           }
           if (ws_onmessage?.request?.action === "propertyTypes") {
@@ -210,6 +252,8 @@ export const ws_response = (
           ) {
             if (ws_onmessage?.status === true) {
               toast.success(ws_onmessage?.msg);
+            } else {
+              toast.error(ws_onmessage?.msg);
             }
           }
           if (ws_onmessage?.request?.action === "list") {
@@ -229,6 +273,30 @@ export const ws_response = (
               dispatch(setStoredAiInsightList(ws_onmessage?.data));
             } else {
               dispatch(setStoredAiInsightList(ws_onmessage?.data));
+            }
+          }
+        }
+        break;
+
+      case "privacyPolicyService":
+        {
+          if (ws_onmessage?.request?.action === "get") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setPrivacyPolicy(ws_onmessage?.data));
+            } else {
+              dispatch(setPrivacyPolicy(ws_onmessage?.data));
+            }
+          }
+        }
+        break;
+
+      case "termsConditionsService":
+        {
+          if (ws_onmessage?.request?.action === "get") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setTermsConditions(ws_onmessage?.data));
+            } else {
+              dispatch(setTermsConditions(ws_onmessage?.data));
             }
           }
         }

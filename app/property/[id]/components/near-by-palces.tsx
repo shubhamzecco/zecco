@@ -2,7 +2,6 @@
 import { App_url } from "@/constant/static";
 import { Infrastructure } from "@/redux/modules/main/types";
 import Image from "next/image";
-import React from "react";
 
 interface INearByPlacesProps {
   near_places: Infrastructure;
@@ -28,7 +27,7 @@ const NearByPlaces = ({ near_places }: INearByPlacesProps) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
           {Object.entries(near_places || {}).map(([category, places]) => {
-            const title = category.replaceAll("_", " ").toUpperCase();
+            const title = category?.replaceAll("_", " ").toUpperCase();
 
             return (
               <div key={category} className="p-4 shadow-md rounded-xl bg-white">
@@ -37,7 +36,7 @@ const NearByPlaces = ({ near_places }: INearByPlacesProps) => {
                 </h2>
 
                 <div className="space-y-3">
-                  {Array.isArray(places) && places.length > 0 ? (
+                  {Array.isArray(places) && places?.length > 0 ? (
                     places?.map((place: any, index: number) => (
                       <div
                         key={index}
@@ -56,7 +55,7 @@ const NearByPlaces = ({ near_places }: INearByPlacesProps) => {
                           />
 
                           <p className="font-manrope text-[#374151] text-sm">
-                            {place.name}
+                            {place?.name}
                           </p>
                         </div>
 
@@ -70,7 +69,7 @@ const NearByPlaces = ({ near_places }: INearByPlacesProps) => {
                           />
 
                           <p className="text-[#64748B] text-sm">
-                            {place.distance} miles
+                            {place?.distance} miles
                           </p>
                         </div>
                       </div>
