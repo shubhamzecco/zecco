@@ -401,7 +401,7 @@ const PropertyCard = ({
             </div>
           ) : property?.mtsPlot ? (
             <div className="flex font-manrope font-normal items-center gap-1">
-              <Expand size={18} className="text-gray-400 shrink-0" />
+             <p className="text-gray-500 text-xs uppercase font-medium">Plot Area : </p>
               <span className="whitespace-nowrap">{property?.mtsPlot} m²</span>
             </div>
           ) : null}
