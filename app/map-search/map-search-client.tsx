@@ -248,7 +248,7 @@ export default function MapSearchClient() {
             })
             .bindTooltip(
               `<span class="pin-tooltip-name">${city.name}</span><span class="pin-tooltip-type">${count} properties</span>`,
-              { direction: "top", offset: [0, -38], opacity: 1, className: "map-search-pin-tooltip" },
+              { direction: "top", offset: [0, -14], opacity: 1, className: "map-search-pin-tooltip" },
             )
             .on("click", () => navigateToArea(city))
             .addTo(featureGroup);
@@ -271,7 +271,7 @@ export default function MapSearchClient() {
           })
           .bindTooltip(
             `<span class="pin-tooltip-name">${area.name}</span><span class="pin-tooltip-type">${count} properties</span>`,
-            { direction: "top", offset: [0, -38], opacity: 1, className: "map-search-pin-tooltip" },
+            { direction: "top", offset: [0, -14], opacity: 1, className: "map-search-pin-tooltip" },
           )
           .on("click", () => navigateToArea({ ...area, city_name: city.name }))
           .addTo(featureGroup);
@@ -364,25 +364,16 @@ export default function MapSearchClient() {
   const PIN_COLOR_DARK = "#1D4ED8";
 
   function createPinIcon(L: any, isCity: boolean) {
-    const w = isCity ? 34 : 28;
-    const h = isCity ? 46 : 38;
+    const size = 10;
     const html = `
-      <div style="filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35));">
-        <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg" style="display:block;">
-          <path d="${isCity
-            ? "M17 0C7.6 0 0 7.6 0 17c0 11.9 17 29 17 29s17-17.1 17-29C34 7.6 26.4 0 17 0z"
-            : "M14 0C6.268 0 0 6.268 0 14c0 9.8 14 24 14 24s14-14.2 14-24C28 6.268 21.732 0 14 0z"}"
-                fill="${PIN_COLOR}" stroke="${PIN_COLOR_DARK}" stroke-width="1"/>
-          <circle cx="${isCity ? 17 : 14}" cy="${isCity ? 17 : 14}" r="${isCity ? 6.5 : 5}" fill="#ffffff"/>
-        </svg>
-      </div>
+      <div style="width:${size}px;height:${size}px;border-radius:50%;background:#DC2626;box-shadow:0 0 0 3px rgba(220,38,38,0.22),0 1px 3px rgba(0,0,0,0.25);"></div>
     `;
     return L.divIcon({
       html,
       className: "",
-      iconSize: [w, h],
-      iconAnchor: [w / 2, h],
-      popupAnchor: [0, -(h - 4)],
+      iconSize: [size, size],
+      iconAnchor: [size / 2, size / 2],
+      popupAnchor: [0, -(size / 2)],
     });
   }
 
