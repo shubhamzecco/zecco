@@ -20,6 +20,6 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
-    sitemap: "https://zecco.es/sitemap.xml",
+    sitemap: "https://zw.appristine.co.in/sitemap.xml",
   };
 }
