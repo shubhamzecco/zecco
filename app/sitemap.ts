@@ -9,6 +9,8 @@ const routes = [
   "/terms-and-conditions",
   "/packages",
   "/costa-del-sol",
+  "/costa-del-sol/properties",
+  "/map-search",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
