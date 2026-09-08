@@ -2,16 +2,32 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setZeccoFavoriteList } from "@/redux/modules/main/action";
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import PropertyCard from "../../../components/cards/PropertyCard";
 import PropertyCardSkeleton from "@/app/costa-del-sol/properties/components/PropertyCardSkeleton";
 
-export default function PropertyListings() {
+export default function PropertyListings({
+  initialData,
+}: {
+  initialData?: any;
+}) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
+
+  useEffect(() => {
+    if (initialData && !mainReducer?.zecco_favorite?.data?.length) {
+      dispatch(setZeccoFavoriteList(initialData));
+    }
+  }, []);
+
+  const favoriteCount = mainReducer?.zecco_favorite?.data?.length ?? 0;
+  const favoriteData = favoriteCount > 0 ? mainReducer?.zecco_favorite : initialData;
 
   const handleNavigate = () => {
     router.push(`${App_url.link.ZECCO_FAVORITES}`);
@@ -69,13 +85,13 @@ export default function PropertyListings() {
         </div>
 
         {/* Grid */}
-        {!mainReducer?.zecco_favorite ? (
+        {!favoriteData ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {Array.from({ length: 8 }).map((_, i) => <PropertyCardSkeleton key={i} />)}
           </div>
-        ) : mainReducer?.zecco_favorite?.data?.length > 0 ? (
+        ) : favoriteData?.data?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {mainReducer?.zecco_favorite?.data?.slice(0, 8)?.map((property) => (
+            {favoriteData?.data?.slice(0, 8)?.map((property : any) => (
               <PropertyCard key={property?._id} {...property} property={property} />
             ))}
           </div>

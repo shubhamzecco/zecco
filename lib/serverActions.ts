@@ -78,6 +78,18 @@ export async function serverFetchPropertyList(
   return socketFetch("propertyService", "list", payload, options);
 }
 
+export async function serverFetchFavoriteList(
+  payload: any = {},
+  options?: { timeout?: number },
+): Promise<any> {
+  return socketFetch(
+    "propertyService",
+    "list",
+    { favorite: true, ...payload },
+    options,
+  );
+}
+
 export async function serverFetchPropertyDetail(
   id: string,
   options?: { timeout?: number },

@@ -12,25 +12,66 @@ import HeroSection from "./components/HeroSection";
 import Navbar from "./components/Navbar";
 import PropertyListings from "./components/PropertyListings";
 import SmarterSearch from "./components/SmarterSearch";
+import {
+  serverFetchAreaList,
+  serverFetchFavoriteList,
+  serverFetchLocationList,
+  serverFetchPackageList,
+} from "@/lib/serverActions";
 
-const HomePage = () => {
+const HomePage = async () => {
+  const [favoriteData, locationData, packageData, areaData] =
+    await Promise.allSettled([
+      serverFetchFavoriteList({
+        limit: 10,
+        page: 1,
+        search: "",
+        location_id: null,
+      }),
+      serverFetchLocationList({
+        search: "",
+        limit: 12,
+        page: 1,
+        status: true,
+      }),
+      serverFetchPackageList({
+        search: "",
+        limit: 12,
+        page: 1,
+        status: true,
+      }),
+      serverFetchAreaList({
+        search: "",
+        limit: 10,
+        page: 1,
+      }),
+    ]);
+
+  const favorite = favoriteData.status === "fulfilled" ? favoriteData.value : null;
+  const locations =
+    locationData.status === "fulfilled" ? locationData.value : null;
+  const packages =
+    packageData.status === "fulfilled" ? packageData.value : null;
+  const areas = areaData.status === "fulfilled" ? areaData.value : null;
+
   return (
     <>
       <main className={`w-full bg-white`}>
         <Navbar />
         <HeroSection />
         <AiExpertise />
-        <PropertyListings />
-        <AreasOfInterest />
+        <PropertyListings initialData={favorite} />
+        <AreasOfInterest initialData={locations} />
         <EssentialAspects />
         <ExploreByTypes />
         <PricingPlans
           heading="Choose your Zecco plan"
           description="Unlock the full power of our AI-driven distribution network and dominate the Spanish property market."
+          initialData={packages}
         />
         <Blogs />
         <SmarterSearch />
-        <ExploreRegions />
+        <ExploreRegions initialData={areas} />
         <Footer />
       </main>
     </>

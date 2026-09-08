@@ -15,7 +15,11 @@ const LIMIT = 10;
 // regions per card
 const REGIONS_PER_CARD = 2;
 
-export default function ExploreRegions() {
+export default function ExploreRegions({
+  initialData,
+}: {
+  initialData?: any;
+}) {
   const [selectedButton, setSelectedButton] = useState<ListingType>("all");
 
   const { sendMessage } = useWebSocket();
@@ -34,8 +38,12 @@ export default function ExploreRegions() {
 
   const [activeCardIndex, setActiveCardIndex] = useState(0);
 
-  const [areasData, setAreasData] = useState<any[]>([]);
-  const [totalCount, setTotalCount] = useState(0);
+  const [areasData, setAreasData] = useState<any[]>(
+    Array.isArray(initialData?.data) ? initialData?.data : [],
+  );
+  const [totalCount, setTotalCount] = useState(
+    initialData?.pagination?.totalCount || 0,
+  );
   const totalPages = Math.ceil(totalCount / LIMIT);
   const loadedPages = useRef<Record<ListingType, Set<number>>>({
     all: new Set(),

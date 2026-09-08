@@ -2,17 +2,31 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import PackageCard from "@/components/cards/package-card";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setPackageListWithLimit } from "@/redux/modules/main/action";
 import { CircleStar, CircleUserRound, Crown, Gem } from "lucide-react";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 interface IPricePlans {
   heading: string;
   description: string;
+  initialData?: any;
 }
 
-export default function PricingPlans({ heading, description }: IPricePlans) {
+export default function PricingPlans({
+  heading,
+  description,
+  initialData,
+}: IPricePlans) {
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (initialData && !mainReducer?.package_list_with_limit?.data?.length) {
+      dispatch(setPackageListWithLimit(initialData));
+    }
+  }, []);
 
   useEffect(() => {
     sendMessage("action", {
@@ -26,6 +40,10 @@ export default function PricingPlans({ heading, description }: IPricePlans) {
       },
     });
   }, [isConnected]);
+
+  const packages =
+    mainReducer?.package_list_with_limit?.data ||
+    (initialData?.data || []);
 
   const sortPackagesByPrice = (packages: any[] = []) => {
     return packages.slice().sort((a, b) => {
@@ -68,7 +86,7 @@ export default function PricingPlans({ heading, description }: IPricePlans) {
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {sortPackagesByPrice(mainReducer?.package_list_with_limit?.data)?.map(
+          {sortPackagesByPrice(packages)?.map(
             (plan, index) => (
               <PackageCard
                 key={plan?._id || index}
