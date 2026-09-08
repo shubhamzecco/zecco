@@ -10,14 +10,20 @@ import { useDispatch } from "react-redux";
 
 const LIMIT = 12;
 
-const CostadelSol = () => {
+const CostadelSol = ({
+  initialData,
+}: {
+  initialData?: any;
+}) => {
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [allAreas, setAllAreas] = useState<any[]>([]);
+  const [allAreas, setAllAreas] = useState<any[]>(
+    Array.isArray(initialData?.data) ? initialData?.data : [],
+  );
   const fetchedPages = useRef<Set<string>>(new Set());
   const dispatch = useDispatch();
 

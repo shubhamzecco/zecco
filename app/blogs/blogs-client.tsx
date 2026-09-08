@@ -62,10 +62,14 @@ export interface Blog {
   localizations: Blog[];
 }
 
-export default function BlogsClient() {
+export default function BlogsClient({
+  initialData,
+}: {
+  initialData?: { data: Blog[]; pagination: any };
+}) {
   const [loading, setLoading] = useState(false);
-  const [blogList, setBlogList] = useState<Blog[]>();
-  const [pagination, setPagination] = useState();
+  const [blogList, setBlogList] = useState<Blog[]>(initialData?.data || []);
+  const [pagination, setPagination] = useState(initialData?.pagination);
 
   const fetchArticles = async (page: number = 1) => {
     setLoading(true);

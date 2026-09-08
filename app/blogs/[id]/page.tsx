@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import BlogDetailClient from "./blog-detail-client";
+import { strapiGet } from "../strapi/strapiClient";
+import { STRAPI_ENDPOINTS } from "../strapi/strapiConstant";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -26,6 +30,23 @@ export async function generateMetadata({
   };
 }
 
-export default function Page() {
-  return <BlogDetailClient />;
+async function fetchBlog(params: Promise<{ id: string }>) {
+  const { id } = await params;
+  try {
+    const res = await strapiGet(
+      STRAPI_ENDPOINTS.GET_ARTICLES_BY_SLUG(String(id), "en"),
+    );
+    return res?.data?.[0] || null;
+  } catch (err) {
+    return null;
+  }
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const initialBlog = await fetchBlog(params);
+  return <BlogDetailClient initialBlog={initialBlog} />;
 }

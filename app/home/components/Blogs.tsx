@@ -1,3 +1,5 @@
+"use client";
+
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { strapiGet } from "@/app/blogs/strapi/strapiClient";
 import { STRAPI_ENDPOINTS } from "@/app/blogs/strapi/strapiConstant";

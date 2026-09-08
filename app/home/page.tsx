@@ -1,9 +1,7 @@
-"use client";
-import { setPropertyFilter } from "@/redux/modules/main/action";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import Footer from "../../components/Footer";
 import PricingPlans from "../../components/section/PricingPlans";
+export const dynamic = "force-dynamic";
+
 import AiExpertise from "./components/AiExpertise";
 import AreasOfInterest from "./components/AreasOfInterest";
 import Blogs from "./components/Blogs";
@@ -16,11 +14,6 @@ import PropertyListings from "./components/PropertyListings";
 import SmarterSearch from "./components/SmarterSearch";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(setPropertyFilter({}));
-  }, []);
-
   return (
     <>
       <main className={`w-full bg-white`}>
@@ -40,7 +33,6 @@ const HomePage = () => {
         <ExploreRegions />
         <Footer />
       </main>
-      {/* <ChatWidget/> */}
     </>
   );
 };

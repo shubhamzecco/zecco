@@ -1,3 +1,5 @@
+"use client";
+
 import FilterPopup from "@/components/filterPopup";
 import { App_url } from "@/constant/static";
 

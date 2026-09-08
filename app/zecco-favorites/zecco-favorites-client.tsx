@@ -9,14 +9,20 @@ import debounce from 'lodash/debounce'
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Heart } from "lucide-react";
-import { setAiInsight, setStoredAiInsightList } from "@/redux/modules/main/action";
+import { setAiInsight, setStoredAiInsightList, setZeccoFavoriteList } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
 
-const ZeccoFavorites = () => {
+const ZeccoFavorites = ({ initialData }: { initialData?: any }) => {
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const dispatch = useDispatch();
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    if (initialData && !mainReducer?.zecco_favorite?.data?.length) {
+      dispatch(setZeccoFavoriteList(initialData));
+    }
+  }, []);
 
   useEffect(() => {
     sendMessage("action", {
