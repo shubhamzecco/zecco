@@ -111,6 +111,18 @@ export async function serverFetchAreaList(
   return socketFetch("locationService", "areas_list", payload, options);
 }
 
+export async function serverFetchAllLocationList(
+  payload: any = {},
+  options?: { timeout?: number },
+): Promise<any> {
+  return socketFetch(
+    "locationService",
+    "searchLocationArea",
+    payload,
+    options,
+  );
+}
+
 export async function serverFetchPackageList(
   payload: any = {},
   options?: { timeout?: number },
