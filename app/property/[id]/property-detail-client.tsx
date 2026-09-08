@@ -136,7 +136,7 @@ export default function PropertyDetailClient() {
       description:
         (property as any)?.description ||
         (property as any)?.propertyDescriptions?.[0]?.description,
-      url: `https://zecco.es/property/${propertyId}`,
+      url: `https://zw.appristine.co.in/property/${propertyId}`,
       image: (property as any)?.propertyImages?.map((image: any) => image?.image),
       address: {
         "@type": "PostalAddress",

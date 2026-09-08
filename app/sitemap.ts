@@ -12,7 +12,7 @@ const routes = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://zecco.es";
+  const baseUrl = "https://zw.appristine.co.in";
 
   return routes.map((route) => ({
     url: `${baseUrl}${route}`,

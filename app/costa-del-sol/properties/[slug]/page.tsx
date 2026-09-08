@@ -18,7 +18,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description: "Explore detailed property information, images, and AI market intelligence for premium homes in Costa del Sol.",
-      url: `https://zecco.es/costa-del-sol/properties/${slug}`,
+      url: `https://zw.appristine.co.in/costa-del-sol/properties/${slug}`,
       type: "article",
     },
   };

@@ -20,7 +20,7 @@ export async function generateMetadata({
       title,
       description:
         "Read the latest Zecco real estate insights, market updates, and property guidance across Costa del Sol.",
-      url: `https://zecco.es/blogs/${id}`,
+      url: `https://zw.appristine.co.in/blogs/${id}`,
       type: "article",
     },
   };

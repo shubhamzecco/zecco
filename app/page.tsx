@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     title: "Costa del Sol Real Estate | Zecco",
     description:
       "Search premium properties for sale and rent across Costa del Sol with Zecco's AI-powered property platform.",
-    url: "https://zecco.es",
+    url: "https://zw.appristine.co.in",
     type: "website",
   },
 };

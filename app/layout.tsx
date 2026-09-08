@@ -48,7 +48,7 @@ export const publicSans = Public_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://zecco.es"),
+  metadataBase: new URL("https://zw.appristine.co.in"),
   title: {
     default: "Zecco Real Estate",
     template: "%s | Zecco Real Estate",
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
     title: "Zecco Real Estate | Properties for Sale & Rent",
     description:
       "Explore apartments, villas, penthouses, townhouses, and commercial properties across Spain. Find your dream property with Zecco Real Estate.",
-    url: "https://zecco.es",
+    url: "https://zw.appristine.co.in",
     siteName: "Zecco Real Estate",
 
     locale: "en_US",

@@ -20,7 +20,7 @@ export async function generateMetadata({
       title,
       description:
         "Explore detailed property information, images, and AI market intelligence for premium homes in Costa del Sol.",
-      url: `https://zecco.es/property/${id}`,
+      url: `https://zw.appristine.co.in/property/${id}`,
       type: "article",
     },
   };
