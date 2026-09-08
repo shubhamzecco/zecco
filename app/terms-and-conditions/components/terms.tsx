@@ -1,12 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import MainLayout from "@/components/layouts/main-layout";
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 
-const TermsConditionPage = () => {
-  const { isConnected, sendMessage, lastEvent } = useWebSocket();
+interface TermsConditionPageProps {
+  initialData?: {
+    title?: string;
+    description?: string;
+  };
+}
+
+const TermsConditionPage = ({ initialData }: TermsConditionPageProps) => {
+  const { isConnected, sendMessage } = useWebSocket();
   const { mainReducer } = usePosterReducers();
 
   useEffect(() => {
@@ -19,15 +26,15 @@ const TermsConditionPage = () => {
     }
   }, [isConnected]);
 
+  const title = mainReducer?.terms_conditions?.title || initialData?.title || "Terms & Conditions";
+  const descriptionHtml = mainReducer?.terms_conditions?.description || initialData?.description || "";
+
   return (
     <MainLayout chatBotWidget={false}>
       <section className="bg-white py-5 min-h-screen">
         <div className="max-w-5xl mx-auto px-6">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-black mb-4">
-              {mainReducer?.terms_conditions?.title || "Privacy Policy"}
-            </h1>
-
+            <h1 className="text-4xl font-bold text-black mb-4">{title}</h1>
             <div className="w-20 h-1 bg-gradient-to-r from-[#2F80FF] to-[#5DAEFF] rounded-full"></div>
           </div>
 
@@ -42,7 +49,7 @@ const TermsConditionPage = () => {
               prose-li:text-gray-700
             "
             dangerouslySetInnerHTML={{
-              __html: mainReducer?.terms_conditions?.description || "",
+              __html: descriptionHtml,
             }}
           />
         </div>

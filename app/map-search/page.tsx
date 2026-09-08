@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import MapSearchClient from "./map-search-client";
 
 export const metadata: Metadata = {
@@ -18,5 +19,9 @@ export const metadata: Metadata = {
 };
 
 export default function MapSearchPage() {
-  return <MapSearchClient />;
+  return (
+    <Suspense>
+      <MapSearchClient />
+    </Suspense>
+  );
 }

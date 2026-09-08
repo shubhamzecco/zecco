@@ -21,9 +21,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
       <WebSocketProvider>
-        <RouteGuard>
-          <Suspense>{children}</Suspense>
-        </RouteGuard>
+        <RouteGuard>{children}</RouteGuard>
         {mounted && (
           <ToastContainer
             position="top-center"
