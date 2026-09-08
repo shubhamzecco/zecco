@@ -14,6 +14,11 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  setAllLocationList,
+  setSearchByArea,
+} from "@/redux/modules/main/action";
 
 type Mode = "draw" | "select";
 
@@ -30,12 +35,32 @@ const COSTA_DEL_SOL_BOUNDS: [[number, number], [number, number]] = [
 const MIN_ZOOM = 7;
 const MAX_ZOOM = 18;
 
-export default function MapSearchClient() {
+export default function MapSearchClient({
+  initialAreas,
+  initialLocations,
+}: {
+  initialAreas?: any;
+  initialLocations?: any;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mode = (searchParams.get("mode") === "select" ? "select" : "draw") as Mode;
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (initialAreas && !mainReducer?.search_by_area?.data?.length) {
+      dispatch(setSearchByArea(initialAreas));
+    }
+  }, [initialAreas]);
+
+  useEffect(() => {
+    if (initialLocations && !mainReducer?.all_location_list?.length) {
+      dispatch(setAllLocationList(initialLocations));
+    }
+  }, [initialLocations]);
+
 
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<any>(null);
@@ -54,13 +79,23 @@ export default function MapSearchClient() {
       : "Choose how you want to search on the map.",
   );
 
-  const allLocations = useMemo(() => mainReducer?.all_location_list || [], [mainReducer?.all_location_list]);
+  const allLocations = useMemo(
+    () =>
+      mainReducer?.all_location_list?.length
+        ? mainReducer?.all_location_list
+        : Array.isArray(initialLocations)
+          ? initialLocations
+          : [],
+    [mainReducer?.all_location_list, initialLocations],
+  );
 
   const cities = useMemo(() => {
     const data = mainReducer?.search_by_area?.data;
-    if (!Array.isArray(data)) return [];
-    return data;
-  }, [mainReducer?.search_by_area]);
+    if (Array.isArray(data) && data.length > 0) return data;
+    if (Array.isArray(initialAreas?.data) && initialAreas?.data.length > 0)
+      return initialAreas.data;
+    return [];
+  }, [mainReducer?.search_by_area, initialAreas]);
 
   const getCount = (item: any): number => item?.all_count ?? item?.property_count ?? 0;
 
