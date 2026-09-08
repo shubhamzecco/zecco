@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import ZeccoFavoritesClient from "./zecco-favorites-client";
+import { serverFetchPropertyList } from "@/lib/serverActions";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Zecco's Handpicked Favorites | Premium Spain Properties",
@@ -17,6 +20,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ZeccoFavoritesPage() {
-  return <ZeccoFavoritesClient />;
+export default async function ZeccoFavoritesPage() {
+  let initialData: any = null;
+  try {
+    initialData = await serverFetchPropertyList({
+      limit: 0,
+      page: 1,
+      search: "",
+      location_id: null,
+      favorite: true,
+    });
+  } catch (err) {
+    initialData = null;
+  }
+
+  return <ZeccoFavoritesClient initialData={initialData} />;
 }

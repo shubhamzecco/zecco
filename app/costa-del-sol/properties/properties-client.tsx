@@ -5,7 +5,7 @@ import PropertyCard from "@/components/cards/PropertyCard";
 import MainLayout from "@/components/layouts/main-layout";
 import LoginPopup from "@/components/login-popup";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setAiInsight, setAiSelectedProperty, setLoginPopup, setPropertyDetails, setUpdatePropertyLike } from "@/redux/modules/main/action";
+import { setAiInsight, setAiSelectedProperty, setLoginPopup, setPropertyDetails, setPropertyListWithLimit, setUpdatePropertyLike } from "@/redux/modules/main/action";
 import { IProperty, IPropertyResponse } from "@/redux/modules/main/types";
 import { citySlug, normalize } from "@/utils/common";
 import { SearchX, SlidersHorizontal, Sparkles, X } from "lucide-react";
@@ -90,14 +90,16 @@ function readFilters(sp: URLSearchParams): UrlFilters {
   };
 }
 
-const Page = () => {
+const Page = ({ initialData }: { initialData?: any }) => {
   const gridRef = useRef<HTMLDivElement>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [propertyType, setPropertyType] = useState<PropertyType>("all");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [properties, setProperties] = useState<any[]>([]);
+  const [properties, setProperties] = useState<any[]>(
+    Array.isArray(initialData?.data) ? initialData?.data : [],
+  );
   const { mainReducer, user_data } = usePosterReducers();
   const fetchedPages = useRef<Set<string>>(new Set());
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
@@ -105,6 +107,12 @@ const Page = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (initialData && !Array.isArray(mainReducer?.property_list_with_limit?.data)) {
+      dispatch(setPropertyListWithLimit(initialData));
+    }
+  }, []);
 
   const urlFilters = useMemo(() => readFilters(searchParams), [searchParams]);
   const searchValue = urlFilters.area || urlFilters.subarea;

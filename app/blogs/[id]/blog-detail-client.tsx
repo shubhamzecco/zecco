@@ -63,11 +63,11 @@ interface Blog {
   content_image: BlogImage;
 }
 
-const DetailPage = () => {
+const DetailPage = ({ initialBlog }: { initialBlog?: Blog | null }) => {
   const params = useParams();
 
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [blog, setBlog] = useState<Blog | null>(initialBlog || null);
+  const [loading, setLoading] = useState(!initialBlog);
 
   useEffect(() => {
     async function fetchArticle() {

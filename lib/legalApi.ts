@@ -53,88 +53,68 @@ export const fallbackTermsConditions = {
   `,
 };
 
-export async function fetchPrivacyPolicyData(): Promise<{ title: string; description: string }> {
-  const url = process.env.NEXT_PUBLIC_ENDPOINT_API_URL || "https://zn.appristine.co.in";
+const API_URL =
+  process.env.NEXT_PUBLIC_ENDPOINT_API_URL || "http://localhost:8000";
+
+async function socketFetch(
+  type: string,
+  action: string,
+  fallback: { title: string; description: string },
+): Promise<{ title: string; description: string }> {
   try {
-    const socket = io(url, { transports: ["websocket"], reconnection: false, timeout: 3000 });
-    return new Promise((resolve) => {
+    const socket = io(API_URL, {
+      transports: ["websocket"],
+      reconnection: false,
+      timeout: 3000,
+    });
+
+    return await new Promise((resolve) => {
       const timer = setTimeout(() => {
-        try { socket.disconnect(); } catch (_) {}
-        resolve(fallbackPrivacyPolicy);
+        try {
+          socket.disconnect();
+        } catch (_) {}
+        resolve(fallback);
       }, 2500);
 
+      const cleanup = () => {
+        clearTimeout(timer);
+        try {
+          socket.disconnect();
+        } catch (_) {}
+      };
+
       socket.on("connect", () => {
-        socket.emit("action", {
-          type: "privacyPolicyService",
-          action: "get",
-          payload: {},
-        });
+        socket.emit("action", { type, action, payload: {} });
       });
 
-      socket.onAny((_event, res) => {
-        if (res?.request?.type === "privacyPolicyService" && res?.request?.action === "get") {
-          clearTimeout(timer);
-          try { socket.disconnect(); } catch (_) {}
+      socket.onAny((_event: string, res: any) => {
+        if (res?.request?.type === type && res?.request?.action === action) {
+          cleanup();
           if (res?.data?.description) {
             resolve({
-              title: res.data.title || "Privacy Policy",
+              title: res.data.title || fallback.title,
               description: res.data.description,
             });
           } else {
-            resolve(fallbackPrivacyPolicy);
+            resolve(fallback);
           }
         }
       });
 
       socket.on("connect_error", () => {
-        clearTimeout(timer);
-        resolve(fallbackPrivacyPolicy);
+        cleanup();
+        resolve(fallback);
       });
     });
   } catch (e) {
-    return fallbackPrivacyPolicy;
+    return fallback;
   }
 }
 
+export async function fetchPrivacyPolicyData(): Promise<{ title: string; description: string }> {
+  return socketFetch("privacyPolicyService", "get", fallbackPrivacyPolicy);
+}
+
 export async function fetchTermsConditionsData(): Promise<{ title: string; description: string }> {
-  const url = process.env.NEXT_PUBLIC_ENDPOINT_API_URL || "https://zn.appristine.co.in";
-  try {
-    const socket = io(url, { transports: ["websocket"], reconnection: false, timeout: 3000 });
-    return new Promise((resolve) => {
-      const timer = setTimeout(() => {
-        try { socket.disconnect(); } catch (_) {}
-        resolve(fallbackTermsConditions);
-      }, 2500);
-
-      socket.on("connect", () => {
-        socket.emit("action", {
-          type: "termsConditionsService",
-          action: "get",
-          payload: {},
-        });
-      });
-
-      socket.onAny((_event, res) => {
-        if (res?.request?.type === "termsConditionsService" && res?.request?.action === "get") {
-          clearTimeout(timer);
-          try { socket.disconnect(); } catch (_) {}
-          if (res?.data?.description) {
-            resolve({
-              title: res.data.title || "Terms & Conditions",
-              description: res.data.description,
-            });
-          } else {
-            resolve(fallbackTermsConditions);
-          }
-        }
-      });
-
-      socket.on("connect_error", () => {
-        clearTimeout(timer);
-        resolve(fallbackTermsConditions);
-      });
-    });
-  } catch (e) {
-    return fallbackTermsConditions;
-  }
+  return socketFetch("termsConditionsService", "get", fallbackTermsConditions);
 }

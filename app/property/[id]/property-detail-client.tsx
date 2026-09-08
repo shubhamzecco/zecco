@@ -7,7 +7,7 @@ import LoginPopup from "@/components/login-popup";
 import { Button } from "@/components/ui/button";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
-import { setAiInsight, setLoginPopup } from "@/redux/modules/main/action";
+import { setAiInsight, setLoginPopup, setPropertyDetails } from "@/redux/modules/main/action";
 import {
   IFeature,
   IImage,
@@ -30,7 +30,11 @@ import { PropertyInfo } from "./components/PropertyInfo";
 import PropertyStats from "./components/PropertyStats";
 import ZeccoFavorites from "./components/ZeccoFavorites";
 
-export default function PropertyDetailClient() {
+export default function PropertyDetailClient({
+  initialProperty,
+}: {
+  initialProperty?: any;
+}) {
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const { mainReducer, user_data } = usePosterReducers();
   const params = useParams();
@@ -40,7 +44,13 @@ export default function PropertyDetailClient() {
   const [step, setStep] = useState("intro");
   const [isCompleted, setIsCompleted] = useState(false);
   const isLoggedIn = !!user_data?.access_token;
-  const propertyDetails = mainReducer?.property_details
+  const propertyDetails = mainReducer?.property_details || initialProperty
+
+  useEffect(() => {
+    if (initialProperty) {
+      dispatch(setPropertyDetails(initialProperty));
+    }
+  }, []);
 
   const ai_insight = useMemo(() => {
     return mainReducer?.stored_aiInsight?.data?.find(

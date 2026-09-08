@@ -1,3 +1,5 @@
+"use client";
+
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { Check, Zap } from "lucide-react";

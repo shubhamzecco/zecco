@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import BlogsClient from "./blogs-client";
+import { strapiGet } from "./strapi/strapiClient";
+import { STRAPI_ENDPOINTS } from "./strapi/strapiConstant";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Real Estate Blogs & Market Insights | Zecco",
@@ -17,6 +21,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BlogsPage() {
-  return <BlogsClient />;
+async function fetchBlogs() {
+  try {
+    const res = await strapiGet(STRAPI_ENDPOINTS.GET_ARTICLES(1, "en"));
+    return {
+      data: res?.data || [],
+      pagination: res?.meta?.pagination || null,
+    };
+  } catch (err) {
+    return { data: [], pagination: null };
+  }
+}
+
+export default async function BlogsPage() {
+  const initialData = await fetchBlogs();
+  return <BlogsClient initialData={initialData} />;
 }

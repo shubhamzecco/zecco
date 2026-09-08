@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import CostadelSol from "./costa-del-sol";
+import { serverFetchLocationList } from "@/lib/serverActions";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Costa del Sol Areas & Properties | Zecco Real Estate",
@@ -17,6 +20,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CostaDelSolPage() {
-  return <CostadelSol />;
+export default async function CostaDelSolPage() {
+  const initialData = await serverFetchLocationList({
+    search: "",
+    limit: 12,
+    page: 1,
+    status: true,
+  });
+
+  return <CostadelSol initialData={initialData} />;
 }

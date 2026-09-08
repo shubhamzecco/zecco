@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import PropertiesClient from "./properties-client";
+import { serverFetchPropertyList } from "@/lib/serverActions";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Properties for Sale & Rent in Costa del Sol | Zecco",
@@ -18,10 +21,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PropertiesPage() {
+export default async function PropertiesPage() {
+  const initialData = await serverFetchPropertyList({
+    limit: 18,
+    page: 1,
+    country: "Spain",
+    status: true,
+    forAll: true,
+  });
+
   return (
     <Suspense>
-      <PropertiesClient />
+      <PropertiesClient initialData={initialData} />
     </Suspense>
   );
 }
