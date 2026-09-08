@@ -3,17 +3,37 @@
 import { useWebSocket } from "@/api/socket/WebSocketContext";
 import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import { setLocationListWithLimit } from "@/redux/modules/main/action";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import AreaCard from "../../../components/cards/AreaCard";
 
 
-export default function AreasOfInterest() {
+export default function AreasOfInterest({
+  initialData,
+}: {
+  initialData?: any;
+}) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const [isTablet, setIsTablet] = useState(false);
+
+  useEffect(() => {
+    if (
+      initialData &&
+      !mainReducer?.location_list_with_limit?.data?.length
+    ) {
+      dispatch(setLocationListWithLimit(initialData));
+    }
+  }, []);
+
+  const areas =
+    mainReducer?.location_list_with_limit?.data ??
+    (initialData?.data || []);
 
   const handleNavigate = () => {
     router.push(`${App_url.link.COSTA_DEL_SOL}`);
@@ -66,10 +86,9 @@ export default function AreasOfInterest() {
             style={{ scrollBehavior: "smooth" }}
           >
             <div className="grid sm:grid-cols-2  lg:grid-cols-3 grid-cols-1 gap-5">
-              {(mainReducer?.location_list_with_limit?.data &&
-              mainReducer?.location_list_with_limit?.data?.length > 3
-                ? isTablet ?  mainReducer?.location_list_with_limit?.data?.slice(0, 4) : mainReducer?.location_list_with_limit?.data?.slice(0, 3)
-                : mainReducer?.location_list_with_limit?.data
+              {(areas?.length > 3
+                ? isTablet ? areas?.slice(0, 4) : areas?.slice(0, 3)
+                : areas
               )?.map((area) => (
                 <div key={area._id} className="flex-shrink-0 w-full">
                   <AreaCard {...area} />
