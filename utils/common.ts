@@ -149,6 +149,37 @@ export const cityName = (slug: string) => {
   return slug?.trim().toLowerCase().replace(/-/g, " ");
 };
 
+export const generatePropertySlug = (property: any) => {
+  if (property?.slug) return property.slug;
+  const bedrooms = property?.bedrooms ? `${property.bedrooms}-bedroom` : "";
+  const typeName =
+    property?.propertyType?.name ||
+    property?.propertyCategory?.name ||
+    "properties";
+  const type = typeName.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const listingType = property?.isRent ? "for-rent" : "for-sale";
+  const city =
+    property?.locationCity ||
+    property?.locationArea ||
+    property?.city ||
+    "malaga";
+  const cleanCity = city.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const idSuffix = property?.reference_number || property?._id || "";
+
+  return [bedrooms, type, listingType, "in", cleanCity, "spain", idSuffix]
+    .filter(Boolean)
+    .join("-")
+    .replace(/--+/g, "-");
+};
+
+export const slugToReadableTitle = (slug: string) => {
+  if (!slug) return "Property";
+  return slug
+    .replace(/-([a-f0-9]{24}|\d+)$/i, "")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 export const formatEuro = (amount: number | string) => {
   const formatted = new Intl.NumberFormat('es-ES', {
     minimumFractionDigits: 2,

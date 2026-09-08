@@ -1,0 +1,154 @@
+"use client";
+
+import { useWebSocket } from "@/api/socket/WebSocketContext";
+import AreaCard from "@/components/cards/AreaCard";
+import MainLayout from "@/components/layouts/main-layout";
+import { usePosterReducers } from "@/redux/getdata/usePostReducer";
+import debounce from "lodash/debounce";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
+
+const LIMIT = 12;
+
+const CostadelSol = () => {
+  const { sendMessage, isConnected } = useWebSocket();
+  const { mainReducer } = usePosterReducers();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [allAreas, setAllAreas] = useState<any[]>([]);
+  const fetchedPages = useRef<Set<string>>(new Set());
+  const dispatch = useDispatch();
+
+  const fetchAreas = (
+    currentPage: number,
+    searchValue: string,
+    reset = false,
+  ) => {
+    if (!isConnected || loading) return;
+
+    const uniqueKey = `${searchValue}-${currentPage}`;
+    if (fetchedPages.current.has(uniqueKey) && !reset) return;
+
+    setLoading(true);
+
+    fetchedPages.current.add(uniqueKey);
+
+    sendMessage("action", {
+      type: "locationService",
+      action: "list",
+      payload: {
+        search: searchValue,
+        limit: LIMIT,
+        page: currentPage,
+        status: true,
+      },
+    });
+  };
+
+  const handleSearch = (e: any) => {
+    const value = e.target.value;
+    setSearch(value);
+    debouncedFetchAreas(value);
+  };
+
+  useEffect(() => {
+    fetchAreas(1, "");
+  }, [isConnected]);
+
+  useEffect(() => {
+    const data = mainReducer?.location_list_with_limit?.data || [];
+    const total = mainReducer?.location_list_with_limit?.totalCount || 0;
+
+    if (page === 1) {
+      setAllAreas(data);
+    } else {
+      setAllAreas((prev) => {
+        const existingIds = new Set(prev.map((item) => item?._id));
+        const newItems = data.filter((item: any) => !existingIds.has(item?._id));
+        return [...prev, ...newItems];
+      });
+    }
+
+    setHasMore(allAreas.length + data.length < total);
+    setLoading(false);
+  }, [mainReducer?.location_list_with_limit]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (loading || !hasMore) return;
+
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      if (scrollTop + windowHeight >= documentHeight - 300) {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        fetchAreas(nextPage, search);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [page, loading, hasMore, search]);
+
+  useEffect(() => {
+    if (!isConnected) return;
+    sendMessage("action", {
+      type: "locationService",
+      action: "list",
+      payload: {
+        search: "",
+        limit: 0,
+        page: 1,
+        status: true,
+      },
+    });
+  }, [isConnected, sendMessage]);
+
+  const debouncedFetchAreas = useCallback(
+    debounce((searchValue: string) => {
+      setPage(1);
+      setHasMore(true);
+      fetchedPages.current.clear();
+      fetchAreas(1, searchValue, true);
+    }, 500),
+    [isConnected]
+  );
+
+  useEffect(() => {
+    return () => {
+      debouncedFetchAreas.cancel();
+    };
+  }, [debouncedFetchAreas]);
+
+  return (
+    <MainLayout
+      isBreadcrumb
+      isFilter
+      handleSearch={(e) => handleSearch(e)}
+      placeholder="city"
+      filteredLocations={mainReducer?.location_list_without_limit?.data || []}
+    >
+      <div className="px-4 sm:px-6 lg:mx-7 lg:px-8 lg:pb-10">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+          {allAreas?.map((area) => (
+            <div key={area?._id} className="w-full flex-shrink-0">
+              <AreaCard {...area} />
+            </div>
+          ))}
+        </div>
+        {!loading && allAreas?.length === 0 && (
+          <div className="py-10 text-center text-sm font-medium text-gray-500">
+            No areas found
+          </div>
+        )}
+      </div>
+    </MainLayout>
+  );
+};
+
+export default CostadelSol;

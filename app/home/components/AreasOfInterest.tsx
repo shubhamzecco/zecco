@@ -5,7 +5,7 @@ import { App_url } from "@/constant/static";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import AreaCard from "../../../components/cards/AreaCard";
 
 
@@ -13,12 +13,20 @@ export default function AreasOfInterest() {
   const router = useRouter();
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
- const isTablet =
-  window.innerWidth >= 768 && window.innerWidth < 1024;
+  const [isTablet, setIsTablet] = useState(false);
 
   const handleNavigate = () => {
     router.push(`${App_url.link.COSTA_DEL_SOL}`);
   };
+
+  useEffect(() => {
+    setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    const handleResize = () => {
+      setIsTablet(window.innerWidth >= 768 && window.innerWidth < 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     sendMessage("action", {

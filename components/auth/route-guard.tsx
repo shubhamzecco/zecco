@@ -31,8 +31,9 @@ export default function RouteGuard({
     }
   }, [isLoggedIn, mounted, router, shouldGuard]);
 
-  if (!mounted) return null;
-  if (shouldGuard && !isLoggedIn) return null;
+  if (shouldGuard) {
+    if (!mounted || !isLoggedIn) return null;
+  }
 
   return <>{children}</>;
 }

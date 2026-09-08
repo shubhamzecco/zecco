@@ -82,8 +82,8 @@ const PropertyCard = ({
 
   const propertyIdentifier = property?.slug || property?._id;
 
-  const currentPath = window.location.pathname;
-  const searchParams = window.location.search;
+  const currentPath = pathname || "";
+  const searchParams = typeof window !== "undefined" ? window.location.search : "";
 
   const propertyDetailUrl = `${(
     currentPath === "/" || type === "zecco-favorites"
