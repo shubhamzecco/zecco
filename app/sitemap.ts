@@ -226,6 +226,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         0.9,
         lastModified
       );
+
+      // Zecco favorites detail URL (by _id)
+      if (prop?._id) {
+        addUrl(
+          `${baseUrl}/zecco-favorites/${prop._id}`,
+          "weekly",
+          0.6,
+          lastModified
+        );
+      }
     }
   });
 
