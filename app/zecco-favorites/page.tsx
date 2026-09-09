@@ -5,7 +5,7 @@ import {
   serverFetchLocationList,
 } from "@/lib/serverActions";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Zecco's Handpicked Favorites | Premium Spain Properties",
