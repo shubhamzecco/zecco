@@ -54,7 +54,7 @@ async function fetchSitemapData(): Promise<{ locations: any[]; properties: any[]
       const timer = setTimeout(() => {
         try {
           socket.disconnect();
-        } catch (_) {}
+        } catch (_) { }
         resolve({ locations, properties });
       }, 15000);
 
@@ -63,7 +63,7 @@ async function fetchSitemapData(): Promise<{ locations: any[]; properties: any[]
           clearTimeout(timer);
           try {
             socket.disconnect();
-          } catch (_) {}
+          } catch (_) { }
           resolve({ locations, properties });
         }
       };
@@ -97,8 +97,8 @@ async function fetchSitemapData(): Promise<{ locations: any[]; properties: any[]
           properties = Array.isArray(res?.data?.data)
             ? res.data.data
             : Array.isArray(res?.data)
-            ? res.data
-            : [];
+              ? res.data
+              : [];
           receivedProps = true;
           checkDone();
         }
@@ -159,18 +159,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "daily" | "weekly";
     priority: number;
   }> = [
-    { path: "/", changeFrequency: "daily", priority: 1.0 },
-    { path: "/costa-del-sol", changeFrequency: "weekly", priority: 0.9 },
-    { path: "/costa-del-sol/properties", changeFrequency: "daily", priority: 0.9 },
-    { path: "/map-search", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/zecco-favorites", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/about-zecco", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/blogs", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/packages", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/contact-us", changeFrequency: "weekly", priority: 0.7 },
-    { path: "/privacy-policy", changeFrequency: "weekly", priority: 0.6 },
-    { path: "/terms-and-conditions", changeFrequency: "weekly", priority: 0.6 },
-  ];
+      { path: "/", changeFrequency: "daily", priority: 1.0 },
+      { path: "/costa-del-sol", changeFrequency: "weekly", priority: 0.9 },
+      { path: "/costa-del-sol/properties", changeFrequency: "daily", priority: 0.9 },
+      { path: "/map-search", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/zecco-favorites", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/about-zecco", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/blogs", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/packages", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/contact-us", changeFrequency: "weekly", priority: 0.7 },
+      { path: "/privacy-policy", changeFrequency: "weekly", priority: 0.6 },
+      { path: "/terms-and-conditions", changeFrequency: "weekly", priority: 0.6 },
+    ];
 
   staticRoutes.forEach((route) => {
     addUrl(`${baseUrl}${route.path}`, route.changeFrequency, route.priority);
@@ -205,7 +205,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // and /costa-del-sol/properties/3-bedroom-apartments-for-sale-in-fuengirola-spain-154
   properties.forEach((prop) => {
     const propSlug = generatePropertySlug(prop);
-    const city = cleanSlug(prop?.locationCity || prop?.locationArea || prop?.city);
     const lastModified = prop?.updatedAt ? new Date(prop.updatedAt) : new Date();
 
     if (propSlug) {
