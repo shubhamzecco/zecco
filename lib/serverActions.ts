@@ -71,22 +71,67 @@ async function socketFetch<T = any>(
   }
 }
 
+type CacheEntry = {
+  value: any;
+  expires: number;
+};
+
+const serverCache = new Map<string, CacheEntry>();
+const inFlightCache = new Map<string, Promise<any>>();
+
+function withCache<T>(
+  key: string,
+  ttlMs: number,
+  fetchFn: () => Promise<T>,
+): Promise<T> {
+  const now = Date.now();
+  const hit = serverCache.get(key);
+  if (hit && hit.expires > now) return Promise.resolve(hit.value);
+
+  const pending = inFlightCache.get(key);
+  if (pending) return pending;
+
+  const run = (async () => {
+    try {
+      const value = await fetchFn();
+      if (value !== null && value !== undefined) {
+        serverCache.set(key, { value, expires: Date.now() + ttlMs });
+      }
+      return value;
+    } finally {
+      inFlightCache.delete(key);
+    }
+  })();
+
+  inFlightCache.set(key, run);
+  return run;
+}
+
 export async function serverFetchPropertyList(
   payload: any = {},
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch("propertyService", "list", payload, options);
+  return withCache(
+    `propertyList:${JSON.stringify(payload)}`,
+    2 * 60 * 1000,
+    () => socketFetch("propertyService", "list", payload, options),
+  );
 }
 
 export async function serverFetchFavoriteList(
   payload: any = {},
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch(
-    "propertyService",
-    "list",
-    { favorite: true, ...payload },
-    options,
+  return withCache(
+    `favoriteList:${JSON.stringify(payload)}`,
+    2 * 60 * 1000,
+    () =>
+      socketFetch(
+        "propertyService",
+        "list",
+        { favorite: true, ...payload },
+        options,
+      ),
   );
 }
 
@@ -94,32 +139,49 @@ export async function serverFetchPropertyDetail(
   id: string,
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch("propertyService", "get", { id }, options);
+  return withCache(
+    `propertyDetail:${id}`,
+    5 * 60 * 1000,
+    () => socketFetch("propertyService", "get", { id }, options),
+  );
 }
 
 export async function serverFetchLocationList(
   payload: any = {},
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch("locationService", "list", payload, options);
+  return withCache(
+    `locationList:${JSON.stringify(payload)}`,
+    10 * 60 * 1000,
+    () => socketFetch("locationService", "list", payload, options),
+  );
 }
 
 export async function serverFetchAreaList(
   payload: any = {},
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch("locationService", "areas_list", payload, options);
+  return withCache(
+    `areaList:${JSON.stringify(payload)}`,
+    10 * 60 * 1000,
+    () => socketFetch("locationService", "areas_list", payload, options),
+  );
 }
 
 export async function serverFetchAllLocationList(
   payload: any = {},
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch(
-    "locationService",
-    "searchLocationArea",
-    payload,
-    options,
+  return withCache(
+    `allLocationList:${JSON.stringify(payload)}`,
+    10 * 60 * 1000,
+    () =>
+      socketFetch(
+        "locationService",
+        "searchLocationArea",
+        payload,
+        options,
+      ),
   );
 }
 
@@ -127,19 +189,31 @@ export async function serverFetchPackageList(
   payload: any = {},
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch("packageService", "list", payload, options);
+  return withCache(
+    `packageList:${JSON.stringify(payload)}`,
+    30 * 60 * 1000,
+    () => socketFetch("packageService", "list", payload, options),
+  );
 }
 
 export async function serverFetchTermsConditions(
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch("termsConditionsService", "get", {}, options);
+  return withCache(
+    "termsConditions",
+    60 * 60 * 1000,
+    () => socketFetch("termsConditionsService", "get", {}, options),
+  );
 }
 
 export async function serverFetchPrivacyPolicy(
   options?: { timeout?: number },
 ): Promise<any> {
-  return socketFetch("privacyPolicyService", "get", {}, options);
+  return withCache(
+    "privacyPolicy",
+    60 * 60 * 1000,
+    () => socketFetch("privacyPolicyService", "get", {}, options),
+  );
 }
 
 export async function serverFetchPrebuiltSuggestions(): Promise<any[]> {
@@ -165,4 +239,53 @@ export async function serverFetchPrebuiltSuggestions(): Promise<any[]> {
   } catch {
     return [];
   }
+}
+
+export async function serverFetchAllPropertyList(
+  payload: any = {},
+  options?: { timeout?: number; maxItems?: number },
+): Promise<{ data: any[]; pagination?: any }> {
+  const maxItems = options?.maxItems ?? 5000;
+  const cacheKey: any = { ...payload };
+  delete cacheKey.limit;
+  delete cacheKey.page;
+
+  return withCache(
+    `allPropertyList:${JSON.stringify(cacheKey)}`,
+    10 * 60 * 1000,
+    async () => {
+      const first: any =
+        (await socketFetch(
+          "propertyService",
+          "list",
+          { ...payload, limit: 1000, page: 1 },
+          options,
+        )) || {};
+      const firstData = Array.isArray(first?.data) ? first.data : [];
+      const total = first?.pagination?.totalCount ?? firstData.length;
+
+      const data = [...firstData];
+      const pages = Math.min(
+        Math.ceil(total / 1000),
+        Math.ceil(maxItems / 1000),
+      );
+
+      for (let p = 2; p <= pages; p++) {
+        const res: any =
+          (await socketFetch(
+            "propertyService",
+            "list",
+            { ...payload, limit: 1000, page: p },
+            options,
+          )) || {};
+        data.push(...(Array.isArray(res?.data) ? res.data : []));
+        if (data.length >= maxItems || data.length >= total) break;
+      }
+
+      return {
+        data: data.slice(0, maxItems),
+        pagination: { ...(first?.pagination || {}), totalCount: total },
+      };
+    },
+  );
 }

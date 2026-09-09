@@ -59,13 +59,27 @@ export default function Footer() {
 
             {/* SOCIAL ICONS */}
             <div className="flex gap-3">
-              {[<Facebook />, <Twitter />, <Instagram />].map((icon, i) => (
-                <span
+              {[
+                <Facebook key="fb" />,
+                <Twitter key="tw" />,
+                <Instagram key="ig" />,
+              ].map((icon, i) => (
+                <a
                   key={i}
+                  href={
+                    i === 0
+                      ? "https://www.facebook.com/zecco"
+                      : i === 1
+                        ? "https://x.com/zecco_es"
+                        : "https://www.instagram.com/zecco.es"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Zecco on ${i === 0 ? "Facebook" : i === 1 ? "X (Twitter)" : "Instagram"}`}
                   className="h-9 w-9 p-2 flex items-center justify-center rounded-full bg-white text-[#64748B] hover:bg-white/90 transition cursor-pointer text-sm"
                 >
                   {icon}
-                </span>
+                </a>
               ))}
             </div>
           </div>

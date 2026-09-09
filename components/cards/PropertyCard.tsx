@@ -7,7 +7,7 @@ import {
   setUpdatePropertyLike,
 } from "@/redux/modules/main/action";
 import { IProperty } from "@/redux/modules/main/types";
-import { formatEuro } from "@/utils/common";
+import { formatEuro, generatePropertySlug } from "@/utils/common";
 import {
   Bath,
   BedSingle,
@@ -94,6 +94,8 @@ const PropertyCard = ({
   const handleNavigate = () => {
     router.push(propertyDetailUrl);
   };
+
+  const canonicalPropertyUrl = `/costa-del-sol/properties/${generatePropertySlug(property)}`;
 
   const propertyTitle = `${property?.bedrooms ? `${property?.bedrooms} Bedroom ` : ""} ${
     property?.propertyType
@@ -193,13 +195,19 @@ const PropertyCard = ({
   };
 
   return (
-    <div
-      onClick={handleCardClick}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
-      className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white shadow-md border rounded-2xl overflow-hidden transition-all flex flex-col ${isSelected ? "ring-2 ring-[#2563EB] ring-offset-2" : ""}`}
+    <a
+      href={canonicalPropertyUrl}
+      aria-label={propertyTitle}
+      onClickCapture={(e) => e.preventDefault()}
+      className="block"
     >
+      <div
+        onClick={handleCardClick}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className={`${property?.isSold || property?.zeccoSold || property?.isRented || property?.zeccoRented ? "pointer-events-none select-none cursor-not-allowed" : "cursor-pointer"} group bg-white shadow-md border rounded-2xl overflow-hidden transition-all flex flex-col ${isSelected ? "ring-2 ring-[#2563EB] ring-offset-2" : ""}`}
+      >
       <div className="relative h-64 rounded-t-2xl bg-gray-200 overflow-hidden">
         <div
           className="flex h-full transition-transform duration-500 ease-in-out"
@@ -424,7 +432,8 @@ const PropertyCard = ({
       </div>
 
       <LoginPopup />
-    </div>
+      </div>
+    </a>
   );
 };
 
