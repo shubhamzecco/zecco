@@ -5,10 +5,10 @@ import {
   serverFetchLocationList,
 } from "@/lib/serverActions";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Zecco's Handpicked Favorites | Premium Spain Properties",
+  title: "Zecco's  Favorites | Premium Spain Properties",
   description:
     "Discover Zecco's curated collection of top-performing investment villas, luxury apartments, and standout properties in Costa del Sol.",
   alternates: {
