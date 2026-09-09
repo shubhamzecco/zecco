@@ -1,5 +1,6 @@
 import Footer from "../../components/Footer";
 import PricingPlans from "../../components/section/PricingPlans";
+import { FaqSection } from "@/components/seo/FaqSection";
 export const dynamic = "force-dynamic";
 
 import AiExpertise from "./components/AiExpertise";
@@ -78,6 +79,7 @@ const HomePage = async () => {
         <ExploreRegions initialData={areas} />
         <Footer />
       </main>
+      <FaqSection/>
     </>
   );
 };
