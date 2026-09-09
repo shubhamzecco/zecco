@@ -1,9 +1,9 @@
-import { buildLlmsTxt } from "@/lib/llmsContent";
+import { buildLlmsSmallTxt } from "@/lib/llmsContent";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const body = buildLlmsTxt();
+  const body = buildLlmsSmallTxt();
   return new Response(body, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
