@@ -21,7 +21,7 @@ import {
   serverFetchPackageList,
   serverFetchPrebuiltSuggestions,
 } from "@/lib/serverActions";
-export const revalidate = 60;
+export const revalidate = 120;
 const HomePage = async () => {
   const [favoriteData, locationData, packageData, areaData, suggestions] =
     await Promise.allSettled([
