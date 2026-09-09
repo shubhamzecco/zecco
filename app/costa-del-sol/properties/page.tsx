@@ -21,14 +21,73 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function PropertiesPage() {
-  const initialData = await serverFetchPropertyList({
+export default async function PropertiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const sp = await searchParams;
+  const get = (key: string) => {
+    const v = sp[key];
+    return Array.isArray(v) ? v[0] || "" : v || "";
+  };
+
+  const city = get("city");
+  const area = get("area");
+  const subarea = get("subarea");
+  const categories = get("categories");
+  const bedroomsFrom = get("bedroomsFrom");
+  const bedroomsTo = get("bedroomsTo");
+  const priceFrom = get("priceFrom");
+  const priceTo = get("priceTo");
+  const buildFrom = get("buildFrom");
+  const buildTo = get("buildTo");
+  const types = get("types") || get("propertyType");
+  const features = get("features") || get("feature");
+
+  const toNum = (v: string) => {
+    const n = Number(v);
+    return Number.isFinite(n) && v !== "" ? n : undefined;
+  };
+
+  const payload: any = {
     limit: 18,
     page: 1,
     country: "Spain",
     status: true,
     forAll: true,
-  });
+    ...(city ? { cities: city } : {}),
+    ...(area || subarea ? { search: area || subarea } : {}),
+    ...(categories
+      ? { categories: toNum(categories) ?? categories }
+      : {}),
+    ...(bedroomsFrom ? { bedroomsFrom: toNum(bedroomsFrom) } : {}),
+    ...(bedroomsTo ? { bedroomsTo: toNum(bedroomsTo) } : {}),
+    ...(priceFrom ? { priceFrom: toNum(priceFrom) } : {}),
+    ...(priceTo ? { priceTo: toNum(priceTo) } : {}),
+    ...(buildFrom ? { buildFrom: toNum(buildFrom) } : {}),
+    ...(buildTo ? { buildTo: toNum(buildTo) } : {}),
+    ...(types
+      ? {
+          types: types
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean)
+            .map((t) => toNum(t) ?? t),
+        }
+      : {}),
+    ...(features
+      ? {
+          features: features
+            .split(",")
+            .map((f) => f.trim())
+            .filter(Boolean)
+            .map((f) => toNum(f) ?? f),
+        }
+      : {}),
+  };
+
+  const initialData = await serverFetchPropertyList(payload);
 
   return (
     <Suspense>

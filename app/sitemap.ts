@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { io } from "socket.io-client";
 import { generatePropertySlug } from "@/utils/common";
+import { strapiGet } from "@/app/blogs/strapi/strapiClient";
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -113,6 +114,20 @@ async function fetchSitemapData(): Promise<{ locations: any[]; properties: any[]
   }
 }
 
+async function fetchBlogSlugs(): Promise<string[]> {
+  try {
+    const res = await strapiGet<any>(
+      `/api/articles?locale=en&pagination[page]=1&pagination[pageSize]=100&fields[0]=slug&fields[1]=updatedAt`,
+    );
+    const articles = Array.isArray(res?.data) ? res?.data : [];
+    return articles
+      .map((a: any) => a?.attributes?.slug)
+      .filter((s: any): s is string => !!s);
+  } catch (err) {
+    return [];
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { locations, properties } = await fetchSitemapData();
 
@@ -212,6 +227,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified
       );
     }
+  });
+
+  // 4. Blog articles
+  const blogSlugs = await fetchBlogSlugs();
+  blogSlugs.forEach((slug) => {
+    addUrl(`${baseUrl}/blogs/${slug}`, "weekly", 0.7);
   });
 
   return sitemapUrls;

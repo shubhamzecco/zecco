@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import ZeccoFavoritesClient from "./zecco-favorites-client";
-import { serverFetchPropertyList } from "@/lib/serverActions";
+import {
+  serverFetchPropertyList,
+  serverFetchLocationList,
+} from "@/lib/serverActions";
 
 export const dynamic = "force-dynamic";
 
@@ -21,18 +24,31 @@ export const metadata: Metadata = {
 };
 
 export default async function ZeccoFavoritesPage() {
-  let initialData: any = null;
-  try {
-    initialData = await serverFetchPropertyList({
+  const [favoriteResult, locationResult] = await Promise.allSettled([
+    serverFetchPropertyList({
       limit: 0,
       page: 1,
       search: "",
       location_id: null,
       favorite: true,
-    });
-  } catch (err) {
-    initialData = null;
-  }
+    }),
+    serverFetchLocationList({
+      search: "",
+      limit: 0,
+      page: 1,
+      status: true,
+    }),
+  ]);
 
-  return <ZeccoFavoritesClient initialData={initialData} />;
+  const initialData =
+    favoriteResult.status === "fulfilled" ? favoriteResult.value : null;
+  const initialLocations =
+    locationResult.status === "fulfilled" ? locationResult.value : null;
+
+  return (
+    <ZeccoFavoritesClient
+      initialData={initialData}
+      initialLocations={initialLocations}
+    />
+  );
 }
