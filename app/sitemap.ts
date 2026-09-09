@@ -77,7 +77,7 @@ async function fetchSitemapData(): Promise<{ locations: any[]; properties: any[]
         socket.emit("action", {
           type: "propertyService",
           action: "list",
-          payload: { limit: 500, page: 1 },
+          payload: { limit: 100, page: 1 },
         });
       });
 
@@ -209,15 +209,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const lastModified = prop?.updatedAt ? new Date(prop.updatedAt) : new Date();
 
     if (propSlug) {
-      if (city) {
-        // Detailed URL with city query parameter
-        addUrl(
-          `${baseUrl}/costa-del-sol/properties/${propSlug}?city=${city}`,
-          "daily",
-          0.9,
-          lastModified
-        );
-      }
+      
 
       // Canonical clean property detail URL
       addUrl(
