@@ -7,7 +7,7 @@ import LoginPopup from "@/components/login-popup";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setAiInsight, setAiSelectedProperty, setLoginPopup, setPropertyDetails, setPropertyListWithLimit, setUpdatePropertyLike } from "@/redux/modules/main/action";
 import { IProperty, IPropertyResponse } from "@/redux/modules/main/types";
-import { citySlug, normalize } from "@/utils/common";
+import { citySlug, generatePropertySlug, normalize } from "@/utils/common";
 import { SearchX, SlidersHorizontal, Sparkles, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -423,6 +423,29 @@ const Page = ({ initialData }: { initialData?: any }) => {
   );
 
 
+  const itemListJsonLd =
+    Array.isArray(properties) && properties.length > 0
+      ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: properties.map((p: any, index: number) => {
+          const slug = generatePropertySlug(p);
+          const city = citySlug(p?.locationCity || p?.locationArea) || "";
+          const typeName =
+            p?.propertyType?.name ||
+            p?.propertyCategory?.name ||
+            "Property";
+          const mode = p?.isRent ? "for Rent" : "for Sale";
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            name: `${p?.bedrooms ? `${p.bedrooms}-bedroom ` : ""}${typeName} ${mode} in ${p?.locationCity || p?.locationArea || "Costa del Sol"}`,
+            url: `https://zw.appristine.co.in/costa-del-sol/properties/${slug}${city ? `?city=${city}` : ""}`,
+          };
+        }),
+      }
+      : null;
+
   return (
     <MainLayout
       isBreadcrumb
@@ -440,6 +463,12 @@ const Page = ({ initialData }: { initialData?: any }) => {
       savedSearches={handleSavedSearches}
       filteredLocations={mainReducer?.all_location_list || []}
     >
+      {itemListJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      )}
       <div className="px-4 sm:px-6 lg:mx-7 lg:px-8 lg:pb-10">
         <div className="mb-4 flex items-center justify-between lg:hidden">
           <p className="block font-manrope font-semibold text-black lg:hidden">

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import CostadelSol from "./costa-del-sol";
+import { FaqSection } from "@/components/seo/FaqSection";
 import { serverFetchLocationList } from "@/lib/serverActions";
 
 export const dynamic = "force-dynamic";
@@ -28,5 +29,10 @@ export default async function CostaDelSolPage() {
     status: true,
   });
 
-  return <CostadelSol initialData={initialData} />;
+  return (
+    <>
+      <CostadelSol initialData={initialData} />
+      <FaqSection />
+    </>
+  );
 }

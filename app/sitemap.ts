@@ -121,7 +121,7 @@ async function fetchBlogSlugs(): Promise<string[]> {
     );
     const articles = Array.isArray(res?.data) ? res?.data : [];
     return articles
-      .map((a: any) => a?.attributes?.slug)
+      .map((a: any) => a?.attributes?.slug || a?.slug)
       .filter((s: any): s is string => !!s);
   } catch (err) {
     return [];

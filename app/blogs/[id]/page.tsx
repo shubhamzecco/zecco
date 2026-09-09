@@ -11,21 +11,37 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const title = `Blog article ${id} | Zecco`;
+  const article = await fetchBlog(params);
+  const attrs = article?.attributes || article || {};
+  const title = attrs?.title || `Blog article ${id} | Zecco`;
+  const description =
+    attrs?.short_description ||
+    "Read the latest Zecco real estate insights, market updates, and property guidance across Costa del Sol.";
+  const publishedAt = attrs?.publishedAt || attrs?.createdAt;
 
   return {
     title,
-    description:
-      "Read the latest Zecco real estate insights, market updates, and property guidance across Costa del Sol.",
+    description,
     alternates: {
       canonical: `/blogs/${id}`,
     },
     openGraph: {
       title,
-      description:
-        "Read the latest Zecco real estate insights, market updates, and property guidance across Costa del Sol.",
+      description,
       url: `https://zw.appristine.co.in/blogs/${id}`,
       type: "article",
+      ...(publishedAt ? { publishedTime: publishedAt } : {}),
+      ...(attrs?.author?.name
+        ? { authors: [attrs.author.name] }
+        : {}),
+      ...(attrs?.category?.name
+        ? { section: attrs.category.name }
+        : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
     },
   };
 }
