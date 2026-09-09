@@ -240,3 +240,52 @@ export async function serverFetchPrebuiltSuggestions(): Promise<any[]> {
     return [];
   }
 }
+
+export async function serverFetchAllPropertyList(
+  payload: any = {},
+  options?: { timeout?: number; maxItems?: number },
+): Promise<{ data: any[]; pagination?: any }> {
+  const maxItems = options?.maxItems ?? 5000;
+  const cacheKey: any = { ...payload };
+  delete cacheKey.limit;
+  delete cacheKey.page;
+
+  return withCache(
+    `allPropertyList:${JSON.stringify(cacheKey)}`,
+    10 * 60 * 1000,
+    async () => {
+      const first: any =
+        (await socketFetch(
+          "propertyService",
+          "list",
+          { ...payload, limit: 1000, page: 1 },
+          options,
+        )) || {};
+      const firstData = Array.isArray(first?.data) ? first.data : [];
+      const total = first?.pagination?.totalCount ?? firstData.length;
+
+      const data = [...firstData];
+      const pages = Math.min(
+        Math.ceil(total / 1000),
+        Math.ceil(maxItems / 1000),
+      );
+
+      for (let p = 2; p <= pages; p++) {
+        const res: any =
+          (await socketFetch(
+            "propertyService",
+            "list",
+            { ...payload, limit: 1000, page: p },
+            options,
+          )) || {};
+        data.push(...(Array.isArray(res?.data) ? res.data : []));
+        if (data.length >= maxItems || data.length >= total) break;
+      }
+
+      return {
+        data: data.slice(0, maxItems),
+        pagination: { ...(first?.pagination || {}), totalCount: total },
+      };
+    },
+  );
+}
