@@ -33,13 +33,16 @@ const ZeccoFavorites = ({
     }
   }, []);
 
+  const favoriteDataLength = mainReducer?.zecco_favorite?.data?.length ?? 0;
+
   const favoriteList =
-    mainReducer?.zecco_favorite?.data?.length > 0
-      ? mainReducer?.zecco_favorite
-      : initialData;
+    favoriteDataLength > 0 ? mainReducer?.zecco_favorite : initialData;
+
+  const filteredLocationsLength =
+    mainReducer?.location_list_without_limit?.data?.length ?? 0;
 
   const filteredLocations =
-    mainReducer?.location_list_without_limit?.data?.length > 0
+    filteredLocationsLength > 0
       ? mainReducer?.location_list_without_limit?.data
       : initialLocations?.data || [];
 
@@ -142,7 +145,7 @@ const ZeccoFavorites = ({
           </div>
         ) : favoriteList?.data?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-6 mb-8">
-            {favoriteList?.data?.map((property) => (
+            {favoriteList?.data?.map((property : any) => (
               <PropertyCard property={property} key={property?._id} {...property} type="zecco-favorites" />
             ))}
           </div>

@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import PropertyDetailClient from "@/app/property/[id]/property-detail-client";
-import { slugToReadableTitle } from "@/utils/common";
+import { slugToReadableTitle, generatePropertySlug } from "@/utils/common";
+import { serverFetchPropertyDetail } from "@/lib/serverActions";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -8,7 +11,10 @@ export async function generateMetadata({
   params: Promise<{ propertyId: string }>;
 }): Promise<Metadata> {
   const { propertyId } = await params;
-  const readableTitle = slugToReadableTitle(propertyId);
+  const initialProperty = await serverFetchPropertyDetail(propertyId);
+  const readableTitle = initialProperty
+    ? slugToReadableTitle(generatePropertySlug(initialProperty))
+    : slugToReadableTitle(propertyId);
   const title = `${readableTitle} | Zecco's Favorites`;
 
   return {
@@ -34,6 +40,13 @@ export async function generateMetadata({
   };
 }
 
-export default function Page() {
-  return <PropertyDetailClient />;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ propertyId: string }>;
+}) {
+  const { propertyId } = await params;
+  const initialProperty = await serverFetchPropertyDetail(propertyId);
+
+  return <PropertyDetailClient initialProperty={initialProperty} />;
 }
