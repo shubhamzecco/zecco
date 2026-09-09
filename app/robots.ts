@@ -4,36 +4,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: '*',
-        allow: '/',
-      },
-      {
-        userAgent: [
-          'GPTBot',
-          'OAI-SearchBot',
-          'ChatGPT-User',
-          'Googlebot',
-          'Google-Extended',
-          'Bingbot',
-          'ClaudeBot',
-          'Claude-Web',
-          'PerplexityBot',
-          'Amazonbot',
-          'Applebot',
-          'Applebot-Extended',
-          'meta-externalagent',
-          'FacebookBot',
-          'DuckDuckBot',
-          'YandexBot',
-          'Baiduspider',
-          'LinkedInBot',
-          'Twitterbot',
-          'Pinterestbot',
-          'Bytespider',
-          'CCBot',
-          'CommonCrawl',
-          'YouBot'
-        ],
+        userAgent: "*",
         allow: "/",
         disallow: [
           "/dashboard/",
@@ -49,6 +20,7 @@ export default function robots(): MetadataRoute.Robots {
         ],
       },
     ],
+
     sitemap: "https://zw.appristine.co.in/sitemap.xml",
   };
 }
