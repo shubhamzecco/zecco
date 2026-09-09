@@ -27,6 +27,16 @@ export default function HeroSection({
           className="lg:object-cover max-md:object-cover mx-auto"
           priority
         />
+        <p className="max-w-2xl hidden mx-auto mt-2 px-4 text-base sm:text-lg font-manrope text-[#172131] leading-7">
+          Zecco is the Costa del Sol's AI-powered real estate marketplace,
+          connecting buyers and renters with 5,000+ verified properties for
+          sale and rent across Marbella, Estepona, Mijas, Fuengirola, Malaga
+          and the wider province of Andalusia, Spain. Whether you are looking
+          for a luxury villa, a rental apartment with a sea view, or a
+          property investment with strong rental yield, our AI search engine
+          matches you with verified listings, real prices in EUR, and local
+          expert guidance.
+        </p>
       </div>
 
       {/* Search Bar pinned to bottom */}

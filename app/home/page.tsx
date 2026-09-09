@@ -1,6 +1,7 @@
 import Footer from "../../components/Footer";
 import PricingPlans from "../../components/section/PricingPlans";
 import { FaqSection } from "@/components/seo/FaqSection";
+import { HowToSection } from "@/components/seo/HowToSection";
 export const dynamic = "force-dynamic";
 
 import AiExpertise from "./components/AiExpertise";
@@ -80,6 +81,7 @@ const HomePage = async () => {
         <Footer />
       </main>
       <FaqSection/>
+      <HowToSection/>
     </>
   );
 };
