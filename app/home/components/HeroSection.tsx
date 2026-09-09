@@ -2,7 +2,11 @@ import { App_url } from "@/constant/static";
 import Image from "next/image";
 import PropertySearchBar from "./PropertySearchBar";
 
-export default function HeroSection() {
+export default function HeroSection({
+  suggestions = [],
+}: {
+  suggestions?: any[];
+}) {
   return (
     <div className="relative h-[80vh] sm:h-[60vh] landscape:max-lg:h-[80vh]   lg:h-[100vh] w-full  bg-gradient-to-b from-sky-600/20  via-white to-white">
       {/* Background Image */}
@@ -28,7 +32,7 @@ export default function HeroSection() {
       {/* Search Bar pinned to bottom */}
       <div className="absolute bottom-7 left-0 right-0 px-4">
         <div className="max-w-4xl mx-auto">
-          <PropertySearchBar />
+          <PropertySearchBar initialSuggestions={suggestions} />
         </div>
       </div>
     </div>

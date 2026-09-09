@@ -141,3 +141,28 @@ export async function serverFetchPrivacyPolicy(
 ): Promise<any> {
   return socketFetch("privacyPolicyService", "get", {}, options);
 }
+
+export async function serverFetchPrebuiltSuggestions(): Promise<any[]> {
+  const base =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    process.env.NEXT_PUBLIC_ENDPOINT_API_URL ||
+    "http://localhost:8000";
+
+  try {
+    const res = await fetch(
+      `${base}/api/search/prebuilt-suggestions`,
+      {
+        method: "GET",
+        headers: { accept: "*/*" },
+        cache: "no-store",
+        signal: AbortSignal.timeout(4000),
+      },
+    );
+    if (!res.ok) return [];
+    const json = await res.json();
+    const suggestions = json?.data?.suggestions;
+    return Array.isArray(suggestions) ? suggestions : [];
+  } catch {
+    return [];
+  }
+}
