@@ -2,7 +2,7 @@ import Footer from "../../components/Footer";
 import PricingPlans from "../../components/section/PricingPlans";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { HowToSection } from "@/components/seo/HowToSection";
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 import AiExpertise from "./components/AiExpertise";
 import AreasOfInterest from "./components/AreasOfInterest";
@@ -21,7 +21,7 @@ import {
   serverFetchPackageList,
   serverFetchPrebuiltSuggestions,
 } from "@/lib/serverActions";
-
+export const revalidate = 60;
 const HomePage = async () => {
   const [favoriteData, locationData, packageData, areaData, suggestions] =
     await Promise.allSettled([
