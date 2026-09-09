@@ -133,34 +133,10 @@ export default function PropertyDetailClient({
     });
   };
 
-  const property = mainReducer?.property_details as IProperty | null;
+  const property = propertyDetails as IProperty | null;
 
   const jsonLd = property
-    ? {
-      "@context": "https://schema.org",
-      "@type": "Residence",
-      name:
-        (property as any)?.title ||
-        (property as any)?.name ||
-        "Property in Costa del Sol",
-      description:
-        (property as any)?.description ||
-        (property as any)?.propertyDescriptions?.[0]?.description,
-      url: `https://zw.appristine.co.in/property/${propertyId}`,
-      image: (property as any)?.propertyImages?.map((image: any) => image?.image),
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: (property as any)?.locationCity || "Costa del Sol",
-        addressCountry: "ES",
-      },
-      offers: (property as any)?.price
-        ? {
-          "@type": "Offer",
-          price: (property as any)?.price,
-          priceCurrency: "EUR",
-        }
-        : undefined,
-    }
+    ? buildPropertyJsonLd(property, Array.isArray(propertyId) ? propertyId[propertyId.length - 1] : propertyId ?? '', pathname)
     : null;
 
 
@@ -246,4 +222,149 @@ export default function PropertyDetailClient({
       <LoginPopup />
     </MainLayout>
   );
+}
+
+const SITE_URL = "https://zw.appristine.co.in";
+
+const cleanSegment = (value?: string | null): string =>
+  (value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+function buildPropertyJsonLd(
+  property: any,
+  propertyId: string,
+  pathname: string,
+) {
+  const typeName =
+    property?.propertyType?.name ||
+    property?.propertyCategory?.name ||
+    "Property";
+  const listingMode = property?.isRent ? "Rent" : "Sale";
+  const city = property?.locationCity || "Costa del Sol";
+  const name =
+    property?.title ||
+    property?.name ||
+    `${property?.bedrooms ? `${property.bedrooms} Bedroom ` : ""}${typeName} for ${listingMode} in ${city}, Costa del Sol`;
+  const description =
+    property?.description ||
+    property?.propertyDescriptions?.[0]?.description;
+
+  const price =
+    property?.salePrice ||
+    property?.salePriceShow ||
+    property?.rentalPrice ||
+    property?.rentalPriceShow;
+  const currency =
+    property?.currency?.isoCode || property?.currency?.symbol || "EUR";
+
+  const availability = property?.isSold
+    ? "https://schema.org/SoldOut"
+    : property?.isUnderOffer
+      ? "https://schema.org/OutOfStock"
+      : "https://schema.org/InStock";
+
+  const images = (property?.propertyImages || [])
+    .map((img: any) => img?.url || img?.image)
+    .filter(Boolean);
+
+  const agent = property?.agent_assigned;
+  const seller = agent?.first_name || agent?.last_name || agent?.name
+    ? {
+      "@type": "Person",
+      name: [agent?.first_name, agent?.last_name].filter(Boolean).join(" "),
+      ...(agent?.email ? { email: agent.email } : {}),
+      ...(agent?.contact_no ? { telephone: agent.contact_no } : {}),
+    }
+    : {
+      "@type": "Organization",
+      name: "Zecco Real Estate",
+    };
+
+  // Breadcrumbs: Home > Costa del Sol > Properties > {Area/City} > {title}
+  const breadcrumbs = [
+    { name: "Home", url: `${SITE_URL}/` },
+    { name: "Costa del Sol", url: `${SITE_URL}/costa-del-sol` },
+    { name: "Properties", url: `${SITE_URL}/costa-del-sol/properties` },
+  ];
+  if (property?.locationArea) {
+    breadcrumbs.push({
+      name: property.locationArea,
+      url: `${SITE_URL}/costa-del-sol/properties?city=${cleanSegment(city)}&area=${cleanSegment(property.locationArea)}`,
+    });
+  }
+  breadcrumbs.push({ name, url: `${SITE_URL}${pathname}` });
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["Product", "RealEstateListing"],
+        name,
+        description,
+        url: `${SITE_URL}${pathname}`,
+        image: images,
+        sku: property?.reference || property?._id || propertyId,
+        brand: { "@type": "Brand", name: "Zecco Real Estate" },
+        category: typeName,
+        datePosted:
+          property?.dateListed || property?.dateCreated || property?.dateModified,
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: city || undefined,
+          ...(property?.locationArea
+            ? { addressRegion: property.locationArea }
+            : {}),
+          addressCountry: property?.locationCountry || "ES",
+        },
+        ...(property?.latitude && property?.longitude
+          ? {
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: property.latitude,
+              longitude: property.longitude,
+            },
+          }
+          : {}),
+        ...(property?.bedrooms ? { numberOfRooms: property.bedrooms } : {}),
+        ...(property?.bathrooms
+          ? { numberOfBathroomsTotal: property.bathrooms }
+          : {}),
+        ...(property?.mtsBuild
+          ? {
+            floorSize: {
+              "@type": "QuantitativeValue",
+              value: property.mtsBuild,
+              unitCode: "MTK",
+            },
+          }
+          : {}),
+        offers: price
+          ? {
+            "@type": "Offer",
+            price,
+            priceCurrency: currency,
+            availability,
+            url: `${SITE_URL}${pathname}`,
+            itemCondition: "https://schema.org/UsedCondition",
+            ...(property?.salePriceReduced
+              ? { priceValidUntil: property.dateModified }
+              : {}),
+          }
+          : undefined,
+        seller,
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbs.map((item, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: item.name,
+          item: item.url,
+        })),
+      },
+    ],
+  };
 }

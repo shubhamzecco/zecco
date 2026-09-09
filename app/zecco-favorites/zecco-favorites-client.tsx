@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { Heart } from "lucide-react";
 import { setAiInsight, setLocationListWithoutLimit, setStoredAiInsightList, setZeccoFavoriteList } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
+import { generatePropertySlug } from "@/utils/common";
 
 const ZeccoFavorites = ({
   initialData,
@@ -130,6 +131,28 @@ const ZeccoFavorites = ({
 
 
 
+  const itemListJsonLd =
+    Array.isArray(favoriteList?.data) && favoriteList.data.length > 0
+      ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: favoriteList.data.map((p: any, index: number) => {
+          const slug = generatePropertySlug(p);
+          const typeName =
+            p?.propertyType?.name ||
+            p?.propertyCategory?.name ||
+            "Property";
+          const mode = p?.isRent ? "for Rent" : "for Sale";
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            name: `${p?.bedrooms ? `${p.bedrooms}-bedroom ` : ""}${typeName} ${mode} in ${p?.locationCity || p?.locationArea || "Costa del Sol"}`,
+            url: `https://zw.appristine.co.in/costa-del-sol/properties/${slug}`,
+          };
+        }),
+      }
+      : null;
+
   return (
     <MainLayout
       isBreadcrumb
@@ -138,6 +161,12 @@ const ZeccoFavorites = ({
       handleSearch={(e) => handleSearch(e)}
       filteredLocations={filteredLocations}
     >
+      {itemListJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      )}
       <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
         {!favoriteList ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-6 mb-8">

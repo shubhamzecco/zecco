@@ -11,6 +11,7 @@ import { STRAPI_ENDPOINTS } from "../strapi/strapiConstant";
 import { strapiGet } from "../strapi/strapiClient";
 
 const STRAPI_URL = "http://localhost:1337";
+const SITE_URL = "https://zw.appristine.co.in";
 
 interface ContentChild {
   text: string;
@@ -112,8 +113,16 @@ const DetailPage = ({ initialBlog }: { initialBlog?: Blog | null }) => {
     );
   }
 
+  const blogJsonLd = blog ? buildBlogJsonLd(blog, String(params?.id)) : null;
+
   return (
     <MainLayout isBreadcrumb>
+      {blogJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+        />
+      )}
       <div className="bg-[#f8f8f8] min-h-screen">
         {/* HERO SECTION */}
         <section className="relative w-full h-[550px] overflow-hidden">
@@ -458,3 +467,60 @@ const DetailPage = ({ initialBlog }: { initialBlog?: Blog | null }) => {
 };
 
 export default DetailPage;
+
+function buildBlogJsonLd(blog: any, slug: string) {
+  const attrs = blog?.attributes || blog || {};
+  const coverImage = attrs?.cover?.url
+    ? `${STRAPI_URL}${attrs.cover.url}`
+    : undefined;
+  const articleUrl = `${SITE_URL}/blogs/${slug}`;
+
+  const bodyText = (attrs?.content || [])
+    .map((item: any) => {
+      if (item?.type === "heading" || item?.type === "paragraph") {
+        return item?.children?.map((c: any) => c?.text)?.join("") || "";
+      }
+      return "";
+    })
+    .filter(Boolean)
+    .join(" ");
+
+  const authorName = attrs?.author?.name;
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        headline: attrs?.title || slug,
+        description: attrs?.short_description || undefined,
+        image: coverImage,
+        datePublished: attrs?.publishedAt || attrs?.createdAt || undefined,
+        dateModified: attrs?.updatedAt || attrs?.publishedAt || undefined,
+        inLanguage: attrs?.locale || "en",
+        mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+        author: authorName
+          ? { "@type": "Person", name: authorName }
+          : { "@type": "Organization", name: "Zecco Real Estate" },
+        publisher: {
+          "@type": "Organization",
+          name: "Zecco Real Estate",
+          logo: { "@type": "ImageObject", url: `${SITE_URL}/assets/images/logo.png` },
+        },
+        articleSection: attrs?.category?.name || "Real Estate Insights",
+        ...(bodyText ? { articleBody: bodyText.slice(0, 12000) } : {}),
+        keywords: attrs?.category?.name
+          ? ["real estate", "costa del sol", attrs.category.name].join(", ")
+          : "real estate, costa del sol",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE_URL}/` },
+          { "@type": "ListItem", position: 2, name: "Blogs", item: `${SITE_URL}/blogs` },
+          { "@type": "ListItem", position: 3, name: attrs?.title || slug, item: articleUrl },
+        ],
+      },
+    ],
+  };
+}
