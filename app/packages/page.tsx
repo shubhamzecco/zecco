@@ -3,7 +3,9 @@ import MainLayout from "@/components/layouts/main-layout";
 import PricingPlans from "../../components/section/PricingPlans";
 import { serverFetchPackageList } from "@/lib/serverActions";
 
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
+
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Pricing Plans & Packages | Zecco Real Estate",
