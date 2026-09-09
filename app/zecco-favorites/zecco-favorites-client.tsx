@@ -9,10 +9,16 @@ import debounce from 'lodash/debounce'
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Heart } from "lucide-react";
-import { setAiInsight, setStoredAiInsightList, setZeccoFavoriteList } from "@/redux/modules/main/action";
+import { setAiInsight, setLocationListWithoutLimit, setStoredAiInsightList, setZeccoFavoriteList } from "@/redux/modules/main/action";
 import { IPropertyResponse } from "@/redux/modules/main/types";
 
-const ZeccoFavorites = ({ initialData }: { initialData?: any }) => {
+const ZeccoFavorites = ({
+  initialData,
+  initialLocations,
+}: {
+  initialData?: any;
+  initialLocations?: any;
+}) => {
   const { mainReducer } = usePosterReducers();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const dispatch = useDispatch();
@@ -22,7 +28,20 @@ const ZeccoFavorites = ({ initialData }: { initialData?: any }) => {
     if (initialData && !mainReducer?.zecco_favorite?.data?.length) {
       dispatch(setZeccoFavoriteList(initialData));
     }
+    if (initialLocations && !mainReducer?.location_list_without_limit?.data?.length) {
+      dispatch(setLocationListWithoutLimit(initialLocations));
+    }
   }, []);
+
+  const favoriteList =
+    mainReducer?.zecco_favorite?.data?.length > 0
+      ? mainReducer?.zecco_favorite
+      : initialData;
+
+  const filteredLocations =
+    mainReducer?.location_list_without_limit?.data?.length > 0
+      ? mainReducer?.location_list_without_limit?.data
+      : initialLocations?.data || [];
 
   useEffect(() => {
     sendMessage("action", {
@@ -114,16 +133,16 @@ const ZeccoFavorites = ({ initialData }: { initialData?: any }) => {
       isFilter
       placeholder="city name"
       handleSearch={(e) => handleSearch(e)}
-      filteredLocations={mainReducer?.location_list_without_limit?.data || []}
+      filteredLocations={filteredLocations}
     >
       <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
-        {!mainReducer?.zecco_favorite ? (
+        {!favoriteList ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-6 mb-8">
             {Array.from({ length: 8 }).map((_, i) => <PropertyCardSkeleton key={i} />)}
           </div>
-        ) : mainReducer?.zecco_favorite?.data?.length > 0 ? (
+        ) : favoriteList?.data?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5 gap-6 mb-8">
-            {mainReducer?.zecco_favorite?.data?.map((property) => (
+            {favoriteList?.data?.map((property) => (
               <PropertyCard property={property} key={property?._id} {...property} type="zecco-favorites" />
             ))}
           </div>

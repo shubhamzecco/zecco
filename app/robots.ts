@@ -4,7 +4,36 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
-        userAgent: "*",
+        userAgent: '*',
+        allow: '/',
+      },
+      {
+        userAgent: [
+          'GPTBot',
+          'OAI-SearchBot',
+          'ChatGPT-User',
+          'Googlebot',
+          'Google-Extended',
+          'Bingbot',
+          'ClaudeBot',
+          'Claude-Web',
+          'PerplexityBot',
+          'Amazonbot',
+          'Applebot',
+          'Applebot-Extended',
+          'meta-externalagent',
+          'FacebookBot',
+          'DuckDuckBot',
+          'YandexBot',
+          'Baiduspider',
+          'LinkedInBot',
+          'Twitterbot',
+          'Pinterestbot',
+          'Bytespider',
+          'CCBot',
+          'CommonCrawl',
+          'YouBot'
+        ],
         allow: "/",
         disallow: [
           "/dashboard/",

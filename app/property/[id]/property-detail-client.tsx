@@ -175,16 +175,16 @@ export default function PropertyDetailClient({
       <div className="lg:mx-7 px-4 sm:px-6 lg:px-8">
         <div className="lg:col-span-1">
           <PropertyGallery
-            property={mainReducer?.property_details?.propertyImages as IImage[]}
+            property={propertyDetails?.propertyImages as IImage[]}
           />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <PropertyInfo
-              property={mainReducer?.property_details as IProperty}
+              property={propertyDetails as IProperty}
             />
             <PropertyStats
-              property={mainReducer?.property_details as IProperty}
+              property={propertyDetails as IProperty}
             />
             <div className="flex items-center gap-5 mb-2">
               <Button
@@ -214,31 +214,31 @@ export default function PropertyDetailClient({
               )}
             <PropertyDescription
               propertyDescriptions={
-                mainReducer?.property_details
+                propertyDetails
                   ?.propertyDescriptions as IPropertyDescription[]
               }
             />
-            {(mainReducer?.property_details?.features?.length ?? 0) > 0 && (
+            {(propertyDetails?.features?.length ?? 0) > 0 && (
               <BasicFeatures
-                features={mainReducer?.property_details?.features as IFeature[]}
+                features={propertyDetails?.features as IFeature[]}
               />
             )}
             <MapSection />
           </div>
 
           <div className="lg:col-span-1">
-            {(mainReducer?.property_details?.agent_assigned || user_data?.user?.agent?.agent) && (
+            {(propertyDetails?.agent_assigned || user_data?.user?.agent?.agent) && (
               <AgentCard
-                agent_details={mainReducer?.property_details?.agent_assigned}
+                agent_details={propertyDetails?.agent_assigned}
                 user_data={user_data}
               />
             )}
           </div>
         </div>
         <div className="lg:col-span-1">
-          {mainReducer?.property_details?.locationCity && (
+          {propertyDetails?.locationCity && (
             <ZeccoFavorites
-              property={mainReducer?.property_details as IProperty}
+              property={propertyDetails as IProperty}
             />
           )}
         </div>
