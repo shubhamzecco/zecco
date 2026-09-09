@@ -32,6 +32,7 @@ export default async function CostaDelSolPage() {
   return (
     <>
       <CostadelSol initialData={initialData} />
+      <FaqSection/>
     </>
   );
 }

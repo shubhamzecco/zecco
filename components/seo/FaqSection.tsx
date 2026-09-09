@@ -54,56 +54,13 @@ const faqJsonLd = {
   })),
 };
 
+// Renders only the FAQPage JSON-LD schema (hidden from users) so AI engines and
+// answer engines can cite the Q&A while the FAQ stays invisible on the website.
 export function FaqSection() {
   return (
-    <section
-      aria-label="Frequently asked questions about Costa del Sol property"
-      className="max-w-3xl mx-auto px-5 py-20"
-      itemScope
-      itemType="https://schema.org/FAQPage"
-    >
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#172131]">
-          Buying on the Costa del Sol – FAQs
-        </h2>
-        <p className="mt-4 text-gray-600 text-lg max-w-2xl mx-auto">
-          Answers to the most common questions about buying property and
-          investing on the Costa del Sol, Spain.
-        </p>
-      </div>
-      <div className="space-y-4">
-        {FAQS.map((faq, index) => (
-          <details
-            key={index}
-            className="group bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden"
-            itemScope
-            itemProp="mainEntity"
-            itemType="https://schema.org/Question"
-          >
-            <summary
-              itemProp="name"
-              className="cursor-pointer list-none flex items-center justify-between gap-4 px-6 py-5 font-semibold text-[#172131]"
-            >
-              <span>{faq.question}</span>
-              <span className="shrink-0 text-lg font-bold text-[#c9a227] group-open:rotate-45 transition-transform">
-                +
-              </span>
-            </summary>
-            <div
-              className="px-6 pb-5 text-gray-600 leading-7"
-              itemScope
-              itemProp="acceptedAnswer"
-              itemType="https://schema.org/Answer"
-            >
-              <p itemProp="text">{faq.answer}</p>
-            </div>
-          </details>
-        ))}
-      </div>
-    </section>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+    />
   );
 }

@@ -759,6 +759,7 @@ export interface IPackageResponse {
 export interface ILocationResponse {
   data: ILocation[];
   pagination: IPagination;
+  totalCount : any
 }
 
 export interface IStoredAiInsightResponse {
