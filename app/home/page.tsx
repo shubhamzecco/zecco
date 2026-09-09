@@ -17,10 +17,11 @@ import {
   serverFetchFavoriteList,
   serverFetchLocationList,
   serverFetchPackageList,
+  serverFetchPrebuiltSuggestions,
 } from "@/lib/serverActions";
 
 const HomePage = async () => {
-  const [favoriteData, locationData, packageData, areaData] =
+  const [favoriteData, locationData, packageData, areaData, suggestions] =
     await Promise.allSettled([
       serverFetchFavoriteList({
         limit: 10,
@@ -45,6 +46,7 @@ const HomePage = async () => {
         limit: 10,
         page: 1,
       }),
+      serverFetchPrebuiltSuggestions(),
     ]);
 
   const favorite = favoriteData.status === "fulfilled" ? favoriteData.value : null;
@@ -53,12 +55,14 @@ const HomePage = async () => {
   const packages =
     packageData.status === "fulfilled" ? packageData.value : null;
   const areas = areaData.status === "fulfilled" ? areaData.value : null;
+  const prebuiltSuggestions =
+    suggestions.status === "fulfilled" ? suggestions.value : [];
 
   return (
     <>
       <main className={`w-full bg-white`}>
         <Navbar />
-        <HeroSection />
+        <HeroSection suggestions={prebuiltSuggestions} />
         <AiExpertise />
         <PropertyListings initialData={favorite} />
         <AreasOfInterest initialData={locations} />

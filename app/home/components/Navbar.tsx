@@ -52,7 +52,7 @@ export default function Navbar() {
       {/* Top Bar */}
       <div className="sm:mx-5 px-4 sm:px-6 lg:px-8 ">
         {/* <div className="bg-white/20 border border-white/70 rounded-full"> */}
-          <div className="bg-[#e3dfdf5c]  shadow-lg backdrop-blur-sm border border-[#b8dbf7] rounded-full">
+        <div className="bg-[#e3dfdf5c]  shadow-lg backdrop-blur-sm border border-[#b8dbf7] rounded-full">
           <div className="max-sm:grid grid-cols-2 lg:grid sm:flex justify-between lg:grid-cols-[1fr_auto_1fr] items-center w-full h-[3.2rem] 2xl:h-[3.5rem] px-4">
             <Link href="/" className="flex items-center gap-2 w-[25%]">
               <Image
@@ -66,16 +66,17 @@ export default function Navbar() {
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center gap-8">
               {NAV_ITEMS?.map((item) => (
-                <button
+                <Link
+                  href={item?.href}
                   key={item?.label}
-                  onClick={() => handleNavClick(item)}
+                  // onClick={() => handleNavClick(item)}
                   className={`relative ${isActive(item?.href) ? "text-[#1466EC]" : "text-[#1b3f5f]"} font-inter text-sm font-medium`}
                 >
                   {item?.label}
                   {isActive(item?.href) && (
                     <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#1466EC] rounded-full" />
                   )}
-                </button>
+                </Link>
               ))}
             </div>
 
@@ -133,10 +134,10 @@ export default function Navbar() {
                   items={[
                     { label: "Profile", path: App_url?.link.PROFILE },
                     { label: "Dashboard", path: App_url.link.DASHBOARD },
-                      {
-                        label: "Logout",
-                        onClick: () => setShowLogoutConfirm(true),
-                      },
+                    {
+                      label: "Logout",
+                      onClick: () => setShowLogoutConfirm(true),
+                    },
                   ]}
                 />
               )}
@@ -154,9 +155,8 @@ export default function Navbar() {
 
       {/* ✅ Mobile Menu (OUTSIDE rounded container) */}
       <div
-        className={`lg:hidden mx-4 mt-3 bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ${
-          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}
+        className={`lg:hidden mx-4 mt-3 bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+          }`}
       >
         {NAV_ITEMS?.map((item) => (
           <button

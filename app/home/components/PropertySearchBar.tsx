@@ -120,6 +120,34 @@ function applyFiltersToParams(
   return params;
 }
 
+function buildSuggestionUrl(filters: Record<string, any>): string {
+  const params = new URLSearchParams();
+
+  Object.entries(filters || {}).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === "") return;
+
+    if (key === "bedrooms") {
+      params.set("bedroomsFrom", String(value));
+      params.set("bedroomsTo", String(value));
+      return;
+    }
+
+    if (key === "cities") {
+      params.set("city", String(value));
+      return;
+    }
+
+    if (key === "areas") {
+      params.set("area", String(value));
+      return;
+    }
+
+    params.set(key, String(value));
+  });
+
+  return `/costa-del-sol/properties?${params.toString()}`;
+}
+
 const getPropertyType = (
   search: string,
   propertyTypes: any[]
@@ -136,7 +164,11 @@ const getPropertyType = (
   });
 };
 
-const PropertySearchBar = () => {
+const PropertySearchBar = ({
+  initialSuggestions = [],
+}: {
+  initialSuggestions?: any[];
+}) => {
   const router = useRouter();
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const { mainReducer } = usePosterReducers();
@@ -152,8 +184,12 @@ const PropertySearchBar = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
-  const [searchSuggestions, setSearchSuggestions] = useState<any[]>([]);
-  const [prebuiltSuggestions, setPrebuiltSuggestions] = useState<any[]>([]);
+  const [searchSuggestions, setSearchSuggestions] = useState<any[]>(
+    Array.isArray(initialSuggestions) ? initialSuggestions.slice(0, 8) : [],
+  );
+  const [prebuiltSuggestions, setPrebuiltSuggestions] = useState<any[]>(
+    Array.isArray(initialSuggestions) ? initialSuggestions : [],
+  );
   const autocompleteSuggestionsRef = useRef<any[]>([]);
 
   useEffect(() => {
@@ -339,6 +375,13 @@ const PropertySearchBar = () => {
   }, [lastEvent, prebuiltSuggestions, searchText]);
 
   useEffect(() => {
+    if (
+      Array.isArray(initialSuggestions) &&
+      initialSuggestions.length > 0
+    ) {
+      return;
+    }
+
     let isMounted = true;
 
     loadPrebuiltSuggestions().then((suggestions) => {
@@ -460,6 +503,17 @@ const PropertySearchBar = () => {
 
   return (
     <div className="w-full max-w-[52rem] mx-auto">
+      {/* SSR-visible suggestion links (for search engines / no-JS) */}
+      <ul role="list" className="hidden" aria-label="Popular searches">
+        {initialSuggestions?.map((item: any, index) => (
+          <li key={index}>
+            <a href={buildSuggestionUrl(item?.filters)}>
+              {item?.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+
       <div
         className="
           flex flex-col sm:flex-row
