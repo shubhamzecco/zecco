@@ -3,7 +3,7 @@ import CostadelSol from "./costa-del-sol";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { serverFetchLocationList } from "@/lib/serverActions";
 
-export const revalidate = 300;
+// export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Costa del Sol Areas & Properties | Zecco Real Estate",
@@ -32,7 +32,7 @@ export default async function CostaDelSolPage() {
   return (
     <>
       <CostadelSol initialData={initialData} />
-      <FaqSection/>
+      <FaqSection />
     </>
   );
 }

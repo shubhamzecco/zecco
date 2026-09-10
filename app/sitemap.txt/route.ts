@@ -1,6 +1,6 @@
 import sitemap from "../sitemap";
 
-export const revalidate = 3600;
+// export const revalidate = 3600;
 
 export async function GET() {
   try {

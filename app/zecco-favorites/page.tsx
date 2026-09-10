@@ -5,7 +5,7 @@ import {
   serverFetchLocationList,
 } from "@/lib/serverActions";
 
-export const revalidate = 300;
+// export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Zecco's  Favorites | Premium Spain Properties",

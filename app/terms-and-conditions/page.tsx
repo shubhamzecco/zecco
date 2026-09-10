@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import TermsConditionPage from "./components/terms";
 import { fetchTermsConditionsData } from "@/lib/legalApi";
 
-export const revalidate = 3600; // Revalidate every hour
+// // export const revalidate = 3600; // Revalidate every hour
 
 export const metadata: Metadata = {
   title: "Terms & Conditions | Zecco Real Estate",

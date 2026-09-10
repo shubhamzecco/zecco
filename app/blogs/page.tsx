@@ -3,7 +3,7 @@ import BlogsClient from "./blogs-client";
 import { strapiGet } from "./strapi/strapiClient";
 import { STRAPI_ENDPOINTS } from "./strapi/strapiConstant";
 
-export const revalidate = 300;
+// export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Real Estate Blogs & Market Insights | Zecco",

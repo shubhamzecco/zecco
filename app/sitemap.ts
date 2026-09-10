@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { generatePropertySlug } from "@/utils/common";
 import { getSiteBaseUrl } from "@/utils/siteUrl";
 
-export const revalidate = 3600; // Revalidate every hour
+// export const revalidate = 3600; // Revalidate every hour
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
@@ -155,18 +155,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "daily" | "weekly";
     priority: number;
   }> = [
-    { path: "", changeFrequency: "daily", priority: 1.0 },
-    { path: "/costa-del-sol", changeFrequency: "weekly", priority: 0.9 },
-    { path: "/costa-del-sol/properties", changeFrequency: "daily", priority: 0.9 },
-    { path: "/map-search", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/zecco-favorites", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/about-zecco", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/blogs", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/packages", changeFrequency: "weekly", priority: 0.8 },
-    { path: "/contact-us", changeFrequency: "weekly", priority: 0.7 },
-    { path: "/privacy-policy", changeFrequency: "weekly", priority: 0.6 },
-    { path: "/terms-and-conditions", changeFrequency: "weekly", priority: 0.6 },
-  ];
+      { path: "", changeFrequency: "daily", priority: 1.0 },
+      { path: "/costa-del-sol", changeFrequency: "weekly", priority: 0.9 },
+      { path: "/costa-del-sol/properties", changeFrequency: "daily", priority: 0.9 },
+      { path: "/map-search", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/zecco-favorites", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/about-zecco", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/blogs", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/packages", changeFrequency: "weekly", priority: 0.8 },
+      { path: "/contact-us", changeFrequency: "weekly", priority: 0.7 },
+      { path: "/privacy-policy", changeFrequency: "weekly", priority: 0.6 },
+      { path: "/terms-and-conditions", changeFrequency: "weekly", priority: 0.6 },
+    ];
 
   staticRoutes.forEach((route) => {
     addUrl(`${baseUrl}${route.path}`, route.changeFrequency, route.priority);
@@ -176,9 +176,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const citiesToAdd =
     locations.length > 0
       ? locations
-          .filter((l) => l?.type === "city" || !l?.type)
-          .map((l) => cleanSlug(l?.name_slug || l?.city_name || l?.name))
-          .filter(Boolean)
+        .filter((l) => l?.type === "city" || !l?.type)
+        .map((l) => cleanSlug(l?.name_slug || l?.city_name || l?.name))
+        .filter(Boolean)
       : fallbackCities;
 
   const uniqueCities = Array.from(new Set(citiesToAdd.concat(fallbackCities)));

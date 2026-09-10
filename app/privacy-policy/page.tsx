@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PolicyPage from "./components/privacy_policy";
 import { fetchPrivacyPolicyData } from "@/lib/legalApi";
 
-export const revalidate = 3600; // Revalidate every hour
+// export const revalidate = 3600; // Revalidate every hour
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Zecco Real Estate",

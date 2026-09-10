@@ -4,7 +4,7 @@ import BlogDetailClient from "./blog-detail-client";
 import { strapiGet } from "../strapi/strapiClient";
 import { STRAPI_ENDPOINTS } from "../strapi/strapiConstant";
 
-export const revalidate = 300;
+// export const revalidate = 300;
 
 const cachedFetchBlog = cache(async (id: string) => {
   try {

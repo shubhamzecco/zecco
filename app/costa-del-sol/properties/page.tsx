@@ -5,7 +5,7 @@ import { serverFetchPropertyList } from "@/lib/serverActions";
 import { generatePropertySlug } from "@/utils/common";
 import { getSiteBaseUrl } from "@/utils/siteUrl";
 
-export const revalidate = 60;
+// export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Properties for Sale & Rent in Costa del Sol | Zecco",
@@ -71,21 +71,21 @@ export default async function PropertiesPage({
     ...(buildTo ? { buildTo: toNum(buildTo) } : {}),
     ...(types
       ? {
-          types: types
-            .split(",")
-            .map((t) => t.trim())
-            .filter(Boolean)
-            .map((t) => toNum(t) ?? t),
-        }
+        types: types
+          .split(",")
+          .map((t) => t.trim())
+          .filter(Boolean)
+          .map((t) => toNum(t) ?? t),
+      }
       : {}),
     ...(features
       ? {
-          features: features
-            .split(",")
-            .map((f) => f.trim())
-            .filter(Boolean)
-            .map((f) => toNum(f) ?? f),
-        }
+        features: features
+          .split(",")
+          .map((f) => f.trim())
+          .filter(Boolean)
+          .map((f) => toNum(f) ?? f),
+      }
       : {}),
   };
 
@@ -97,19 +97,17 @@ export default async function PropertiesPage({
   const fullItemListJsonLd =
     initialList.length > 0
       ? {
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          itemListElement: initialList.map((p: any, index: number) => ({
-            "@type": "ListItem",
-            position: index + 1,
-            name: `${p?.bedrooms ? `${p.bedrooms}-bedroom ` : ""}${
-              p?.propertyType?.name || p?.propertyCategory?.name || "Property"
-            } for ${p?.isRent ? "Rent" : "Sale"} in ${
-              p?.locationCity || p?.locationArea || "Costa del Sol"
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        itemListElement: initialList.map((p: any, index: number) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: `${p?.bedrooms ? `${p.bedrooms}-bedroom ` : ""}${p?.propertyType?.name || p?.propertyCategory?.name || "Property"
+            } for ${p?.isRent ? "Rent" : "Sale"} in ${p?.locationCity || p?.locationArea || "Costa del Sol"
             }`,
-            url: `${siteBaseUrl}/costa-del-sol/properties/${generatePropertySlug(p)}`,
-          })),
-        }
+          url: `${siteBaseUrl}/costa-del-sol/properties/${generatePropertySlug(p)}`,
+        })),
+      }
       : null;
 
   return (

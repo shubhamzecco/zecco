@@ -4,7 +4,7 @@ import PropertyDetailClient from "@/app/property/[id]/property-detail-client";
 import { slugToReadableTitle, generatePropertySlug } from "@/utils/common";
 import { serverFetchPropertyDetail } from "@/lib/serverActions";
 
-export const revalidate = 300;
+// export const revalidate = 300;
 
 const cachedFetchProperty = cache(async (propertyId: string) => {
   return serverFetchPropertyDetail(propertyId);
