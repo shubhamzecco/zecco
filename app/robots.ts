@@ -24,7 +24,7 @@ const AI_BOTS = [
 
 const DISALLOWED_PATHS = [
   "/dashboard/",
-  "/favorites/",
+  // "/favorites/",
   "/messages/",
   "/saved-searches/",
   "/AI-insights/",
@@ -53,9 +53,6 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
 
-    sitemap: [
-      "https://zw.appristine.co.in/sitemap.xml",
-      "https://zw.appristine.co.in/sitemap.txt",
-    ],
+    sitemap:  "https://zw.appristine.co.in/sitemap.xml"
   };
 }
