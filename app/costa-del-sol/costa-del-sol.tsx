@@ -59,7 +59,16 @@ const CostadelSol = ({
     debouncedFetchAreas(value);
   };
 
+  const hasInitialDataRef = useRef(allAreas.length > 0);
+  const hasFetchedLimit0Ref = useRef(false);
+
   useEffect(() => {
+    if (!isConnected) return;
+    if (hasInitialDataRef.current) {
+      hasInitialDataRef.current = false;
+      fetchedPages.current.add("-1");
+      return;
+    }
     fetchAreas(1, "");
   }, [isConnected]);
 
@@ -102,7 +111,8 @@ const CostadelSol = ({
   }, [page, loading, hasMore, search]);
 
   useEffect(() => {
-    if (!isConnected) return;
+    if (!isConnected || hasFetchedLimit0Ref.current) return;
+    hasFetchedLimit0Ref.current = true;
     sendMessage("action", {
       type: "locationService",
       action: "list",

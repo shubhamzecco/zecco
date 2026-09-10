@@ -85,8 +85,9 @@ export default function BlogsClient({
   };
 
   useEffect(() => {
+    if (initialData?.data?.length) return;
     fetchArticles(1);
-  }, []);
+  }, [initialData]);
 
   return (
     <MainLayout isBreadcrumb>

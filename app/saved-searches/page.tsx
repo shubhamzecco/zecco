@@ -11,7 +11,7 @@ import { useEffect, useMemo } from "react";
 import { Search } from "lucide-react";
 import SavedSearchCard from "./components/search-card";
 import CommonCard from "@/components/cards/common-card";
-import { parseCSV } from "../costa-del-sol/properties/page";
+import { parseCSV } from "../costa-del-sol/properties/properties-client";
 
 const SavedSearches = () => {
   const { sendMessage, lastEvent, isConnected } = useWebSocket();

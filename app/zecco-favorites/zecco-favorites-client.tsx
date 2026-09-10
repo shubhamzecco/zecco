@@ -6,7 +6,7 @@ import MainLayout from "@/components/layouts/main-layout";
 import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import debounce from 'lodash/debounce'
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Heart } from "lucide-react";
 import { setAiInsight, setLocationListWithoutLimit, setStoredAiInsightList, setZeccoFavoriteList } from "@/redux/modules/main/action";
@@ -24,6 +24,8 @@ const ZeccoFavorites = ({
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const dispatch = useDispatch();
   const [search, setSearch] = useState('')
+  const hasInitialFavoritesRef = useRef(!!initialData?.data?.length);
+  const hasInitialLocationsRef = useRef(!!initialLocations?.data?.length);
 
   useEffect(() => {
     if (initialData && !mainReducer?.zecco_favorite?.data?.length) {
@@ -48,28 +50,37 @@ const ZeccoFavorites = ({
       : initialLocations?.data || [];
 
   useEffect(() => {
-    sendMessage("action", {
-      type: "propertyService",
-      action: "list",
-      payload: {
-        limit: 0,
-        page: 1,
-        search: "",
-        location_id: null,
-        favorite: true,
-      },
-    });
-    sendMessage("action", {
-      type: "locationService",
-      action: "list",
-      payload: {
-        search: "",
-        limit: 0,
-        page: 1,
-        status: true,
-      },
-    });
-     dispatch(setAiInsight({} as IPropertyResponse));
+    if (!hasInitialFavoritesRef.current) {
+      sendMessage("action", {
+        type: "propertyService",
+        action: "list",
+        payload: {
+          limit: 0,
+          page: 1,
+          search: "",
+          location_id: null,
+          favorite: true,
+        },
+      });
+    } else {
+      hasInitialFavoritesRef.current = false;
+    }
+
+    if (!hasInitialLocationsRef.current) {
+      sendMessage("action", {
+        type: "locationService",
+        action: "list",
+        payload: {
+          search: "",
+          limit: 0,
+          page: 1,
+          status: true,
+        },
+      });
+    } else {
+      hasInitialLocationsRef.current = false;
+    }
+    dispatch(setAiInsight({} as IPropertyResponse));
   }, []);
 
 

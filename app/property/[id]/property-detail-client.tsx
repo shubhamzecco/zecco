@@ -17,7 +17,7 @@ import {
   PropertyAnalysis,
 } from "@/redux/modules/main/types";
 import { useParams, usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { AIMarketIntelligence } from "./components/AIMarketIntelligence";
@@ -44,7 +44,8 @@ export default function PropertyDetailClient({
   const [step, setStep] = useState("intro");
   const [isCompleted, setIsCompleted] = useState(false);
   const isLoggedIn = !!user_data?.access_token;
-  const propertyDetails = mainReducer?.property_details || initialProperty
+  const propertyDetails = mainReducer?.property_details || initialProperty;
+  const hasInitialPropertyRef = useRef(!!initialProperty?._id);
 
   useEffect(() => {
     if (initialProperty) {
@@ -63,11 +64,20 @@ export default function PropertyDetailClient({
 
   useEffect(() => {
     if (!isConnected || !propertyId) return;
+    if (hasInitialPropertyRef.current) {
+      hasInitialPropertyRef.current = false;
+      return;
+    }
+    const idToFetch =
+      propertyDetails?._id ||
+      (typeof propertyId === "string"
+        ? propertyId.match(/[a-f0-9]{24}/i)?.[0] || propertyId
+        : propertyId);
     sendMessage("action", {
       type: "propertyService",
       action: "get",
       payload: {
-        id: propertyId,
+        id: idToFetch,
       },
     });
   }, [isConnected, propertyId]);

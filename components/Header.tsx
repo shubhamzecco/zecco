@@ -46,10 +46,9 @@ export default function Header({ onProfileClick }: HeaderProps) {
     router.push(App_url.link.INITIAL_URL);
   };
 
-  const handleNavClick = (item: any) => {
+  const handleNavClick = () => {
     dispatch(setPropertyFilter({}));
     dispatch(setAiInsight({} as IPropertyResponse));
-    router.push(item.href);
     setIsOpen(false);
   };
 
@@ -71,16 +70,18 @@ export default function Header({ onProfileClick }: HeaderProps) {
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center gap-8 w-full">
               {NAV_ITEMS?.map((item) => (
-                <button
+                <Link
                   key={item.label}
-                  onClick={() => handleNavClick(item)}
-                  className={`relative ${isActive(item.href) ? "text-[#1466EC]" : "text-[#0B5394]"}  font-inter text-sm font-medium`}
+                  href={item.href}
+                  prefetch={true}
+                  onClick={handleNavClick}
+                  className={`relative ${isActive(item.href) ? "text-[#1466EC]" : "text-[#0B5394]"} font-inter text-sm font-medium transition-colors hover:text-[#1466EC]`}
                 >
                   {item.label}
                   {isActive(item.href) && (
                     <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-[3px] w-5 bg-[#1466EC] rounded-full" />
                   )}
-                </button>
+                </Link>
               ))}
             </div>
 
@@ -159,13 +160,15 @@ export default function Header({ onProfileClick }: HeaderProps) {
       >
         <div className="px-6 py-4 space-y-4">
           {NAV_ITEMS.map((item) => (
-            <button
+            <Link
               key={item.label}
-              onClick={() => handleNavClick(item)}
-              className={`block relative w-full text-left ${isActive(item.href) ? "text-[#0B5394]" : "text-gray-800"}  font-inter text-sm font-medium`}
+              href={item.href}
+              prefetch={true}
+              onClick={handleNavClick}
+              className={`block relative w-full text-left ${isActive(item.href) ? "text-[#0B5394]" : "text-gray-800"} font-inter text-sm font-medium`}
             >
               {item.label}
-            </button>
+            </Link>
           ))}
 
           {user_data?.access_token ? (

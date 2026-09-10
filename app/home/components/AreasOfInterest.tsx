@@ -6,7 +6,7 @@ import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setLocationListWithLimit } from "@/redux/modules/main/action";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import AreaCard from "../../../components/cards/AreaCard";
 
@@ -21,6 +21,7 @@ export default function AreasOfInterest({
   const { sendMessage, isConnected } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const [isTablet, setIsTablet] = useState(false);
+  const hasLoadedAreasRef = useRef(!!initialData?.data?.length);
 
   useEffect(() => {
     if (
@@ -49,6 +50,11 @@ export default function AreasOfInterest({
   }, []);
 
   useEffect(() => {
+    if (!isConnected) return;
+    if (hasLoadedAreasRef.current) {
+      hasLoadedAreasRef.current = false;
+      return;
+    }
     sendMessage("action", {
       type: "locationService",
       action: "list",
@@ -89,7 +95,7 @@ export default function AreasOfInterest({
               {(areas?.length > 3
                 ? isTablet ? areas?.slice(0, 4) : areas?.slice(0, 3)
                 : areas
-              )?.map((area) => (
+              )?.map((area: any) => (
                 <div key={area._id} className="flex-shrink-0 w-full">
                   <AreaCard {...area} />
                 </div>

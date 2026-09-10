@@ -5,7 +5,7 @@ import { usePosterReducers } from "@/redux/getdata/usePostReducer";
 import { setZeccoFavoriteList } from "@/redux/modules/main/action";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import PropertyCard from "../../../components/cards/PropertyCard";
 import PropertyCardSkeleton from "@/app/costa-del-sol/properties/components/PropertyCardSkeleton";
@@ -33,7 +33,14 @@ export default function PropertyListings({
     router.push(`${App_url.link.ZECCO_FAVORITES}`);
   };
 
+  const hasLoadedFavoritesRef = useRef(!!initialData?.data?.length);
+
   useEffect(() => {
+    if (!isConnected) return;
+    if (hasLoadedFavoritesRef.current) {
+      hasLoadedFavoritesRef.current = false;
+      return;
+    }
     sendMessage("action", {
       type: "propertyService",
       action: "list",

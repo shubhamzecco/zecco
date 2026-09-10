@@ -184,10 +184,30 @@ const Page = ({ initialData }: { initialData?: any }) => {
     [isConnected, loading, propertyType, urlFilters, searchValue, mainReducer?.property_type_list, mainReducer?.property_subtype_list, mainReducer?.property_features_list],
   );
 
+  const hasInitializedRef = useRef(false);
+  const prevFiltersRef = useRef<string>("");
+
   useEffect(() => {
     if (!isConnected) return;
+    const currentKey = buildUniqueKey(1);
+
+    // Initial mount with SSR data: don't re-fetch from socket
+    if (!hasInitializedRef.current) {
+      hasInitializedRef.current = true;
+      prevFiltersRef.current = currentKey;
+      if (properties.length > 0) {
+        fetchedPages.current.add(currentKey);
+        return;
+      }
+    }
+
+    // Socket reconnect on tab change: don't re-fetch if filter hasn't changed and we already have properties
+    if (prevFiltersRef.current === currentKey && properties.length > 0) {
+      return;
+    }
+
+    prevFiltersRef.current = currentKey;
     setPage(1);
-    setProperties([]);
     setHasMore(true);
     fetchedPages.current.clear();
     fetchProperties(1, true);
@@ -503,7 +523,7 @@ const Page = ({ initialData }: { initialData?: any }) => {
                 </p>
               </div>
             )}
-            {loading ? (
+            {loading && properties?.length === 0 ? (
               <div
                 ref={gridRef}
                 className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
@@ -515,7 +535,9 @@ const Page = ({ initialData }: { initialData?: any }) => {
             ) : properties?.length > 0 ? (
               <div
                 ref={gridRef}
-                className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+                className={`grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 transition-opacity duration-200 ${
+                  loading ? "opacity-60" : "opacity-100"
+                }`}
               >
                 {properties?.map((p) => (
                   <PropertyCard
@@ -543,12 +565,11 @@ const Page = ({ initialData }: { initialData?: any }) => {
           </div>
         </div>
 
-        {loading && (
-          <div className="flex min-h-[300px] items-center justify-center">
+        {loading && page > 1 && (
+          <div className="flex py-10 items-center justify-center">
             <div className="text-center">
-              <div className="mx-auto mb-6 h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" />
-              <h2 className="text-2xl font-bold text-slate-800">Loading Properties</h2>
-              <p className="mt-2 text-slate-500">Please wait while we fetch the latest properties...</p>
+              <div className="mx-auto mb-3 h-8 w-8 animate-spin rounded-full border-4 border-slate-200 border-t-blue-600" />
+              <p className="text-sm font-medium text-slate-500">Loading more properties...</p>
             </div>
           </div>
         )}
