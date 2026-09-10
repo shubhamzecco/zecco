@@ -53,6 +53,9 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
 
-    sitemap: "https://zw.appristine.co.in/sitemap.xml",
+    sitemap: [
+      "https://zw.appristine.co.in/sitemap.xml",
+      "https://zw.appristine.co.in/sitemap.txt",
+    ],
   };
 }
