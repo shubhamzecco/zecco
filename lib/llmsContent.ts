@@ -18,6 +18,15 @@ export const SAMPLE_PROPERTY_SLUG =
   "3-bedroom-apartments-for-sale-in-fuengirola-spain-154";
 
 export const CONTENT_BOTS = [
+  "PerplexityBot",
+  "GPTBot",
+  "ClaudeBot",
+  "Google-Extended",
+  "Applebot-Extended",
+  "Meta-ExternalAgent",
+  "cohere-ai",
+  "Bytespider",
+  "Amazonbot",
   "*",
 ];
 
