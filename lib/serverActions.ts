@@ -1,5 +1,4 @@
 import "server-only";
-import { socketFetch } from "./socket-singleton";
 
 type CacheEntry = {
   value: any;
@@ -8,6 +7,11 @@ type CacheEntry = {
 
 const serverCache = new Map<string, CacheEntry>();
 const inFlightCache = new Map<string, Promise<any>>();
+
+const API_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  process.env.NEXT_PUBLIC_ENDPOINT_API_URL ||
+  "http://localhost:8000";
 
 function withCache<T>(
   key: string,
@@ -37,6 +41,31 @@ function withCache<T>(
   return run;
 }
 
+async function restFetch<T = any>(
+  url: string,
+  options: {
+    method?: string;
+    body?: any;
+    timeout?: number;
+  } = {},
+): Promise<T> {
+  const { method = "GET", body, timeout = 10000 } = options;
+  try {
+    const res = await fetch(`${API_URL}${url}`, {
+      method,
+      headers: { "Content-Type": "application/json", accept: "*/*" },
+      body: body ? JSON.stringify(body) : undefined,
+      cache: "no-store",
+      signal: AbortSignal.timeout(timeout),
+    });
+    if (!res.ok) return null as T;
+    const json = await res.json();
+    return json as T;
+  } catch {
+    return null as T;
+  }
+}
+
 export async function serverFetchPropertyList(
   payload: any = {},
   options?: { timeout?: number },
@@ -44,7 +73,12 @@ export async function serverFetchPropertyList(
   return withCache(
     `propertyList:${JSON.stringify(payload)}`,
     5 * 60 * 1000,
-    () => socketFetch("propertyService", "list", payload, options),
+    () =>
+      restFetch("/api/property/list", {
+        method: "POST",
+        body: payload,
+        timeout: options?.timeout,
+      }),
   );
 }
 
@@ -56,12 +90,11 @@ export async function serverFetchFavoriteList(
     `favoriteList:${JSON.stringify(payload)}`,
     5 * 60 * 1000,
     () =>
-      socketFetch(
-        "propertyService",
-        "list",
-        { favorite: true, ...payload },
-        options,
-      ),
+      restFetch("/api/property/list", {
+        method: "POST",
+        body: { favorite: true, ...payload },
+        timeout: options?.timeout,
+      }),
   );
 }
 
@@ -72,7 +105,10 @@ export async function serverFetchPropertyDetail(
   return withCache(
     `propertyDetail:${id}`,
     10 * 60 * 1000,
-    () => socketFetch("propertyService", "get", { id }, options),
+    () =>
+      restFetch(`/api/property/${encodeURIComponent(id)}`, {
+        timeout: options?.timeout,
+      }),
   );
 }
 
@@ -83,7 +119,12 @@ export async function serverFetchLocationList(
   return withCache(
     `locationList:${JSON.stringify(payload)}`,
     15 * 60 * 1000,
-    () => socketFetch("locationService", "list", payload, options),
+    () =>
+      restFetch("/api/location/list", {
+        method: "POST",
+        body: payload,
+        timeout: options?.timeout,
+      }),
   );
 }
 
@@ -94,7 +135,12 @@ export async function serverFetchAreaList(
   return withCache(
     `areaList:${JSON.stringify(payload)}`,
     15 * 60 * 1000,
-    () => socketFetch("locationService", "areas_list", payload, options),
+    () =>
+      restFetch("/api/location/areas-list", {
+        method: "POST",
+        body: payload,
+        timeout: options?.timeout,
+      }),
   );
 }
 
@@ -106,12 +152,11 @@ export async function serverFetchAllLocationList(
     `allLocationList:${JSON.stringify(payload)}`,
     15 * 60 * 1000,
     () =>
-      socketFetch(
-        "locationService",
-        "searchLocationArea",
-        payload,
-        options,
-      ),
+      restFetch("/api/location/search-area", {
+        method: "POST",
+        body: payload,
+        timeout: options?.timeout,
+      }),
   );
 }
 
@@ -122,7 +167,12 @@ export async function serverFetchPackageList(
   return withCache(
     `packageList:${JSON.stringify(payload)}`,
     30 * 60 * 1000,
-    () => socketFetch("packageService", "list", payload, options),
+    () =>
+      restFetch("/api/package/list", {
+        method: "POST",
+        body: payload,
+        timeout: options?.timeout,
+      }),
   );
 }
 
@@ -132,7 +182,7 @@ export async function serverFetchTermsConditions(
   return withCache(
     "termsConditions",
     60 * 60 * 1000,
-    () => socketFetch("termsConditionsService", "get", {}, options),
+    () => restFetch("/api/termsConditions", { timeout: options?.timeout }),
   );
 }
 
@@ -142,7 +192,7 @@ export async function serverFetchPrivacyPolicy(
   return withCache(
     "privacyPolicy",
     60 * 60 * 1000,
-    () => socketFetch("privacyPolicyService", "get", {}, options),
+    () => restFetch("/api/privacyPolicy", { timeout: options?.timeout }),
   );
 }
 
@@ -185,12 +235,11 @@ export async function serverFetchAllPropertyList(
     10 * 60 * 1000,
     async () => {
       const first: any =
-        (await socketFetch(
-          "propertyService",
-          "list",
-          { ...payload, limit: 1000, page: 1 },
-          options,
-        )) || {};
+        (await restFetch("/api/property/list", {
+          method: "POST",
+          body: { ...payload, limit: 1000, page: 1 },
+          timeout: options?.timeout,
+        })) || {};
       const firstData = Array.isArray(first?.data) ? first.data : [];
       const total = first?.pagination?.totalCount ?? firstData.length;
 
@@ -202,12 +251,11 @@ export async function serverFetchAllPropertyList(
 
       for (let p = 2; p <= pages; p++) {
         const res: any =
-          (await socketFetch(
-            "propertyService",
-            "list",
-            { ...payload, limit: 1000, page: p },
-            options,
-          )) || {};
+          (await restFetch("/api/property/list", {
+            method: "POST",
+            body: { ...payload, limit: 1000, page: p },
+            timeout: options?.timeout,
+          })) || {};
         data.push(...(Array.isArray(res?.data) ? res.data : []));
         if (data.length >= maxItems || data.length >= total) break;
       }
