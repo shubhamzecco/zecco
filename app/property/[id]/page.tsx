@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import PropertyDetailClient from "./property-detail-client";
 import { slugToReadableTitle } from "@/utils/common";
 import { serverFetchPropertyDetail } from "@/lib/serverActions";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
+
+const cachedFetchProperty = cache(async (id: string) => {
+  return serverFetchPropertyDetail(id);
+});
 
 export async function generateMetadata({
   params,
@@ -42,6 +47,6 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const initialProperty = await serverFetchPropertyDetail(id);
+  const initialProperty = await cachedFetchProperty(id);
   return <PropertyDetailClient initialProperty={initialProperty} />;
 }

@@ -3,7 +3,7 @@ import CostadelSol from "./costa-del-sol";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { serverFetchLocationList } from "@/lib/serverActions";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Costa del Sol Areas & Properties | Zecco Real Estate",

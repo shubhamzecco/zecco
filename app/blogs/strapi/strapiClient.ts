@@ -35,7 +35,7 @@ export async function strapiRequest<T = any>(
       method,
       headers,
       body: options?.data ? JSON.stringify(options?.data) : undefined,
-      cache: 'no-store',
+      next: { revalidate: 300 },
     });
 
     if (!res?.ok) {

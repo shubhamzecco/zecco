@@ -41,7 +41,7 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: '/((?!_next/static|_next/image|favicon.ico|assets/).*)',
+        source: '/(dashboard|favorites|messages|saved-searches|AI-insights|signin|signup|reset-password|forget-password|otp-verification)/:path*',
         headers: [
           {
             key: 'Cache-Control',
@@ -54,6 +54,15 @@ const nextConfig = {
           {
             key: 'Expires',
             value: '0',
+          },
+        ],
+      },
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate',
           },
         ],
       },

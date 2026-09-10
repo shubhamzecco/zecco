@@ -1,9 +1,21 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import BlogDetailClient from "./blog-detail-client";
 import { strapiGet } from "../strapi/strapiClient";
 import { STRAPI_ENDPOINTS } from "../strapi/strapiConstant";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
+
+const cachedFetchBlog = cache(async (id: string) => {
+  try {
+    const res = await strapiGet(
+      STRAPI_ENDPOINTS.GET_ARTICLES_BY_SLUG(String(id), "en"),
+    );
+    return res?.data?.[0] || null;
+  } catch (err) {
+    return null;
+  }
+});
 
 export async function generateMetadata({
   params,
@@ -11,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const article = await fetchBlog(params);
+  const article = await cachedFetchBlog(id);
   const attrs = article?.attributes || article || {};
   const title = attrs?.title || `Blog article ${id} | Zecco`;
   const description =
@@ -46,23 +58,12 @@ export async function generateMetadata({
   };
 }
 
-async function fetchBlog(params: Promise<{ id: string }>) {
-  const { id } = await params;
-  try {
-    const res = await strapiGet(
-      STRAPI_ENDPOINTS.GET_ARTICLES_BY_SLUG(String(id), "en"),
-    );
-    return res?.data?.[0] || null;
-  } catch (err) {
-    return null;
-  }
-}
-
 export default async function Page({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const initialBlog = await fetchBlog(params);
+  const { id } = await params;
+  const initialBlog = await cachedFetchBlog(id);
   return <BlogDetailClient initialBlog={initialBlog} />;
 }

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import PropertiesClient from "./properties-client";
-import { serverFetchPropertyList, serverFetchAllPropertyList } from "@/lib/serverActions";
+import { serverFetchPropertyList } from "@/lib/serverActions";
 import { generatePropertySlug } from "@/utils/common";
 import { getSiteBaseUrl } from "@/utils/siteUrl";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Properties for Sale & Rent in Costa del Sol | Zecco",
@@ -91,18 +91,15 @@ export default async function PropertiesPage({
 
   const initialData = await serverFetchPropertyList(payload);
 
-  // Fetch the complete result set for this filter so crawlers and AI agents
-  // can discover every property detail URL, not just the visible page (18).
-  const allProperties = await serverFetchAllPropertyList(payload);
-  const allList = Array.isArray(allProperties?.data) ? allProperties.data : [];
+  const initialList = Array.isArray(initialData?.data) ? initialData.data : [];
   const siteBaseUrl = getSiteBaseUrl();
 
   const fullItemListJsonLd =
-    allList.length > 0
+    initialList.length > 0
       ? {
           "@context": "https://schema.org",
           "@type": "ItemList",
-          itemListElement: allList.map((p: any, index: number) => ({
+          itemListElement: initialList.map((p: any, index: number) => ({
             "@type": "ListItem",
             position: index + 1,
             name: `${p?.bedrooms ? `${p.bedrooms}-bedroom ` : ""}${
