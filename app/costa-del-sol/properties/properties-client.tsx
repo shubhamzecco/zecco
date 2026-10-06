@@ -81,7 +81,7 @@ type UrlFilters = {
 
 function readFilters(sp: URLSearchParams): UrlFilters {
   return {
-    city: sp.get("city") || "",
+    city: sp.get("city") || sp.get("cities") || "",
     area: sp.get("area") || "",
     subarea: sp.get("subarea") || "",
     categories: sp.get("categories") || "",
@@ -115,7 +115,11 @@ const Page = ({ initialData }: { initialData?: any }) => {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (initialData && !Array.isArray(mainReducer?.property_list_with_limit?.data)) {
+    // SSR data is always built from the current URL params, so it must seed
+    // the store even when a stale list from a previous query is still
+    // persisted in redux (redux-persist rehydrates mainReducer before mount,
+    // which previously kept showing the previous city's results).
+    if (initialData && Array.isArray(initialData?.data)) {
       dispatch(setPropertyListWithLimit(initialData));
     }
   }, []);
@@ -222,13 +226,16 @@ const Page = ({ initialData }: { initialData?: any }) => {
   useEffect(() => {
     if (!isConnected) return;
     const currentKey = buildUniqueKey(1);
+    const hasUrlFilters = Object.values(urlFilters).some(Boolean);
 
-    // Initial mount with SSR data: don't re-fetch the property list from socket,
-    // but still load the area pins for the map
+    // Initial mount: the SSR list is only reused for the plain page without
+    // any search/filter param. When the URL carries params (city, area,
+    // bedrooms, price...) always hit the socket so the results match the URL
+    // — the persisted redux store may still hold a list for another query.
     if (!hasInitializedRef.current) {
       hasInitializedRef.current = true;
       prevFiltersRef.current = currentKey;
-      if (properties.length > 0) {
+      if (properties.length > 0 && !hasUrlFilters) {
         fetchedPages.current.add(currentKey);
         fetchAreas();
         return;
