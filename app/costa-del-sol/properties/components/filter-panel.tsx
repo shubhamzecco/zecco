@@ -170,7 +170,7 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
                 <Input
                   placeholder="Max"
                   value={filters.priceTo ?? ""}
-                  onChange={(e) => handleInputChange("priceTo", e.target.value)}
+                  onChange={(e) => handleInputChange("priceTo", parsePrice(e.target.value))}
                   onKeyDown={handleEnterPress}
                   className="w-full bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -188,7 +188,7 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
                 <Input
                   placeholder="Min"
                   value={filters.buildFrom ?? ""}
-                  onChange={(e) => handleInputChange("buildFrom", e.target.value)}
+                  onChange={(e) => handleInputChange("buildFrom", parsePrice(e.target.value))}
                   onKeyDown={handleEnterPress}
                   className="w-full bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -200,7 +200,7 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
                 <Input
                   placeholder="Max"
                   value={filters.buildTo ?? ""}
-                  onChange={(e) => handleInputChange("buildTo", e.target.value)}
+                  onChange={(e) => handleInputChange("buildTo", parsePrice(e.target.value))}
                   onKeyDown={handleEnterPress}
                   className="w-full bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -217,7 +217,7 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
               <Input
                 placeholder="From"
                 value={filters.bedroomsFrom ?? ""}
-                onChange={(e) => handleInputChange("bedroomsFrom", e.target.value)}
+                onChange={(e) => handleInputChange("bedroomsFrom", parsePrice(e.target.value))}
                 onKeyDown={handleEnterPress}
                 className="w-full bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -226,7 +226,7 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
               <Input
                 placeholder="To"
                 value={filters.bedroomsTo ?? ""}
-                onChange={(e) => handleInputChange("bedroomsTo", e.target.value)}
+                onChange={(e) => handleInputChange("bedroomsTo", parsePrice(e.target.value))}
                 onKeyDown={handleEnterPress}
                 className="w-full bg-white pr-14 px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />

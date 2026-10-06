@@ -130,13 +130,13 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
           </h3>
         </div>
       </div>
-      <div className="flex items-end gap-2 mb-5">
-        <h3 className="font-manrope whitespace-nowrap capitalize font-bold text-2xl text-[#000000]">
+      <div className="flex flex-wrap items-end gap-x-2 gap-y-1 mb-5">
+        <h3 className="font-manrope whitespace-nowrap capitalize font-bold text-2xl lg:text-xl xl:text-2xl text-[#000000]">
           {plan?.price?.toLocaleLowerCase() === "vip"
             ? plan?.price
             : formatEuro(plan?.price)}
         </h3>
-        <p className="font-manrope whitespace-nowrap capitalize font-semibold text-sm  text-[#64748B]">
+        <p className="font-manrope truncate min-w-0 max-w-full capitalize font-semibold text-sm text-[#64748B]">
           {plan?.tag_line}
         </p>
       </div>
@@ -165,7 +165,8 @@ const PackageCard = ({ index, plan }: IPackageProps) => {
       >
         {isCurrentPackage
           ? "Active"
-          : plan?.button_title} {loadingPlanId == plan._id && <Loader2 className="h-5 w-5 animate-spin" />
+          : plan?.button_title || "Subscribe"} 
+          {loadingPlanId == plan._id && <Loader2 className="h-5 w-5 animate-spin" />
         }
       </button>
       <AlertDialog open={!!downgradeTarget} onOpenChange={(open) => !open && setDowngradeTarget(null)}>

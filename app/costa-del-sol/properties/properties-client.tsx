@@ -45,6 +45,12 @@ function resolveItems(
   return result;
 }
 
+function toFiniteNumber(value: string): number | undefined {
+  if (!value) return undefined;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : undefined;
+}
+
 function resolveCategory(
   value: string,
   typeList: any[],
@@ -127,61 +133,87 @@ const Page = ({ initialData }: { initialData?: any }) => {
       (i: any) => i.name?.toLowerCase() === normalize(urlFilters.city),
     )
     : [];
-  const areas = hasCity ? filtersArea?.[0]?.areas : search_by_area?.data;
-  const parentArea = hasCity ? filtersArea?.[0] : null;
+  // Fallback to the full area list while the matching city entry is missing
+  // (e.g. stale in-flight areas response) so map pins don't blank out
+  const areas = hasCity
+    ? (filtersArea?.[0]?.areas ?? search_by_area?.data)
+    : search_by_area?.data;
+  const parentArea = filtersArea?.[0] ?? null;
   const buildUniqueKey = (currentPage: number) =>
     JSON.stringify({ page: currentPage, propertyType, ...urlFilters });
 
+  const filterPayload = useCallback(() => {
+    const bedroomsFrom = toFiniteNumber(urlFilters.bedroomsFrom);
+    const bedroomsTo = toFiniteNumber(urlFilters.bedroomsTo);
+    const priceFrom = toFiniteNumber(urlFilters.priceFrom);
+    const priceTo = toFiniteNumber(urlFilters.priceTo);
+    const buildFrom = toFiniteNumber(urlFilters.buildFrom);
+    const buildTo = toFiniteNumber(urlFilters.buildTo);
+    const resolvedCategory = resolveCategory(
+      urlFilters.categories,
+      mainReducer?.property_type_list as any,
+    );
+    const categories = resolvedCategory
+      ? toFiniteNumber(resolvedCategory)
+      : undefined;
+
+    return {
+      country: "Spain",
+      status: true,
+      forAll: propertyType === "all",
+      cities: urlFilters.city || undefined,
+      ...(searchValue && { search: searchValue }),
+      ...(categories !== undefined && { categories }),
+      ...(bedroomsFrom !== undefined && { bedroomsFrom }),
+      ...(bedroomsTo !== undefined && { bedroomsTo }),
+      ...(priceFrom !== undefined && { priceFrom }),
+      ...(priceTo !== undefined && { priceTo }),
+      ...(buildFrom !== undefined && { buildFrom }),
+      ...(buildTo !== undefined && { buildTo }),
+      ...(urlFilters.types && {
+        types: resolveItems(urlFilters.types, [
+          ...(mainReducer?.property_type_list || []),
+          ...(mainReducer?.property_subtype_list || []),
+        ])
+      }),
+      ...(urlFilters.features && { features: resolveItems(urlFilters.features, mainReducer?.property_features_list || []) }),
+    };
+  }, [propertyType, urlFilters, searchValue, mainReducer?.property_type_list, mainReducer?.property_subtype_list, mainReducer?.property_features_list]);
+
+  // Area pins for the map — requested independently so they load on first open
+  // even when SSR property data skips the property-list fetch.
+  const fetchAreas = useCallback(() => {
+    if (!isConnected) return;
+    sendMessage("action", {
+      type: "locationService",
+      action: "areas_list",
+      payload: { ...filterPayload(), page: 1, limit: LIMIT },
+    });
+  }, [isConnected, sendMessage, filterPayload]);
+
   const fetchProperties = useCallback(
     (currentPage: number, reset = false) => {
-      if (!isConnected || loading) return;
+      // No `loading` gate here — a filter change arriving while a previous
+      // fetch is still in flight must not be dropped silently
+      if (!isConnected) return;
       const key = buildUniqueKey(currentPage);
       if (fetchedPages.current.has(key) && !reset) return;
       fetchedPages.current.add(key);
       setLoading(true);
 
-      const common = {
+      const payload: any = {
         limit: LIMIT,
         page: currentPage,
-        country: "Spain",
-        status: true,
+        ...filterPayload(),
         ...(propertyType === "buy" && { forSale: true, sold: false, forRent: false }),
         ...(propertyType === "rent" && { forRent: true, rented: false, forSale: false }),
         ...(propertyType === "new" && { isNewDev: true, sold: false, rented: false }),
       };
 
-      const payload: any = {
-        ...common,
-        cities: urlFilters.city || undefined,
-        ...(searchValue && { search: searchValue }),
-        forAll: propertyType === "all",
-        categories: resolveCategory(urlFilters.categories, mainReducer?.property_type_list as any)
-          ? Number(resolveCategory(urlFilters.categories, mainReducer?.property_type_list as any))
-          : undefined,
-        ...(urlFilters.bedroomsFrom && { bedroomsFrom: Number(urlFilters.bedroomsFrom) }),
-        ...(urlFilters.bedroomsTo && { bedroomsTo: Number(urlFilters.bedroomsTo) }),
-        ...(urlFilters.priceFrom && { priceFrom: Number(urlFilters.priceFrom) }),
-        ...(urlFilters.priceTo && { priceTo: Number(urlFilters.priceTo) }),
-        ...(urlFilters.buildFrom && { buildFrom: Number(urlFilters.buildFrom) }),
-        ...(urlFilters.buildTo && { buildTo: Number(urlFilters.buildTo) }),
-        ...(urlFilters.types && {
-          types: resolveItems(urlFilters.types, [
-            ...(mainReducer?.property_type_list || []),
-            ...(mainReducer?.property_subtype_list || []),
-          ])
-        }),
-        ...(urlFilters.features && { features: resolveItems(urlFilters.features, mainReducer?.property_features_list || []) }),
-      };
-      const areaPayload = {
-        ...payload,
-        page: 1,
-        limit: 18
-      }
-
       sendMessage("action", { type: "propertyService", action: "list", payload });
-      sendMessage("action", { type: "locationService", action: "areas_list", areaPayload });
+      fetchAreas();
     },
-    [isConnected, loading, propertyType, urlFilters, searchValue, mainReducer?.property_type_list, mainReducer?.property_subtype_list, mainReducer?.property_features_list],
+    [isConnected, propertyType, fetchAreas],
   );
 
   const hasInitializedRef = useRef(false);
@@ -191,12 +223,14 @@ const Page = ({ initialData }: { initialData?: any }) => {
     if (!isConnected) return;
     const currentKey = buildUniqueKey(1);
 
-    // Initial mount with SSR data: don't re-fetch from socket
+    // Initial mount with SSR data: don't re-fetch the property list from socket,
+    // but still load the area pins for the map
     if (!hasInitializedRef.current) {
       hasInitializedRef.current = true;
       prevFiltersRef.current = currentKey;
       if (properties.length > 0) {
         fetchedPages.current.add(currentKey);
+        fetchAreas();
         return;
       }
     }
