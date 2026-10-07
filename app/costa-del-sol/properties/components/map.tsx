@@ -90,6 +90,11 @@ export function PropertyMap({ areas, parentArea, onAreaClick }: PropertyMapProps
   const markersRef = useRef<any[]>([]);
   const boundaryRef = useRef<any>(null);
   const [leaflet, setLeaflet] = useState<any>(null);
+  // Latest click handler without re-creating markers on every URL change
+  const onAreaClickRef = useRef(onAreaClick);
+  useEffect(() => {
+    onAreaClickRef.current = onAreaClick;
+  }, [onAreaClick]);
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -143,7 +148,7 @@ export function PropertyMap({ areas, parentArea, onAreaClick }: PropertyMapProps
           fillColor: BOUNDARY_COLOR,
           fillOpacity: 0.05,
         })
-        .on("click", () => onAreaClick?.(parentArea))
+        .on("click", () => onAreaClickRef.current?.(parentArea))
         .addTo(map.current);
       boundaryRef.current = polygon;
       allBounds.push(polygon.getBounds());
@@ -159,7 +164,7 @@ export function PropertyMap({ areas, parentArea, onAreaClick }: PropertyMapProps
           `<span class="pin-tooltip-name">${parentArea?.name}</span><span class="pin-tooltip-count">${parentCount}</span>`,
           { direction: "top", offset: [0, -38], opacity: 1, className: "property-pin-tooltip" },
         )
-        .on("click", () => onAreaClick?.(parentArea))
+        .on("click", () => onAreaClickRef.current?.(parentArea))
         .addTo(map.current);
       markersRef.current.push(pin);
     }
@@ -181,7 +186,7 @@ export function PropertyMap({ areas, parentArea, onAreaClick }: PropertyMapProps
           `<span class="pin-tooltip-name">${area.name}</span><span class="pin-tooltip-count">${count}</span>`,
           { direction: "top", offset: [0, -38], opacity: 1, className: "property-pin-tooltip" },
         )
-        .on("click", () => onAreaClick?.(area))
+        .on("click", () => onAreaClickRef.current?.(area))
         .addTo(map.current);
       markersRef.current.push(pin);
 

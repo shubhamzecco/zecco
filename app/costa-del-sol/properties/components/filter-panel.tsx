@@ -52,13 +52,26 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
 
   useEffect(() => {
     sendMessage("action", { type: "propertyService", action: "features", payload: {} });
+  }, [sendMessage]);
+
+  // Re-request sub types whenever the effective category changes — including
+  // when it arrives from the URL (search redirect) instead of the select
+  useEffect(() => {
     if (filters?.categories) {
       sendMessage("action", {
         type: "propertyService", action: "propertyTypes",
         payload: { id: Number(filters?.categories), is_subtype: true },
       });
     }
-  }, []);
+  }, [filters?.categories, sendMessage]);
+
+  // Keep the panel in sync with URL-driven filter changes (e.g. after a
+  // search redirect lands on ?categories=1&types=2&city=malaga)
+  useEffect(() => {
+    if (initialFilters) {
+      setFilters((prev) => ({ ...prev, ...initialFilters }));
+    }
+  }, [initialFilters]);
 
   const { mainReducer } = usePosterReducers();
   const propertyTypeList = mainReducer?.property_type_list || [];
@@ -78,12 +91,9 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
 
   const handleInputChange = (field: string, value: string | number) => {
     let updated = { ...filters, [field]: value };
+    // sub types are refetched by the effect watching filters.categories
     if (field === "categories") {
       updated = { ...updated, types: {} };
-      sendMessage("action", {
-        type: "propertyService", action: "propertyTypes",
-        payload: { id: Number(value), is_subtype: true },
-      });
     }
     setFilters(updated);
     if (field === "categories") {

@@ -230,19 +230,25 @@ const Page = ({ initialData }: { initialData?: any }) => {
 
     // Initial mount: the SSR list is only reused for the plain page without
     // any search/filter param. When the URL carries params (city, area,
-    // bedrooms, price...) always hit the socket so the results match the URL
-    // — the persisted redux store may still hold a list for another query.
+    // bedrooms, price...) always hit the socket so the results AND the map
+    // pins match the URL — the persisted redux store may hold another query.
     if (!hasInitializedRef.current) {
       hasInitializedRef.current = true;
       prevFiltersRef.current = currentKey;
       if (properties.length > 0 && !hasUrlFilters) {
         fetchedPages.current.add(currentKey);
         fetchAreas();
-        return;
+      } else {
+        setPage(1);
+        setHasMore(true);
+        fetchedPages.current.clear();
+        fetchProperties(1, true);
       }
+      return;
     }
 
-    // Socket reconnect on tab change: don't re-fetch if filter hasn't changed and we already have properties
+    // Later runs (tab change / URL change / reconnect): skip when the
+    // filters didn't change and we already have properties
     if (prevFiltersRef.current === currentKey && properties.length > 0) {
       return;
     }
