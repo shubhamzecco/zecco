@@ -826,6 +826,7 @@ export interface IMainResponse {
   property_subtype_list: IPropertyType[] | null;
   saved_searches: ISavedSearches | null;
   search_by_area: any;
+  search_by_global : any;
   propertyFilter: any;
   stored_aiInsight: IStoredAiInsightResponse | null;
   location_area_list: any;

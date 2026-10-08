@@ -39,6 +39,7 @@ export const ActionTypes = {
   SET_PROPERTY_SUBTYPE_LIST: "SET_PROPERTY_SUBTYPE_LIST",
   SET_SAVED_SEARCHES_LIST: "SET_SAVED_SEARCHES_LIST",
   SET_SEARCH_BY_AREA_LIST: "SET_SEARCH_BY_AREA_LIST",
+  SET_GLOBAL_SEARCH : 'SET_GLOBAL_SEARCH',
   SET_PROPERTY_FILTERS: "SET_PROPERTY_FILTERS",
   SET_BLOG_DETAILS: "SET_BLOG_DETAILS",
   SET_STORED_AI_INSIGHT_LIST: "SET_STORED_AI_INSIGHT_LIST",
@@ -86,6 +87,13 @@ export const setAllLocationList = (payload: any) => {
 export const setSearchByArea = (payload: any) => {
   return {
     type: ActionTypes.SET_SEARCH_BY_AREA_LIST,
+    payload,
+  };
+};
+
+export const setSearchGlobalSearch = (payload: any) => {
+  return {
+    type: ActionTypes.SET_GLOBAL_SEARCH,
     payload,
   };
 };

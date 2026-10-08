@@ -26,6 +26,7 @@ const initialState: IMainResponse = {
   property_subtype_list: null,
   saved_searches: null,
   search_by_area: null,
+  search_by_global : null,
   propertyFilter: null,
   blog_details: null,
   stored_aiInsight: null,
@@ -56,7 +57,12 @@ const mainReducer = (
         search_by_area: action.payload,
       };
     }
-
+    case ActionTypes.SET_GLOBAL_SEARCH: {
+      return {
+        ...state,
+        search_by_global: action.payload,
+      };
+    }
     case ActionTypes.SET_PREFERENCE_PROPERTY_LIST: {
       return {
         ...state,
@@ -290,6 +296,7 @@ const mainReducer = (
         location_list_without_limit: {
           data: action?.payload?.data,
           pagination: action?.payload?.pagination,
+          totalCount: undefined
         },
       };
     }
@@ -300,6 +307,7 @@ const mainReducer = (
         location_list_with_limit: {
           data: action?.payload?.data,
           pagination: action?.payload?.pagination,
+          totalCount: undefined
         },
       };
     }

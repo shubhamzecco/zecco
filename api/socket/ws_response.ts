@@ -18,6 +18,7 @@ import {
   setPropertyTypeList,
   setSavedSearchesList,
   setSearchByArea,
+  setSearchGlobalSearch,
   setStoredAiInsightList,
   setTermsConditions,
   setUpdatePropertyLike,
@@ -132,6 +133,13 @@ export const ws_response = (
               dispatch(setSearchByArea(ws_onmessage?.data));
             } else {
               dispatch(setSearchByArea(ws_onmessage?.data));
+            }
+          }
+           if (ws_onmessage?.request?.action === "global_search") {
+            if (ws_onmessage?.status === true) {
+              dispatch(setSearchGlobalSearch(ws_onmessage?.data));
+            } else {
+              dispatch(setSearchGlobalSearch(ws_onmessage?.data));
             }
           }
           if (ws_onmessage?.request?.action === "list_city_area") {

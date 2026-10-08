@@ -17,7 +17,7 @@ import PropertyCardSkeleton from "./components/PropertyCardSkeleton";
 
 type PropertyType = "buy" | "rent" | "new" | "all";
 
-const LIMIT = 18;
+const LIMIT = 0;
 
 export function parseCSV(value: string): number[] {
   return value ? value.split(",").map(Number).filter((n) => !isNaN(n)) : [];
@@ -128,20 +128,20 @@ const Page = ({ initialData }: { initialData?: any }) => {
   const searchValue = urlFilters.area || urlFilters.subarea;
 
 
-  const search_by_area = mainReducer?.search_by_area;
+  const search_by_global = mainReducer?.search_by_global;
   const isAiSelectMode = searchParams.get("select") === "true";
   const aiSelectedProperty = mainReducer?.ai_selected_property;
   const hasCity = !!urlFilters.city;
   const filtersArea = hasCity
-    ? search_by_area?.data?.filter(
+    ? search_by_global?.data?.filter(
       (i: any) => i.name?.toLowerCase() === normalize(urlFilters.city),
     )
     : [];
   // Fallback to the full area list while the matching city entry is missing
   // (e.g. stale in-flight areas response) so map pins don't blank out
   const areas = hasCity
-    ? (filtersArea?.[0]?.areas ?? search_by_area?.data)
-    : search_by_area?.data;
+    ? (filtersArea?.[0]?.areas ?? search_by_global?.data)
+    : search_by_global?.data;
   const parentArea = filtersArea?.[0] ?? null;
   const buildUniqueKey = (currentPage: number) =>
     JSON.stringify({ page: currentPage, propertyType, ...urlFilters });
@@ -188,9 +188,14 @@ const Page = ({ initialData }: { initialData?: any }) => {
   // even when SSR property data skips the property-list fetch.
   const fetchAreas = useCallback(() => {
     if (!isConnected) return;
-    sendMessage("action", {
+    // sendMessage("action", {
+    //   type: "locationService",
+    //   action: "areas_list",
+    //   payload: { ...filterPayload(), page: 1, limit: LIMIT },
+    // });
+     sendMessage("action", {
       type: "locationService",
-      action: "areas_list",
+      action: "global_search",
       payload: { ...filterPayload(), page: 1, limit: LIMIT },
     });
   }, [isConnected, sendMessage, filterPayload]);

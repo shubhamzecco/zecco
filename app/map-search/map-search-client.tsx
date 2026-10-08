@@ -50,7 +50,7 @@ export default function MapSearchClient({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (initialAreas && !mainReducer?.search_by_area?.data?.length) {
+    if (initialAreas && !mainReducer?.search_by_global?.data?.length) {
       dispatch(setSearchByArea(initialAreas));
     }
   }, [initialAreas]);
@@ -90,12 +90,12 @@ export default function MapSearchClient({
   );
 
   const cities = useMemo(() => {
-    const data = mainReducer?.search_by_area?.data;
+    const data = mainReducer?.search_by_global?.data;
     if (Array.isArray(data) && data.length > 0) return data;
     if (Array.isArray(initialAreas?.data) && initialAreas?.data.length > 0)
       return initialAreas.data;
     return [];
-  }, [mainReducer?.search_by_area, initialAreas]);
+  }, [mainReducer?.search_by_global, initialAreas]);
 
   const getCount = (item: any): number => item?.all_count ?? item?.property_count ?? 0;
 
@@ -106,10 +106,15 @@ export default function MapSearchClient({
       action: "searchLocationArea",
       payload: {},
     });
-    sendMessage("action", {
+    // sendMessage("action", {
+    //   type: "locationService",
+    //   action: "areas_list",
+    //   payload: { search: "", limit: 0, page: 1 },
+    // });
+     sendMessage("action", {
       type: "locationService",
-      action: "areas_list",
-      payload: { search: "", limit: 200, page: 1 },
+      action: "global_search",
+      payload: { search: "", limit: 0, page: 1 },
     });
   }, [isConnected, sendMessage]);
 

@@ -85,6 +85,8 @@ function ensureTooltipStyles() {
 }
 
 export function PropertyMap({ areas, parentArea, onAreaClick }: PropertyMapProps) {
+  console.log("areas ::: " , areas)
+  console.log("parentArea :::: " , parentArea)
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<any>(null);
   const markersRef = useRef<any[]>([]);

@@ -70,7 +70,7 @@ export default function ExploreRegions({
 
     const requestPayload: any = {
       search: "",
-      limit: LIMIT,
+      limit: 0,
       page: nextPage,
     };
 
@@ -79,7 +79,6 @@ export default function ExploreRegions({
       action: "areas_list",
       payload: requestPayload,
     });
-
     setPage(nextPage);
   };
 
