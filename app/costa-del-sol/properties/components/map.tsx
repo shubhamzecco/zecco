@@ -85,8 +85,8 @@ function ensureTooltipStyles() {
 }
 
 export function PropertyMap({ areas, parentArea, onAreaClick }: PropertyMapProps) {
-  console.log("areas ::: " , areas)
-  console.log("parentArea :::: " , parentArea)
+  console.log("areas ::: ", areas)
+  console.log("parentArea :::: ", parentArea)
   const mapContainer = useRef<HTMLDivElement | null>(null);
   const map = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
@@ -172,27 +172,56 @@ export function PropertyMap({ areas, parentArea, onAreaClick }: PropertyMapProps
     }
 
     // Sub-area pins — same style as parent, differentiated only via tooltip content
+    const coordinateGroups = new Map<string, number>();
+
     areas?.forEach((area) => {
       const coords = area?.point?.coordinates;
+
       if (!coords || coords.length < 2) return;
+
       const [lng, lat] = coords;
+
       if (typeof lat !== "number" || typeof lng !== "number") return;
+
+      const coordinateKey = `${lat},${lng}`;
+      const duplicateIndex = coordinateGroups.get(coordinateKey) ?? 0;
+
+      coordinateGroups.set(coordinateKey, duplicateIndex + 1);
+
+      // Offset overlapping markers slightly
+      const offset = 0.00025;
+      const angle = duplicateIndex * (Math.PI / 3);
+
+      const displayLat = lat + Math.sin(angle) * offset;
+      const displayLng = lng + Math.cos(angle) * offset;
 
       const count = area.all_count ?? area.property_count ?? 0;
 
       const pin = leaflet
-        .marker([lat, lng], {
+        .marker([displayLat, displayLng], {
           icon: createPinIcon(leaflet),
         })
         .bindTooltip(
-          `<span class="pin-tooltip-name">${area.name}</span><span class="pin-tooltip-count">${count}</span>`,
-          { direction: "top", offset: [0, -38], opacity: 1, className: "property-pin-tooltip" },
+          `<span class="pin-tooltip-name">${area.name}</span>
+       <span class="pin-tooltip-count">${count}</span>`,
+          {
+            direction: "top",
+            offset: [0, -38],
+            opacity: 1,
+            className: "property-pin-tooltip",
+          },
         )
         .on("click", () => onAreaClickRef.current?.(area))
         .addTo(map.current);
+
       markersRef.current.push(pin);
 
-      allBounds.push(leaflet.latLngBounds([[lat, lng], [lat, lng]]));
+      allBounds.push(
+        leaflet.latLngBounds([
+          [displayLat, displayLng],
+          [displayLat, displayLng],
+        ]),
+      );
     });
 
     if (allBounds.length > 0) {
