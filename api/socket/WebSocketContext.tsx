@@ -66,10 +66,10 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
   const sendMessage = useCallback((event: string, data?: any) => {
     if (singletonSocket && singletonSocket.connected) {
-      console.log('Send:', event, data);
+      // console.log('Send:', event, data);
       singletonSocket.emit(event, data);
     } else {
-      console.log("⚠️ Socket not connected. Cannot send:", event, data);
+      // console.log("⚠️ Socket not connected. Cannot send:", event, data);
     }
   }, []);
 
@@ -84,7 +84,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
 
     const url = process.env.NEXT_PUBLIC_ENDPOINT_API_URL;
     if (!url) {
-      console.log("⚠️ NEXT_PUBLIC_ENDPOINT_API_URL is not set");
+      // console.log("⚠️ NEXT_PUBLIC_ENDPOINT_API_URL is not set");
       return;
     }
     singletonSocket = io(url, {
@@ -123,7 +123,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
     });
 
     singletonSocket.onAny((event, data) => {
-      console.log("📥 Received event:", event, data);
+      // console.log("📥 Received event:", event, data);
       if (event === "agent_assigned") {
         CommonApiRequest(
           "GET",
@@ -132,7 +132,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({
           {},
           user_data?.access_token,
         )?.then((response: any) => {
-          console.log("response-websocket", response);
+          // console.log("response-websocket", response);
           if (response?.status === 200) {
             const payload = {
               user: response.data,

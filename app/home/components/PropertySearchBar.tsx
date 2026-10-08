@@ -263,6 +263,7 @@ const PropertySearchBar = ({
 
       const filters = await parseSearchQuery(searchText);
 
+
       const params = applyFiltersToParams(
         filters,
         propertyTypes,
