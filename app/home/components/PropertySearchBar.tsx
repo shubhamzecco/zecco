@@ -25,6 +25,8 @@ const PARSE_FILTERS_URL =
     ? `${process.env.NEXT_PUBLIC_ENDPOINT_API_URL}/api/search/parse-filters`
     : "http://localhost:8000/api/search/parse-filters";
 
+const DEBOUNCE_MS = 300;
+
 let prebuiltSuggestionsPromise: Promise<any[]> | null = null;
 let prebuiltSuggestionsCache: any[] | null = null;
 
@@ -191,6 +193,7 @@ const PropertySearchBar = ({
     Array.isArray(initialSuggestions) ? initialSuggestions : [],
   );
   const autocompleteSuggestionsRef = useRef<any[]>([]);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!isConnected) return;
@@ -200,13 +203,6 @@ const PropertySearchBar = ({
       payload: {},
     });
   }, [isConnected, sendMessage]);
-
-
-  // useEffect(() => {
-  //   if (propertyTypes?.length > 0 && !selected) {
-  //     setSelected(propertyTypes[0]);
-  //   }
-  // }, [propertyTypes, selected]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -228,26 +224,6 @@ const PropertySearchBar = ({
     };
   }, []);
 
-  // const handleSearch = useCallback(async () => {
-  //   if (isSearching || !searchText.trim()) return;
-  //   setIsSearching(true);
-  //   try {
-  //     const filters = await parseSearchQuery(searchText);
-  //     console.log("filters ::: " , filters)
-  //     console.log("propertyTypes ::: " , propertyTypes)
-  //     const params = applyFiltersToParams(filters, propertyTypes, selected?.id);
-  //     // router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
-  //   } catch {
-  //     const params = new URLSearchParams();
-  //     if (selected?.id) params.set("categories", String(selected.id));
-  //     if (searchText) params.set("city", citySlug(searchText));
-  //     router.push(`${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`);
-  //   } finally {
-  //     setIsSearching(false);
-  //   }
-  // }, [router, selected, searchText, propertyTypes, isSearching]);
-
-
   const handleSearch = useCallback(async () => {
     if (isSearching || !searchText.trim()) return;
 
@@ -262,7 +238,6 @@ const PropertySearchBar = ({
       }
 
       const filters = await parseSearchQuery(searchText);
-
 
       const params = applyFiltersToParams(
         filters,
@@ -338,7 +313,6 @@ const PropertySearchBar = ({
     );
   };
 
-
   const openMapSearch = useCallback(
     (mode: "draw" | "select" = "draw") => {
       setSearchDropdown(false);
@@ -346,8 +320,6 @@ const PropertySearchBar = ({
     },
     [router],
   );
-
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (
@@ -418,8 +390,10 @@ const PropertySearchBar = ({
         String(item?.title || "").toLowerCase().includes(normalizedValue),
       );
 
+      // Clear any pending debounced call
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
+        debounceRef.current = null;
       }
 
       setSearchText(value);
@@ -437,6 +411,7 @@ const PropertySearchBar = ({
         return;
       }
 
+      // Debounce the WebSocket autocomplete call
       debounceRef.current = setTimeout(() => {
         sendMessage("action", {
           type: "searchService",
@@ -445,15 +420,18 @@ const PropertySearchBar = ({
             query: value,
           },
         });
-      }, 300);
+        debounceRef.current = null;
+      }, DEBOUNCE_MS);
     },
     [prebuiltSuggestions, sendMessage],
   );
 
+  // Cleanup debounce timer on unmount
   useEffect(() => {
     return () => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
+        debounceRef.current = null;
       }
     };
   }, []);
@@ -500,7 +478,6 @@ const PropertySearchBar = ({
       handleSearch();
     }
   };
-
 
   return (
     <div className="w-full max-w-[52rem] mx-auto">
@@ -603,10 +580,6 @@ const PropertySearchBar = ({
               onKeyDown={handleKeyDown}
               className="w-full bg-transparent text-md text-dark-navy placeholder-slate-gray outline-none"
             />
-
-            {/* {isSearching && (
-              <Loader2 size={18} className="text-slate-gray shrink-0 animate-spin" />
-            )} */}
           </div>
 
           {searchDropdown && (
