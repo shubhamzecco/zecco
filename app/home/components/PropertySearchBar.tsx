@@ -150,10 +150,7 @@ function buildSuggestionUrl(filters: Record<string, any>): string {
   return `/costa-del-sol/properties?${params.toString()}`;
 }
 
-const getPropertyType = (
-  search: string,
-  propertyTypes: any[]
-) => {
+const getPropertyType = (search: string, propertyTypes: any[]) => {
   const text = search.toLowerCase();
 
   return propertyTypes.find((item) => {
@@ -175,11 +172,12 @@ const PropertySearchBar = ({
   const { sendMessage, isConnected, lastEvent } = useWebSocket();
   const { mainReducer } = usePosterReducers();
   const propertyTypes = mainReducer?.property_type_list || [];
+
   const [open, setOpen] = useState(false);
   const [searchDropdown, setSearchDropdown] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<any>(null);
-  const [selected, setSelected] = useState<any>('');
+  const [selected, setSelected] = useState<any>("");
   const [dropdownPosition, setDropdownPosition] = useState<"top" | "bottom">("bottom");
   const [propertyDropdownPosition, setPropertyDropdownPosition] = useState<"top" | "bottom">("bottom");
   const [isSearching, setIsSearching] = useState(false);
@@ -192,9 +190,15 @@ const PropertySearchBar = ({
   const [prebuiltSuggestions, setPrebuiltSuggestions] = useState<any[]>(
     Array.isArray(initialSuggestions) ? initialSuggestions : [],
   );
+
   const autocompleteSuggestionsRef = useRef<any[]>([]);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // tracks the exact query that was last sent over the websocket
+  const latestQueryRef = useRef("");
 
+  // ----------------------------------------------------------------
+  // property types
+  // ----------------------------------------------------------------
   useEffect(() => {
     if (!isConnected) return;
     sendMessage("action", {
@@ -204,6 +208,9 @@ const PropertySearchBar = ({
     });
   }, [isConnected, sendMessage]);
 
+  // ----------------------------------------------------------------
+  // click outside
+  // ----------------------------------------------------------------
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
@@ -218,12 +225,12 @@ const PropertySearchBar = ({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // ----------------------------------------------------------------
+  // main search (Enter / Search button)
+  // ----------------------------------------------------------------
   const handleSearch = useCallback(async () => {
     if (isSearching || !searchText.trim()) return;
 
@@ -232,7 +239,6 @@ const PropertySearchBar = ({
     try {
       const matchedType = getPropertyType(searchText, propertyTypes);
 
-      // Update selected dropdown
       if (matchedType) {
         setSelected(matchedType);
       }
@@ -242,13 +248,11 @@ const PropertySearchBar = ({
       const params = applyFiltersToParams(
         filters,
         propertyTypes,
-        matchedType?.id || selected?.id
+        matchedType?.id || selected?.id,
       );
-      // if (matchedType) {
-      //   params.set("categories", String(matchedType?.id));
-      // }
+
       router.push(
-        `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+        `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`,
       );
     } catch {
       const matchedType = getPropertyType(searchText, propertyTypes);
@@ -268,13 +272,16 @@ const PropertySearchBar = ({
       }
 
       router.push(
-        `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+        `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`,
       );
     } finally {
       setIsSearching(false);
     }
   }, [router, selected, searchText, propertyTypes, isSearching]);
 
+  // ----------------------------------------------------------------
+  // click on a suggestion
+  // ----------------------------------------------------------------
   const callSearch = (data: any) => {
     const params = new URLSearchParams();
     const filters = data.filters || {};
@@ -291,7 +298,11 @@ const PropertySearchBar = ({
         const searchVal = String(value).toLowerCase().trim();
         const matched = mainReducer?.property_type_list?.find((t: any) => {
           const name = t.name?.toLowerCase().trim() || "";
-          return name === searchVal || name.includes(searchVal) || searchVal.includes(name);
+          return (
+            name === searchVal ||
+            name.includes(searchVal) ||
+            searchVal.includes(name)
+          );
         });
         if (matched?.id) params.set("categories", String(matched.id));
         return;
@@ -309,7 +320,7 @@ const PropertySearchBar = ({
     }
 
     router.push(
-      `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`
+      `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`,
     );
   };
 
@@ -321,37 +332,47 @@ const PropertySearchBar = ({
     [router],
   );
 
+  // ----------------------------------------------------------------
+  // consume websocket autocomplete replies (with stale-guard)
+  // ----------------------------------------------------------------
   useEffect(() => {
     if (
-      lastEvent?.data?.request?.type === "searchService" &&
-      lastEvent?.data?.request?.action === "autocompleteSearch"
+      lastEvent?.data?.request?.type !== "searchService" ||
+      lastEvent?.data?.request?.action !== "autocompleteSearch"
     ) {
-      autocompleteSuggestionsRef.current = lastEvent.data?.data?.suggestions || [];
-
-      const value = searchText.trim().toLowerCase();
-      const localMatches = prebuiltSuggestions.filter((item: any) =>
-        String(item?.title || "").toLowerCase().includes(value),
-      );
-
-      if (!value) {
-        setSearchSuggestions(prebuiltSuggestions);
-        return;
-      }
-
-      if (localMatches.length > 0) {
-        setSearchSuggestions(localMatches);
-        return;
-      }
-
-      setSearchSuggestions(autocompleteSuggestionsRef.current);
+      return;
     }
-  }, [lastEvent, prebuiltSuggestions, searchText]);
 
+    // only accept the reply that matches the last query we actually sent
+    const replyQuery = lastEvent.data?.request?.payload?.query ?? "";
+    if (replyQuery !== latestQueryRef.current) return;
+
+    const suggestions = lastEvent.data?.data?.suggestions || [];
+    autocompleteSuggestionsRef.current = suggestions;
+
+    // re-check against current input for extra safety
+    const current = searchText.trim().toLowerCase();
+    if (!current) {
+      setSearchSuggestions(prebuiltSuggestions);
+      return;
+    }
+
+    const stillLocal = prebuiltSuggestions.filter((item: any) =>
+      String(item?.title || "").toLowerCase().includes(current),
+    );
+
+    if (stillLocal.length > 0) {
+      setSearchSuggestions(stillLocal);
+    } else {
+      setSearchSuggestions(suggestions);
+    }
+  }, [lastEvent]); // intentionally NOT depending on searchText / prebuiltSuggestions
+
+  // ----------------------------------------------------------------
+  // load prebuilt suggestions once
+  // ----------------------------------------------------------------
   useEffect(() => {
-    if (
-      Array.isArray(initialSuggestions) &&
-      initialSuggestions.length > 0
-    ) {
+    if (Array.isArray(initialSuggestions) && initialSuggestions.length > 0) {
       return;
     }
 
@@ -382,65 +403,13 @@ const PropertySearchBar = ({
     };
   }, []);
 
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      const normalizedValue = value.trim().toLowerCase();
-      const localMatches = prebuiltSuggestions.filter((item: any) =>
-        String(item?.title || "").toLowerCase().includes(normalizedValue),
-      );
-
-      // Clear any pending debounced call
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-        debounceRef.current = null;
-      }
-
-      setSearchText(value);
-      setSelectedLocation(null);
-      setSearchDropdown(true);
-      handleSearchFocus();
-
-      if (!value.trim()) {
-        setSearchSuggestions(prebuiltSuggestions);
-        return;
-      }
-
-      if (localMatches.length > 0) {
-        setSearchSuggestions(localMatches);
-        return;
-      }
-
-      // Debounce the WebSocket autocomplete call
-      debounceRef.current = setTimeout(() => {
-        sendMessage("action", {
-          type: "searchService",
-          action: "autocompleteSearch",
-          payload: {
-            query: value,
-          },
-        });
-        debounceRef.current = null;
-      }, DEBOUNCE_MS);
-    },
-    [prebuiltSuggestions, sendMessage],
-  );
-
-  // Cleanup debounce timer on unmount
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
-        debounceRef.current = null;
-      }
-    };
-  }, []);
-
-  const handleSearchFocus = () => {
+  // ----------------------------------------------------------------
+  // position helpers
+  // ----------------------------------------------------------------
+  const handleSearchFocus = useCallback(() => {
     if (!searchRef.current) return;
 
     const rect = searchRef.current.getBoundingClientRect();
-
     const dropdownHeight = 320;
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
@@ -452,13 +421,12 @@ const PropertySearchBar = ({
     }
 
     setSearchDropdown(true);
-  };
+  }, []);
 
   const handlePropertyDropdown = () => {
     if (!dropdownRef.current) return;
 
     const rect = dropdownRef.current.getBoundingClientRect();
-
     const dropdownHeight = 250;
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
@@ -472,6 +440,69 @@ const PropertySearchBar = ({
     setOpen((prev) => !prev);
   };
 
+  // ----------------------------------------------------------------
+  // INPUT CHANGE – proper debounce + local-first
+  // ----------------------------------------------------------------
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      const normalizedValue = value.trim().toLowerCase();
+
+      // clear any pending debounced call
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+
+      setSearchText(value);
+      setSelectedLocation(null);
+      setSearchDropdown(true);
+      handleSearchFocus();
+
+      // empty → show prebuilt
+      if (!value.trim()) {
+        setSearchSuggestions(prebuiltSuggestions);
+        return;
+      }
+
+      // local matches first (instant)
+      const localMatches = prebuiltSuggestions.filter((item: any) =>
+        String(item?.title || "").toLowerCase().includes(normalizedValue),
+      );
+
+      if (localMatches.length > 0) {
+        setSearchSuggestions(localMatches);
+        return; // no network needed
+      }
+
+      // no local match → debounce the websocket call
+      debounceRef.current = setTimeout(() => {
+        latestQueryRef.current = value; // mark the query we are about to send
+
+        sendMessage("action", {
+          type: "searchService",
+          action: "autocompleteSearch",
+          payload: {
+            query: value,
+          },
+        });
+
+        debounceRef.current = null;
+      }, DEBOUNCE_MS);
+    },
+    [prebuiltSuggestions, sendMessage, handleSearchFocus],
+  );
+
+  // cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
+    };
+  }, []);
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
@@ -479,15 +510,16 @@ const PropertySearchBar = ({
     }
   };
 
+  // ----------------------------------------------------------------
+  // render
+  // ----------------------------------------------------------------
   return (
     <div className="w-full max-w-[52rem] mx-auto">
       {/* SSR-visible suggestion links (for search engines / no-JS) */}
       <ul role="list" className="hidden" aria-label="Popular searches">
         {initialSuggestions?.map((item: any, index) => (
           <li key={index}>
-            <a href={buildSuggestionUrl(item?.filters)}>
-              {item?.title}
-            </a>
+            <a href={buildSuggestionUrl(item?.filters)}>{item?.title}</a>
           </li>
         ))}
       </ul>
@@ -520,25 +552,29 @@ const PropertySearchBar = ({
                 onClick={handlePropertyDropdown}
                 className="flex items-center justify-center w-full sm:w-[130px] truncate gap-2 rounded-full px-3 py-2 text-sm font-semibold sm:min-w-[120px]"
               >
-                <span className="truncate">{selected ? selected?.name : propertyTypes?.[0]?.name}</span>
+                <span className="truncate">
+                  {selected ? selected?.name : propertyTypes?.[0]?.name}
+                </span>
 
                 <ChevronDown
                   size={14}
-                  className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""
-                    }`}
+                  className={`shrink-0 transition-transform duration-200 ${
+                    open ? "rotate-180" : ""
+                  }`}
                 />
               </button>
 
               {open && (
                 <div
                   className={`
-                            absolute left-0 w-44 rounded-xl bg-white shadow-lg border
-                            border-slate-200 z-50 max-h-[300px] overflow-y-auto
-                            ${propertyDropdownPosition === "bottom"
-                      ? "top-full mt-2"
-                      : "bottom-full mb-2"
+                    absolute left-0 w-44 rounded-xl bg-white shadow-lg border
+                    border-slate-200 z-50 max-h-[300px] overflow-y-auto
+                    ${
+                      propertyDropdownPosition === "bottom"
+                        ? "top-full mt-2"
+                        : "bottom-full mb-2"
                     }
-                          `}
+                  `}
                 >
                   <ul className="py-1 text-sm text-slate-700">
                     {propertyTypes?.map((item: any) => (
@@ -548,10 +584,11 @@ const PropertySearchBar = ({
                             setSelected(item);
                             setOpen(false);
                           }}
-                          className={`w-full px-4 py-2 text-center transition ${selected?.id === item?.id
-                            ? "bg-slate-100 font-semibold"
-                            : "hover:bg-slate-100"
-                            }`}
+                          className={`w-full px-4 py-2 text-center transition ${
+                            selected?.id === item?.id
+                              ? "bg-slate-100 font-semibold"
+                              : "hover:bg-slate-100"
+                          }`}
                         >
                           {item?.name}
                         </button>
@@ -585,21 +622,20 @@ const PropertySearchBar = ({
           {searchDropdown && (
             <div
               className={`
-                  absolute left-0 w-full rounded-xl bg-white shadow-lg border
-                  border-slate-200 z-50 max-h-[300px] overflow-y-auto
-                  ${dropdownPosition === "bottom"
-                  ? "top-full mt-2"
-                  : "bottom-full mb-2"
+                absolute left-0 w-full rounded-xl bg-white shadow-lg border
+                border-slate-200 z-50 max-h-[300px] overflow-y-auto
+                ${
+                  dropdownPosition === "bottom"
+                    ? "top-full mt-2"
+                    : "bottom-full mb-2"
                 }
-                `}
+              `}
             >
               <ul className="py-1 text-sm text-slate-700">
                 <li>
                   <button
                     type="button"
-                    onClick={() => {
-                      openMapSearch("draw");
-                    }}
+                    onClick={() => openMapSearch("draw")}
                     className="flex items-center gap-2 w-full px-4 py-3 text-left hover:bg-slate-100 transition font-medium"
                   >
                     <MapPlus size={18} className="shrink-0" />
@@ -611,14 +647,11 @@ const PropertySearchBar = ({
                   <li key={index}>
                     <button
                       type="button"
-                      onClick={() => {
-                        callSearch(item)
-                      }}
+                      onClick={() => callSearch(item)}
                       className="w-full px-4 py-3 text-left hover:bg-slate-100 transition"
                     >
                       <div className="flex items-center justify-between">
                         <span>{item.title}</span>
-
                         <span className="text-xs text-gray-500">
                           {item.count} properties
                         </span>
@@ -627,12 +660,11 @@ const PropertySearchBar = ({
                   </li>
                 ))}
 
-                {searchText &&
-                  searchSuggestions.length === 0 && (
-                    <li className="px-4 py-3 text-gray-500">
-                      No suggestions found
-                    </li>
-                  )}
+                {searchText && searchSuggestions.length === 0 && (
+                  <li className="px-4 py-3 text-gray-500">
+                    No suggestions found
+                  </li>
+                )}
               </ul>
             </div>
           )}
