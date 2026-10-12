@@ -25,7 +25,7 @@ const PARSE_FILTERS_URL =
     ? `${process.env.NEXT_PUBLIC_ENDPOINT_API_URL}/api/search/parse-filters`
     : "http://localhost:8000/api/search/parse-filters";
 
-const DEBOUNCE_MS = 300;
+const DEBOUNCE_MS = 1000;
 
 let prebuiltSuggestionsPromise: Promise<any[]> | null = null;
 let prebuiltSuggestionsCache: any[] | null = null;
