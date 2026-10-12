@@ -668,7 +668,6 @@ const PropertySearchBar = ({
               </ul>
             </div>
           )}
-
           <button
             onClick={handleSearch}
             disabled={isSearching}
