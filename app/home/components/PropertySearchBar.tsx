@@ -205,7 +205,7 @@ const PropertySearchBar = ({
       action: "propertyTypes",
       payload: {},
     });
-  }, [isConnected, sendMessage]);
+  }, [isConnected]);
 
   // ----------------------------------------------------------------
   // click outside
@@ -489,7 +489,7 @@ const PropertySearchBar = ({
         debounceRef.current = null;
       }, DEBOUNCE_MS);
     },
-    [prebuiltSuggestions, sendMessage, handleSearchFocus],
+    [prebuiltSuggestions, handleSearchFocus],
   );
 
   // cleanup debounce on unmount
