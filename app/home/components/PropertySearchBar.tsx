@@ -77,6 +77,59 @@ async function parseSearchQuery(query: string): Promise<Record<string, any>> {
   return json?.data?.filters || {};
 }
 
+// filter-key aliases -> all of these resolve to the "categories" param.
+// NOTE: "types" is intentionally NOT here -> it is a separate filter param
+// that must be passed through as-is.
+const CATEGORY_FILTER_KEYS = [
+  "type",
+  "propertyType",
+  "property_type",
+  "category",
+];
+// "types" is its own param, and its value is also used to look up the category id
+const TYPES_FILTER_KEYS = ["types"];
+const BEDROOM_FILTER_KEYS = ["bedrooms", "bedroom"];
+const CITY_FILTER_KEYS = ["cities", "city"];
+const AREA_FILTER_KEYS = ["areas", "area"];
+
+// match a type entry by id or name
+function matchType(
+  value: any,
+  propertyTypeList: any[],
+): any | undefined {
+  const searchVal = String(value).toLowerCase().trim();
+  console.log("searchVal ::: " , searchVal)
+  const property = propertyTypeList?.find((t: any) => {
+    const name = t.name?.toLowerCase().trim() || "";
+    return (
+      String(t.id) === searchVal ||
+      name === searchVal ||
+      name.includes(searchVal) ||
+      searchVal.includes(name)
+    );
+  })
+  console.log("property ::: " , property)
+  return property;
+}
+
+// "types" value -> the CATEGORY id of the matched type (t.category.id)
+function findCategoryId(
+  value: any,
+  propertyTypeList: any[],
+): number | string | undefined {
+  const matchCategory = matchType(value, propertyTypeList)?.category?.id
+  console.log("matchCategory ::: " , matchCategory)
+  return matchCategory;
+}
+
+// category value (name or id) -> the matched type's own id
+function resolveCategoryId(
+  value: any,
+  propertyTypeList: any[],
+): number | string {
+  return matchType(value, propertyTypeList)?.id ?? value;
+}
+
 function applyFiltersToParams(
   filters: Record<string, any>,
   propertyTypeList: any[],
@@ -84,25 +137,37 @@ function applyFiltersToParams(
 ): URLSearchParams {
   const params = new URLSearchParams();
 
-  Object.entries(filters).forEach(([key, value]) => {
+  Object.entries(filters || {}).forEach(([key, value]) => {
     if (value === undefined || value === null || value === "") return;
 
-    if (key === "bedrooms") {
+    if (BEDROOM_FILTER_KEYS.includes(key)) {
       params.set("bedroomsFrom", String(value));
       params.set("bedroomsTo", String(value));
       return;
     }
 
-    if (key === "propertyType") {
-      params.set("categories", value);
+    if (TYPES_FILTER_KEYS.includes(key)) {
+      params.set("types", String(value));
+      const categoryId = findCategoryId(value, propertyTypeList);
+      console.log("findCategoryId ::: " , categoryId)
+      if (categoryId !== undefined) {
+        params.set("categories", String(categoryId));
+      }
       return;
     }
 
-    if (key === "cities") {
+    if (CATEGORY_FILTER_KEYS.includes(key)) {
+      const categoryId = String(resolveCategoryId(value, propertyTypeList));
+      params.set("categories", categoryId);
+      return;
+    }
+
+    if (CITY_FILTER_KEYS.includes(key)) {
       params.set("city", String(value));
       return;
     }
-    if (key === "areas") {
+
+    if (AREA_FILTER_KEYS.includes(key)) {
       params.set("area", String(value));
       return;
     }
@@ -116,37 +181,17 @@ function applyFiltersToParams(
 
   if (!params.has("categories") && selectedCategoryId) {
     params.set("categories", String(selectedCategoryId));
+    // params.set("category", String(selectedCategoryId));
   }
 
   return params;
 }
 
 function buildSuggestionUrl(filters: Record<string, any>): string {
-  const params = new URLSearchParams();
-
-  Object.entries(filters || {}).forEach(([key, value]) => {
-    if (value === undefined || value === null || value === "") return;
-
-    if (key === "bedrooms") {
-      params.set("bedroomsFrom", String(value));
-      params.set("bedroomsTo", String(value));
-      return;
-    }
-
-    if (key === "cities") {
-      params.set("city", String(value));
-      return;
-    }
-
-    if (key === "areas") {
-      params.set("area", String(value));
-      return;
-    }
-
-    params.set(key, String(value));
-  });
-
-  return `/costa-del-sol/properties?${params.toString()}`;
+  return `/costa-del-sol/properties?${applyFiltersToParams(
+    filters || {},
+    [],
+  ).toString()}`;
 }
 
 const getPropertyType = (search: string, propertyTypes: any[]) => {
@@ -205,7 +250,7 @@ const PropertySearchBar = ({
       action: "propertyTypes",
       payload: {},
     });
-  }, [isConnected]);
+  }, [isConnected ]);
 
   // ----------------------------------------------------------------
   // click outside
@@ -281,42 +326,28 @@ const PropertySearchBar = ({
   // ----------------------------------------------------------------
   // click on a suggestion
   // ----------------------------------------------------------------
-  const callSearch = (data: any) => {
-    const params = new URLSearchParams();
-    const filters = data.filters || {};
+  const callSearch = async (data: any) => {
+    const query = data?.query || data?.title || "";
 
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value === undefined || value === null || value === "") return;
+    let filters: Record<string, any> = { ...(data?.filters || {}) };
 
-      if (key === "bedrooms") {
-        params.set("bedroomsFrom", String(value));
-        params.set("bedroomsTo", String(value));
-        return;
+    if (query) {
+      try {
+        const parsed = await parseSearchQuery(query);
+        if (parsed && typeof parsed === "object") {
+          // data.filters win; parsed fills in anything missing
+          filters = { ...parsed, ...filters };
+        }
+      } catch {
+        // keep the suggestion's own filters
       }
-      if (key === "propertyType") {
-        const searchVal = String(value).toLowerCase().trim();
-        const matched = mainReducer?.property_type_list?.find((t: any) => {
-          const name = t.name?.toLowerCase().trim() || "";
-          return (
-            name === searchVal ||
-            name.includes(searchVal) ||
-            searchVal.includes(name)
-          );
-        });
-        if (matched?.id) params.set("categories", String(matched.id));
-        return;
-      }
-
-      if (Array.isArray(value)) {
-        value.forEach((v) => params.append(key, String(v)));
-      } else {
-        params.set(key, String(value));
-      }
-    });
-
-    if (!params.has("city") && filters.cities) {
-      params.set("city", String(filters.cities));
     }
+
+    const params = applyFiltersToParams(
+      filters,
+      propertyTypes,
+      selected?.id,
+    );
 
     router.push(
       `${App_url.link.COSTA_DEL_SOL}/properties?${params.toString()}`,
@@ -557,9 +588,8 @@ const PropertySearchBar = ({
 
                 <ChevronDown
                   size={14}
-                  className={`shrink-0 transition-transform duration-200 ${
-                    open ? "rotate-180" : ""
-                  }`}
+                  className={`shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""
+                    }`}
                 />
               </button>
 
@@ -568,10 +598,9 @@ const PropertySearchBar = ({
                   className={`
                     absolute left-0 w-44 rounded-xl bg-white shadow-lg border
                     border-slate-200 z-50 max-h-[300px] overflow-y-auto
-                    ${
-                      propertyDropdownPosition === "bottom"
-                        ? "top-full mt-2"
-                        : "bottom-full mb-2"
+                    ${propertyDropdownPosition === "bottom"
+                      ? "top-full mt-2"
+                      : "bottom-full mb-2"
                     }
                   `}
                 >
@@ -583,11 +612,10 @@ const PropertySearchBar = ({
                             setSelected(item);
                             setOpen(false);
                           }}
-                          className={`w-full px-4 py-2 text-center transition ${
-                            selected?.id === item?.id
+                          className={`w-full px-4 py-2 text-center transition ${selected?.id === item?.id
                               ? "bg-slate-100 font-semibold"
                               : "hover:bg-slate-100"
-                          }`}
+                            }`}
                         >
                           {item?.name}
                         </button>
@@ -623,10 +651,9 @@ const PropertySearchBar = ({
               className={`
                 absolute left-0 w-full rounded-xl bg-white shadow-lg border
                 border-slate-200 z-50 max-h-[300px] overflow-y-auto
-                ${
-                  dropdownPosition === "bottom"
-                    ? "top-full mt-2"
-                    : "bottom-full mb-2"
+                ${dropdownPosition === "bottom"
+                  ? "top-full mt-2"
+                  : "bottom-full mb-2"
                 }
               `}
             >
