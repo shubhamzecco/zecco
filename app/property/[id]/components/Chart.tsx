@@ -51,7 +51,7 @@ export default function PricingTrajectoryChart({ chart_data }: IChartProps) {
         hideOverlappingLabels: false,
         trim: false,
         formatter: (value: string) => {
-          const [month, year] = value?.split(" ");
+          const [month = "", year = ""] = String(value ?? "").split(" ");
           return [month, year]; // ✅ multi-line label
         },
         style: {

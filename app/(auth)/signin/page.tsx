@@ -65,7 +65,7 @@ const Signin = () => {
         user_type: "client",
       });
 
-      if (response?.success) {
+      if (response?.success && response?.data?.user && response?.data?.accessToken) {
         const payload = {
           ...response?.data,
           user: response?.data?.user,
@@ -78,7 +78,7 @@ const Signin = () => {
 
         const redirectUrl = localStorage.getItem("redirect_after_login");
 
-        toast.success(response.message);
+        toast.success(response?.message || "Logged in successfully.");
 
         if (redirectUrl) {
           localStorage.removeItem("redirect_after_login");

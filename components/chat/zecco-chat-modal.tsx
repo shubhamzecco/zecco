@@ -79,13 +79,13 @@ export default function ZecooAIChat({ isOpen = true, onClose }: Props) {
         addAIChatMessage({
           id: Date.now().toString(),
           text: isLimit
-            ? res.response.replace(LIMIT_MARKER, "").trim()
-            : res.response || "No response from Zecco AI",
+            ? res?.response.replace(LIMIT_MARKER, "").trim()
+            : res?.response || "No response from Zecco AI",
           sender: "bot",
           timestamp: new Date(),
-          hasMore: (res.properties?.length ?? 0) > 0,
-          properties: res.properties,
-          suggestions: res.suggestions,
+          hasMore: (res?.properties?.length ?? 0) > 0,
+          properties: res?.properties,
+          suggestions: res?.suggestions,
         }),
       );
     } catch {

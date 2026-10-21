@@ -79,19 +79,19 @@ const SavedSearches = ({ isDashboard = false, searches }: SavedSearchesProps) =>
 
 
   const generateSearchTitle = (item: any) => {
-    const categoryName = item?.categories && propertyCategoryMap[item?.categories];
+    const categoryName = item?.categories && propertyCategoryMap?.[item?.categories];
 
     const types = (item?.types || [])
       .filter(Boolean)
-      .map((type: number) => propertyTypeMap[type])
+      .map((type: number) => propertyTypeMap?.[type])
       .filter(Boolean);
 
     const baseTitle = categoryName || (types.length > 0 ? types.join(" & ") : "Properties");
 
-    if (item?.search && item?.search.toLowerCase() !== item?.city?.name?.toLowerCase()) {
-      return `${baseTitle} in ${item.search}, ${item.city.name}, Spain`;
+    if (item?.search && item?.search?.toLowerCase() !== item?.city?.name?.toLowerCase()) {
+      return `${baseTitle} in ${[item?.search, item?.city?.name].filter(Boolean).join(", ")}, Spain`;
     } else if (item?.city?.name) {
-      return `${baseTitle} in ${item.city.name}, Spain`;
+      return `${baseTitle} in ${item?.city?.name}, Spain`;
     }
 
     return `${baseTitle} in Costa del sol`;

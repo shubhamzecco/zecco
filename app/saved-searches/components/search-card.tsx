@@ -19,13 +19,13 @@ export default function SavedSearchCard({ item, title, featureMap, onApplySearch
 
     if (item?.types?.length > 0) {
         chips.push(
-            ...item?.types?.map((typeId: number) => propertyTypeMap[typeId]).filter(Boolean)
+            ...item?.types?.map((typeId: number) => propertyTypeMap?.[typeId]).filter(Boolean)
         );
     }
 
     if (item?.features?.length > 0) {
         chips.push(
-            ...item?.features?.map((typeId: number) => featureMap[typeId]).filter(Boolean)
+            ...item?.features?.map((typeId: number) => featureMap?.[typeId]).filter(Boolean)
         );
     }
 

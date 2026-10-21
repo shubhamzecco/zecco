@@ -48,9 +48,9 @@ const CommonApiRequest = async <T, B = unknown>(
     };
 
     return {
-      status: err.response?.status ?? 500,
-      data: (err.response?.data ?? {}) as T,
-      message: err.response?.message || "",
+      status: err?.response?.status ?? 500,
+      data: (err?.response?.data ?? {}) as T,
+      message: err?.response?.message || "",
     };
   }
 };
@@ -77,24 +77,25 @@ export function fetchData(
         resolve(response);
       })
       .catch((error) => {
-        if (error.response) {
+        if (error?.response) {
           // The request was made and the server responded with a status code
           const errorMessage =
-            error.response.data.error ||
-            error.response.data.message ||
+            error?.response?.data?.error ||
+            error?.response?.data?.message ||
             "An error occurred";
           if (errorMessage !== "Unauthorized") toast.error(errorMessage);
           reject(error);
-        } else if (error.request) {
+        } else if (error?.request) {
           // The request was made but no response was received
           toast.error("No response received from server.");
           console.error("No response received:", error.request);
           reject("No response received from server.");
         } else {
           // Something happened in setting up the request that triggered an error
-          toast.error(`Request failed: ${error.message}`);
-          console.error("Request failed:", error.message);
-          reject(`Request failed: ${error.message}`);
+          const message = error?.message || "An error occurred";
+          toast.error(`Request failed: ${message}`);
+          console.error("Request failed:", message);
+          reject(`Request failed: ${message}`);
         }
       });
   });
@@ -429,7 +430,7 @@ export const AuthReq = async (
     return data;
   } catch (error) {
     console.error("AuthReq Error:", error);
-    toast.error(error as any);
+    toast.error(error instanceof Error ? error.message : "Login failed");
     return error;
   }
 };
@@ -477,7 +478,7 @@ export const getApi = async (
     });
     return response?.data;
   } catch (error: any) {
-    console.error("GET API Error:", error?.response?.data || error.message);
+    console.error("GET API Error:", error?.response?.data || error?.message);
     return error;
   }
 };

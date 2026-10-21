@@ -28,7 +28,7 @@ const FavoritesPage = ({ onGetStarted }: AiInsightsProps) => {
 
   useEffect(() => {
     if (mainReducer?.ai_selected_property) {
-      onGetStarted(mainReducer.ai_selected_property);
+      onGetStarted(mainReducer?.ai_selected_property);
       dispatch(setAiSelectedProperty(null));
     }
   }, [mainReducer?.ai_selected_property]);

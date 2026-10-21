@@ -81,9 +81,9 @@ export default function FilterPanel({ initialFilters, onFilterChange, areas, par
 
   const propertyFeaturesList = (mainReducer?.property_features_list || []).filter(
     (item: any) => {
-      const itemName = item.name.toLowerCase();
+      const itemName = String(item?.name ?? "").toLowerCase();
       return !propertyTypeList.some((t: any) => {
-        const typeName = t.name.toLowerCase();
+        const typeName = String(t?.name ?? "").toLowerCase();
         return typeName === itemName || itemName.includes(typeName) || typeName.includes(itemName);
       });
     }

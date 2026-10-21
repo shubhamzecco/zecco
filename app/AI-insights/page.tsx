@@ -33,7 +33,7 @@ const AIInsights = () => {
     if (mainReducer?.ai_selected_property) {
       setShowNewInsight(true);
       setStep("intro");
-      setSelectedProperty(mainReducer.ai_selected_property);
+      setSelectedProperty(mainReducer?.ai_selected_property);
     }
   }, [mainReducer?.ai_selected_property]);
 

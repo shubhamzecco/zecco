@@ -74,7 +74,7 @@ const SavedSearches = () => {
     if (!mainReducer?.property_features_list)
       return {} as Record<number, string>;
 
-    return mainReducer?.property_features_list.reduce(
+    return mainReducer?.property_features_list?.reduce(
       (acc, item) => {
         acc[item?.id] = item?.name;
 
@@ -111,19 +111,19 @@ const SavedSearches = () => {
   };
 
   const generateSearchTitle = (item: any) => {
-    const categoryName = item?.categories && propertyCategoryMap[item?.categories];
+    const categoryName = item?.categories && propertyCategoryMap?.[item?.categories];
 
     const types = (item?.types || [])
       .filter(Boolean)
-      .map((type: number) => propertyTypeMap[type])
+      .map((type: number) => propertyTypeMap?.[type])
       .filter(Boolean);
 
     const baseTitle = categoryName || (types.length > 0 ? types.join(" & ") : "Properties");
 
-    if (item?.search && item?.search.toLowerCase() !== item?.city?.name?.toLowerCase()) {
-      return `${baseTitle} in ${item.search}, ${item.city.name}, spain`;
+    if (item?.search && item?.search?.toLowerCase() !== item?.city?.name?.toLowerCase()) {
+      return `${baseTitle} in ${[item?.search, item?.city?.name].filter(Boolean).join(", ")}, spain`;
     } else if (item?.city?.name) {
-      return `${baseTitle} in ${item.city.name}, spain`;
+      return `${baseTitle} in ${item?.city?.name}, spain`;
     }
 
     return `${baseTitle} in Costa del sol`;

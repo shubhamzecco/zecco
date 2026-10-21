@@ -98,17 +98,15 @@ function matchType(
   propertyTypeList: any[],
 ): any | undefined {
   const searchVal = String(value).toLowerCase().trim();
-  console.log("searchVal ::: " , searchVal)
   const property = propertyTypeList?.find((t: any) => {
-    const name = t.name?.toLowerCase().trim() || "";
+    const name = String(t?.name ?? "").toLowerCase().trim();
     return (
-      String(t.id) === searchVal ||
+      String(t?.id) === searchVal ||
       name === searchVal ||
       name.includes(searchVal) ||
-      searchVal.includes(name)
+      (!!name && searchVal.includes(name))
     );
   })
-  console.log("property ::: " , property)
   return property;
 }
 
@@ -118,7 +116,6 @@ function findCategoryId(
   propertyTypeList: any[],
 ): number | string | undefined {
   const matchCategory = matchType(value, propertyTypeList)?.category?.id
-  console.log("matchCategory ::: " , matchCategory)
   return matchCategory;
 }
 
@@ -137,42 +134,41 @@ function applyFiltersToParams(
 ): URLSearchParams {
   const params = new URLSearchParams();
 
-  Object.entries(filters || {}).forEach(([key, value]) => {
+  Object.entries(filters || {})?.forEach(([key, value]) => {
     if (value === undefined || value === null || value === "") return;
 
-    if (BEDROOM_FILTER_KEYS.includes(key)) {
+    if (BEDROOM_FILTER_KEYS?.includes(key)) {
       params.set("bedroomsFrom", String(value));
       params.set("bedroomsTo", String(value));
       return;
     }
 
-    if (TYPES_FILTER_KEYS.includes(key)) {
+    if (TYPES_FILTER_KEYS?.includes(key)) {
       params.set("types", String(value));
       const categoryId = findCategoryId(value, propertyTypeList);
-      console.log("findCategoryId ::: " , categoryId)
       if (categoryId !== undefined) {
         params.set("categories", String(categoryId));
       }
       return;
     }
 
-    if (CATEGORY_FILTER_KEYS.includes(key)) {
+    if (CATEGORY_FILTER_KEYS?.includes(key)) {
       const categoryId = String(resolveCategoryId(value, propertyTypeList));
       params.set("categories", categoryId);
       return;
     }
 
-    if (CITY_FILTER_KEYS.includes(key)) {
+    if (CITY_FILTER_KEYS?.includes(key)) {
       params.set("city", String(value));
       return;
     }
 
-    if (AREA_FILTER_KEYS.includes(key)) {
+    if (AREA_FILTER_KEYS?.includes(key)) {
       params.set("area", String(value));
       return;
     }
 
-    if (Array.isArray(value)) {
+    if (Array?.isArray(value)) {
       value.forEach((v) => params.append(key, String(v)));
     } else {
       params.set(key, String(value));
@@ -198,7 +194,8 @@ const getPropertyType = (search: string, propertyTypes: any[]) => {
   const text = search.toLowerCase();
 
   return propertyTypes.find((item) => {
-    const name = item.name.toLowerCase();
+    const name = String(item?.name ?? "").toLowerCase();
+    if (!name) return false;
 
     return (
       text.includes(name) ||
@@ -229,7 +226,7 @@ const PropertySearchBar = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const [searchSuggestions, setSearchSuggestions] = useState<any[]>(
-    Array.isArray(initialSuggestions) ? initialSuggestions.slice(0, 8) : [],
+    Array.isArray(initialSuggestions) ? initialSuggestions?.slice(0, 8) : [],
   );
   const [prebuiltSuggestions, setPrebuiltSuggestions] = useState<any[]>(
     Array.isArray(initialSuggestions) ? initialSuggestions : [],
@@ -374,10 +371,12 @@ const PropertySearchBar = ({
     }
 
     // only accept the reply that matches the last query we actually sent
-    const replyQuery = lastEvent.data?.request?.payload?.query ?? "";
+    const replyQuery = lastEvent?.data?.request?.payload?.query ?? "";
     if (replyQuery !== latestQueryRef.current) return;
 
-    const suggestions = lastEvent.data?.data?.suggestions || [];
+    const suggestions = Array.isArray(lastEvent?.data?.data?.suggestions)
+      ? lastEvent.data.data.suggestions
+      : [];
     autocompleteSuggestionsRef.current = suggestions;
 
     // re-check against current input for extra safety
@@ -677,9 +676,9 @@ const PropertySearchBar = ({
                       className="w-full px-4 py-3 text-left hover:bg-slate-100 transition"
                     >
                       <div className="flex items-center justify-between">
-                        <span>{item.title}</span>
+                        <span>{item?.title}</span>
                         <span className="text-xs text-gray-500">
-                          {item.count} properties
+                          {item?.count ?? 0} properties
                         </span>
                       </div>
                     </button>

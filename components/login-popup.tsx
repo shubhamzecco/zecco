@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 const LoginPopup = () => {
   const { mainReducer, user_data } = usePosterReducers();
-  if (!mainReducer.login_popup) return null;
   const dispatch = useDispatch();
   const router = useRouter();
+  if (!mainReducer?.login_popup) return null;
   const isLoggedIn = !!user_data?.access_token;
   return (
     <div className="fixed inset-0 z-50  flex items-center justify-center">

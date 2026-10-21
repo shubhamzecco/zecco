@@ -48,11 +48,12 @@ export function SearchableDropdown({
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
   // Filter items based on search
+  const validItems = Array.isArray(items) ? items.filter((item) => item?.id != null) : [];
   const filteredItems = searchable
-    ? items.filter((item) =>
-        item.name.toLowerCase().includes(searchValue.toLowerCase()),
+    ? validItems.filter((item) =>
+        String(item?.name ?? "").toLowerCase().includes(searchValue.toLowerCase()),
       )
-    : items;
+    : validItems;
 
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -97,7 +98,7 @@ export function SearchableDropdown({
   // Handle item selection
   const selectItem = (item: any) => {
     setSelectedItem(item);
-    setSearchValue(item.name);
+    setSearchValue(item?.name ?? "");
     onChange?.(item);
     setIsOpen(false);
     setHighlightedIndex(-1);

@@ -65,7 +65,7 @@ const PropertyCard = ({
       String(property?._id),
     ) ||
     mainReducer?.favorite_property_list?.data?.some(
-      (item) => String(item._id) === String(property?._id),
+      (item) => String(item?._id) === String(property?._id),
     );
 
   const [isFavorite, setIsFavorite] = useState(getIsFavoriteFromStore);
@@ -127,17 +127,19 @@ const PropertyCard = ({
     setIsSwiping(true);
   };
 
+  const imageCount = Math.min(property?.propertyImages?.length ?? 0, 3);
+
   const handleTouchEnd = () => {
     if (touchStartX === null || touchEndX === null) return;
     const distance = touchStartX - touchEndX;
     if (Math.abs(distance) > 50) {
       if (distance > 0) {
         setCurrentIndex((prev) =>
-          prev === property?.propertyImages.length - 1 ? 0 : prev + 1,
+          imageCount > 0 ? (prev + 1) % imageCount : 0,
         );
       } else {
         setCurrentIndex((prev) =>
-          prev === 0 ? property?.propertyImages.length - 1 : prev - 1,
+          imageCount > 0 ? (prev - 1 + imageCount) % imageCount : 0,
         );
       }
     }
@@ -159,14 +161,14 @@ const PropertyCard = ({
   const nextSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === property?.propertyImages?.length - 1 ? 0 : prev + 1,
+      imageCount > 0 ? (prev + 1) % imageCount : 0,
     );
   };
 
   const prevSlide = (e: React.MouseEvent) => {
     e.stopPropagation();
     setCurrentIndex((prev) =>
-      prev === 0 ? property?.propertyImages?.length - 1 : prev - 1,
+      imageCount > 0 ? (prev - 1 + imageCount) % imageCount : 0,
     );
   };
 
